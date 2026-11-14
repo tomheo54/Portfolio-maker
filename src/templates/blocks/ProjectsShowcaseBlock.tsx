@@ -9,6 +9,7 @@ import {
   FileText,
   Eye,
   Video,
+  ExternalLink,
   Wand2,
   ImagePlus,
   ChevronLeft,
@@ -464,30 +465,55 @@ export function ProjectsShowcaseBlock({
         if (embedUrl) {
           const isDirectVideo = /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(embedUrl);
           return (
-            <div
-              className={`relative overflow-hidden aspect-video sm:aspect-[4/3] w-full shadow-md bg-stone-900 ${
-                isCanvaEditorial
-                  ? "rounded-[24px] sm:rounded-[32px] border-[3px] !border-[var(--primary)]"
-                  : mediaRadius
-              }`}
-            >
-              {isDirectVideo ? (
-                <video
-                  src={embedUrl}
-                  controls
-                  playsInline
-                  className="absolute inset-0 h-full w-full object-contain"
-                />
-              ) : (
-                <iframe
-                  src={embedUrl}
-                  title={`Video minh họa: ${project.title}`}
-                  className="absolute inset-0 h-full w-full border-0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  loading="lazy"
-                />
-              )}
+            <div className="space-y-3">
+              <div
+                className={`relative overflow-hidden aspect-video w-full shadow-md bg-stone-950 ${
+                  isCanvaEditorial
+                    ? "rounded-2xl sm:rounded-[24px] border-[3px] !border-[var(--primary)]"
+                    : mediaRadius
+                }`}
+              >
+                {isDirectVideo ? (
+                  <video
+                    src={embedUrl}
+                    controls
+                    playsInline
+                    className="absolute inset-0 h-full w-full object-contain"
+                  />
+                ) : (
+                  <iframe
+                    src={embedUrl}
+                    title={`Video minh họa: ${project.title}`}
+                    className="absolute inset-0 h-full w-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                )}
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-xs">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-semibold text-[11px]"
+                  style={{
+                    backgroundColor: `${effectivePrimary}15`,
+                    color: effectivePrimary,
+                  }}
+                >
+                  <Video className="h-3 w-3" />
+                  <span>Video học liệu / Demo</span>
+                </span>
+                <a
+                  href={effectiveVideoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1 text-[11px] font-semibold transition hover:underline"
+                  style={{ color: effectivePrimary }}
+                >
+                  <span>Mở xem toàn màn hình</span>
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
             </div>
           );
         }
@@ -497,8 +523,8 @@ export function ProjectsShowcaseBlock({
       if (editable) {
         return (
           <div
-            className={`flex aspect-video sm:aspect-[4/3] flex-col items-center justify-center gap-2.5 border-2 border-dashed p-6 text-center ${
-              isCanvaEditorial ? "rounded-[32px]" : mediaRadius
+            className={`flex aspect-video w-full flex-col items-center justify-center gap-2.5 border-2 border-dashed p-6 text-center ${
+              isCanvaEditorial ? "rounded-[24px]" : mediaRadius
             }`}
             style={{
               borderColor: `${effectivePrimary}50`,

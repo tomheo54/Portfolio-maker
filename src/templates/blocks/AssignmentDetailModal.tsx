@@ -481,7 +481,7 @@ export function AssignmentDetailModal({
                 return embedUrl ? (
                   <div className="space-y-3">
                     <div
-                      className="relative flex aspect-video sm:aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-2xl border shadow-inner bg-stone-900"
+                      className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-2xl border shadow-inner bg-stone-950"
                       style={{
                         borderColor: tokens.borderSubtle,
                       }}
@@ -519,7 +519,7 @@ export function AssignmentDetailModal({
                     )}
                   </div>
                 ) : (
-                  <div className="flex aspect-video sm:aspect-[4/3] flex-col items-center justify-center rounded-2xl border border-dashed text-sm opacity-65 p-6 text-center gap-2">
+                  <div className="flex aspect-video w-full flex-col items-center justify-center rounded-2xl border border-dashed text-sm opacity-65 p-6 text-center gap-2">
                     <p className="font-medium">Chưa có liên kết video hoặc link chưa hợp lệ</p>
                     <p className="text-xs opacity-75">Hỗ trợ YouTube, Google Drive, Vimeo hoặc tệp video MP4</p>
                   </div>
