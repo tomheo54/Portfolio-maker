@@ -190,7 +190,6 @@
       "variant": "canva-slide-showcase",
       "title": "Project • 06 Bài Tập Thực Hành",
       "subtitle": "Tổng hợp kết quả các bài thực hành kỹ năng số, hợp tác trực tuyến và ứng dụng AI trong học tập & sáng tạo nội dung.",
-      "detailViewMode": "fullscreen-overlay",
       "projects": [
         {
           "id": "proj-1",
@@ -205,7 +204,6 @@
             "Triệt tiêu thời gian tìm kiếm tài liệu học tập"
           ],
           "fullRawExcerpt": "Dự án hướng tới việc chuẩn hóa tư duy quản trị không gian làm việc số qua 3 mục tiêu chiến lược: Làm chủ kiến trúc dữ liệu (File Explorer), chuẩn hóa quy trình xử lý tệp tin (12 bước thực hành từ tạo thư mục ThucHanh_hotensinhvien đến sao chép, di chuyển, xóa vĩnh viễn Shift+Delete và khôi phục từ Recycle Bin), và tối ưu hóa hiệu suất vận hành.",
-          "showRawExcerpt": false,
           "metrics": [
             {
               "label": "Quy trình",

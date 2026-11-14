@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import {
   X,
   ArrowLeft,
@@ -25,6 +26,7 @@ import {
 } from "lucide-react";
 import type { ProjectItem, ThemeConfig } from "@/schema/portfolio.schema";
 import { getThemeTokens } from "@/templates/archetypes/archetypeStyles";
+import { parseVideoEmbedUrl } from "@/utils/video";
 
 export interface AssignmentDetailModalProps {
   project: ProjectItem | null;
@@ -52,10 +54,34 @@ export function AssignmentDetailModal({
   const [activeImageIdx, setActiveImageIdx] = useState(initialImageIndex);
   const [lightboxZoomed, setLightboxZoomed] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const tokens = getThemeTokens(theme);
   const isPage = presentation === "page";
   const mediaList = project?.media ?? [];
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (!isPage && project) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isPage, project]);
+
+  // Reset scroll to top when project changes
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+  }, [project?.id]);
   const safeIdx =
     activeImageIdx >= 0 && activeImageIdx < mediaList.length
       ? activeImageIdx
@@ -158,6 +184,7 @@ export function AssignmentDetailModal({
   ]);
 
   if (!project) return null;
+  if (!isPage && !mounted) return null;
 
   const chapterText =
     project.chapterTitle || `Chương ${currentNum}: ${project.category}`;
@@ -169,76 +196,63 @@ export function AssignmentDetailModal({
   const detailLayout = project.detailLayout ?? "standard";
   const compactLayout = detailLayout === "compact";
 
-  return (
+  const edgeNavButtons = totalProjects > 1 && onNavigateProject && !isFullscreen ? (
+    <>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleNavigatePrev();
+        }}
+        disabled={!hasPrev}
+        className={`fixed left-3 top-1/2 z-50 -translate-y-1/2 rounded-full border p-3 shadow-2xl backdrop-blur-md transition hover:scale-110 disabled:pointer-events-none disabled:opacity-20 hidden md:flex items-center justify-center ${
+          isPage
+            ? "border-stone-300 dark:border-white/20 bg-white/90 dark:bg-black/70 text-stone-800 dark:text-white hover:bg-white"
+            : "border-white/20 bg-black/60 text-white hover:bg-black/85"
+        }`}
+        aria-label="Bài trước"
+        title={`‹ Bài trước: ${prevProject?.title || ""}`}
+      >
+        <ChevronLeft className="h-6 w-6" />
+      </button>
+
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleNavigateNext();
+        }}
+        disabled={!hasNext}
+        className={`fixed right-3 top-1/2 z-50 -translate-y-1/2 rounded-full border p-3 shadow-2xl backdrop-blur-md transition hover:scale-110 disabled:pointer-events-none disabled:opacity-20 hidden md:flex items-center justify-center ${
+          isPage
+            ? "border-stone-300 dark:border-white/20 bg-white/90 dark:bg-black/70 text-stone-800 dark:text-white hover:bg-white"
+            : "border-white/20 bg-black/60 text-white hover:bg-black/85"
+        }`}
+        aria-label="Bài tiếp theo"
+        title={`Bài tiếp theo: ${nextProject?.title || ""} ›`}
+      >
+        <ChevronRight className="h-6 w-6" />
+      </button>
+    </>
+  ) : null;
+
+  const cardContent = (
     <div
       className={
         isPage
-          ? "min-h-screen px-3 py-5 sm:px-6 sm:py-8 lg:px-8"
-          : `fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm transition-all duration-300 ${
-              isFullscreen ? "p-0" : "p-3 sm:p-6"
+          ? "relative mx-auto flex w-full max-w-5xl flex-col overflow-hidden rounded-3xl shadow-2xl ring-1 ring-black/10 transition-all duration-300"
+          : `relative flex flex-col overflow-hidden shadow-2xl transition-all duration-300 ${
+              isFullscreen
+                ? "h-screen w-screen max-h-none max-w-none rounded-none"
+                : "max-h-[92vh] w-full max-w-5xl rounded-3xl ring-1 ring-black/10"
             }`
       }
-      style={
-        isPage
-          ? { backgroundColor: theme.backgroundColor, color: theme.textColor }
-          : undefined
-      }
-      onClick={isPage ? undefined : onClose}
-      role={isPage ? undefined : "dialog"}
-      aria-modal={isPage ? undefined : true}
-      aria-label={isPage ? undefined : project.title}
-      data-detail-presentation={presentation}
+      style={{
+        backgroundColor: theme.surfaceColor,
+        color: theme.textColor,
+      }}
+      onClick={(e) => e.stopPropagation()}
     >
-      {/* Edge Navigation Buttons (Left & Right) */}
-      {!isPage && totalProjects > 1 && onNavigateProject && !isFullscreen && (
-        <>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleNavigatePrev();
-            }}
-            disabled={!hasPrev}
-            className="fixed left-3 top-1/2 z-50 -translate-y-1/2 rounded-full border border-white/20 bg-black/60 p-3 text-white shadow-2xl backdrop-blur-md transition hover:scale-110 hover:bg-black/85 disabled:pointer-events-none disabled:opacity-20 hidden md:flex items-center justify-center"
-            aria-label="Bài trước"
-            title={`‹ Bài trước: ${prevProject?.title || ""}`}
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </button>
-
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleNavigateNext();
-            }}
-            disabled={!hasNext}
-            className="fixed right-3 top-1/2 z-50 -translate-y-1/2 rounded-full border border-white/20 bg-black/60 p-3 text-white shadow-2xl backdrop-blur-md transition hover:scale-110 hover:bg-black/85 disabled:pointer-events-none disabled:opacity-20 hidden md:flex items-center justify-center"
-            aria-label="Bài tiếp theo"
-            title={`Bài tiếp theo: ${nextProject?.title || ""} ›`}
-          >
-            <ChevronRight className="h-6 w-6" />
-          </button>
-        </>
-      )}
-
-      {/* Modal Dialog Container */}
-      <div
-        className={
-          isPage
-            ? "relative mx-auto flex min-h-[78vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl shadow-xl ring-1 ring-black/5"
-            : `relative flex flex-col overflow-hidden shadow-2xl transition-all duration-300 ${
-                isFullscreen
-                  ? "h-screen w-screen max-h-none max-w-none rounded-none"
-                  : "max-h-[92vh] w-full max-w-5xl rounded-3xl ring-1 ring-black/10"
-              }`
-        }
-        style={{
-          backgroundColor: theme.surfaceColor,
-          color: theme.textColor,
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
         {/* Top Header Bar */}
         <div
           className="flex flex-wrap items-center justify-between gap-3 border-b px-6 py-4"
@@ -417,6 +431,7 @@ export function AssignmentDetailModal({
 
         {/* Scrollable Content */}
         <div
+          ref={scrollContainerRef}
           data-detail-layout={detailLayout}
           className={`grid grid-cols-1 ${
             isPage
@@ -428,7 +443,7 @@ export function AssignmentDetailModal({
                 }`
           } lg:grid-cols-12`}
         >
-          {/* Left: Lightbox Media Gallery (zero distortion via object-contain) */}
+          {/* Left: Lightbox Media Gallery or Video Embed (zero distortion via object-contain) */}
           <div className={`${
             compactLayout
               ? "space-y-3 lg:col-span-6"
@@ -441,10 +456,38 @@ export function AssignmentDetailModal({
                 className="text-xs font-bold uppercase tracking-wider mb-2"
                 style={{ color: theme.primaryColor }}
               >
-                Sản phẩm cuối cùng & Minh chứng bài làm
+                SẢN PHẨM CUỐI CÙNG & MINH CHỨNG BÀI LÀM
               </h3>
             )}
-            {activeMedia ? (
+
+            {project.mediaType === "video" && project.videoUrl ? (
+              (() => {
+                const embedUrl = parseVideoEmbedUrl(project.videoUrl);
+                return embedUrl ? (
+                  <div className="space-y-3">
+                    <div
+                      className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl border shadow-inner"
+                      style={{
+                        borderColor: tokens.borderSubtle,
+                        backgroundColor: "#000",
+                      }}
+                    >
+                      <iframe
+                        src={embedUrl}
+                        title={`Video: ${project.title}`}
+                        className="absolute inset-0 h-full w-full border-0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed text-sm opacity-65 p-6 text-center">
+                    Link video không hợp lệ
+                  </div>
+                );
+              })()
+            ) : activeMedia ? (
               <div className="space-y-3">
                 <div
                   className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl border"
@@ -826,70 +869,99 @@ export function AssignmentDetailModal({
           </div>
         </div>
       </div>
+  );
 
-      {/* Full-Viewport Lightbox Zoom Overlay */}
-      {lightboxZoomed && activeMedia && (
+  const lightboxOverlay = lightboxZoomed && activeMedia ? (
+    <div
+      className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-black/92 p-4 backdrop-blur-md sm:p-8"
+      onClick={(e) => {
+        e.stopPropagation();
+        setLightboxZoomed(false);
+      }}
+    >
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setLightboxZoomed(false);
+        }}
+        className="absolute right-4 top-4 rounded-full bg-white/15 p-2.5 text-white transition hover:bg-white/25"
+        aria-label="Thu nhỏ ảnh"
+      >
+        <Minimize2 className="h-5 w-5" />
+      </button>
+
+      <img
+        src={activeMedia.url}
+        alt={activeMedia.caption || project.title}
+        onClick={(e) => e.stopPropagation()}
+        className="max-h-[84vh] max-w-[92vw] rounded-xl object-contain shadow-2xl"
+      />
+
+      {mediaList.length > 1 && (
         <div
-          className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-black/92 p-4 backdrop-blur-md sm:p-8"
-          onClick={(e) => {
-            e.stopPropagation();
-            setLightboxZoomed(false);
-          }}
+          className="mt-4 flex items-center gap-4 text-white"
+          onClick={(e) => e.stopPropagation()}
         >
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setLightboxZoomed(false);
-            }}
-            className="absolute right-4 top-4 rounded-full bg-white/15 p-2.5 text-white transition hover:bg-white/25"
-            aria-label="Thu nhỏ ảnh"
+            onClick={() =>
+              setActiveImageIdx(
+                (prev) => (prev - 1 + mediaList.length) % mediaList.length,
+              )
+            }
+            className="rounded-full bg-white/15 p-2 hover:bg-white/25"
+            aria-label="Ảnh trước"
           >
-            <Minimize2 className="h-5 w-5" />
+            <ChevronLeft className="h-5 w-5" />
           </button>
-
-          <img
-            src={activeMedia.url}
-            alt={activeMedia.caption || project.title}
-            onClick={(e) => e.stopPropagation()}
-            className="max-h-[84vh] max-w-[92vw] rounded-xl object-contain shadow-2xl"
-          />
-
-          {mediaList.length > 1 && (
-            <div
-              className="mt-4 flex items-center gap-4 text-white"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                type="button"
-                onClick={() =>
-                  setActiveImageIdx(
-                    (prev) => (prev - 1 + mediaList.length) % mediaList.length,
-                  )
-                }
-                className="rounded-full bg-white/15 p-2 hover:bg-white/25"
-                aria-label="Ảnh trước"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <span className="text-xs font-medium opacity-85">
-                {safeIdx + 1} / {mediaList.length}
-                {activeMedia.caption ? ` — ${activeMedia.caption}` : ""}
-              </span>
-              <button
-                type="button"
-                onClick={() =>
-                  setActiveImageIdx((prev) => (prev + 1) % mediaList.length)
-                }
-                className="rounded-full bg-white/15 p-2 hover:bg-white/25"
-                aria-label="Ảnh tiếp theo"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
-          )}
+          <span className="text-xs font-medium opacity-85">
+            {safeIdx + 1} / {mediaList.length}
+            {activeMedia.caption ? ` — ${activeMedia.caption}` : ""}
+          </span>
+          <button
+            type="button"
+            onClick={() =>
+              setActiveImageIdx((prev) => (prev + 1) % mediaList.length)
+            }
+            className="rounded-full bg-white/15 p-2 hover:bg-white/25"
+            aria-label="Ảnh tiếp theo"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
         </div>
       )}
     </div>
+  ) : null;
+
+  if (isPage) {
+    return (
+      <div
+        className="relative w-full"
+        data-detail-presentation="page"
+      >
+        {edgeNavButtons}
+        {cardContent}
+        {lightboxOverlay && mounted && createPortal(lightboxOverlay, document.body)}
+      </div>
+    );
+  }
+
+  return createPortal(
+    <div
+      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-md transition-all duration-300 ${
+        isFullscreen ? "p-0" : "p-3 sm:p-6"
+      }`}
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={project.title}
+      data-detail-presentation="modal"
+    >
+      {edgeNavButtons}
+      {cardContent}
+      {lightboxOverlay}
+    </div>,
+    document.body
   );
 }
