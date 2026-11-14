@@ -101,9 +101,16 @@ export default function StudioPreviewPage() {
 
   useEffect(() => {
     if (!isEmbedded || !activeSectionType) return;
-    window.document
-      .getElementById(activeSectionType)
-      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const element = window.document.getElementById(activeSectionType);
+    if (element) {
+      const navOffset = 90;
+      const rect = element.getBoundingClientRect();
+      const targetY = window.scrollY + rect.top - navOffset;
+      window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: 'smooth',
+      });
+    }
   }, [activeSectionType, isEmbedded]);
 
   if (!previewState) {

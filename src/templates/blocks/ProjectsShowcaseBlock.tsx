@@ -923,7 +923,7 @@ export function ProjectsShowcaseBlock({
     return (
       <section
         id="projects"
-        className="reveal-on-scroll mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8"
+        className="reveal-on-scroll mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8 scroll-mt-24 sm:scroll-mt-28"
         style={{ color: `var(--section-text-color, ${theme.textColor})` }}
       >
         {/* Slide 3: Centered serif "project" flanked by 2 vinyl sketches + TOC Index Grid */}
@@ -1578,7 +1578,7 @@ export function ProjectsShowcaseBlock({
   return (
     <section
       id="projects"
-      className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8"
+      className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8 scroll-mt-24 sm:scroll-mt-28"
       style={{ color: `var(--section-text-color, ${theme.textColor})` }}
     >
       {/* Section Heading */}

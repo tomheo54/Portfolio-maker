@@ -39,7 +39,7 @@ export function EducationBlock({
     return (
       <section
         id="education"
-        className="reveal-on-scroll mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8"
+        className="reveal-on-scroll mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8 scroll-mt-24 sm:scroll-mt-28"
         style={{ color: `var(--section-text-color, ${theme.textColor})` }}
       >
         <div className="space-y-6">
@@ -143,7 +143,7 @@ export function EducationBlock({
   return (
     <section
       id="education"
-      className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8"
+      className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8 scroll-mt-24 sm:scroll-mt-28"
       style={{ color: `var(--section-text-color, ${theme.textColor})` }}
     >
       <div className="mb-8">

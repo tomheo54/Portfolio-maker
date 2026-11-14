@@ -250,12 +250,19 @@ export function TemplateShell({
     idx: number,
     secType: PortfolioSection["type"],
   ) => {
+    e.preventDefault();
     if (editable && onSelectSection) {
-      e.preventDefault();
       onSelectSection(idx);
-      window.document
-        .getElementById(secType)
-        ?.scrollIntoView({ behavior: "smooth" });
+    }
+    const element = window.document.getElementById(secType);
+    if (element) {
+      const navOffset = 90;
+      const rect = element.getBoundingClientRect();
+      const targetY = window.scrollY + rect.top - navOffset;
+      window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: "smooth",
+      });
     }
   };
 
