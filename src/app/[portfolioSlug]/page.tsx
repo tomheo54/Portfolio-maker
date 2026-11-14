@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { getPortfolioBySlug } from '@/services/export/portfolio-repository';
+import { getPortfolioFromCloud } from '@/services/storage/cloud-storage';
 import DynamicPortfolioPage from './DynamicPortfolioPage';
 
 export const dynamic = 'force-dynamic';
@@ -10,7 +11,10 @@ export async function generateMetadata({
 }: {
   params: { portfolioSlug: string };
 }): Promise<Metadata> {
-  const doc = getPortfolioBySlug(params.portfolioSlug);
+  let doc = getPortfolioBySlug(params.portfolioSlug);
+  if (!doc) {
+    doc = await getPortfolioFromCloud(params.portfolioSlug);
+  }
   if (!doc) {
     return { title: 'Portfolio Viewer' };
   }
@@ -25,12 +29,15 @@ export async function generateMetadata({
   };
 }
 
-export default function PublicPortfolioPage({
+export default async function PublicPortfolioPage({
   params,
 }: {
   params: { portfolioSlug: string };
 }) {
-  const doc = getPortfolioBySlug(params.portfolioSlug);
+  let doc = getPortfolioBySlug(params.portfolioSlug);
+  if (!doc) {
+    doc = await getPortfolioFromCloud(params.portfolioSlug);
+  }
 
   return <DynamicPortfolioPage serverDoc={doc} slug={params.portfolioSlug} />;
 }

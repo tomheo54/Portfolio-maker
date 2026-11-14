@@ -6,6 +6,7 @@ import {
   listSavedPortfolios,
   savePortfolioDocument,
 } from '@/services/export/portfolio-repository';
+import { savePortfolioToCloud, getPortfolioFromCloud } from '@/services/storage/cloud-storage';
 
 export async function GET(req: NextRequest) {
   const unavailable = privateApiUnavailableResponse('/api/portfolios');
@@ -13,7 +14,10 @@ export async function GET(req: NextRequest) {
 
   const slug = req.nextUrl.searchParams.get('slug');
   if (slug) {
-    const found = getPortfolioBySlug(slug);
+    let found = getPortfolioBySlug(slug);
+    if (!found) {
+      found = await getPortfolioFromCloud(slug);
+    }
     if (!found) {
       return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
     }
@@ -30,6 +34,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const doc = PortfolioDocumentSchema.parse(body);
     const saved = savePortfolioDocument(doc);
+    // Lưu đồng bộ lên đám mây (nếu có cấu hình Vercel KV / Upstash Redis)
+    await savePortfolioToCloud(saved.slug, saved).catch(() => {});
     return NextResponse.json({ ok: true, portfolio: saved });
   } catch (error) {
     return NextResponse.json(
