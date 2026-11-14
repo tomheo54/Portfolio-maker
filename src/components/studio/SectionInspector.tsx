@@ -2034,6 +2034,26 @@ export function SectionInspector({
                         />
                       </label>
                       {docxUploadError && <p role="alert" className="mt-1 text-[10px] text-rose-600">{docxUploadError}</p>}
+                      <div className="mt-3 flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-3 py-2">
+                        <div>
+                          <span className="block text-[11px] font-bold text-stone-800">
+                            Hiển thị nội dung trích xuất từ bài làm
+                          </span>
+                          <span className="block text-[10px] text-stone-500">
+                            (Mặc định tắt để trang gọn gàng, bật khi muốn mở rộng chi tiết văn bản gốc)
+                          </span>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={currentProject.showRawExcerpt ?? false}
+                          onChange={(e) =>
+                            updateProject(currentProject.id, {
+                              showRawExcerpt: e.target.checked,
+                            })
+                          }
+                          className="h-4 w-4 rounded border-stone-300 text-amber-600 focus:ring-amber-500"
+                        />
+                      </div>
                     </div>
 
                     <div className="rounded-xl border border-stone-200 bg-stone-50 p-2.5">

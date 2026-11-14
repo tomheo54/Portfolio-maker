@@ -787,8 +787,8 @@ export function AssignmentDetailModal({
               </div>
             )}
 
-            {/* Full raw excerpt */}
-            {project.fullRawExcerpt && (
+            {/* Full raw excerpt - chỉ hiển thị nếu có nội dung và được bật (mặc định tắt) */}
+            {project.fullRawExcerpt && project.showRawExcerpt && (
               <details
                 className="rounded-2xl border p-4 transition"
                 style={{

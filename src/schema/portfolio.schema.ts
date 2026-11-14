@@ -428,6 +428,7 @@ export const ProjectItemSchema = z.object({
   summary: z.string(),
   keyTakeaways: z.array(z.string()).default([]),
   fullRawExcerpt: z.string().optional(),
+  showRawExcerpt: z.boolean().default(false).optional(),
   metrics: z
     .array(
       z.object({

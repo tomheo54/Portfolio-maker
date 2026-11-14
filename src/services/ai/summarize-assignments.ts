@@ -389,15 +389,15 @@ Convert raw student assignments extracted from .docx files into concise, scannab
 Rules:
 1. Keep exact 1-to-1 mapping using each assignment's "index" (0..${flatAssignments.length - 1}). Never merge or drop assignments.
 2. Clean project titles (remove prefixes like "Bài tập 1:", "Assignment 2 -") into attractive portfolio titles while preserving the specific topic/subject name.
-3. For each project, produce:
-   - "assignmentBrief": 1-2 crisp Vietnamese sentences summarizing the brief/goal.
-   - "summary": 2-3 crisp Vietnamese sentences summarizing methodology, execution, and content.
-   - "keyTakeaways": 3-4 concise Vietnamese bullet points highlighting outcomes and core skills.
-   - "metrics": up to 3 real numbers extracted from the assignment text (do NOT invent numbers).
-   - "tags": 3-5 relevant tools/skills/topics.
-   - "suggestedAiImagePrompt": 1 descriptive English prompt tailored to the assignment topic and visual style "${visualStyle}".
-4. Infer cohesive "skills" (2 categories) and write compelling Vietnamese "shortBio" & "biography".
-5. Return ONLY valid JSON matching the requested schema.`;
+3. For each project, strictly organize content into 3 distinct parts:
+   a. "assignmentBrief": MỤC TIÊU - 1-2 câu nêu rõ mục tiêu cốt lõi của bài tập.
+   b. "summary": TÓM TẮT QUÁ TRÌNH - 2-3 câu súc tích tóm tắt các bước triển khai, phương pháp và cách thực hiện bài làm.
+   c. "keyTakeaways": KẾT QUẢ & ĐIỂM NHẤN - 3-4 gạch đầu dòng nêu bật sản phẩm đạt được, kết quả giải quyết vấn đề và kỹ năng chủ chốt.
+4. "metrics": up to 3 real numbers extracted from the assignment text (do NOT invent numbers).
+5. "tags": 3-5 relevant tools/skills/topics.
+6. "suggestedAiImagePrompt": 1 descriptive English prompt tailored to the assignment topic and visual style "${visualStyle}".
+7. Infer cohesive "skills" (2 categories) and write compelling Vietnamese "shortBio" & "biography".
+8. Return ONLY valid JSON matching the requested schema.`;
 
   const userPayload = {
     studentHint: {
