@@ -401,7 +401,7 @@ export function ProjectsShowcaseBlock({
     projectIndex: number,
     imgIndex = 0,
   ) => {
-    const detailMode = section.detailViewMode || "dedicated-route";
+    const detailMode = section.detailViewMode || "fullscreen-overlay";
     if (detailMode === "dedicated-route" && !editable) {
       const slug = getProjectSlug(project, projectIndex);
       router.push(`/${routePortfolioSlug}/projects/${slug}`);
@@ -1152,10 +1152,7 @@ export function ProjectsShowcaseBlock({
                         >
                           <Eye className="h-4 w-4" />
                           <span>
-                            {(section.detailViewMode ?? "dedicated-route") ===
-                              "dedicated-route" && !editable
-                              ? "Xem chi tiết bài làm ›"
-                              : "Xem chi tiết bài làm"}
+                            Xem chi tiết bài làm
                           </span>
                         </button>
                       </div>
@@ -1477,10 +1474,7 @@ export function ProjectsShowcaseBlock({
             >
               <Eye className="h-3.5 w-3.5" />
               <span>
-                {(section.detailViewMode ?? "dedicated-route") ===
-                  "dedicated-route" && !editable
-                  ? "Xem chi tiết bài làm ›"
-                  : "Xem chi tiết bài làm"}
+                Xem chi tiết bài làm
               </span>
             </button>
           </div>

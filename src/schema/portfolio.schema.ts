@@ -121,7 +121,7 @@ export const BackgroundIllustrationConfigSchema = z.object({
  */
 export const ProjectDetailModeSchema = z
   .enum(["fullscreen-overlay", "dedicated-route"])
-  .default("dedicated-route");
+  .default("fullscreen-overlay");
 
 export const TableOfContentsConfigSchema = z.object({
   placement: z.enum(["floating", "top"]).default("floating"),

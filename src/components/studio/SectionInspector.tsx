@@ -1650,15 +1650,15 @@ export function SectionInspector({
                       })
                     }
                     className={`rounded-lg border p-1.5 text-left text-[11px] transition ${
-                      (section.detailViewMode ?? "dedicated-route") ===
+                      (section.detailViewMode ?? "fullscreen-overlay") ===
                       "fullscreen-overlay"
                         ? "border-amber-600 bg-white text-amber-900 shadow-sm font-semibold"
                         : "border-stone-200 bg-stone-100 text-stone-600 hover:bg-white"
                     }`}
                   >
-                    <p className="font-semibold">Toàn màn hình</p>
+                    <p className="font-semibold">Toàn màn hình ★</p>
                     <p className="text-[10px] text-stone-500">
-                      Fullscreen modal ngay trên trang
+                      Modal nổi ngay trên trang (khuyên dùng)
                     </p>
                   </button>
 
@@ -1671,13 +1671,13 @@ export function SectionInspector({
                       })
                     }
                     className={`rounded-lg border p-1.5 text-left text-[11px] transition ${
-                      (section.detailViewMode ?? "dedicated-route") ===
+                      (section.detailViewMode ?? "fullscreen-overlay") ===
                       "dedicated-route"
                         ? "border-amber-600 bg-white text-amber-900 shadow-sm font-semibold"
                         : "border-stone-200 bg-stone-100 text-stone-600 hover:bg-white"
                     }`}
                   >
-                    <p className="font-semibold">Trang riêng ★</p>
+                    <p className="font-semibold">Trang riêng</p>
                     <p className="text-[10px] text-stone-500">
                       Trang độc lập /projects/[slug]
                     </p>

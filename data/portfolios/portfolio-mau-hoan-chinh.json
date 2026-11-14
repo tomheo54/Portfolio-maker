@@ -1,7 +1,7 @@
 {
   "id": "portfolio-mau-hoan-chinh",
   "slug": "portfolio-mau-hoan-chinh",
-  "templateId": "bento-grid",
+  "templateId": "canva-editorial",
   "imageGenerationConfig": {
     "mode": "hybrid-auto",
     "visualStyle": "canva-pastel-graphic"
@@ -12,15 +12,15 @@
     "ogImage": "/presets/avatar-mau-01.svg"
   },
   "theme": {
-    "primaryColor": "#4F46E5",
-    "secondaryColor": "#0EA5E9",
-    "backgroundColor": "#F4F4F0",
+    "primaryColor": "#735340",
+    "secondaryColor": "#5D4037",
+    "backgroundColor": "#FFF3E6",
     "surfaceColor": "#FFFFFF",
-    "textColor": "#18181B",
-    "headingFont": "Be Vietnam Pro",
+    "textColor": "#3E2723",
+    "headingFont": "Playfair Display",
     "bodyFont": "Be Vietnam Pro",
     "borderRadius": "lg",
-    "pageTransition": "smooth-scroll"
+    "pageTransition": "slide-deck"
   },
   "sections": [
     {
@@ -190,6 +190,7 @@
       "variant": "canva-slide-showcase",
       "title": "Project • 06 Bài Tập Thực Hành",
       "subtitle": "Tổng hợp kết quả các bài thực hành kỹ năng số, hợp tác trực tuyến và ứng dụng AI trong học tập & sáng tạo nội dung.",
+      "detailViewMode": "fullscreen-overlay",
       "projects": [
         {
           "id": "proj-1",
@@ -204,6 +205,7 @@
             "Triệt tiêu thời gian tìm kiếm tài liệu học tập"
           ],
           "fullRawExcerpt": "Dự án hướng tới việc chuẩn hóa tư duy quản trị không gian làm việc số qua 3 mục tiêu chiến lược: Làm chủ kiến trúc dữ liệu (File Explorer), chuẩn hóa quy trình xử lý tệp tin (12 bước thực hành từ tạo thư mục ThucHanh_hotensinhvien đến sao chép, di chuyển, xóa vĩnh viễn Shift+Delete và khôi phục từ Recycle Bin), và tối ưu hóa hiệu suất vận hành.",
+          "showRawExcerpt": false,
           "metrics": [
             {
               "label": "Quy trình",
