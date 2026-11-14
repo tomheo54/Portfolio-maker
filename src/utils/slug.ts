@@ -1,0 +1,11 @@
+export function sanitizeSlug(raw: string): string {
+  return (
+    raw
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/Đ/g, 'D')
+      .toLowerCase()
+      .replace(/[^a-z0-9-_]/g, '') || 'portfolio'
+  );
+}

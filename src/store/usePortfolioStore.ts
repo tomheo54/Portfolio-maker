@@ -21,6 +21,7 @@ import {
 } from '@/schema/portfolio.schema';
 import type { SummarizeAssignmentsResponse } from '@/schema/docx-ingestion.schema';
 import { THEME_PRESETS, resolveThemeFromContext } from '@/schema/theme.schema';
+import { sanitizeSlug } from '@/utils/slug';
 
 const PARSED_PRESET_DOC = PortfolioDocumentSchema.parse(completedPortfolioPreset);
 
@@ -590,10 +591,16 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
         return sec;
       });
 
+      const nextSlug =
+        owner.fullName && owner.fullName.trim()
+          ? `${sanitizeSlug(owner.fullName.trim())}portfolio`
+          : state.document.slug;
+
       return pushHistory(
         state,
         {
           ...state.document,
+          slug: nextSlug,
           profileOwner: nextOwner,
           sections: nextSections,
         },
@@ -687,10 +694,18 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
     set((state) => {
       const nextSections = [...state.document.sections];
       nextSections[index] = nextSection;
+
+      // Nếu chỉnh sửa section Hero và có đổi họ tên -> đồng bộ luôn slug portfolio
+      let nextSlug = state.document.slug;
+      if (nextSection.type === 'hero' && nextSection.fullName && nextSection.fullName.trim()) {
+        nextSlug = `${sanitizeSlug(nextSection.fullName.trim())}portfolio`;
+      }
+
       return pushHistory(
         state,
         {
           ...state.document,
+          slug: nextSlug,
           sections: nextSections,
         },
         `section:${index}:${nextSection.type}`
