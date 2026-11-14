@@ -20,7 +20,12 @@
     "headingFont": "Space Grotesk",
     "bodyFont": "Be Vietnam Pro",
     "borderRadius": "md",
-    "pageTransition": "smooth-scroll"
+    "pageTransition": "smooth-scroll",
+    "tableOfContents": {
+      "placement": "top",
+      "side": "right",
+      "style": "pill"
+    }
   },
   "sections": [
     {
@@ -159,6 +164,7 @@
       ]
     },
     {
+      "motif": "vintage-parchment",
       "type": "projects",
       "variant": "canva-slide-showcase",
       "title": "Project • 06 Bài Tập Thực Hành",
