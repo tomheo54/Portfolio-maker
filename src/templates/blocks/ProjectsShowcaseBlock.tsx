@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   FileText,
   Eye,
+  Video,
   Wand2,
   ImagePlus,
   ChevronLeft,
@@ -55,7 +56,20 @@ import {
 } from "@/templates/archetypes/archetypeStyles";
 import { AssignmentDetailModal } from "./AssignmentDetailModal";
 import { CanvaFourPointStar, CanvaVinylSketchSvg } from "./CanvaOrnaments";
-import { parseVideoEmbedUrl } from "@/utils/video";
+import { parseVideoEmbedUrl, isVideoUrl } from "@/utils/video";
+
+export function getEffectiveProjectVideoUrl(project: ProjectItem): string | undefined {
+  if (project.videoUrl && project.videoUrl.trim()) return project.videoUrl.trim();
+  if (project.docxUrl && isVideoUrl(project.docxUrl)) return project.docxUrl.trim();
+  return undefined;
+}
+
+export function isProjectVideoMode(project: ProjectItem): boolean {
+  if (project.mediaType === "video" || project.productType === "video") return true;
+  if (project.videoUrl && project.videoUrl.trim()) return true;
+  if (project.docxUrl && isVideoUrl(project.docxUrl)) return true;
+  return false;
+}
 
 function getSafeDocxHref(url: string | undefined): string | null {
   const trimmed = url?.trim();
@@ -440,23 +454,72 @@ export function ProjectsShowcaseBlock({
     const effectiveSecondary = theme.secondaryColor || "#5D4037";
     const effectiveSurface = theme.surfaceColor || "#FFF8F0";
 
-    // Video Mode: Nếu người dùng chọn nhúng video thay vì ảnh
-    if (project.mediaType === "video" && project.videoUrl) {
-      const embedUrl = parseVideoEmbedUrl(project.videoUrl);
-      if (embedUrl) {
+    // Video Mode: Nếu người dùng chọn nhúng video thay vì ảnh, hoặc có link video hợp lệ
+    const isVideoMode = isProjectVideoMode(project);
+    const effectiveVideoUrl = getEffectiveProjectVideoUrl(project);
+
+    if (isVideoMode) {
+      if (effectiveVideoUrl) {
+        const embedUrl = parseVideoEmbedUrl(effectiveVideoUrl);
+        if (embedUrl) {
+          const isDirectVideo = /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(embedUrl);
+          return (
+            <div
+              className={`relative overflow-hidden aspect-video sm:aspect-[4/3] w-full shadow-md bg-stone-900 ${
+                isCanvaEditorial
+                  ? "rounded-[24px] sm:rounded-[32px] border-[3px] !border-[var(--primary)]"
+                  : mediaRadius
+              }`}
+            >
+              {isDirectVideo ? (
+                <video
+                  src={embedUrl}
+                  controls
+                  playsInline
+                  className="absolute inset-0 h-full w-full object-contain"
+                />
+              ) : (
+                <iframe
+                  src={embedUrl}
+                  title={`Video minh họa: ${project.title}`}
+                  className="absolute inset-0 h-full w-full border-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  loading="lazy"
+                />
+              )}
+            </div>
+          );
+        }
+      }
+
+      // Nếu đã bật Video mode nhưng chưa nhập link hợp lệ (hoặc đang trong Studio Canvas)
+      if (editable) {
         return (
           <div
-            className={`relative overflow-hidden aspect-[4/3] w-full shadow-md ${
-              isCanvaEditorial ? "rounded-[32px] border-[3px] !border-[var(--primary)]" : mediaRadius
+            className={`flex aspect-video sm:aspect-[4/3] flex-col items-center justify-center gap-2.5 border-2 border-dashed p-6 text-center ${
+              isCanvaEditorial ? "rounded-[32px]" : mediaRadius
             }`}
+            style={{
+              borderColor: `${effectivePrimary}50`,
+              backgroundColor: isCanvaEditorial
+                ? effectiveSurface
+                : `${effectivePrimary}08`,
+            }}
           >
-            <iframe
-              src={embedUrl}
-              title={`Video minh họa: ${project.title}`}
-              className="absolute inset-0 h-full w-full border-0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
+            <Video
+              className="h-8 w-8 opacity-70"
+              style={{ color: effectivePrimary }}
             />
+            <p
+              className="text-sm font-bold"
+              style={{ color: "var(--text, #3E2723)" }}
+            >
+              Đã bật chế độ nhúng Video
+            </p>
+            <p className="max-w-xs text-xs opacity-75">
+              Chưa có liên kết video. Nhấn vào bài tập để dán link YouTube, Google Drive hoặc Vimeo ở bảng cài đặt bên phải.
+            </p>
           </div>
         );
       }
@@ -925,7 +988,8 @@ export function ProjectsShowcaseBlock({
             const hasChapterBanner = project.showChapter !== false && chapterLayout === "banner";
             const mediaPosition = getProjectMediaPosition(project, "right");
             const mediaOrder = getProjectMediaOrder(mediaPosition);
-            const hasMedia = (project.media?.length ?? 0) > 0;
+            const isVideo = isProjectVideoMode(project);
+            const hasMedia = (project.media?.length ?? 0) > 0 || isVideo;
             const mediaSpan = !hasMedia
               ? "lg:col-span-12"
               : mediaOrder.vertical

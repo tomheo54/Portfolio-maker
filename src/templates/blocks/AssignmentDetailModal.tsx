@@ -26,7 +26,20 @@ import {
 } from "lucide-react";
 import type { ProjectItem, ThemeConfig } from "@/schema/portfolio.schema";
 import { getThemeTokens } from "@/templates/archetypes/archetypeStyles";
-import { parseVideoEmbedUrl } from "@/utils/video";
+import { parseVideoEmbedUrl, isVideoUrl } from "@/utils/video";
+
+function getEffectiveVideoUrl(project: ProjectItem): string | undefined {
+  if (project.videoUrl && project.videoUrl.trim()) return project.videoUrl.trim();
+  if (project.docxUrl && isVideoUrl(project.docxUrl)) return project.docxUrl.trim();
+  return undefined;
+}
+
+function isVideoMode(project: ProjectItem): boolean {
+  if (project.mediaType === "video" || project.productType === "video") return true;
+  if (project.videoUrl && project.videoUrl.trim()) return true;
+  if (project.docxUrl && isVideoUrl(project.docxUrl)) return true;
+  return false;
+}
 
 export interface AssignmentDetailModalProps {
   project: ProjectItem | null;
@@ -460,30 +473,55 @@ export function AssignmentDetailModal({
               </h3>
             )}
 
-            {project.mediaType === "video" && project.videoUrl ? (
+            {isVideoMode(project) ? (
               (() => {
-                const embedUrl = parseVideoEmbedUrl(project.videoUrl);
+                const effectiveUrl = getEffectiveVideoUrl(project);
+                const embedUrl = effectiveUrl ? parseVideoEmbedUrl(effectiveUrl) : null;
+                const isDirectVideo = embedUrl ? /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(embedUrl) : false;
                 return embedUrl ? (
                   <div className="space-y-3">
                     <div
-                      className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl border shadow-inner"
+                      className="relative flex aspect-video sm:aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-2xl border shadow-inner bg-stone-900"
                       style={{
                         borderColor: tokens.borderSubtle,
-                        backgroundColor: "#000",
                       }}
                     >
-                      <iframe
-                        src={embedUrl}
-                        title={`Video: ${project.title}`}
-                        className="absolute inset-0 h-full w-full border-0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                      />
+                      {isDirectVideo ? (
+                        <video
+                          src={embedUrl}
+                          controls
+                          playsInline
+                          className="absolute inset-0 h-full w-full object-contain"
+                        />
+                      ) : (
+                        <iframe
+                          src={embedUrl}
+                          title={`Video: ${project.title}`}
+                          className="absolute inset-0 h-full w-full border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                          loading="lazy"
+                        />
+                      )}
                     </div>
+                    {effectiveUrl && (
+                      <div className="flex justify-end">
+                        <a
+                          href={effectiveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-stone-600 hover:text-stone-900 transition hover:underline"
+                        >
+                          <ExternalLink className="h-3.5 w-3.5" />
+                          <span>Mở video trong tab mới</span>
+                        </a>
+                      </div>
+                    )}
                   </div>
                 ) : (
-                  <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed text-sm opacity-65 p-6 text-center">
-                    Link video không hợp lệ
+                  <div className="flex aspect-video sm:aspect-[4/3] flex-col items-center justify-center rounded-2xl border border-dashed text-sm opacity-65 p-6 text-center gap-2">
+                    <p className="font-medium">Chưa có liên kết video hoặc link chưa hợp lệ</p>
+                    <p className="text-xs opacity-75">Hỗ trợ YouTube, Google Drive, Vimeo hoặc tệp video MP4</p>
                   </div>
                 );
               })()

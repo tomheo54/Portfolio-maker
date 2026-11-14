@@ -33,6 +33,7 @@ import { ProjectImageManager } from "./ProjectImageManager";
 import { DraggableUnitList } from "./DraggableUnitList";
 import { VIETNAMESE_FONT_OPTIONS } from "@/schema/theme.schema";
 import { DEFAULT_CONCLUSION_CONFIG } from "@/templates/blocks/conclusion-defaults";
+import { isVideoUrl } from "@/utils/video";
 
 const SECTION_MOTIF_OPTIONS: Array<{ id: SectionMotif; label: string }> = [
   { id: "none", label: "Không họa tiết" },
@@ -1913,10 +1914,11 @@ export function SectionInspector({
                             type="radio"
                             name={`mediaType-${currentProject.id}`}
                             value="image"
-                            checked={currentProject.mediaType !== "video"}
+                            checked={currentProject.mediaType !== "video" && currentProject.productType !== "video"}
                             onChange={() =>
                               updateProject(currentProject.id, {
                                 mediaType: "image",
+                                productType: "image",
                               })
                             }
                             className="h-3.5 w-3.5 text-amber-600 focus:ring-amber-500"
@@ -1928,10 +1930,11 @@ export function SectionInspector({
                             type="radio"
                             name={`mediaType-${currentProject.id}`}
                             value="video"
-                            checked={currentProject.mediaType === "video"}
+                            checked={currentProject.mediaType === "video" || currentProject.productType === "video"}
                             onChange={() =>
                               updateProject(currentProject.id, {
                                 mediaType: "video",
+                                productType: "video",
                               })
                             }
                             className="h-3.5 w-3.5 text-amber-600 focus:ring-amber-500"
@@ -1940,7 +1943,7 @@ export function SectionInspector({
                         </label>
                       </div>
 
-                      {currentProject.mediaType === "video" && (
+                      {(currentProject.mediaType === "video" || currentProject.productType === "video" || Boolean(currentProject.videoUrl)) && (
                         <div className="mt-2.5">
                           <label
                             htmlFor={`project-video-url-${currentProject.id}`}
@@ -1953,15 +1956,18 @@ export function SectionInspector({
                             type="url"
                             value={currentProject.videoUrl ?? ""}
                             placeholder="https://www.youtube.com/watch?v=... hoặc Shorts, Drive"
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              const val = e.target.value.trim();
                               updateProject(currentProject.id, {
-                                videoUrl: e.target.value || undefined,
-                              })
-                            }
+                                videoUrl: val || undefined,
+                                mediaType: "video",
+                                productType: "video",
+                              });
+                            }}
                             className="mt-1 w-full rounded-xl border border-amber-300 bg-white px-2.5 py-1.5 text-xs outline-none focus:ring-2 focus:ring-amber-400"
                           />
                           <p className="mt-1 text-[10px] text-stone-500">
-                            Video sẽ được nhúng trực tiếp và phát ngay trong khung bài tập thay cho ảnh.
+                            Video sẽ được nhúng trực tiếp và phát ngay trong khung bài tập trên mọi thiết bị (Mobile, Tablet, PC) thay cho ảnh.
                           </p>
                         </div>
                       )}
@@ -1979,11 +1985,16 @@ export function SectionInspector({
                         type="url"
                         value={currentProject.docxUrl ?? ""}
                         placeholder="https://.../Bai-tap.docx"
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          const val = e.target.value.trim();
+                          const isVid = isVideoUrl(val);
                           updateProject(currentProject.id, {
-                            docxUrl: e.target.value || undefined,
-                          })
-                        }
+                            docxUrl: val || undefined,
+                            ...(isVid && !currentProject.videoUrl
+                              ? { videoUrl: val, mediaType: "video", productType: "video" }
+                              : {}),
+                          });
+                        }}
                         className="mt-1 w-full rounded-xl border border-stone-200 px-2.5 py-1.5 text-xs"
                       />
                       <label
@@ -2390,12 +2401,13 @@ export function SectionInspector({
                         </label>
                         <select
                           value={currentProject.productType ?? "image"}
-                          onChange={(e) =>
+                          onChange={(e) => {
+                            const val = e.target.value as ProjectItem["productType"];
                             updateProject(currentProject.id, {
-                              productType: e.target
-                                .value as ProjectItem["productType"],
-                            })
-                          }
+                              productType: val,
+                              ...(val === "video" ? { mediaType: "video" } : {}),
+                            });
+                          }}
                           className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1 text-xs font-medium"
                         >
                           <option value="image">
