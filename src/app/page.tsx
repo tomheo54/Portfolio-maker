@@ -18,10 +18,6 @@ import { RecentPortfolioDrafts } from '@/components/studio/RecentPortfolioDrafts
 export const dynamic = 'force-dynamic';
 
 export default function HomePage() {
-  if (isPublicPortfolioMode()) {
-    notFound();
-  }
-
   return (
     <div className="min-h-screen bg-[#FFF3E6] text-[#3E2723]">
       <header className="border-b border-[#3E2723]/10 bg-white/75 backdrop-blur-md">
