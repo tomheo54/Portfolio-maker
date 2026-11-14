@@ -271,9 +271,15 @@ export default function StudioPage() {
     window.addEventListener('pagehide', flushDraft);
     window.addEventListener('beforeunload', flushDraft);
     const initialDocument = usePortfolioStore.getState().document;
-    const targetDraftId =
-      new URLSearchParams(window.location.search).get('draft') ||
-      getActivePortfolioDraftId();
+    const searchParams = new URLSearchParams(window.location.search);
+    const isNewCreation = searchParams.get('new') === '1' || searchParams.has('new');
+    const targetDraftId = isNewCreation
+      ? null
+      : searchParams.get('draft') || getActivePortfolioDraftId();
+
+    if (isNewCreation) {
+      usePortfolioStore.getState().resetToPreset();
+    }
     const unsubscribe = usePortfolioStore.subscribe((state, previous) => {
       if (state.document === previous.document) return;
       if (restoringDraft) return;

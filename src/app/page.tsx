@@ -84,7 +84,7 @@ export default function HomePage() {
 
           <div className="mt-8 flex flex-wrap justify-center gap-3.5">
             <Link
-              href="/studio"
+              href="/studio?new=1"
               className="inline-flex items-center gap-2 rounded-full bg-[#A96B54] px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5"
             >
               <Layers className="h-4 w-4" />
