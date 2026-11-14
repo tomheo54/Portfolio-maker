@@ -40,6 +40,7 @@ import {
   Pencil,
   Sparkles,
   FolderOpen,
+  Copy,
 } from 'lucide-react';
 import type { HeroSection, PortfolioSection, TemplateId } from '@/schema/portfolio.schema';
 import { PortfolioRenderer } from '@/engine/PortfolioRenderer';
@@ -186,6 +187,7 @@ export default function StudioPage() {
   const [publishNotice, setPublishNotice] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [exportingZip, setExportingZip] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
   const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "pending" | "saving" | "saved" | "error">("idle");
   const [mobilePanel, setMobilePanel] = useState<'none' | 'outline' | 'inspector'>('none');
   const [imageManagerFocusRequest, setImageManagerFocusRequest] = useState<{
@@ -407,6 +409,17 @@ export default function StudioPage() {
       );
     } finally {
       setExportingZip(false);
+    }
+  };
+
+  const handleCopyShareLink = async () => {
+    try {
+      const shareUrl = `${window.location.origin}/${document.slug}`;
+      await navigator.clipboard.writeText(shareUrl);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2500);
+    } catch {
+      setActionError('Không thể sao chép liên kết vào clipboard.');
     }
   };
 
@@ -637,6 +650,30 @@ export default function StudioPage() {
               <Download className="h-3.5 w-3.5" />
             )}
             <span className="hidden sm:inline">Xuất ZIP</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleCopyShareLink}
+            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-semibold transition sm:px-3 ${
+              copiedLink
+                ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                : 'border-stone-300 bg-white text-stone-700 hover:bg-stone-50'
+            }`}
+            title="Sao chép link chia sẻ portfolio công khai"
+            aria-label="Sao chép link chia sẻ"
+          >
+            {copiedLink ? (
+              <>
+                <Check className="h-3.5 w-3.5 text-emerald-600" />
+                <span className="hidden sm:inline">Đã chép link!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-3.5 w-3.5 text-stone-500" />
+                <span className="hidden sm:inline">Sao chép link</span>
+              </>
+            )}
           </button>
 
           <Link
