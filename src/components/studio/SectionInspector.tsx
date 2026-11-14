@@ -2196,11 +2196,31 @@ export function SectionInspector({
                         />
                       </div>
 
-                      <div>
-                        <label className="block text-[10px] font-semibold text-stone-700">
-                          Nội dung trích xuất từ bài làm
-                        </label>
-                        <p className="mt-0.5 text-[9px] leading-relaxed text-stone-500">
+                      <div className="rounded-xl border border-stone-200 bg-white p-2.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <div>
+                            <label className="block text-[10px] font-bold text-stone-800">
+                              Nội dung trích xuất từ bài làm
+                            </label>
+                            <p className="text-[9px] text-stone-500">
+                              (Mặc định tắt. Bật lên nếu muốn hiển thị mục này trên trang bài tập)
+                            </p>
+                          </div>
+                          <label className="relative inline-flex cursor-pointer items-center">
+                            <input
+                              type="checkbox"
+                              checked={currentProject.showRawExcerpt ?? false}
+                              onChange={(e) =>
+                                updateProject(currentProject.id, {
+                                  showRawExcerpt: e.target.checked,
+                                })
+                              }
+                              className="peer sr-only"
+                            />
+                            <div className="peer h-5 w-9 rounded-full bg-stone-200 after:absolute after:top-[2px] after:left-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-stone-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-amber-600 peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
+                          </label>
+                        </div>
+                        <p className="mt-1 text-[9px] leading-relaxed text-stone-500">
                           Chỉnh trực tiếp văn bản nhận diện từ tệp DOCX trước khi hiển thị trong trang chi tiết.
                         </p>
                         <textarea
@@ -2212,7 +2232,7 @@ export function SectionInspector({
                               fullRawExcerpt: e.target.value || undefined,
                             })
                           }
-                          className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-xs leading-relaxed"
+                          className="mt-1.5 w-full rounded-lg border border-stone-200 bg-stone-50 px-2 py-1.5 text-xs leading-relaxed outline-none focus:border-amber-500 focus:bg-white"
                           placeholder="Nội dung trích xuất từ bài làm sẽ hiển thị ở đây..."
                         />
                       </div>
