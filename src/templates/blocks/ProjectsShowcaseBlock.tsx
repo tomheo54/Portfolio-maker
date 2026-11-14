@@ -55,6 +55,7 @@ import {
 } from "@/templates/archetypes/archetypeStyles";
 import { AssignmentDetailModal } from "./AssignmentDetailModal";
 import { CanvaFourPointStar, CanvaVinylSketchSvg } from "./CanvaOrnaments";
+import { parseVideoEmbedUrl } from "@/utils/video";
 
 function getSafeDocxHref(url: string | undefined): string | null {
   const trimmed = url?.trim();
@@ -438,6 +439,28 @@ export function ProjectsShowcaseBlock({
     const effectivePrimary = theme.primaryColor || "#735340";
     const effectiveSecondary = theme.secondaryColor || "#5D4037";
     const effectiveSurface = theme.surfaceColor || "#FFF8F0";
+
+    // Video Mode: Nếu người dùng chọn nhúng video thay vì ảnh
+    if (project.mediaType === "video" && project.videoUrl) {
+      const embedUrl = parseVideoEmbedUrl(project.videoUrl);
+      if (embedUrl) {
+        return (
+          <div
+            className={`relative overflow-hidden aspect-[4/3] w-full shadow-md ${
+              isCanvaEditorial ? "rounded-[32px] border-[3px] !border-[var(--primary)]" : mediaRadius
+            }`}
+          >
+            <iframe
+              src={embedUrl}
+              title={`Video minh họa: ${project.title}`}
+              className="absolute inset-0 h-full w-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
+        );
+      }
+    }
 
     if (media.length === 0) {
       return (

@@ -422,6 +422,8 @@ export const ProjectItemSchema = z.object({
   sourceDocxFileName: z.string().optional(),
   docxUrl: z.string().optional(),
   docxLinkLabel: z.string().optional(),
+  mediaType: z.enum(["image", "video"]).default("image").optional(),
+  videoUrl: z.string().optional(),
   assignmentBrief: z.string().optional(),
   summary: z.string(),
   keyTakeaways: z.array(z.string()).default([]),
