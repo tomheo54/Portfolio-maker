@@ -19,9 +19,7 @@ export const dynamic = 'force-dynamic';
 
 export default function HomePage() {
   if (isPublicPortfolioMode()) {
-    const portfolio = getPortfolioBySlug('portfolio-mau-public');
-    if (!portfolio) notFound();
-    return <PublicPortfolioClient document={portfolio} />;
+    notFound();
   }
 
   return (
