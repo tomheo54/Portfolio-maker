@@ -2,12 +2,16 @@ import { randomUUID } from "crypto";
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
+import { privateApiUnavailableResponse } from "@/services/deployment/private-api-guard";
 
 export const runtime = "nodejs";
 
 const DOCX_DIRECTORY = path.resolve(process.cwd(), "data/docx-files");
 
 export async function POST(request: NextRequest) {
+  const unavailable = privateApiUnavailableResponse('/api/docx-files');
+  if (unavailable) return unavailable;
+
   try {
     const formData = await request.formData();
     const file = formData.get("file");
@@ -35,6 +39,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  const unavailable = privateApiUnavailableResponse('/api/docx-files');
+  if (unavailable) return unavailable;
+
   const id = request.nextUrl.searchParams.get("id") ?? "";
   if (!/^[0-9a-f-]{36}$/i.test(id)) {
     return NextResponse.json({ error: "File DOCX không hợp lệ." }, { status: 400 });

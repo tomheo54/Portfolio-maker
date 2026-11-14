@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   DndContext,
@@ -39,15 +39,25 @@ import {
   User,
   Pencil,
   Sparkles,
+  FolderOpen,
 } from 'lucide-react';
 import type { HeroSection, PortfolioSection, TemplateId } from '@/schema/portfolio.schema';
-import { usePortfolioStore } from '@/store/usePortfolioStore';
-import { readPortfolioDraft, writePortfolioDraft } from '@/services/browser/portfolio-draft';
 import { PortfolioRenderer } from '@/engine/PortfolioRenderer';
+import { usePortfolioStore } from '@/store/usePortfolioStore';
+import {
+  getActivePortfolioDraftId,
+  readPortfolioDraft,
+  setActivePortfolioDraftId,
+  writePortfolioDraft,
+  type PortfolioDraftRecord,
+} from '@/services/browser/portfolio-draft';
 import { DocxImportWizard } from '@/components/studio/DocxImportWizard';
 import { SectionInspector } from '@/components/studio/SectionInspector';
 import { ThemeCustomizer } from '@/components/studio/ThemeCustomizer';
+import { StudioPortfolioPreview } from '@/components/studio/StudioPortfolioPreview';
 import { InlineEditableText } from '@/components/studio/InlineEditableText';
+import { DraftLibraryDialog } from '@/components/studio/DraftLibraryDialog';
+import { PortfolioArchiveImporter } from '@/components/studio/PortfolioArchiveImporter';
 
 const SECTION_TITLES: Record<PortfolioSection['type'], string> = {
   hero: 'Bìa mở đầu (Hero)',
@@ -61,10 +71,10 @@ const SECTION_TITLES: Record<PortfolioSection['type'], string> = {
 
 const TEMPLATE_OPTIONS: Array<{ id: TemplateId; label: string }> = [
   { id: 'canva-editorial', label: 'Canva Editorial ★ (Chuẩn mẫu gốc)' },
-  { id: 'warm-editorial', label: 'Canva Warm Editorial (Thu Trang)' },
-  { id: 'creative-bold', label: 'Canva Bold Creative (Hồng Quyên)' },
-  { id: 'minimal-chic', label: 'Canva Minimal Chic (Ngọc Mai)' },
-  { id: 'vibrant-student', label: 'Canva Vibrant Student (Bảo Châm)' },
+  { id: 'warm-editorial', label: 'Canva Warm Editorial (Mẫu 01)' },
+  { id: 'creative-bold', label: 'Canva Bold Creative (Mẫu 02)' },
+  { id: 'minimal-chic', label: 'Canva Minimal Chic (Mẫu 03)' },
+  { id: 'vibrant-student', label: 'Canva Vibrant Student (Mẫu 04)' },
   { id: 'artistic-organic', label: 'Canva Artistic Organic (Chí Huế)' },
   { id: 'academic-presentation', label: 'Canva Academic Crimson (Võ Hoài)' },
   { id: 'bento-grid', label: 'Bento Grid Studio' },
@@ -142,8 +152,10 @@ export default function StudioPage() {
     generatingProjectId,
     isSaving,
     setActiveSectionIndex,
+    setSelectedProjectId,
     setViewportMode,
     setTemplateId,
+    restoreDraftSnapshot,
     reorderSections,
     updateProfileOwner,
     regenerateProjectAiImage,
@@ -158,7 +170,7 @@ export default function StudioPage() {
     (s): s is HeroSection => s.type === 'hero'
   );
   const currentOwnerName =
-    document.profileOwner?.fullName ?? heroSection?.fullName ?? 'Từ Thị Vân Anh';
+    document.profileOwner?.fullName ?? heroSection?.fullName ?? 'Nguyễn Văn A';
   const currentOwnerRole =
     document.profileOwner?.roleTitle ??
     heroSection?.roleTitle ??
@@ -167,11 +179,49 @@ export default function StudioPage() {
     document.profileOwner?.avatarUrl ?? heroSection?.avatar?.url ?? '';
 
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [draftLibraryOpen, setDraftLibraryOpen] = useState(false);
+  const [archiveImportOpen, setArchiveImportOpen] = useState(false);
+  const [draftId, setDraftId] = useState<string | null>(null);
+  const draftIdRef = useRef<string | null>(null);
   const [publishNotice, setPublishNotice] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [exportingZip, setExportingZip] = useState(false);
-  const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "pending" | "saving" | "saved">("idle");
+  const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "pending" | "saving" | "saved" | "error">("idle");
   const [mobilePanel, setMobilePanel] = useState<'none' | 'outline' | 'inspector'>('none');
+  const [imageManagerFocusRequest, setImageManagerFocusRequest] = useState<{
+    projectId: string;
+    tab: 'docx';
+    requestId: number;
+  } | null>(null);
+  const imageManagerFocusRequestId = useRef(0);
+
+  const openProjectDocxImages = (projectId: string) => {
+    const sectionIndex = document.sections.findIndex(
+      (section) =>
+        section.type === 'projects' &&
+        section.projects.some((project) => project.id === projectId),
+    );
+    if (sectionIndex < 0) {
+      setActionError('Không tìm thấy bài tập cần chỉnh ảnh DOCX.');
+      return;
+    }
+
+    setActionError(null);
+    setActiveSectionIndex(sectionIndex);
+    setSelectedProjectId(projectId);
+    setMobilePanel('inspector');
+    setImageManagerFocusRequest({
+      projectId,
+      tab: 'docx',
+      requestId: ++imageManagerFocusRequestId.current,
+    });
+  };
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('draftLibrary') === '1') {
+      setDraftLibraryOpen(true);
+    }
+  }, []);
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -184,24 +234,44 @@ export default function StudioPage() {
       if (timer) clearTimeout(timer);
       timer = setTimeout(async () => {
         if (!active) return;
-        try {
-          await writePortfolioDraft(usePortfolioStore.getState().document);
-        } catch {
-          if (active) setActionError("Không lưu được bản nháp trên trình duyệt.");
-        }
-        if (!active) return;
         setAutoSaveStatus("saving");
-        const result = await usePortfolioStore.getState().savePortfolioToServer();
-        if (!active) return;
-        if (result.ok) {
-          setAutoSaveStatus("saved");
-        } else {
-          setAutoSaveStatus("idle");
-          setActionError(result.error || "Tự lưu thất bại. Hãy thử Xuất bản để xem lỗi chi tiết.");
+        try {
+          const current = usePortfolioStore.getState();
+          const savedId = await writePortfolioDraft(
+            current.document,
+            current.history,
+            current.future,
+            draftIdRef.current ?? current.document.slug,
+          );
+          draftIdRef.current = savedId;
+        } catch {
+          if (active) {
+            setAutoSaveStatus("error");
+            setActionError("Không lưu được bản nháp trong trình duyệt. Hãy tải bản sao lưu, giải phóng dung lượng hoặc thử lại.");
+          }
+          return;
         }
-      }, 1200);
+        if (!active) return;
+        setActionError(null);
+        setAutoSaveStatus("saved");
+      }, 700);
     };
+    const flushDraft = () => {
+      if (!hydrated && !changedWhileHydrating) return;
+      const current = usePortfolioStore.getState();
+      void writePortfolioDraft(
+        current.document,
+        current.history,
+        current.future,
+        draftIdRef.current ?? current.document.slug,
+      );
+    };
+    window.addEventListener('pagehide', flushDraft);
+    window.addEventListener('beforeunload', flushDraft);
     const initialDocument = usePortfolioStore.getState().document;
+    const targetDraftId =
+      new URLSearchParams(window.location.search).get('draft') ||
+      getActivePortfolioDraftId();
     const unsubscribe = usePortfolioStore.subscribe((state, previous) => {
       if (state.document === previous.document) return;
       if (restoringDraft) return;
@@ -211,15 +281,24 @@ export default function StudioPage() {
       }
       persist();
     });
-    void readPortfolioDraft().then((draft) => {
+    void readPortfolioDraft(targetDraftId).then((draft) => {
       if (!active) return;
+      const nextDraftId = draft?.id ?? targetDraftId ?? `draft-${crypto.randomUUID()}`;
+      draftIdRef.current = nextDraftId;
+      setDraftId(nextDraftId);
+      setActivePortfolioDraftId(nextDraftId);
       if (draft && usePortfolioStore.getState().document === initialDocument && !changedWhileHydrating) {
         restoringDraft = true;
-        usePortfolioStore.getState().setDocument(draft);
+        usePortfolioStore.getState().restoreDraftSnapshot({
+          document: draft.document,
+          history: draft.history,
+          future: draft.future,
+        });
         restoringDraft = false;
       }
       hydrated = true;
-      void writePortfolioDraft(usePortfolioStore.getState().document).catch(() => {
+      const current = usePortfolioStore.getState();
+      void writePortfolioDraft(current.document, current.history, current.future, nextDraftId).catch(() => {
         if (active) setActionError("Không thể lưu bản nháp trong trình duyệt.");
       });
       if (changedWhileHydrating) persist();
@@ -231,6 +310,9 @@ export default function StudioPage() {
     return () => {
       active = false;
       if (timer) clearTimeout(timer);
+      flushDraft();
+      window.removeEventListener('pagehide', flushDraft);
+      window.removeEventListener('beforeunload', flushDraft);
       unsubscribe();
     };
   }, []);
@@ -269,8 +351,23 @@ export default function StudioPage() {
     setActionError(null);
     const result = await savePortfolioToServer();
     if (result.ok) {
-      setPublishNotice(`Đã xuất bản tại /${result.slug}`);
-      setTimeout(() => setPublishNotice(null), 5000);
+      try {
+        await writePortfolioDraft(
+          document,
+          history,
+          future,
+          draftIdRef.current ?? result.slug,
+          { status: 'completed', completionReason: 'published' },
+        );
+        setPublishNotice(`Đã xuất bản tại /${result.slug}`);
+        setTimeout(() => setPublishNotice(null), 5000);
+      } catch (error) {
+        setActionError(
+          error instanceof Error
+            ? `Đã xuất bản nhưng không cập nhật được trạng thái dự án trên máy này: ${error.message}`
+            : 'Đã xuất bản nhưng không cập nhật được trạng thái dự án trên máy này.',
+        );
+      }
     } else {
       setActionError(result.error || 'Không thể xuất bản Portfolio lúc này.');
     }
@@ -280,7 +377,10 @@ export default function StudioPage() {
     setActionError(null);
     setExportingZip(true);
     try {
-      await savePortfolioToServer();
+      const saveResult = await savePortfolioToServer();
+      if (!saveResult.ok) {
+        throw new Error(saveResult.error || 'Không thể lưu Portfolio trước khi xuất ZIP.');
+      }
       const res = await fetch('/api/export', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -291,6 +391,13 @@ export default function StudioPage() {
       const url = URL.createObjectURL(blob);
       const a = window.document.createElement('a');
       a.href = url;
+      await writePortfolioDraft(
+        document,
+        history,
+        future,
+        draftIdRef.current ?? document.slug,
+        { status: 'completed', completionReason: 'zip-exported' },
+      );
       a.download = `${document.slug}.zip`;
       a.click();
       URL.revokeObjectURL(url);
@@ -303,12 +410,32 @@ export default function StudioPage() {
     }
   };
 
-  const canvasWidthClass =
-    viewportMode === 'mobile'
-      ? 'max-w-[390px]'
-      : viewportMode === 'tablet'
-      ? 'max-w-[768px]'
-      : 'max-w-full';
+  const handleOpenDraft = (draft: PortfolioDraftRecord) => {
+    draftIdRef.current = draft.id;
+    setDraftId(draft.id);
+    setActivePortfolioDraftId(draft.id);
+    restoreDraftSnapshot({
+      document: draft.document,
+      history: draft.history,
+      future: draft.future,
+    });
+    setDraftLibraryOpen(false);
+    setActionError(null);
+  };
+
+  const handleArchiveImported = async (importedDocument: typeof document) => {
+    const newDraftId = `draft-${crypto.randomUUID()}`;
+    draftIdRef.current = newDraftId;
+    setDraftId(newDraftId);
+    setActivePortfolioDraftId(newDraftId);
+    restoreDraftSnapshot({ document: importedDocument });
+    try {
+      await writePortfolioDraft(importedDocument, [], [], newDraftId);
+      setAutoSaveStatus('saved');
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : 'Không lưu được Portfolio vừa nhập.');
+    }
+  };
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-stone-100 text-stone-900">
@@ -332,6 +459,23 @@ export default function StudioPage() {
           >
             <FileUp className="h-3.5 w-3.5 shrink-0" />
             <span>📄 Nhập file .docx bài tập</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setArchiveImportOpen(true)}
+            className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50"
+          >
+            <FileUp className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Mở ZIP đã xuất</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setDraftLibraryOpen(true)}
+            className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50"
+          >
+            <FolderOpen className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Bản nháp</span>
           </button>
 
           <Link
@@ -400,7 +544,7 @@ export default function StudioPage() {
           </div>
 
           <div className="flex items-center gap-1.5">
-            <div className="hidden items-center rounded-full border border-stone-200 bg-stone-50 p-0.5 sm:flex">
+            <div className="flex items-center rounded-full border border-stone-200 bg-stone-50 p-0.5">
               <button
                 type="button"
                 onClick={() => setViewportMode('desktop')}
@@ -464,7 +608,7 @@ export default function StudioPage() {
                 type="button"
                 onClick={resetToPreset}
                 className="rounded-full p-1.5 text-stone-500 hover:bg-stone-100"
-                title="Khôi phục mẫu Từ Thị Vân Anh"
+                title="Khôi phục portfolio mẫu"
                 aria-label="Khôi phục mẫu mặc định"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
@@ -477,7 +621,7 @@ export default function StudioPage() {
         <div className="order-2 flex items-center gap-1.5 sm:gap-2 md:order-3">
           {autoSaveStatus !== "idle" && (
             <span className="hidden text-[10px] text-stone-500 sm:inline" aria-live="polite">
-              {autoSaveStatus === "pending" ? "Chờ tự lưu…" : autoSaveStatus === "saving" ? "Đang tự lưu…" : "Đã tự lưu"}
+              {autoSaveStatus === "pending" ? "Chờ tự lưu…" : autoSaveStatus === "saving" ? "Đang tự lưu…" : autoSaveStatus === "error" ? "Tự lưu lỗi" : "Đã tự lưu"}
             </span>
           )}
           <button
@@ -633,7 +777,7 @@ export default function StudioPage() {
         </aside>
 
         {/* Center Canvas */}
-        <main className="flex-1 overflow-y-auto bg-stone-200/70 p-3 sm:p-6 space-y-3">
+        <main className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto bg-stone-200/70 p-3 sm:p-6 space-y-3">
           {/* Quick In-Line Canvas Editing Strip */}
           <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 rounded-xl border border-stone-200 bg-white/95 px-3.5 py-2 shadow-sm backdrop-blur-sm">
             <div className="flex items-center gap-2.5 truncate">
@@ -683,20 +827,26 @@ export default function StudioPage() {
             </div>
           </div>
 
-          <div
-            className={`mx-auto overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/10 transition-all duration-300 ${canvasWidthClass}`}
-          >
-            <PortfolioRenderer
+          <div className="mx-auto w-full max-w-[1440px] min-w-0">
+            <StudioPortfolioPreview
               document={document}
-              editable={true}
+              viewportMode={viewportMode}
               activeSectionIndex={activeSectionIndex}
-              onSelectSection={(index) => setActiveSectionIndex(index)}
-              generatingProjectId={generatingProjectId}
-              onRegenerateProjectImage={(projectId, customPrompt) =>
-                regenerateProjectAiImage(projectId, customPrompt)
-              }
-              onSwitchProjectImageSource={(projectId, mode) =>
-                switchProjectImageSource(projectId, mode)
+              onSelectSection={setActiveSectionIndex}
+              editableCanvas={
+                <PortfolioRenderer
+                  document={document}
+                  editable
+                  activeSectionIndex={activeSectionIndex}
+                  onSelectSection={setActiveSectionIndex}
+                  generatingProjectId={generatingProjectId}
+                  onRegenerateProjectImage={(projectId, customPrompt) =>
+                    regenerateProjectAiImage(projectId, customPrompt)
+                  }
+                  onSwitchProjectImageSource={(projectId, mode) =>
+                    switchProjectImageSource(projectId, mode)
+                  }
+                />
               }
             />
           </div>
@@ -724,11 +874,28 @@ export default function StudioPage() {
               <X className="h-4 w-4" />
             </button>
           </div>
-          <SectionInspector />
+          <SectionInspector imageManagerFocusRequest={imageManagerFocusRequest} />
         </aside>
       </div>
 
       <DocxImportWizard open={wizardOpen} onClose={() => setWizardOpen(false)} />
+      <DraftLibraryDialog
+        open={draftLibraryOpen}
+        currentDraftId={draftId}
+        onClose={() => setDraftLibraryOpen(false)}
+        onOpenDraft={handleOpenDraft}
+      />
+      {archiveImportOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-950/40 p-3">
+          <div className="w-full max-w-xl rounded-2xl bg-white p-4 shadow-2xl">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="font-semibold text-stone-900">Mở Portfolio đã xuất</h2>
+              <button type="button" onClick={() => setArchiveImportOpen(false)} className="rounded-lg px-2 py-1 text-sm text-stone-500 hover:bg-stone-100">Đóng</button>
+            </div>
+            <PortfolioArchiveImporter onImported={handleArchiveImported} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

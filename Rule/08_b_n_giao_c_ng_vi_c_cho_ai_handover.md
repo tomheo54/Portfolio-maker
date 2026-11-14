@@ -1,29 +1,29 @@
 # BẢN BÀN GIAO TOÀN DIỆN DỰ ÁN (PROJECT HANDOVER SPECIFICATION)
 > **Dự án**: AI Portfolio Factory (Production Ready)  
 > **Thư mục làm việc**: `e:\Vibe code\Porfollio`  
-> **Trạng thái cập nhật 12/11/2026**: Production build thành công, TypeScript pass. E2E riêng cho tiêu đề Projects, email Contact, tag Hero và thẻ thông tin bài tập đã pass; bộ test 7C vẫn dừng sớm ở assertion họa tiết Projects (`data-section-motif` vẫn là `none`), nên chưa xác nhận toàn bộ E2E. Không dùng trạng thái 10/10 E2E cũ làm kết quả hiện tại.  
-> **Ngày lập**: 12/11/2026
+> **Trạng thái cập nhật 13/11/2026**: Giai đoạn 8–10 đã tích hợp và kiểm tra cục bộ: Conclusion sáu layout/chỉnh sửa sâu; màu/font/nền theo section; Batch → Studio draft; hiệu ứng/nền preview và ZIP; tách nhánh DOCX ở Batch/Studio (nhiều file, một bài/file hoặc một file chứa nhiều bài); CSV mặc định `tenfile,hoten,chucdanh,email` không dấu và vẫn hỗ trợ header tiếng Anh cũ. Focused E2E, typecheck và isolated production build pass; caveat/các test coverage thiếu ghi trong [live progress](10_live_progress_upgrade.md). Chưa thể xác minh URL Netlify thực tế vì phiên này không có quyền deploy/site. Remote `origin` đã tháo theo yêu cầu, `.git` và lịch sử được giữ; `das` được giữ nguyên.
+> **Ngày lập**: 13/11/2026
 
 ---
 
 ## 1. Hướng dẫn dành cho AI mới tiếp quản (Quickstart for Next AI)
 
+> **Tiếp tục upgrade đang chạy:** đọc [Rule/10_live_progress_upgrade.md](10_live_progress_upgrade.md) trước để lấy trạng thái gần nhất, các caveat test và việc còn lại. Sau đó đối chiếu checklist Giai đoạn 10 bên dưới.
+
 Khi một AI mới được đưa vào thư mục này, AI chỉ cần đọc tài liệu này và làm theo các bước sau để tiếp tục phát triển mà không bị mất ngữ cảnh:
 
-1. **Khởi chạy môi trường kiểm tra**:
+1. **Kiểm tra mà không ảnh hưởng server người dùng**:
    ```powershell
    # Typecheck toàn bộ dự án
-   npx.cmd tsc --noEmit
-   # Build production
-   npm.cmd run build
-   # Chạy test E2E xác nhận tính toàn vẹn (cần bật next dev ở background trước)
-   npm.cmd run test:e2e
+   npm.cmd run typecheck
    ```
-2. **Khởi động server ứng dụng**:
+   Production build và E2E cần chạy trên bản sao cô lập/cổng riêng; cấu hình Playwright mặc định trỏ cổng 3000 nên không chạy lại nguyên trạng nếu cổng đó đang phục vụ người dùng. Không chạy `npm.cmd run build` trong workspace đang được `next start` dùng vì build ghi đè `.next`.
+2. **Giữ server ứng dụng hiện có**:
    ```powershell
+   # Chỉ khởi động server mới khi cổng 3000 chưa có listener.
    npm.cmd run dev
-   # Ứng dụng chạy tại: http://localhost:3000
    ```
+   Nếu cổng 3000 đã có listener thì giữ nguyên process đó; dùng cổng khác cho bản test cô lập.
 3. **Các trang quan trọng**:
    - Studio Canvas: `http://localhost:3000/studio`
    - Batch Ingestion & Packager: `http://localhost:3000/batch`
@@ -88,9 +88,10 @@ invoke_subagent({
 
 1. **Windows PowerShell Commands**:
    - Luôn sử dụng đuôi `.cmd` khi gọi CLI trên Windows: `npx.cmd`, `npm.cmd`, `node.cmd`.
-2. **Quản lý cổng 3000**:
-   - Trước khi build hoặc chạy kiểm thử đơn lẻ, kiểm tra và giải phóng cổng 3000:
-     `Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | Where-Object { $_.State -eq 'Listen' } | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }`
+2. **Giữ server local đang phục vụ**:
+   - Không dừng process hoặc giải phóng cổng 3000 nếu người dùng chưa yêu cầu.
+   - Dùng server đang chạy cho kiểm tra trình duyệt. Nếu cần build production, dùng output directory riêng để không ghi đè `.next` mà server local đang dùng.
+   - Nếu port 3000 bận, không kill process; chọn port khác hoặc dừng ở kiểm tra không cần server.
 3. **Tiêu chí Đề thi INF2501 (Rubric Compliance)**:
    - Phần **About**: Có các mục tiêu học phần (`Mục tiêu học tập & phát triển (INF2501)`) và mục tiêu portfolio; không hiển thị video giới thiệu bản thân.
    - Phần **Projects**: Chi tiết bài tập phải đủ 3 phần (Mục tiêu bài học, Ý tưởng sư phạm, Sản phẩm & Công cụ).
@@ -101,7 +102,7 @@ invoke_subagent({
 
 ---
 
-## 5. Cập nhật gần nhất (12/11/2026)
+## 5. Cập nhật nội dung portfolio gần nhất (12/11/2026)
 
 - Thanh điều hướng và tiêu đề hiển thị bên trong Section cùng lấy từ `section.title` người dùng nhập; nếu rỗng, nhãn điều hướng quay về mặc định theo loại Section. Logic nhãn nằm trong `src/templates/archetypes/TemplateShell.tsx`; các block nội dung cũng render `section.title`.
 - Section Projects trước đây thiếu trường chỉnh sửa tiêu đề trong Studio; đã thêm ô `Tiêu đề mục` để đổi toàn bộ heading như “Project • 06 Bài Tập Thực Hành”, đồng thời cập nhật nhãn điều hướng.
@@ -112,3 +113,14 @@ invoke_subagent({
 - Khi cập nhật tên, vị trí tên, MSSV hoặc lớp, giữ nguyên tên trường đã nhập; không ghi đè bằng giá trị mặc định.
 - Các thay đổi Studio ở `src/components/studio/SectionInspector.tsx`; schema footer ở `src/schema/portfolio.schema.ts`; hiển thị và ZIP export ở `src/templates/blocks/ContactBlock.tsx` và `src/services/export/zip-exporter.ts`.
 - Xác minh gần nhất: `npx.cmd tsc --noEmit` và `npm.cmd run build` thành công; E2E `Projects section title updates its heading and navigation label`, `Contact email is editable and updates its displayed mail link`, `Project tags can be edited, added, and removed`, `Project information chips can be edited, added, and removed`, và test Hero tags đều pass. Test thẻ thông tin báo pass nhưng Playwright runner treo trong teardown và đã được dừng sau khi assertion hoàn tất. E2E Test 7C vẫn chưa tới phần kiểm tra Footer do lỗi assertion họa tiết Projects; chưa tuyên bố toàn bộ E2E đạt.
+
+## 6. Handover vận hành và nâng cấp (13/11/2026)
+
+- **Root routing:** local `/` là AI Portfolio Factory. Netlify `/` render portfolio mẫu trực tiếp, không đổi URL sang `/nguyenngocdiepportfolio`. `next.config.mjs` đóng gói cờ `PORTFOLIO_PUBLIC_ONLY`; `PORTFOLIO_PUBLIC_ONLY=true/false` override, mặc định theo `NETLIFY=true`. Không dựa vào `NODE_ENV` vì `next start` local cũng chạy production mode.
+- **Public-only routes:** Netlify chặn `/studio`, `/batch` bằng route layouts và chặn API riêng bằng guard tại route handler; `src/middleware.ts` là lớp bổ sung. `/api/export` được giữ cho public download. Nếu thêm API mới, Agent 5 phải phân loại public/private và cập nhật guard/test.
+- **Batch:** job/file/kết quả lưu trong IndexedDB, có trạng thái và retry riêng; một DOCX có thể chứa nhiều bài, nhiều DOCX tạo portfolio tách theo file, và người dùng chọn từng bài trước khi chạy. Hỗ trợ folder/CSV, ghép theo đường dẫn/tên file/vị trí dự phòng, tiếp tục discovery sau refresh.
+- **DOCX Studio import:** có thể chọn một file chứa nhiều bài hoặc nhiều file của các bài khác nhau; mỗi file vẫn có thể chứa nhiều bài. Kết quả được nhóm theo file nguồn, cho tìm/lọc/chọn từng bài trước khi nhập.
+- **Local drafts:** bản nháp, undo/redo, ảnh thư viện và batch recovery ở trình duyệt cục bộ; không tự ghi portfolio lên server khi auto-save. Dùng backup JSON để chuyển/khôi phục trên máy khác.
+- **ZIP round-trip:** `portfolio-source.json` có manifest phiên bản hóa và dữ liệu nguồn; E2E đã export → import vào Studio → sửa nội dung/ảnh → export lại, rồi mở bản ZIP offline và xác minh CSS, ảnh, trang bài tập và liên kết DOCX. ZIP cũ thiếu manifest báo lý do rõ.
+- **Git:** remote `origin` đã được gỡ; `.git` và commit history vẫn còn. Chưa push hoặc gắn repo mới. File chưa track `das` thuộc workspace người dùng và không được sửa/xóa.
+- **Kiểm thử và server:** focused Playwright cho routing, Batch/DOCX, draft recovery, quota, image library và ZIP round-trip; typecheck và public/local production builds cô lập pass. Local server cổng 3000 được giữ nguyên khi làm việc. Hạng mục ngoài repo duy nhất còn chờ là deploy preview Netlify thực tế; xem live progress để biết chính xác lệnh kiểm tra cuối.

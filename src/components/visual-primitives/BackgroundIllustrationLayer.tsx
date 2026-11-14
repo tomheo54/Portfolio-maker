@@ -22,7 +22,7 @@ export function BackgroundIllustrationLayer({
     return null;
   }
 
-  const opacity = config.opacity ?? 0.15;
+  const opacity = config.opacity ?? 0.35;
   const blur = config.blur ?? 0;
   const position = config.position ?? "cover";
 
@@ -38,6 +38,7 @@ export function BackgroundIllustrationLayer({
       return (
         <div
           className={`portfolio-parallax-layer pointer-events-none absolute inset-0 z-0 overflow-hidden select-none ${className}`}
+          data-testid="portfolio-background-illustration"
           style={{
             backgroundImage: `url(${config.customUrl})`,
             backgroundRepeat: "repeat",
@@ -62,6 +63,7 @@ export function BackgroundIllustrationLayer({
     return (
       <div
         className={`portfolio-parallax-layer pointer-events-none absolute inset-0 z-0 overflow-hidden select-none ${className}`}
+        data-testid="portfolio-background-illustration"
         aria-hidden="true"
       >
         <img
@@ -87,6 +89,7 @@ export function BackgroundIllustrationLayer({
     return (
       <div
         className={`portfolio-parallax-layer pointer-events-none absolute inset-0 z-0 overflow-hidden select-none ${className}`}
+        data-testid="portfolio-background-illustration"
         style={{
           backgroundImage: `url("${preset.svgDataUri}")`,
           backgroundRepeat: "repeat",
@@ -108,10 +111,15 @@ export function BackgroundIllustrationLayer({
         : position === "center"
           ? "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] max-w-[800px] h-auto"
           : "w-full h-full";
+  const presetSvg = preset.rawSvg.replace(
+    "<svg ",
+    '<svg width="100%" height="100%" ',
+  );
 
   return (
     <div
       className={`portfolio-parallax-layer pointer-events-none absolute inset-0 z-0 overflow-hidden select-none ${className}`}
+      data-testid="portfolio-background-illustration"
       aria-hidden="true"
     >
       <div
@@ -121,7 +129,7 @@ export function BackgroundIllustrationLayer({
           opacity,
           filter: filterStyle,
         }}
-        dangerouslySetInnerHTML={{ __html: preset.rawSvg }}
+        dangerouslySetInnerHTML={{ __html: presetSvg }}
       />
     </div>
   );

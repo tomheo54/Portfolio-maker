@@ -37,10 +37,10 @@ export function SkillsBlock({
       {skills.map((skill, idx) => (
         <div
           key={idx}
-          className="flex min-w-0 items-center gap-2.5 rounded-xl border px-3 py-2.5 text-xs font-medium"
+          className="surface-block flex min-w-0 items-center gap-2.5 rounded-xl border px-3 py-2.5 text-xs font-medium"
           style={{
             borderColor: tokens.borderSubtle,
-            backgroundColor: theme.surfaceColor,
+            backgroundColor: `var(--section-surface-color, ${theme.surfaceColor})`,
           }}
         >
           <span
@@ -61,7 +61,11 @@ export function SkillsBlock({
 
   if (isCanvaEditorial) {
     return (
-      <section id="skills" className="reveal-on-scroll mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <section
+        id="skills"
+        className="reveal-on-scroll mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8"
+        style={{ color: `var(--section-text-color, ${theme.textColor})` }}
+      >
         <div className="space-y-7">
           {/* Decorative stars remain separate from user-managed skill items. */}
           <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
@@ -86,7 +90,7 @@ export function SkillsBlock({
             {section.categories.map((cat, idx) => (
               <div
                 key={idx}
-                className="reveal-on-scroll space-y-4 border-t pt-4"
+                className="surface-block reveal-on-scroll space-y-4 border-t pt-4"
                 style={{
                   borderColor: 'var(--primary, #735340)',
                   transitionDelay: `${idx * 100}ms`,
@@ -139,7 +143,7 @@ export function SkillsBlock({
                         style={{
                           borderColor: 'var(--primary, #735340)',
                           color: 'var(--text, #3E2723)',
-                          backgroundColor: 'var(--surface, #FFF8F0)',
+                          backgroundColor: `var(--section-surface-color, ${theme.surfaceColor})`,
                         }}
                       >
                         {skill.name}
@@ -161,7 +165,11 @@ export function SkillsBlock({
   }
 
   return (
-    <section id="skills" className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+    <section
+      id="skills"
+      className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8"
+      style={{ color: `var(--section-text-color, ${theme.textColor})` }}
+    >
       <div className="mb-8">
         <span
           className={`text-xs font-bold uppercase tracking-[0.2em] ${
@@ -180,7 +188,7 @@ export function SkillsBlock({
         {section.categories.map((cat, idx) => (
           <div
             key={idx}
-            className={`reveal-on-scroll p-6 ${cardDec.className}`}
+            className={`surface-block reveal-on-scroll p-6 ${cardDec.className}`}
             style={{
               ...cardDec.style,
               transitionDelay: `${idx * 100}ms`,

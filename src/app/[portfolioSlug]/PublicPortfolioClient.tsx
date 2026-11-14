@@ -123,28 +123,38 @@ export function PublicPortfolioClient({
   );
 
   useEffect(() => {
-    if (navItems.length === 0 || typeof IntersectionObserver === 'undefined') {
-      return;
-    }
+    if (navItems.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]?.target.id) {
-          setActiveSection(visible[0].target.id);
+    const updateActiveSectionOnScroll = () => {
+      const scrollPos = window.scrollY + 200;
+      const docHeight = window.document.documentElement.scrollHeight;
+      const winHeight = window.innerHeight;
+      const isBottom = window.scrollY + winHeight >= docHeight - 100;
+
+      if (isBottom) {
+        const lastItem = navItems[navItems.length - 1];
+        if (lastItem) {
+          setActiveSection(lastItem.id);
+          return;
         }
-      },
-      { rootMargin: '-25% 0px -55% 0px', threshold: [0.1, 0.4] }
-    );
+      }
 
-    for (const item of navItems) {
-      const el = window.document.getElementById(item.id);
-      if (el) observer.observe(el);
-    }
+      let currentId = navItems[0]?.id ?? 'hero';
+      for (const item of navItems) {
+        const el = window.document.getElementById(item.id);
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY;
+          if (scrollPos >= top) {
+            currentId = item.id;
+          }
+        }
+      }
+      setActiveSection(currentId);
+    };
 
-    return () => observer.disconnect();
+    updateActiveSectionOnScroll();
+    window.addEventListener('scroll', updateActiveSectionOnScroll, { passive: true });
+    return () => window.removeEventListener('scroll', updateActiveSectionOnScroll);
   }, [navItems]);
 
   const handleJumpToSection = (
@@ -200,6 +210,11 @@ export function PublicPortfolioClient({
   };
 
   const tokens = getThemeTokens(portfolioDoc.theme);
+  const tocConfig = {
+    placement: portfolioDoc.theme.tableOfContents?.placement ?? 'floating',
+    side: portfolioDoc.theme.tableOfContents?.side ?? 'left',
+    style: portfolioDoc.theme.tableOfContents?.style ?? 'pill',
+  };
   const dockContainerClass =
     'border-[var(--primary)]/20 bg-[var(--surface)]/95 text-[var(--text)]';
   const inactiveNavItemClass =
@@ -214,14 +229,67 @@ export function PublicPortfolioClient({
     backgroundColor: 'var(--primary)',
     color: 'var(--bg)',
   };
+  const sectionNavigation =
+    navItems.length === 0 ? null : (
+      <nav
+        aria-label="Điều hướng nhanh Portfolio"
+        data-testid="public-portfolio-section-navigation"
+        data-toc-placement={tocConfig.placement}
+        data-toc-side={tocConfig.side}
+        data-toc-style={tocConfig.style}
+        className={`z-40 hidden max-w-full overflow-x-auto overscroll-x-contain no-print lg:block ${
+          tocConfig.placement === 'top'
+            ? `fixed top-3 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-2rem)] rounded-full border px-4 py-1.5 shadow-lg backdrop-blur-md ${dockContainerClass}`
+            : `fixed bottom-4 ${tocConfig.side === 'left' ? 'left-6' : 'right-6'} max-w-[calc(100vw-2rem)] rounded-full border p-1.5 shadow-xl backdrop-blur-md ${dockContainerClass}`
+        }`}
+      >
+        <div className="mx-auto flex w-max items-center gap-1">
+          {navItems.map((item) => {
+            const isActive = activeSection === item.id;
+            const tocItemClass =
+              tocConfig.style === 'minimal'
+                ? `shrink-0 rounded-none px-3 py-1.5 text-xs font-semibold transition ${
+                    isActive
+                      ? 'border-b-2 border-[var(--primary)] text-[var(--primary)]'
+                      : inactiveNavItemClass
+                  }`
+                : tocConfig.style === 'outline'
+                  ? `shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+                      isActive
+                        ? 'border-[var(--primary)] text-[var(--primary)]'
+                        : 'border-transparent text-[var(--text)] hover:border-[var(--primary)]/40'
+                    }`
+                  : `shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                      isActive ? 'shadow-sm' : inactiveNavItemClass
+                    }`;
+            return (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                onClick={(e) => handleJumpToSection(e, item.id)}
+                className={tocItemClass}
+                style={
+                  tocConfig.style === 'pill' && isActive
+                    ? activeNavStyle
+                    : undefined
+                }
+              >
+                {item.label}
+              </a>
+            );
+          })}
+        </div>
+      </nav>
+    );
 
   return (
     <div
-      className="public-portfolio-print-root relative print:pb-0"
+      className="public-portfolio-print-root relative overflow-x-clip print:pb-0"
       style={tokens.cssVariables as React.CSSProperties}
     >
       <style>{PRINT_SLIDE_STYLES}</style>
 
+      {tocConfig.placement === 'top' && sectionNavigation}
       <PortfolioRenderer document={portfolioDoc} editable={false} />
 
       {/* Export Error Toast */}
@@ -242,32 +310,7 @@ export function PublicPortfolioClient({
         </div>
       )}
 
-      {/* Floating Section Anchor Navigation (Bottom-Left) */}
-      {navItems.length > 0 && (
-        <>
-          <nav
-            aria-label="Điều hướng nhanh Portfolio"
-            className={`fixed bottom-4 left-4 z-40 hidden items-center gap-1 rounded-full border p-1.5 shadow-xl backdrop-blur-md lg:flex no-print ${dockContainerClass}`}
-          >
-            {navItems.map((item) => {
-              const isActive = activeSection === item.id;
-              return (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  onClick={(e) => handleJumpToSection(e, item.id)}
-                  className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
-                    isActive ? 'shadow-sm' : inactiveNavItemClass
-                  }`}
-                  style={isActive ? activeNavStyle : undefined}
-                >
-                  {item.label}
-                </a>
-              );
-            })}
-          </nav>
-        </>
-      )}
+      {tocConfig.placement === 'floating' && sectionNavigation}
 
       {/* Desktop action dock */}
       <div
@@ -290,7 +333,7 @@ export function PublicPortfolioClient({
           </span>
         </button>
         <Link
-          href="/studio"
+          href={`/studio?slug=${encodeURIComponent(portfolioDoc.slug)}`}
           className={`hidden items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold transition sm:inline-flex sm:px-3 ${actionButtonClass}`}
         >
           <Pencil className="h-3.5 w-3.5" />
@@ -321,54 +364,67 @@ export function PublicPortfolioClient({
       </div>
 
       {/* Compact mobile dock combines navigation and actions to avoid overlap. */}
-      <div className="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+1rem)] z-40 flex items-center justify-start gap-2 lg:hidden no-print">
-        {navItems.length > 0 ? (
-          <div className="relative shrink-0">
-            {mobileNavOpen && (
-              <div
-                className={`absolute bottom-full left-0 mb-2 flex max-h-[60vh] min-w-[210px] flex-col gap-1 overflow-y-auto rounded-2xl border p-2 shadow-2xl backdrop-blur-md ${dockContainerClass}`}
+      {(
+        <div className={`fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+1rem)] z-40 flex items-center gap-2 lg:hidden no-print ${tocConfig.side === 'right' ? 'justify-end' : 'justify-start'}`}>
+          {navItems.length > 0 ? (
+            <div className="relative shrink-0">
+              {mobileNavOpen && (
+                <div
+                  className={`absolute bottom-full ${tocConfig.side === 'right' ? 'right-0' : 'left-0'} mb-2 flex max-h-[60vh] min-w-[210px] flex-col gap-1 overflow-y-auto rounded-2xl border p-2 shadow-2xl backdrop-blur-md ${dockContainerClass}`}
+                >
+                  {navItems.map((item) => {
+                    const isActive = activeSection === item.id;
+                    return (
+                      <a
+                        key={item.id}
+                        href={`#${item.id}`}
+                        onClick={(e) => {
+                          handleJumpToSection(e, item.id);
+                          setMobileNavOpen(false);
+                        }}
+                        className={`rounded-xl px-3 py-2 text-xs font-semibold transition ${
+                          tocConfig.style === 'minimal'
+                            ? isActive
+                              ? 'text-[var(--primary)]'
+                              : inactiveNavItemClass
+                            : tocConfig.style === 'outline'
+                              ? `border ${isActive ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent'}`
+                              : isActive
+                                ? ''
+                                : inactiveNavItemClass
+                        }`}
+                        style={
+                          tocConfig.style === 'pill' && isActive
+                            ? activeNavStyle
+                            : undefined
+                        }
+                      >
+                        {item.label}
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => setMobileNavOpen((prev) => !prev)}
+                aria-expanded={mobileNavOpen}
+                aria-label={
+                  mobileNavOpen
+                    ? 'Đóng mục lục điều hướng'
+                    : 'Mở mục lục điều hướng'
+                }
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold shadow-xl backdrop-blur-md transition ${dockContainerClass} ${actionButtonClass}`}
               >
-                {navItems.map((item) => {
-                  const isActive = activeSection === item.id;
-                  return (
-                    <a
-                      key={item.id}
-                      href={`#${item.id}`}
-                      onClick={(e) => {
-                        handleJumpToSection(e, item.id);
-                        setMobileNavOpen(false);
-                      }}
-                      className={`rounded-xl px-3 py-2 text-xs font-semibold transition ${
-                        isActive ? '' : inactiveNavItemClass
-                      }`}
-                      style={isActive ? activeNavStyle : undefined}
-                    >
-                      {item.label}
-                    </a>
-                  );
-                })}
-              </div>
-            )}
-            <button
-              type="button"
-              onClick={() => setMobileNavOpen((prev) => !prev)}
-              aria-expanded={mobileNavOpen}
-              aria-label={
-                mobileNavOpen
-                  ? 'Đóng mục lục điều hướng'
-                  : 'Mở mục lục điều hướng'
-              }
-              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold shadow-xl backdrop-blur-md transition ${dockContainerClass} ${actionButtonClass}`}
-            >
-              <Compass className="h-3.5 w-3.5" />
-              <span>Mục lục</span>
-            </button>
-          </div>
-        ) : (
-          <span />
-        )}
-
-      </div>
+                <Compass className="h-3.5 w-3.5" />
+                <span>Mục lục</span>
+              </button>
+            </div>
+          ) : (
+            <span />
+          )}
+        </div>
+      )}
     </div>
   );
 }

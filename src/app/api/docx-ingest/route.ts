@@ -1,12 +1,21 @@
 import fs from 'fs';
 import path from 'path';
 import { NextRequest, NextResponse } from 'next/server';
+import { privateApiUnavailableResponse } from '@/services/deployment/private-api-guard';
 import { parseDocxBuffer } from '@/services/docx/docx-parser';
 import type { RawDocxExtractionResult } from '@/schema/docx-ingestion.schema';
 
 export async function POST(req: NextRequest) {
+  const unavailable = privateApiUnavailableResponse('/api/docx-ingest');
+  if (unavailable) return unavailable;
+
   try {
     const useSample = req.nextUrl.searchParams.get('useSample') === 'true';
+    const assignmentModeValue = req.nextUrl.searchParams.get('assignmentMode') ?? 'detect';
+    if (!['detect', 'whole-file', 'bai-headings'].includes(assignmentModeValue)) {
+      return NextResponse.json({ error: 'Chế độ nhận diện bài DOCX không hợp lệ.' }, { status: 400 });
+    }
+    const assignmentMode = assignmentModeValue as 'detect' | 'whole-file' | 'bai-headings';
 
     if (useSample) {
       const samplePath = path.resolve(
@@ -20,7 +29,7 @@ export async function POST(req: NextRequest) {
         );
       }
       const buffer = fs.readFileSync(samplePath);
-      const extraction = await parseDocxBuffer(buffer, 'sample-assignments.docx');
+      const extraction = await parseDocxBuffer(buffer, 'sample-assignments.docx', { assignmentMode });
       return NextResponse.json({ extractions: [extraction] });
     }
 
@@ -43,7 +52,7 @@ export async function POST(req: NextRequest) {
     for (const file of fileList) {
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
-      const parsed = await parseDocxBuffer(buffer, file.name);
+      const parsed = await parseDocxBuffer(buffer, file.name, { assignmentMode });
       extractions.push(parsed);
     }
 

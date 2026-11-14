@@ -37,7 +37,11 @@ export function EducationBlock({
 
   if (isCanvaEditorial) {
     return (
-      <section id="education" className="reveal-on-scroll mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <section
+        id="education"
+        className="reveal-on-scroll mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8"
+        style={{ color: `var(--section-text-color, ${theme.textColor})` }}
+      >
         <div className="space-y-6">
           <h2
             className="font-editorial text-4xl font-extrabold tracking-tight sm:text-5xl"
@@ -61,7 +65,7 @@ export function EducationBlock({
             {section.items.map((item, idx) => (
               <div
                 key={idx}
-                className={`relative space-y-2 transition-all duration-300 ${
+                className={`${!isTimeline && !isCompactList ? 'surface-block' : ''} relative space-y-2 transition-all duration-300 ${
                   isTimeline
                     ? 'py-2 pl-5'
                     : isCompactList
@@ -82,13 +86,24 @@ export function EducationBlock({
                     }}
                   />
                 )}
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <h3
                     className="text-lg font-bold"
                     style={{ color: 'var(--text, #3E2723)' }}
                   >
                     {item.school}
                   </h3>
+                  {item.period && (
+                    <span
+                      className="rounded-full border px-2.5 py-0.5 text-xs font-semibold"
+                      style={{
+                        borderColor: 'var(--primary, #735340)',
+                        color: 'var(--secondary, #5D4037)',
+                      }}
+                    >
+                      {item.period}
+                    </span>
+                  )}
                 </div>
                 <p
                   className="text-sm font-semibold"
@@ -126,7 +141,11 @@ export function EducationBlock({
   }
 
   return (
-    <section id="education" className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+    <section
+      id="education"
+      className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8"
+      style={{ color: `var(--section-text-color, ${theme.textColor})` }}
+    >
       <div className="mb-8">
         <span
           className={`text-xs font-bold uppercase tracking-[0.2em] ${
@@ -146,7 +165,7 @@ export function EducationBlock({
         {section.items.map((item, idx) => (
           <div
             key={idx}
-            className={`relative ${
+            className={`${!isTimeline && !isCompactList ? 'surface-block' : ''} relative ${
               isTimeline
                 ? 'py-2 pl-5'
                 : isCompactList
@@ -179,7 +198,20 @@ export function EducationBlock({
                 <GraduationCap className="h-5 w-5" />
               </div>
               <div className="min-w-0 flex-1 space-y-1">
-                <h3 className="text-base font-bold leading-snug sm:text-lg">{item.school}</h3>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="text-base font-bold leading-snug sm:text-lg">{item.school}</h3>
+                  {item.period && (
+                    <span
+                      className="rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}1A`,
+                        color: theme.primaryColor,
+                      }}
+                    >
+                      {item.period}
+                    </span>
+                  )}
+                </div>
                 <p className="text-sm font-medium leading-relaxed opacity-80">{item.degree}</p>
               </div>
             </div>

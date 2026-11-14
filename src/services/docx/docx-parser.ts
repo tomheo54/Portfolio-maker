@@ -33,8 +33,10 @@ function stripHtmlTags(html: string): string {
 
 const ASSIGNMENT_HEADING_REGEX =
   /^(?:bài(?:\s+tập)?|assignment|project|dự\s*án|case\s*study|phần|chương|chủ\s*đề)\s*(?:số\s*)?(?:\d+|[ivx]+)\b[:.\-\s]*/i;
+const BAI_HEADING_REGEX = /^bài(?:\s+tập)?(?:\s+số)?\s*\d+\b[:.\-\s]*/i;
 
 const TOPIC_MARKER_REGEX = /^(?:chủ\s*đề|đề\s*tài)\s*[:\-]\s*\S+/i;
+type DocxAssignmentMode = 'detect' | 'whole-file' | 'bai-headings';
 
 /**
  * Splits mammoth HTML output into distinct assignment blocks while preserving
@@ -43,7 +45,8 @@ const TOPIC_MARKER_REGEX = /^(?:chủ\s*đề|đề\s*tài)\s*[:\-]\s*\S+/i;
 function splitHtmlIntoAssignments(
   htmlPreview: string,
   fileName: string,
-  extractedImages: ExtractedDocxImage[]
+  extractedImages: ExtractedDocxImage[],
+  assignmentMode: DocxAssignmentMode,
 ): DetectedAssignment[] {
   // Split HTML into top-level block tokens (<h1..h4>, <p>, <table>, <ul>, <ol>)
   const blockRegex =
@@ -59,13 +62,16 @@ function splitHtmlIntoAssignments(
     for (const block of blocks) {
       const isH1OrH2 = /^<h[12]\b/i.test(block);
       const plain = stripHtmlTags(block);
-      const matchesAssignmentKeyword = useTopicMarkers
-        ? TOPIC_MARKER_REGEX.test(plain)
-        : ASSIGNMENT_HEADING_REGEX.test(plain);
+      const matchesAssignmentKeyword = assignmentMode === 'bai-headings'
+        ? BAI_HEADING_REGEX.test(plain) || (/^<h[1-4]\b/i.test(block) && /^bài\b/i.test(plain))
+        : useTopicMarkers
+          ? TOPIC_MARKER_REGEX.test(plain)
+          : ASSIGNMENT_HEADING_REGEX.test(plain);
 
-      const isSplitBoundary =
-        (!useTopicMarkers && isH1OrH2 && plain.length > 0 && plain.length < 180) ||
-        (matchesAssignmentKeyword && plain.length < 180);
+      const isSplitBoundary = assignmentMode === 'bai-headings'
+        ? matchesAssignmentKeyword && plain.length < 180
+        : (!useTopicMarkers && isH1OrH2 && plain.length > 0 && plain.length < 180) ||
+          (matchesAssignmentKeyword && plain.length < 180);
 
       if (isSplitBoundary) {
         if (currentBucket) {
@@ -88,16 +94,36 @@ function splitHtmlIntoAssignments(
     return { buckets, preambleBlocks };
   };
 
+  if (assignmentMode === 'whole-file') {
+    const cleanBaseName = fileName.replace(/\.docx$/i, '').replace(/[_-]+/g, ' ');
+    const allImageIds = extractedImages.map((img) => img.id);
+    extractedImages.forEach((img) => {
+      img.assignmentIndexHint = 0;
+    });
+    return [{
+      index: 0,
+      sourceDocxFileName: fileName,
+      rawHeading: cleanBaseName || 'Bài tập thực hành',
+      rawText: stripHtmlTags(htmlPreview),
+      htmlSegment: htmlPreview,
+      imageIds: allImageIds,
+    }];
+  }
+
   let { buckets, preambleBlocks } = buildBuckets(false);
 
   // Secondary fallback: split on standalone "Chủ đề:" / "Đề tài:" markers only if
   // no primary heading/numbered assignment boundaries were detected and >= 2 markers exist.
-  if (buckets.length === 0) {
+  if (assignmentMode === 'detect' && buckets.length === 0) {
     const topicPass = buildBuckets(true);
     if (topicPass.buckets.length >= 2) {
       buckets = topicPass.buckets;
       preambleBlocks = topicPass.preambleBlocks;
     }
+  }
+
+  if (assignmentMode === 'bai-headings' && buckets.length === 0) {
+    return [];
   }
 
   // If no explicit assignment boundaries were found, treat whole document as 1 assignment
@@ -167,7 +193,8 @@ function splitHtmlIntoAssignments(
  */
 export async function parseDocxBuffer(
   buffer: Buffer,
-  fileName: string
+  fileName: string,
+  options: { assignmentMode?: DocxAssignmentMode } = {},
 ): Promise<RawDocxExtractionResult> {
   fs.mkdirSync(DOCX_MEDIA_DIR, { recursive: true });
 
@@ -234,7 +261,8 @@ export async function parseDocxBuffer(
   const detectedAssignments = splitHtmlIntoAssignments(
     htmlPreview,
     fileName,
-    extractedImages
+    extractedImages,
+    options.assignmentMode ?? 'detect',
   );
 
   return {

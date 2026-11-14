@@ -92,3 +92,35 @@ Khi ném vào **Antigravity** hoặc **CLI Code Agent**, hãy thực thi theo th
    - Khi bóc ảnh từ `.docx`, phải chuyển thành file lưu trong `public/uploads/docx-media/` (hoặc Data URL chuẩn) để hiển thị ngay trên giao diện và xuất ra `.zip` không bị lỗi ảnh chết (broken image).
    - Tính năng **Gen ảnh bằng AI** phải hỗ trợ cả API có key (Gemini Imagen / OpenAI DALL-E) **VÀ tích hợp sẵn luồng tạo ảnh AI miễn phí không cần API Key** (qua Pollinations.ai Flux/Turbo endpoint kèm seed cố định theo chủ đề) để ứng dụng chạy ra ảnh AI thật 100% ngay lập tức khi test.
 3. **Không làm mất ngữ cảnh bài tập**: Một file `.docx` có thể chứa **1 bài tập lớn** hoặc **nhiều bài tập nhỏ (Bài 1, Bài 2, Bài 3...)**. Bộ parser phải tự động tách từng bài tập thành từng thẻ Project riêng biệt trên Portfolio.
+
+## 6. Đợt nâng cấp 8 — Định tuyến public, lưu bền, Batch và Studio
+
+### Mục tiêu vận hành
+- Local `http://localhost:3000/` luôn mở giao diện AI Portfolio Factory; Netlify mở portfolio tại `/` mà không đổi URL sang slug. `PORTFOLIO_PUBLIC_ONLY` được ưu tiên nếu đặt tường minh; nếu không, `NETLIFY=true` bật public-only. Không dùng `NODE_ENV` để phân biệt máy local với hosting.
+- Trên bản public, chặn Studio, Batch và API tạo nội dung; giữ các chức năng portfolio công khai và tải ZIP cần thiết. Bản local giữ đầy đủ công cụ.
+- Lưu nháp, lịch sử và thư viện ảnh trong IndexedDB; coi dữ liệu trình duyệt là nguồn làm việc cục bộ và cung cấp gói sao lưu có thể mang sang máy khác.
+
+### Ranh giới trách nhiệm và đầu ra của 5 Agent
+1. **Agent 1 — Hợp đồng dữ liệu:** sở hữu Zod schema cho portfolio, DOCX selection, batch job và manifest ZIP có phiên bản; bảo đảm đọc tương thích dữ liệu cũ, ghi rõ migration và kiểm tra dữ liệu ở biên.
+2. **Agent 2 — Template/render:** sở hữu template, section blocks, hierarchy/typography, responsive và nội dung dài; không tự tạo schema hoặc thay đổi luồng lưu trữ.
+3. **Agent 3 — Studio:** sở hữu Studio UI, template/customization, thư viện ảnh dùng chung, chọn ảnh từ file/folder/clipboard, bản nháp và điều khiển import ZIP; gọi các service theo hợp đồng đã thống nhất.
+4. **Agent 4 — DOCX/AI/Batch:** sở hữu parser, nhận diện nhiều bài trong một DOCX, xử lý nhiều DOCX, lọc/chọn bài theo nguồn, batch queue, trạng thái từng học viên, retry và phục hồi tác vụ.
+5. **Agent 5 — Hosting/export/QA:** sở hữu chế độ public Netlify, route/API guard, export ZIP/PDF, manifest nguồn và nhập lại ZIP; xác nhận website ZIP chạy độc lập và cập nhật kết quả QA.
+
+### Quy tắc điều phối
+- Master đọc task checklist và handover trước khi giao việc; mỗi giao việc phải nêu kết quả mong đợi, file scope, interface, phụ thuộc, tiêu chí nghiệm thu và những file không được sửa.
+- Chạy song song chỉ khi file scope không giao nhau. Schema/interface do Agent 1 chốt trước; Agent 2/3/4/5 dùng contract đó, master tích hợp tuần tự tại các điểm giao nhau.
+- Không đánh dấu giai đoạn hoàn tất dựa trên việc code đã được viết. Chỉ cập nhật `[x]` sau khi kiểm tra chạy được; ghi rõ lỗi còn lại, test nào chưa chạy và môi trường/port đang được giữ.
+- Không dừng server local đang phục vụ người dùng và không giải phóng cổng 3000 khi làm hot reload, typecheck hoặc E2E.
+
+### Backlog hệ thống
+- **Batch Factory:** nhập thư mục DOCX và CSV, ghép dữ liệu học viên, nhận diện bài theo từng file, xem/lọc/chọn đầu ra, tiến độ theo tác vụ, retry lỗi riêng, resume sau refresh và gói tải theo từng portfolio.
+- **Studio:** trình chọn template và tùy biến trực quan theo section; draft picker trên trang đầu; lịch sử undo/redo bền qua reload; thư viện ảnh chung nhiều bài, nhập folder/clipboard; hai vị trí ảnh hồ sơ có thể chọn độc lập.
+- **Storage/recovery:** nhiều draft có tên, autosave có trạng thái, snapshot lịch sử có giới hạn rõ ràng, phục hồi phiên dở khi crash, backup/restore trên máy; hiển thị lỗi quota và tránh âm thầm bỏ mất ảnh.
+- **Editable export:** ZIP có manifest/version, document nguồn và media nội bộ; nhập ZIP vào Studio, sửa rồi xuất lại; ZIP cũ không có nguồn phải báo rõ thay vì giả vờ nhập được.
+
+### Definition of Done
+- Local/public URL split và bảo vệ API được kiểm tra theo môi trường thực tế; deploy preview/public không lộ giao diện hoặc API tạo portfolio.
+- Luồng DOCX đơn/nhiều file, nhiều bài/file, lọc/chọn, batch retry/resume và ghép theo học viên có test tương ứng.
+- Refresh/crash khôi phục đúng draft, history, ảnh và batch job; backup/restore không làm hỏng schema.
+- ZIP round-trip giữ nội dung, media, đường dẫn tài liệu và khả năng mở website offline; typecheck/build/E2E report khớp với lần chạy thật.

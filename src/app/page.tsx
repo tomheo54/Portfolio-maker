@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import {
   FileText,
   Sparkles,
@@ -10,10 +10,18 @@ import {
   Image as ImageIcon,
   Download,
 } from 'lucide-react';
+import { PublicPortfolioClient } from './[portfolioSlug]/PublicPortfolioClient';
+import { getPortfolioBySlug } from '@/services/export/portfolio-repository';
+import { isPublicPortfolioMode } from '@/services/deployment/public-mode';
+import { RecentPortfolioDrafts } from '@/components/studio/RecentPortfolioDrafts';
+
+export const dynamic = 'force-dynamic';
 
 export default function HomePage() {
-  if (process.env.NODE_ENV === 'production') {
-    redirect('/nguyenngocdiepportfolio');
+  if (isPublicPortfolioMode()) {
+    const portfolio = getPortfolioBySlug('portfolio-mau-public');
+    if (!portfolio) notFound();
+    return <PublicPortfolioClient document={portfolio} />;
   }
 
   return (
@@ -36,7 +44,7 @@ export default function HomePage() {
 
           <nav className="flex items-center gap-2.5">
             <Link
-              href="/tuthivananhportfolio"
+              href="/portfolio-mau-hoan-chinh"
               className="hidden rounded-full border border-[#3E2723]/20 bg-white px-4 py-2 text-xs font-semibold hover:bg-stone-50 sm:inline-flex"
             >
               Xem mẫu Canva
@@ -62,7 +70,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-3xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#A96B54]/30 bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#A96B54]">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>TNT Lab Edition • Dual Image Pipeline</span>
+            <span>Dual Image Pipeline</span>
           </div>
 
           <h1 className="mt-5 font-editorial text-4xl font-extrabold leading-tight sm:text-6xl">
@@ -92,10 +100,10 @@ export default function HomePage() {
               <span>Sản xuất hàng loạt cả lớp (/batch)</span>
             </Link>
             <Link
-              href="/tuthivananhportfolio"
+              href="/portfolio-mau-hoan-chinh"
               className="inline-flex items-center gap-2 rounded-full border border-[#3E2723]/25 bg-white px-6 py-3.5 text-sm font-semibold transition hover:bg-stone-50"
             >
-              <span>Xem Portfolio Mẫu Từ Thị Vân Anh</span>
+              <span>Xem portfolio hoàn thiện mẫu</span>
             </Link>
           </div>
         </div>
@@ -141,6 +149,7 @@ export default function HomePage() {
             </p>
           </div>
         </div>
+        <RecentPortfolioDrafts />
       </main>
     </div>
   );

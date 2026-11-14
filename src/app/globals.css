@@ -28,9 +28,13 @@
 
   body {
     font-family: var(--font-body), "Be Vietnam Pro", system-ui, sans-serif;
-    color: #24201e;
-    background-color: #faf5ee;
+    color: var(--text, #24201e);
+    background-color: var(--bg, #faf5ee);
   }
+}
+
+.public-portfolio-print-root {
+  overflow-x: clip;
 }
 
 .font-editorial {
@@ -45,6 +49,18 @@
 [data-section-type] h6,
 [data-section-type] .font-editorial {
   font-family: var(--font-heading), "Playfair Display", Georgia, serif;
+}
+
+[data-section-custom-heading-color="true"] :is(h1, h2, h3, h4, h5, h6, .font-editorial) {
+  color: var(--section-heading-color) !important;
+}
+
+[data-section-custom-text-color="true"] :is(p, li, a, span, label, small, blockquote) {
+  color: var(--section-text-color) !important;
+}
+
+[data-section-custom-surface="true"] :is([data-about-frame], .surface-block, [data-project-card], article) {
+  background-color: var(--section-surface-color) !important;
 }
 
 .canva-grid-bg {

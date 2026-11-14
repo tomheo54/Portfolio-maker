@@ -109,7 +109,7 @@ for (const frameStyle of frameStyles) {
         frameStyle,
         aspectRatio: "3/4",
       },
-      alt: "Từ Thị Vân Anh",
+      alt: "Nguyễn Văn A",
       primaryColor: "#735340",
       secondaryColor: "#304254",
       surfaceColor: "#FFFFFF",
@@ -135,8 +135,8 @@ for (const frameStyle of frameStyles) {
         frameStyle,
         aspectRatio: "1/1",
       },
-      alt: "Từ Thị Vân Anh",
-      fullName: "Từ Thị Vân Anh",
+      alt: "Nguyễn Văn A",
+      fullName: "Nguyễn Văn A",
       primaryColor: "#735340",
       secondaryColor: "#304254",
       surfaceColor: "#FFFFFF",
@@ -336,7 +336,7 @@ const aboutCanvaMarkup = renderToStaticMarkup(
     theme: sampleTheme,
     archetypeId: "canva-editorial",
     avatarUrl: "https://example.com/portrait.jpg",
-    avatarAlt: "Từ Thị Vân Anh",
+    avatarAlt: "Nguyễn Văn A",
   }),
 );
 assert.ok(
@@ -367,7 +367,7 @@ const aboutBentoMarkup = renderToStaticMarkup(
     theme: sampleTheme,
     archetypeId: "bento-grid",
     avatarUrl: "https://example.com/portrait.jpg",
-    avatarAlt: "Từ Thị Vân Anh",
+    avatarAlt: "Nguyễn Văn A",
   }),
 );
 assert.ok(

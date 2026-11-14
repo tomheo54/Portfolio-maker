@@ -69,6 +69,14 @@ export function HeroBlock({
     section.variant === "editorial-magazine";
   const isOrganic = archetypeId === "artistic-organic";
   const isAcademic = archetypeId === "academic-presentation";
+  const showHeroAvatar =
+    section.showAvatar !== false && Boolean(section.avatar?.url?.trim());
+  const portfolioLabel = section.portfolioLabel?.trim() || "Portfolio";
+  const portfolioTitle =
+    portfolioLabel.replace(/^digital\s+/i, "").trim() || "Portfolio";
+  const portfolioDisplayLabel = `Digital ${portfolioTitle}`;
+  const showPortfolioLabel = section.showPortfolioLabel !== false;
+  const headlineIsPortfolio = /portfolio/i.test(section.headline);
 
   const isCentered =
     section.variant === "centered" || section.variant === "minimal-center";
@@ -95,6 +103,7 @@ export function HeroBlock({
       <section
         id="hero"
         className="reveal-on-scroll relative overflow-hidden pb-10 pt-2"
+        style={{ color: `var(--section-text-color, ${theme.textColor})` }}
       >
         <div className="relative mx-auto max-w-6xl overflow-hidden px-4 pb-8 pt-6 sm:px-6 lg:px-8">
           <CanvaCoverStaffTopLeft
@@ -109,14 +118,21 @@ export function HeroBlock({
           />
 
           <div className="relative z-10 pt-6 sm:pt-10">
-            <CanvaPortfolioDisplayTitle
-              textColor="var(--text, #1E120E)"
-              strokeColor="var(--primary, #4B3128)"
-              fillColor="var(--primary, #927869)"
-            />
+            {showPortfolioLabel && (
+              <CanvaPortfolioDisplayTitle
+                title={portfolioTitle}
+                textColor="var(--text, #1E120E)"
+                strokeColor="var(--primary, #4B3128)"
+                fillColor="var(--primary, #927869)"
+              />
+            )}
 
-            <div className="mt-4 flex items-center justify-center gap-3">
-              {section.avatar?.url && (
+            <div
+              className={`mt-4 flex items-center justify-center gap-3 ${
+                showHeroAvatar ? "" : "flex-col"
+              }`}
+            >
+              {showHeroAvatar && (
                 <img
                   src={section.avatar.url}
                   alt={section.fullName}
@@ -124,7 +140,7 @@ export function HeroBlock({
                   style={{ borderColor: "var(--primary, #735340)" }}
                 />
               )}
-              <div className="text-center sm:text-left">
+              <div className={showHeroAvatar ? "text-center sm:text-left" : "text-center"}>
                 <h1
                   className="font-editorial text-sm font-bold tracking-wide sm:text-base"
                   style={{ color: "var(--text, #3E2723)" }}
@@ -133,7 +149,9 @@ export function HeroBlock({
                 </h1>
                 {section.roleTitle && (
                   <span
-                    className="ml-2 hidden text-xs font-medium tracking-wider opacity-75 sm:inline"
+                    className={`text-xs font-medium tracking-wider opacity-75 ${
+                      showHeroAvatar ? "ml-2 hidden sm:inline" : "mt-1 block"
+                    }`}
                     style={{ color: "var(--primary, #735340)" }}
                   >
                     • {section.roleTitle}
@@ -173,8 +191,17 @@ export function HeroBlock({
         ? TrendingUp
         : Sparkles;
 
+    const shouldShowSeparatePortfolioLabel =
+      showPortfolioLabel && !headlineIsPortfolio;
+
     return (
-      <div
+      <div className="space-y-3">
+        {shouldShowSeparatePortfolioLabel && (
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--primary)]">
+            {portfolioDisplayLabel}
+          </p>
+        )}
+        <div
         className={`inline-flex items-center gap-2 border px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.2em] ${
           isTerminal
             ? "rounded-md font-mono tracking-[0.12em]"
@@ -191,15 +218,24 @@ export function HeroBlock({
             ? undefined
             : {
                 borderColor: `${theme.primaryColor}45`,
-                backgroundColor: theme.surfaceColor,
+                backgroundColor: `var(--section-surface-color, ${theme.surfaceColor})`,
                 color: theme.primaryColor,
               }
         }
       >
         <IconComponent className="h-3.5 w-3.5" />
         <span>
-          {isTerminal ? `$ whoami • ${section.headline}` : section.headline}
+          {isTerminal
+            ? `$ whoami • ${
+                showPortfolioLabel && headlineIsPortfolio
+                  ? portfolioDisplayLabel
+                  : section.headline
+              }`
+            : showPortfolioLabel && headlineIsPortfolio
+              ? portfolioDisplayLabel
+              : section.headline}
         </span>
+        </div>
       </div>
     );
   };
@@ -233,7 +269,7 @@ export function HeroBlock({
                     color: tokens.isDarkBg
                       ? theme.primaryColor
                       : theme.secondaryColor,
-                    backgroundColor: theme.surfaceColor,
+                    backgroundColor: `var(--section-surface-color, ${theme.surfaceColor})`,
                   }
           }
         >
@@ -269,7 +305,7 @@ export function HeroBlock({
               isCreative
                 ? undefined
                 : {
-                    backgroundColor: theme.surfaceColor,
+                    backgroundColor: `var(--section-surface-color, ${theme.surfaceColor})`,
                     borderColor: tokens.borderSubtle,
                   }
             }
@@ -335,7 +371,7 @@ export function HeroBlock({
             }}
             className="inline-flex items-center gap-1 rounded-full border border-dashed px-3 py-1 text-xs font-semibold"
             style={{
-              backgroundColor: theme.surfaceColor,
+              backgroundColor: `var(--section-surface-color, ${theme.surfaceColor})`,
               borderColor: tokens.borderSubtle,
             }}
           >
@@ -348,8 +384,8 @@ export function HeroBlock({
   };
 
   // Dedicated Renderers for Copy & Avatar
-  const renderCopyBlock = () => (
-    <div className="space-y-6">
+  const renderCopyBlock = (centered = false) => (
+    <div className={`space-y-6 ${centered ? "text-center" : ""}`}>
       {renderEyebrow()}
 
       <div>
@@ -377,34 +413,38 @@ export function HeroBlock({
         </p>
       </div>
 
-      <p className="max-w-xl text-base leading-relaxed opacity-85">
+      <p
+        className={`max-w-xl text-base leading-relaxed opacity-85 ${
+          centered ? "mx-auto" : ""
+        }`}
+      >
         {section.shortBio}
       </p>
 
-      {renderQuickTags(false)}
-      {renderCtaButtons(false)}
+      {renderQuickTags(centered)}
+      {renderCtaButtons(centered)}
     </div>
   );
 
   const renderAvatarBlock = () => (
     <div
-      className={
+    className={`${
         isTerminal
-          ? "rounded-2xl border p-4"
+        ? "surface-block rounded-2xl border p-4"
           : isCreative
-            ? "relative rounded-3xl border-4 border-black bg-white p-4 shadow-[8px_8px_0px_#000] before:absolute before:-top-3.5 before:left-1/2 before:-translate-x-1/2 before:w-20 before:h-6 before:bg-amber-300 before:rotate-[-3deg] before:z-20 before:shadow-sm"
+            ? "surface-block relative rounded-3xl border-4 border-black bg-white p-4 shadow-[8px_8px_0px_#000] before:absolute before:-top-3.5 before:left-1/2 before:-translate-x-1/2 before:w-20 before:h-6 before:bg-amber-300 before:rotate-[-3deg] before:z-20 before:shadow-sm"
             : isMinimal
               ? "rounded-2xl border border-[var(--primary)]/20 p-4"
               : isOrganic
                 ? "rounded-[3rem_1.5rem_3.5rem_1.5rem] border border-[var(--primary)]/30 p-5 shadow-lg"
                 : isAcademic
-                  ? "rounded-xl border-2 border-stone-300 bg-white p-5 shadow-md"
+                ? "surface-block rounded-xl border-2 border-stone-300 bg-white p-5 shadow-md"
                   : ""
-      }
+    }`}
       style={
         isTerminal
           ? {
-              backgroundColor: theme.surfaceColor,
+              backgroundColor: `var(--section-surface-color, ${theme.surfaceColor})`,
               borderColor: `${theme.primaryColor}40`,
             }
           : undefined
@@ -415,7 +455,7 @@ export function HeroBlock({
         alt={section.fullName}
         primaryColor={theme.primaryColor}
         secondaryColor={theme.secondaryColor}
-        surfaceColor={theme.surfaceColor}
+        surfaceColor={`var(--section-surface-color, ${theme.surfaceColor})`}
         enableTilt={theme.effects?.enableTilt}
         enableGlow={theme.effects?.enableGlow}
       />
@@ -428,6 +468,7 @@ export function HeroBlock({
       className={`relative overflow-hidden px-4 pb-12 pt-10 sm:px-6 lg:px-8 ${
         isMinimal ? "lg:pb-20 lg:pt-20" : "lg:pb-16 lg:pt-16"
       }`}
+    style={{ color: `var(--section-text-color, ${theme.textColor})` }}
     >
       <DecorationLayer
         decorations={section.decorations}
@@ -470,7 +511,11 @@ export function HeroBlock({
         )}
 
         {/* Layout Branches */}
-        {isCentered ? (
+        {!showHeroAvatar ? (
+          <div className="mx-auto max-w-4xl py-8">
+            {renderCopyBlock(true)}
+          </div>
+        ) : isCentered ? (
           <div className="mx-auto max-w-3xl space-y-6 text-center">
             <div className="flex justify-center">
               <AvatarFrame
@@ -478,7 +523,7 @@ export function HeroBlock({
                 alt={section.fullName}
                 primaryColor={theme.primaryColor}
                 secondaryColor={theme.secondaryColor}
-                surfaceColor={theme.surfaceColor}
+                surfaceColor={`var(--section-surface-color, ${theme.surfaceColor})`}
                 enableTilt={theme.effects?.enableTilt}
                 enableGlow={theme.effects?.enableGlow}
                 className="max-w-[200px]"
@@ -502,7 +547,7 @@ export function HeroBlock({
           <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-12">
             {/* Cell 1: Main Intro */}
             <div
-              className={`flex flex-col justify-between p-7 sm:p-10 lg:col-span-7 ${cardDec.className}`}
+              className={`surface-block flex flex-col justify-between p-7 sm:p-10 lg:col-span-7 ${cardDec.className}`}
               style={cardDec.style}
             >
               <div className="space-y-5">
@@ -544,14 +589,14 @@ export function HeroBlock({
                 alt={section.fullName}
                 primaryColor={theme.primaryColor}
                 secondaryColor={theme.secondaryColor}
-                surfaceColor={theme.surfaceColor}
+                surfaceColor={`var(--section-surface-color, ${theme.surfaceColor})`}
                 enableTilt={theme.effects?.enableTilt}
                 enableGlow={theme.effects?.enableGlow}
               />
               <span
                 className="mt-4 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider shadow-sm"
                 style={{
-                  backgroundColor: theme.surfaceColor,
+                  backgroundColor: `var(--section-surface-color, ${theme.surfaceColor})`,
                   color: theme.secondaryColor,
                 }}
               >
@@ -560,8 +605,13 @@ export function HeroBlock({
             </div>
           </div>
         ) : isWarmEditorial ? (
-          /* Asymmetric Magazine Editorial Spread (Thu Trang / thu-trang link parity) */
-          <div className="rounded-3xl border border-[var(--primary)]/20 bg-white/70 p-6 sm:p-10 backdrop-blur-sm shadow-xl">
+          /* Asymmetric magazine editorial layout */
+          <div
+            className="surface-block rounded-3xl border border-[var(--primary)]/20 bg-white/70 p-6 sm:p-10 backdrop-blur-sm shadow-xl"
+            style={{
+              backgroundColor: `var(--section-surface-color, ${theme.surfaceColor})`,
+            }}
+          >
             <div className="mb-4 flex items-center justify-between border-b border-[var(--primary)]/15 pb-3">
               <span className="font-editorial text-xs italic tracking-wider opacity-75">
                 EDITORIAL ARCHIVE • DIGITAL PORTFOLIO 2026

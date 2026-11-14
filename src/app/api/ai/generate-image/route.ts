@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { privateApiUnavailableResponse } from '@/services/deployment/private-api-guard';
 import { GenerateTopicImageRequestSchema } from '@/schema/docx-ingestion.schema';
 import { generateTopicImage } from '@/services/ai/image-generator';
 
 export async function POST(req: NextRequest) {
+  const unavailable = privateApiUnavailableResponse('/api/ai/generate-image');
+  if (unavailable) return unavailable;
+
   try {
     const body = await req.json();
     const parsedReq = GenerateTopicImageRequestSchema.parse(body);

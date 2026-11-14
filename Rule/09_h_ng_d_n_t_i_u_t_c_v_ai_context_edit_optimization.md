@@ -32,3 +32,10 @@
 ## 5. Xử lý Lỗi (Bug Fixing Protocol)
 - Khi gặp một lỗi do người dùng paste vào, **ĐỪNG VỘI VÀNG ĐOÁN**.
 - Hãy xin phép dùng tool đọc chính xác file đang bị lỗi, check lại types, in log, sau đó đề xuất đoạn code sửa cực kỳ tập trung.
+
+## 6. Quy tắc tiếp tục công việc và quyền thực thi
+- Khi người dùng yêu cầu đọc/sửa/nâng cấp repo, được phép đọc các file liên quan và thực hiện thay đổi trong phạm vi đã yêu cầu; không xin phép lại cho từng file hoặc từng bước thông thường.
+- Nếu người dùng yêu cầu cập nhật tài liệu, không dừng ở việc đề xuất: cập nhật trực tiếp task, handover và checkpoint cần thiết rồi ghi lại trạng thái thật.
+- Với công việc nhiều phần hoặc có thể bị ngắt, cập nhật `Rule/10_live_progress_upgrade.md` sau mỗi mốc tích hợp/test để agent khác tiếp tục mà không phải suy đoán.
+- Không dừng server người dùng đang dùng hoặc giải phóng cổng 3000. Dùng server hiện có; build cần output directory riêng.
+- Phân biệt test đã chạy, test chưa chạy, test lỗi và trạng thái historical. Không ghi “hoàn tất” khi còn integration hoặc kiểm tra chưa xác nhận.

@@ -1,0 +1,475 @@
+{
+  "id": "portfolio-mau-hoan-chinh",
+  "slug": "portfolio-mau-public",
+  "templateId": "bento-grid",
+  "imageGenerationConfig": {
+    "mode": "docx-extract",
+    "visualStyle": "canva-pastel-graphic"
+  },
+  "seo": {
+    "title": "Nguyễn Văn A | Digital Portfolio",
+    "description": "Tổng hợp 1 bài tập và dự án thực hành về Dự án Thực hành được xây dựng bài bản và đo lường kết quả rõ ràng.",
+    "ogImage": "/presets/avatar-mau-01.svg"
+  },
+  "theme": {
+    "primaryColor": "#4F46E5",
+    "secondaryColor": "#0EA5E9",
+    "backgroundColor": "#F4F4F0",
+    "surfaceColor": "#FFFFFF",
+    "textColor": "#18181B",
+    "headingFont": "Be Vietnam Pro",
+    "bodyFont": "Be Vietnam Pro",
+    "borderRadius": "lg",
+    "pageTransition": "smooth-scroll"
+  },
+  "sections": [
+    {
+      "type": "hero",
+      "variant": "minimal-center",
+      "headline": "Digital Portfolio",
+      "fullName": "Nguyễn Văn A",
+      "roleTitle": "Sinh viên Sư phạm Âm nhạc • Trường Đại học Mẫu",
+      "shortBio": "Xin chào! Mình là Nguyễn Văn A. Mình yêu thích đi phượt, yêu âm nhạc và luôn mong muốn học hỏi, sáng tạo, lan tỏa những giá trị tích cực thông qua nghệ thuật và công nghệ AI.",
+      "avatar": {
+        "url": "/presets/avatar-mau-01.svg",
+        "sourceType": "user-uploaded",
+        "frameStyle": "rounded-rect",
+        "aspectRatio": "3/4"
+      },
+      "quickTags": [],
+      "ctaButtons": [
+        {
+          "label": "Khám phá Dự án",
+          "href": "#projects",
+          "style": "primary"
+        },
+        {
+          "label": "Thông tin Liên hệ",
+          "href": "#contact",
+          "style": "outline"
+        }
+      ],
+      "decorations": [
+        {
+          "id": "dec-1",
+          "type": "floating-tag",
+          "label": "DIGITAL PORTFOLIO • 2026",
+          "position": {
+            "top": "8%",
+            "right": "5%",
+            "rotate": 4,
+            "zIndex": 3
+          }
+        },
+        {
+          "id": "dec-2",
+          "type": "badge",
+          "label": "✦ Sư phạm Âm nhạc & AI",
+          "position": {
+            "left": "4%",
+            "bottom": "12%",
+            "rotate": -3,
+            "zIndex": 3
+          }
+        }
+      ]
+    },
+    {
+      "type": "about",
+      "variant": "bento-facts",
+      "title": "About me",
+      "biography": "Xin chào! Mình là Nguyễn Văn A (Ngành Sư phạm âm nhạc). Portfolio này được tổng hợp trực tiếp từ hồ sơ bài tập thực chiến gồm 1 dự án thuộc các mảng Dự án Thực hành. Mỗi bài tập đều được chuẩn hóa theo tư duy Đề bài - Giải pháp - Kết quả nhằm thể hiện năng lực triển khai thực tế.",
+      "highlights": [
+        {
+          "label": "Dự án thực hành",
+          "value": "1 Case Studies",
+          "width": 2
+        },
+        {
+          "label": "Lĩnh vực chính",
+          "value": "Dự án Thực hành",
+          "width": 2,
+          "height": 1
+        }
+      ],
+      "contactInfo": {
+        "email": "nguyenvana@example.com",
+        "phone": "0000000000",
+        "location": "Việt Nam",
+        "website": "https://example.com/portfolio",
+        "socials": [
+          {
+            "platform": "Canva Portfolio",
+            "url": "https://example.com/portfolio"
+          }
+        ]
+      },
+      "layoutInverted": true,
+      "mediaPosition": "left",
+      "educationPeriod": "Học phần INF2501"
+    },
+    {
+      "type": "skills",
+      "variant": "category-cards",
+      "title": "Tools & Skills",
+      "categories": [
+        {
+          "name": "Chuyên môn & Thực chiến",
+          "skills": [
+            {
+              "name": "Dự án Thực hành",
+              "level": 95
+            }
+          ]
+        },
+        {
+          "name": "Công cụ & Nền tảng",
+          "skills": [
+            {
+              "name": "Google Gemini",
+              "level": 90
+            },
+            {
+              "name": "ChatGPT",
+              "level": 90
+            },
+            {
+              "name": "Canva AI",
+              "level": 90
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "motif": "quiet-starburst",
+      "type": "education",
+      "variant": "compact-list",
+      "title": "Education",
+      "items": [
+        {
+          "school": "Trường Đại học Mẫu",
+          "degree": "Ngành Sư phạm Âm nhạc",
+          "period": "2023 - 2027",
+          "gpaOrHonors": "Lớp Tín chỉ 04 (Nhập môn Công nghệ số & Ứng dụng AI)",
+          "details": "Tập trung nâng cao năng lực sư phạm, phương pháp giảng dạy âm nhạc hiện đại (Orff Schulwerk, Kodály, Gordon) và ứng dụng công nghệ AI trong soạn giảng."
+        }
+      ]
+    },
+    {
+      "type": "projects",
+      "variant": "canva-slide-showcase",
+      "title": "Project ",
+      "subtitle": "Tổng hợp kết quả các bài thực hành kỹ năng số, hợp tác trực tuyến và ứng dụng AI trong học tập & sáng tạo nội dung.",
+      "projects": [
+        {
+          "id": "proj-docx-1-1794499242647",
+          "title": "Thao tác cơ bản với tệp tin và thư mục",
+          "category": "Dự án Thực hành",
+          "sourceDocxFileName": "ảnh.docx",
+          "docxUrl": "https://example.com/bai-tap-01.docx",
+          "assignmentBrief": "Rèn luyện và làm chủ các kỹ năng quản lý tệp tin và thư mục cơ bản trên hệ điều hành Windows thông qua công cụ File Explorer.",
+          "summary": "Thực hiện chuỗi 12 bước thao tác trực tiếp trên giao diện Windows Explorer: định vị ổ đĩa, tạo thư mục gốc ThucHanh_hotensinhvien và thư mục con TaiLieu, khởi tạo và đổi tên tệp tin văn bản (GhiChu.txt thành GhiChuQuanTrong.txt), thao tác sao chép (Copy/Paste), di chuyển tệp (DiChuyen.txt Cut/Paste), xóa tạm thời vào Thùng rác (Delete), xóa vĩnh viễn (Shift + Delete) và khôi phục dữ liệu từ Recycle Bin.",
+          "keyTakeaways": [
+            "Thực hành chuẩn xác 12 thao tác quản lý tệp tin và tổ chức thư mục cơ bản trên hệ điều hành Windows.",
+            "Phân biệt rõ ràng cơ chế vận hành giữa di chuyển (Cut) – sao chép (Copy) và xóa tạm thời (Delete) – xóa vĩnh viễn (Shift + Delete).",
+            "Làm chủ quy trình khôi phục dữ liệu an toàn từ Thùng rác (Recycle Bin)."
+          ],
+          "fullRawExcerpt": "",
+          "metrics": [],
+          "media": [
+            {
+              "id": "docx-img-1794499242438-1",
+              "url": "/uploads/docx-media/1794499242438--nh-1-d7fd00.png",
+              "caption": "Ảnh trích xuất từ ảnh.docx (#1)",
+              "sourceType": "docx-extracted",
+              "originalDocxMediaName": "word/media/image1.png"
+            },
+            {
+              "id": "docx-img-1794499242438-2",
+              "url": "/uploads/docx-media/1794499242438--nh-2-53c8be.png",
+              "caption": "Ảnh trích xuất từ ảnh.docx (#2)",
+              "sourceType": "docx-extracted",
+              "originalDocxMediaName": "word/media/image2.png"
+            },
+            {
+              "id": "docx-img-1794499242438-3",
+              "url": "/uploads/docx-media/1794499242438--nh-3-49112f.png",
+              "caption": "Ảnh trích xuất từ ảnh.docx (#3)",
+              "sourceType": "docx-extracted",
+              "originalDocxMediaName": "word/media/image3.png"
+            }
+          ],
+          "suggestedAiImagePrompt": "Modern pastel editorial illustration representing \"ảnh\" in the field of Dự án Thực hành, clean visual storytelling cards, cohesive warm color palette",
+          "preferredImageStyle": "canva-pastel-graphic",
+          "links": [],
+          "tags": [
+            "Thực hành"
+          ],
+          "mediaPosition": "left",
+          "chapterTitle": "Chương 1: Máy tính và các thiết bị ngoại vi",
+          "exerciseNumber": "Mục 1.4"
+        },
+        {
+          "id": "proj-1794499540397",
+          "slug": "bai-tap-2",
+          "title": "Tìm kiếm và đánh giá thông tin học thuật",
+          "category": "Thực hành số",
+          "docxUrl": "https://example.com/bai-tap-02.docx",
+          "assignmentBrief": "Xây dựng chiến lược tìm kiếm, hệ thống hóa và đánh giá độ tin cậy của các nguồn tài liệu học thuật liên ngành (Sư phạm Âm nhạc, Dân tộc nhạc học tính toán, VR/AR và AI) để giải quyết 3 câu hỏi nghiên cứu về bảo tồn và giảng dạy âm nhạc truyền thống.",
+          "summary": "Thiết lập chuỗi từ khóa chuyên sâu đa ngữ trên các cơ sở dữ liệu lớn (Google Scholar, ScienceDirect, IEEE, SAGE, Oxford University Press...); thu thập 12 tài liệu thuộc 5 loại nguồn (bài báo Q1 Scopus/SSCI, sách chuyên khảo, kho dữ liệu mở UPF, kỷ yếu IEEE, báo cáo chính sách UNESCO & Bộ GD&ĐT); đánh giá độ tin cậy từng nguồn theo 5 tiêu chí (Tác giả, NXB, Phương pháp, Trích dẫn, Tính cập nhật) và tổng hợp khoảng trống nghiên cứu.",
+          "keyTakeaways": [
+            "Xây dựng tổng quan tài liệu chuyên sâu gồm 12 nguồn thông tin uy tín, phân cấp minh bạch qua ma trận đánh giá 5 tiêu chí.",
+            "Phân tích hiệu quả của không gian học tập VR/AR giúp tăng 35% khả năng tập trung của học sinh (Degli Innocenti et al., 2019) và hỗ trợ sinh viên sư phạm luyện tập chỉ huy dàn nhạc ảo (Orman et al., 2017).",
+            "Ứng dụng lý thuyết Dân tộc nhạc học tính toán (Tzanetakis et al., 2007) và Khung truyền dạy 12 chiều (Schippers, 2010) để giải mã các hệ thống vi âm dân tộc mà không áp đặt tư duy phương Tây.",
+            "Bóc tách khoảng trống nghiên cứu tại Việt Nam về thiếu hụt kho dữ liệu âm nhạc truyền thống chuẩn hóa (Ca trù, Chèo, Đờn ca tài tử) phục vụ huấn luyện AI.",
+            "Chuẩn hóa toàn bộ danh mục tài liệu tham khảo theo đúng quy chuẩn trích dẫn Harvard."
+          ],
+          "metrics": [],
+          "media": [
+            {
+              "id": "project-2-source-types",
+              "url": "/uploads/docx-media/assignment-2-source-types.svg",
+              "caption": "Tong hop cac loai nguon tai lieu",
+              "sourceType": "user-uploaded"
+            },
+            {
+              "id": "project-2-references-1",
+              "url": "/uploads/docx-media/assignment-2-references-1.svg",
+              "caption": "Danh muc tai lieu tham khao - trang 1",
+              "sourceType": "user-uploaded"
+            },
+            {
+              "id": "project-2-references-2",
+              "url": "/uploads/docx-media/assignment-2-references-2.svg",
+              "caption": "Danh muc tai lieu tham khao - trang 2",
+              "sourceType": "user-uploaded"
+            }
+          ],
+          "suggestedAiImagePrompt": "BÁO CÁO HỌC THUẬT\nNGHIÊN CỨU VÀ ỨNG DỤNG TRÍ TUỆ NHÂN TẠO CÓ TRÁCH NHIỆM TRONG HỌC THUẬT VÀ NGHIÊN CỨU\n",
+          "preferredImageStyle": "minimal-photo",
+          "links": [],
+          "tags": [],
+          "layoutInverted": false,
+          "mediaPosition": "right",
+          "chapterTitle": "Chương 2: Khai thác dữ liệu và thông tin",
+          "exerciseNumber": "Mục 2.4"
+        },
+        {
+          "id": "proj-1794499541489",
+          "slug": "bai-tap-3",
+          "title": "Viết Prompt hiệu quả cho các tác vụ học tập",
+          "category": "Thực hành số",
+          "docxUrl": "https://example.com/bai-tap-03.docx",
+          "assignmentBrief": "Thử nghiệm, phân tích và tối ưu hóa câu lệnh (prompt engineering) phục vụ 3 tác vụ học tập đại học: tóm tắt văn bản ghi chép Cornell, phân biệt diễn giải/trích dẫn trực tiếp với đạo văn, và xây dựng bộ câu hỏi/tình huống thuyết trình học thuật.",
+          "summary": " Xây dựng 3 cấp độ prompt (Cơ bản, Chi tiết, Nâng cao) cho từng tác vụ; áp dụng các kỹ thuật nâng cao như Role Prompting, Chain-of-Thought, Negative Constraints, cơ chế Self-Verification, quy chuẩn APA 7th và mô hình IRAC để so sánh kết quả, từ đó đúc kết 6 nguyên tắc thiết kế prompt cho sinh viên đa ngành.",
+          "keyTakeaways": [
+            "Thử nghiệm thành công 9 phiên bản prompt, chứng minh sự vượt trội của prompt nâng cao trong việc làm nổi bật tri thức và triệt tiêu ảo giác.",
+            "Bóc tách chuẩn xác cấu trúc 3 phân vùng không gian và chu trình nhận thức 5R của phương pháp ghi chép Cornell.",
+            "Làm rõ ranh giới giữa Diễn giải (Paraphrasing) chuẩn mực và bẫy Đạo văn chắp vá (Patchwriting) theo chuẩn APA 7th với quy trình 4 bước Digest – Disconnect – Reconstruct – Attribute.",
+            "Xây dựng Master Case xử lý sự cố thuyết trình bằng mô hình IRAC 4 bước kết hợp giải mã cơ chế sinh lý thần kinh Amygdala.",
+            "Đúc kết ma trận so sánh 3 cấp độ prompt và 6 nguyên tắc vàng thiết kế câu lệnh hiệu quả cho sinh viên."
+          ],
+          "metrics": [],
+          "media": [
+            {
+              "id": "e03ffd0b-7513-4f45-913a-83eba80ada12",
+              "url": "/uploads/docx-media/1794499242438--nh-12-907b77.png",
+              "caption": "Ảnh trích xuất từ ảnh.docx (#12)",
+              "sourceType": "docx-extracted",
+              "originalDocxMediaName": "word/media/image12.png"
+            },
+            {
+              "id": "31dbe465-0668-44d3-a0fd-d1d98c0f4763",
+              "url": "/uploads/docx-media/1794499242438--nh-11-1529b6.png",
+              "caption": "Ảnh trích xuất từ ảnh.docx (#11)",
+              "sourceType": "docx-extracted",
+              "originalDocxMediaName": "word/media/image11.png"
+            },
+            {
+              "id": "460c07e2-a044-47d5-a0ee-935a6ee6c5c0",
+              "url": "/uploads/docx-media/1794499242438--nh-13-054c56.png",
+              "caption": "Ảnh trích xuất từ ảnh.docx (#13)",
+              "sourceType": "docx-extracted",
+              "originalDocxMediaName": "word/media/image13.png"
+            }
+          ],
+          "suggestedAiImagePrompt": "Modern pastel editorial illustration of digital assignment showcase",
+          "preferredImageStyle": "canva-pastel-graphic",
+          "links": [],
+          "tags": [],
+          "chapterTitle": "Chương 3: Tổng quan về trí tuệ nhân tạo",
+          "exerciseNumber": "Mục 3.4"
+        },
+        {
+          "id": "proj-1794499542054",
+          "slug": "bai-tap-4",
+          "title": "Sử dụng công cụ hợp tác trực tuyến cho dự án nhóm ",
+          "category": "Thực hành số",
+          "docxUrl": "https://example.com/bai-tap-04.docx",
+          "assignmentBrief": "Thiết lập, tối ưu hóa và vận hành quy trình phối hợp số khép kín, đồng bộ dựa trên hệ sinh thái 4 công cụ (Trello, Google Docs, Google Drive, Zalo) cho dự án nghiên cứu nhóm chủ đề EdTech.",
+          "summary": "Đồng bộ thông tin định danh cá nhân; tích hợp siêu liên kết chéo và chuẩn hóa nhãn màu Kanban trên Trello; quản lý danh mục 7 nhiệm vụ cá nhân kèm deadline/tiêu chí nghiệm thu; duy trì nhật ký tiến độ (4 đợt/tuần) và nhật ký tương tác học thuật (12 lượt/tuần); xây dựng cây thư mục 3 tầng, quy tắc đặt tên tệp và ma trận phân quyền trên Drive; phân tích 3 thách thức làm việc nhóm và đưa ra giải pháp khắc phục.",
+          "keyTakeaways": [
+            "Vận hành mượt mà hệ sinh thái làm việc số 4 nền tảng, giúp cắt giảm khoảng 40% thời gian họp rườm rà.",
+            "Hoàn thành 100% danh mục 7 nhiệm vụ cá nhân (TASK-01 đến TASK-07) đúng hạn và minh bạch tiến độ.",
+            "Chuẩn hóa kiến trúc thư mục Google Drive 3 tầng, quy tắc đặt tên tệp 100% thống nhất ([MãNhóm]_[TênDựÁn]_[HạngMục]_[PhiênBản]_[NgàyCậpNhật].[ĐịnhDạng]) và ma trận phân quyền truy cập chặt chẽ (Owner/Editor/Viewer).",
+            "Giải quyết hiệu quả 3 thách thức cốt lõi: tắc nghẽn tiến độ (dự phòng 48-72h & thẻ đóng băng 24h), lệch văn phong/ghi đè (quy trình biên tập 3 bước & chốt phiên bản 22:00) và phân tán thông tin (nguồn dữ liệu duy nhất & SLA phản hồi 4h)."
+          ],
+          "metrics": [],
+          "media": [
+            {
+              "id": "f081e76c-29b0-4629-906f-b8ffdfabc96b",
+              "url": "/uploads/docx-media/1794499242438--nh-7-632d99.png",
+              "caption": "Ảnh trích xuất từ ảnh.docx (#7)",
+              "sourceType": "docx-extracted",
+              "originalDocxMediaName": "word/media/image7.png"
+            },
+            {
+              "id": "5e39ef11-451d-49ec-9ddc-833e88857327",
+              "url": "/uploads/docx-media/1794499242438--nh-6-1f8079.png",
+              "caption": "Ảnh trích xuất từ ảnh.docx (#6)",
+              "sourceType": "docx-extracted",
+              "originalDocxMediaName": "word/media/image6.png"
+            },
+            {
+              "id": "c2123d81-fe01-42f1-b9f4-fa1257ad8b22",
+              "url": "/uploads/docx-media/1794499242438--nh-5-274bf0.png",
+              "caption": "Ảnh trích xuất từ ảnh.docx (#5)",
+              "sourceType": "docx-extracted",
+              "originalDocxMediaName": "word/media/image5.png"
+            },
+            {
+              "id": "c23c2dd7-c389-403b-9bd1-83cd4797d98a",
+              "url": "/uploads/docx-media/1794499242438--nh-4-23d0a2.png",
+              "caption": "Ảnh trích xuất từ ảnh.docx (#4)",
+              "sourceType": "docx-extracted",
+              "originalDocxMediaName": "word/media/image4.png"
+            }
+          ],
+          "suggestedAiImagePrompt": "Modern pastel editorial illustration of digital assignment showcase",
+          "preferredImageStyle": "canva-pastel-graphic",
+          "links": [],
+          "tags": [],
+          "layoutInverted": false,
+          "mediaPosition": "right",
+          "chapterTitle": "Chương 4: Giao tiếp và hợp tác trong môi trường số",
+          "exerciseNumber": "Mục 4.4"
+        },
+        {
+          "id": "proj-1794499542513",
+          "slug": "bai-tap-5",
+          "title": "Sử dụng AI tạo sinh để hỗ trợ sáng tạo nội dung ",
+          "category": "Thực hành số",
+          "docxUrl": "https://example.com/bai-tap-05.docx",
+          "assignmentBrief": " Chuyển đổi bản phác thảo slide trình chiếu 15 trang sang ấn phẩm Infographic đơn trang poster dọc (1500 x 3600 px) trực quan hóa chủ đề Hệ thống Học tập Thích ứng (Adaptive Learning Systems - ALS) bằng AI.",
+          "summary": "Khảo cứu tài liệu học thuật và phân tích chân dung độc giả mục tiêu; ứng dụng phối hợp bộ ba công cụ AI (ChatGPT khởi tạo văn bản, Midjourney tạo hình ảnh 3D, Canva AI dàn trang); thu thập phản hồi thực tế từ 5 người xem thuộc các nhóm chuyên môn để tinh giản 70% văn bản, chuyển sang bảng màu Deep Navy/Cyan Neon và chuẩn hóa trích dẫn APA 7th.",
+          "keyTakeaways": [
+            "Hoàn thiện Infographic đơn trang đạt tỷ lệ vàng 25% văn bản – 75% đồ họa trực quan theo luồng đọc Z-pattern và cuộn dọc.",
+            "Trực quan hóa 4 thuật toán AI cốt lõi trong học tập thích ứng: Knowledge Space Theory (KST), Bayesian Knowledge Tracing (BKT), Collaborative Filtering (CF) và NLP/LLMs.5\nĐánh giá so sánh đa chiều vai trò của 3 công cụ AI và thể hiện bước chuyển dịch vai trò từ \"thao tác thủ công\" sang \"Giám đốc Sáng tạo\" (20% kiến trúc, 30% AI generation, 50% thẩm định/hiệu đính).",
+            "Tối ưu hóa sản phẩm dựa trên 5 phản hồi thực nghiệm: loại bỏ định dạng 15 slide rời rạc, xử lý bẫy chói màu và bổ sung các số liệu thống kê định lượng thuyết phục."
+          ],
+          "metrics": [],
+          "media": [
+            {
+              "id": "df5e0d58-d99d-4158-9bb1-87b0f029a06b",
+              "url": "/uploads/docx-media/1794499242438--nh-10-b6bf1d.png",
+              "caption": "Ảnh trích xuất từ ảnh.docx (#10)",
+              "sourceType": "docx-extracted",
+              "originalDocxMediaName": "word/media/image10.png"
+            },
+            {
+              "id": "bd49d638-63d2-4cee-a2bc-272a356879e9",
+              "url": "/uploads/docx-media/1794499242438--nh-9-3f8d1a.png",
+              "caption": "Ảnh trích xuất từ ảnh.docx (#9)",
+              "sourceType": "docx-extracted",
+              "originalDocxMediaName": "word/media/image9.png"
+            },
+            {
+              "id": "e747ec27-cfe2-4de9-b643-b67af0a1dafe",
+              "url": "/uploads/docx-media/1794499242438--nh-8-43456f.png",
+              "caption": "Ảnh trích xuất từ ảnh.docx (#8)",
+              "sourceType": "docx-extracted",
+              "originalDocxMediaName": "word/media/image8.png"
+            }
+          ],
+          "suggestedAiImagePrompt": "Modern pastel editorial illustration of digital assignment showcase",
+          "preferredImageStyle": "canva-pastel-graphic",
+          "links": [],
+          "tags": [],
+          "chapterTitle": "Chương 5: Sáng tạo nội dung số",
+          "exerciseNumber": "Mục 5.4"
+        },
+        {
+          "id": "proj-1794499543056",
+          "slug": "bai-tap-6",
+          "title": "Sử dụng AI có trách nhiệm trong học tập và nghiên  cứu",
+          "category": "Thực hành số",
+          "docxUrl": "https://example.com/bai-tap-06.docx",
+          "assignmentBrief": "Phát triển kỹ năng sử dụng Generative AI có trách nhiệm và đạo đức trong nghiên cứu và thiết kế kế hoạch dạy học môn Âm nhạc lớp 10 (GDPT 2018) chủ đề phổ nhạc cho Thơ Mới.",
+          "summary": "Nghiên cứu và đối chiếu khung quy chế liêm chính AI giữa VNAM và Nhạc viện Hoàng gia Anh (RAM, London); thực hiện thiết kế Kế hoạch bài dạy phổ nhạc bài thơ \"Đây mùa thu tới\" (Xuân Diệu) qua 2 vòng prompt; bóc tách lỗi bẻ gãy thanh điệu tiếng Việt và sáo mòn hòa thanh của AI; kiến tạo Bộ nguyên tắc cá nhân \"MELODY\" (6 tiêu chuẩn) và thiết kế Infographic \"The Tuning Fork of Integrity\".",
+          "keyTakeaways": [
+            "Hoàn thiện Kế hoạch bài dạy môn Âm nhạc lớp 10 chuẩn Công văn 5512/BGDĐT tích hợp Lý thuyết Ngữ âm Thanh nhạc (Tô Vũ) và Hòa âm Ấn tượng.",
+            "Khắc phục lỗi cơ học của AI (bẻ gãy thanh điệu và vòng hợp âm Pop Am-F-C-G) bằng kỹ thuật ngâm thơ tìm tiết tấu 6/8 và bộ hợp âm màu sắc mở rộng (Am9, Fmaj7#11, Dm9, Esus4).",
+            "Phân định rạch ròi giữa hỗ trợ nhận thức (Scaffolding) và gian lận học thuật (Cognitive Outsourcing), cảnh báo nguy cơ xói mòn thính giác hòa thanh và vi phạm bản quyền tác phẩm phái sinh.",
+            "Xây dựng Bộ nguyên tắc hành xử \"MELODY\" (Musical Ear, Ethical Copyright, Live Demonstration, Original Architecture, Disclosure, Youth Empowerment).",
+            "Xây dựng khung nội dung Infographic \"The Tuning Fork of Integrity\" tích hợp bộ lọc 3 giây kiểm định tần số liêm chính và chu trình T-U-N-E."
+          ],
+          "metrics": [],
+          "media": [
+            {
+              "id": "project-6-ai-policy-matrix-1",
+              "url": "/uploads/docx-media/assignment-6-ai-policy-matrix-1.svg",
+              "caption": "AI policy matrix - page 1",
+              "sourceType": "user-uploaded"
+            },
+            {
+              "id": "project-6-ai-policy-matrix-2",
+              "url": "/uploads/docx-media/assignment-6-ai-policy-matrix-2.svg",
+              "caption": "AI policy matrix - page 2",
+              "sourceType": "user-uploaded"
+            },
+            {
+              "id": "project-6-ai-prompt-output",
+              "url": "/uploads/docx-media/assignment-6-ai-prompt-output.svg",
+              "caption": "AI lesson-plan prompt and output",
+              "sourceType": "user-uploaded"
+            },
+            {
+              "id": "project-6-music-lesson-plan",
+              "url": "/uploads/docx-media/assignment-6-music-lesson-plan.svg",
+              "caption": "Music lesson plan - page 5",
+              "sourceType": "user-uploaded"
+            }
+          ],
+          "suggestedAiImagePrompt": "BÁO CÁO HỌC THUẬT\nNGHIÊN CỨU VÀ ỨNG DỤNG TRÍ TUỆ NHÂN TẠO CÓ TRÁCH NHIỆM TRONG HỌC THUẬT VÀ NGHIÊN CỨU\n",
+          "preferredImageStyle": "minimal-photo",
+          "links": [],
+          "tags": [],
+          "chapterTitle": "Chương 6: An toàn và liêm chính học thuật trong môi trường số",
+          "exerciseNumber": "Mục 6.4"
+        }
+      ]
+    },
+    {
+      "type": "contact",
+      "variant": "full-banner",
+      "title": "Contact",
+      "subtitle": "Cảm ơn bạn đã ghé thăm portfolio. Mình rất vui được kết nối, trao đổi và cùng tạo nên những hoạt động giáo dục âm nhạc sáng tạo.",
+      "thankYouMessage": "THANK YOU FOR WATCHING!",
+      "showContactForm": true,
+      "courseInfo": {
+        "studentId": "SV-MAU-001",
+        "studentClass": "04"
+      }
+    }
+  ],
+  "profileOwner": {
+    "fullName": "Nguyễn Văn A",
+    "roleTitle": "Sinh viên Sư phạm Âm nhạc • Trường Đại học Mẫu",
+    "avatarUrl": "/presets/avatar-mau-01.svg",
+    "avatarSourceType": "user-uploaded",
+    "frameStyle": "rounded-rect",
+    "aspectRatio": "3/4",
+    "bioSnippet": "Xin chào! Mình là Nguyễn Văn A. Mình yêu thích đi phượt, yêu âm nhạc và luôn mong muốn học hỏi, sáng tạo, lan tỏa những giá trị tích cực thông qua nghệ thuật và công nghệ AI."
+  }
+}

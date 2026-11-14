@@ -28,7 +28,11 @@ export function ExperienceBlock({
   const isCompactList = section.variant === 'compact-list';
 
   return (
-    <section id="experience" className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+    <section
+      id="experience"
+      className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8"
+      style={{ color: `var(--section-text-color, ${theme.textColor})` }}
+    >
       <div className="mb-8">
         <span
           className={`text-xs font-bold uppercase tracking-[0.2em] ${
@@ -62,7 +66,7 @@ export function ExperienceBlock({
         {section.items.map((item) => (
           <div
             key={item.id}
-            className={`relative ${
+            className={`${!isTimeline && !isCompactList ? "surface-block" : ""} relative ${
               isCanvaEditorial && !isTimeline
                 ? 'border-l-2 pl-5 py-2'
                 : `p-6 ${cardDec.className}`

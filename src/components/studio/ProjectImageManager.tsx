@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   FileText,
   Sparkles,
@@ -12,6 +12,8 @@ import {
   Plus,
   GripVertical,
   Images,
+  ImagePlus,
+  FolderOpen,
 } from 'lucide-react';
 import {
   DndContext,
@@ -29,6 +31,13 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import type { ProjectItem, VisualStyle, ProjectMediaItem } from '@/schema/portfolio.schema';
 import { usePortfolioStore } from '@/store/usePortfolioStore';
+import {
+  imageFileToDataUrl,
+  listPortfolioLibraryImages,
+  savePortfolioLibraryImage,
+  deletePortfolioLibraryImage,
+  clearPortfolioLibrary,
+} from '@/services/browser/portfolio-image-library';
 
 function SortableMediaRow({
   m,
@@ -117,9 +126,15 @@ function SortableMediaRow({
 
 export interface ProjectImageManagerProps {
   project: ProjectItem;
+  focusTab?: 'docx';
+  focusRequestId?: number;
 }
 
-export function ProjectImageManager({ project }: ProjectImageManagerProps) {
+export function ProjectImageManager({
+  project,
+  focusTab,
+  focusRequestId,
+}: ProjectImageManagerProps) {
   const {
     document,
     docxExtractedPool,
@@ -150,6 +165,18 @@ export function ProjectImageManager({ project }: ProjectImageManagerProps) {
     project.preferredImageStyle
   );
   const [genError, setGenError] = useState<string | null>(null);
+  const [savedLibraryItems, setSavedLibraryItems] = useState<ProjectMediaItem[]>([]);
+  const [libraryError, setLibraryError] = useState<string | null>(null);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const folderInputRef = useRef<HTMLInputElement>(null);
+  const managerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    void listPortfolioLibraryImages()
+      .then(setSavedLibraryItems)
+      .catch(() => setLibraryError('Không tải được thư viện ảnh trên máy này.'));
+  }, []);
 
   useEffect(() => {
     setPromptInput(project.suggestedAiImagePrompt);
@@ -157,9 +184,15 @@ export function ProjectImageManager({ project }: ProjectImageManagerProps) {
     setGenError(null);
   }, [project.id, project.suggestedAiImagePrompt, project.preferredImageStyle]);
 
+  useEffect(() => {
+    if (focusTab === undefined || focusRequestId === undefined) return;
+    setTab(focusTab);
+    managerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [focusRequestId, focusTab, project.id]);
+
   const isGenerating = generatingProjectId === project.id;
   const poolItems = docxExtractedPool[project.id] ?? [];
-  const libraryItems = (() => {
+  const projectLibraryItems = (() => {
     const items = new Map<string, { item: ProjectMediaItem; projectTitle: string }>();
     for (const section of document.sections) {
       if (section.type !== 'projects') continue;
@@ -174,6 +207,12 @@ export function ProjectImageManager({ project }: ProjectImageManagerProps) {
     }
     return Array.from(items.values());
   })();
+  const libraryItems = [
+    ...savedLibraryItems.map((item) => ({ item, projectTitle: 'Thư viện của tôi' })),
+    ...projectLibraryItems.filter(
+      ({ item }) => !savedLibraryItems.some((saved) => saved.url === item.url),
+    ),
+  ];
   const docxAttached = project.media.filter(
     (m) => m.sourceType === 'docx-extracted'
   );
@@ -216,8 +255,84 @@ export function ProjectImageManager({ project }: ProjectImageManagerProps) {
     ]);
   };
 
+  const addFilesToLibrary = async (files: File[]) => {
+    const imageFiles = files.filter((file) => file.type.startsWith('image/'));
+    if (imageFiles.length === 0) {
+      setLibraryError('Hãy chọn hoặc dán ít nhất một file ảnh.');
+      return;
+    }
+
+    setLibraryError(null);
+    try {
+      const imported = await Promise.all(imageFiles.map(async (file) => ({
+        id: crypto.randomUUID(),
+        url: await imageFileToDataUrl(file),
+        caption: file.name,
+        originalDocxMediaName: file.name,
+        sourceType: 'user-uploaded' as const,
+      })));
+      for (const item of imported) await savePortfolioLibraryImage(item);
+      setSavedLibraryItems((current) => [...imported, ...current]);
+    } catch (error) {
+      setLibraryError(
+        error instanceof Error
+          ? `${error.message} Hãy thử ảnh nhỏ hơn hoặc sao lưu rồi xóa bớt ảnh cũ.`
+          : 'Không thể lưu ảnh vào thư viện trên máy này.',
+      );
+    }
+  };
+
+  const handleDeleteLibraryImage = async (item: ProjectMediaItem) => {
+    // If it's a saved library image (has id in savedLibraryItems), delete from IndexedDB
+    const isSaved = savedLibraryItems.some((s) => s.id === item.id);
+    if (isSaved) {
+      try {
+        await deletePortfolioLibraryImage(item.id);
+        setSavedLibraryItems((prev) => prev.filter((s) => s.id !== item.id));
+      } catch {
+        setLibraryError('Không thể xóa ảnh khỏi thư viện.');
+      }
+    }
+    // Also remove from current project media if attached
+    setProjectMedia(project.id, project.media.filter((m) => m.url !== item.url));
+  };
+
+  const handleClearSavedLibrary = async () => {
+    try {
+      await clearPortfolioLibrary();
+      setSavedLibraryItems([]);
+    } catch {
+      setLibraryError('Không thể xóa toàn bộ thư viện.');
+    }
+  };
+
+  const handleLibraryPaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
+    const files = Array.from(event.clipboardData.items)
+      .filter((item) => item.type.startsWith('image/'))
+      .map((item) => item.getAsFile())
+      .filter((file): file is File => Boolean(file));
+    if (files.length === 0) return;
+    event.preventDefault();
+    void addFilesToLibrary(files);
+  };
+
+  const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.currentTarget.files ?? []);
+    event.currentTarget.value = '';
+    void addFilesToLibrary(files);
+  };
+
   return (
-    <div className="rounded-2xl border border-stone-200 bg-stone-50 p-3.5">
+    <div
+      ref={managerRef}
+      role="region"
+      data-testid="project-image-manager"
+      data-project-id={project.id}
+      className="rounded-2xl border border-stone-200 bg-stone-50 p-3.5"
+      onPaste={handleLibraryPaste}
+      tabIndex={0}
+      aria-label={`Bộ quản lý ảnh ${project.title}. Có thể dán ảnh vào thư viện.`}
+    >
       <div className="mb-3 flex items-center justify-between">
         <span className="text-xs font-bold uppercase tracking-wider text-stone-700">
           Quản lý Hình ảnh Bài tập
@@ -244,10 +359,47 @@ export function ProjectImageManager({ project }: ProjectImageManagerProps) {
         </div>
       </div>
 
+      {/* In-app Confirm Dialog — Xóa toàn bộ thư viện */}
+      {showClearConfirm && (
+        <div className="mb-3 rounded-2xl border-2 border-rose-200 bg-rose-50 p-4 shadow-sm">
+          <div className="flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rose-100">
+              <Trash2 className="h-4 w-4 text-rose-600" />
+            </div>
+            <div className="flex-1 space-y-1">
+              <p className="text-sm font-bold text-rose-800">Xóa toàn bộ thư viện đã lưu?</p>
+              <p className="text-xs text-rose-700">
+                Sẽ xóa vĩnh viễn <strong>{savedLibraryItems.length} ảnh</strong> đang được lưu trên máy này. Thao tác này không thể hoàn tác.
+              </p>
+            </div>
+          </div>
+          <div className="mt-3 flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setShowClearConfirm(false)}
+              className="rounded-xl border border-stone-300 bg-white px-3 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-100"
+            >
+              Hủy
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowClearConfirm(false);
+                void handleClearSavedLibrary();
+              }}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-700"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Xóa tất cả
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Tabs */}
-      <div className="mb-3 grid grid-cols-3 gap-1.5 rounded-xl bg-stone-200/70 p-1">
-        <button
+      <div className="mb-3 grid grid-cols-3 gap-1.5 rounded-xl bg-stone-200/70 p-1">        <button
           type="button"
+          aria-pressed={tab === 'library'}
           onClick={() => { setTab('library'); setGenError(null); }}
           className={`flex items-center justify-center gap-1 rounded-lg py-1.5 text-xs font-semibold transition ${tab === 'library' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-600'}`}
         >
@@ -257,6 +409,7 @@ export function ProjectImageManager({ project }: ProjectImageManagerProps) {
         </button>
         <button
           type="button"
+          aria-pressed={tab === 'docx'}
           onClick={() => {
             setTab('docx');
             setGenError(null);
@@ -275,6 +428,7 @@ export function ProjectImageManager({ project }: ProjectImageManagerProps) {
         </button>
         <button
           type="button"
+          aria-pressed={tab === 'ai'}
           onClick={() => {
             setTab('ai');
             setGenError(null);
@@ -339,21 +493,74 @@ export function ProjectImageManager({ project }: ProjectImageManagerProps) {
       {tab === 'library' ? (
         <div className="space-y-2">
           <p className="text-[10px] text-stone-500">Ảnh của tất cả bài tập đều có thể dùng cho bài này.</p>
+          <div className="flex flex-wrap items-center justify-between gap-1.5">
+            <span className="text-[10px] text-stone-500">Ảnh của tất cả bài tập đều có thể dùng cho bài này.</span>
+            <div className="flex flex-wrap items-center gap-1.5">
+              <input ref={imageInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileInput} />
+              <input ref={folderInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileInput} />
+              <button type="button" onClick={() => imageInputRef.current?.click()} className="inline-flex items-center gap-1 rounded-lg border border-stone-300 bg-white px-2 py-1 text-[10px] font-semibold text-stone-700 hover:bg-stone-100">
+                <ImagePlus className="h-3 w-3" /> Thêm ảnh
+              </button>
+              <button type="button" onClick={() => {
+                folderInputRef.current?.setAttribute('webkitdirectory', '');
+                folderInputRef.current?.setAttribute('directory', '');
+                folderInputRef.current?.click();
+              }} className="inline-flex items-center gap-1 rounded-lg border border-stone-300 bg-white px-2 py-1 text-[10px] font-semibold text-stone-700 hover:bg-stone-100">
+                <FolderOpen className="h-3 w-3" /> Chọn folder
+              </button>
+              {savedLibraryItems.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowClearConfirm(true)}
+                  className="inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2 py-1 text-[10px] font-semibold text-rose-600 hover:bg-rose-100"
+                  title="Xóa toàn bộ thư viện đã lưu"
+                >
+                  <Trash2 className="h-3 w-3" /> Xóa tất cả
+                </button>
+              )}
+            </div>
+          </div>
+          <p className="text-[10px] text-stone-400">Ảnh trong thư viện có thể dùng lại ở mọi bài tập trên máy này. Bấm vào vùng quản lý rồi nhấn Ctrl+V để dán ảnh đã sao chép. Hover vào ảnh để xóa khỏi thư viện.</p>
+          {libraryError && <p role="alert" className="rounded-lg bg-rose-50 px-2.5 py-1.5 text-[10px] text-rose-700">{libraryError}</p>}
           {libraryItems.length === 0 ? (
             <p className="rounded-xl border border-dashed border-stone-300 bg-white p-3 text-center text-xs text-stone-500">Chưa có ảnh trong thư viện. Tạo ảnh AI hoặc nhập ảnh DOCX để bắt đầu.</p>
           ) : (
             <div className="grid grid-cols-2 gap-2">
               {libraryItems.map(({ item, projectTitle }) => {
                 const isSelected = project.media.some((m) => m.url === item.url);
+                const isSavedLib = savedLibraryItems.some((s) => s.id === item.id);
                 return (
-                  <button key={item.url} type="button" onClick={() => {
-                    if (isSelected) setProjectMedia(project.id, project.media.filter((m) => m.url !== item.url));
-                    else setProjectMedia(project.id, [{ ...item, id: crypto.randomUUID() }, ...project.media]);
-                  }} className={`group relative overflow-hidden rounded-xl border-2 text-left transition ${isSelected ? 'border-emerald-600' : 'border-stone-200 opacity-80 hover:opacity-100'}`}>
-                    <img src={item.url} alt={item.caption || ''} className="aspect-[4/3] w-full object-cover" />
-                    <span className={`absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full text-white shadow ${isSelected ? 'bg-emerald-600' : 'bg-stone-700/70'}`}>{isSelected ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}</span>
-                    <span className="block truncate bg-white px-2 py-1 text-[10px] text-stone-600">{projectTitle}</span>
-                  </button>
+                  <div key={item.url} className="group relative overflow-hidden rounded-xl border-2 border-stone-200 transition hover:border-stone-300">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (isSelected) setProjectMedia(project.id, project.media.filter((m) => m.url !== item.url));
+                        else setProjectMedia(project.id, [{ ...item, id: crypto.randomUUID() }, ...project.media]);
+                      }}
+                      className={`w-full text-left rounded-xl border-2 transition ${isSelected ? 'border-emerald-600 ring-2 ring-inset ring-emerald-500' : 'border-stone-200'}`}
+                    >
+                      <img src={item.url} alt={item.caption || ''} className="aspect-[4/3] w-full object-cover" />
+                      <span className={`absolute right-7 top-1.5 flex h-5 w-5 items-center justify-center rounded-full text-white shadow ${isSelected ? 'bg-emerald-600' : 'bg-stone-700/70'}`}>
+                        {isSelected ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
+                      </span>
+                      <span className="block truncate bg-white px-2 py-1 text-[10px] text-stone-600">{projectTitle}</span>
+                    </button>
+                    {/* Delete button — only for saved library images */}
+                    {isSavedLib && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          void handleDeleteLibraryImage(item);
+                        }}
+                        className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-rose-600 text-white opacity-0 shadow transition group-hover:opacity-100"
+                        title="Xóa ảnh khỏi thư viện"
+                        aria-label="Xóa ảnh khỏi thư viện"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    )}
+                  </div>
                 );
               })}
             </div>

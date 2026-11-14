@@ -20,7 +20,10 @@ import type {
   SkillsSection,
   ProjectsSection,
   ContactSection,
+  AboutContactItem,
   ProjectItem,
+  ConclusionCard,
+  ConclusionConfig,
   ProfileOwner,
   ProjectDetailMode,
   SectionMotif,
@@ -29,6 +32,7 @@ import { usePortfolioStore } from "@/store/usePortfolioStore";
 import { ProjectImageManager } from "./ProjectImageManager";
 import { DraggableUnitList } from "./DraggableUnitList";
 import { VIETNAMESE_FONT_OPTIONS } from "@/schema/theme.schema";
+import { DEFAULT_CONCLUSION_CONFIG } from "@/templates/blocks/conclusion-defaults";
 
 const SECTION_MOTIF_OPTIONS: Array<{ id: SectionMotif; label: string }> = [
   { id: "none", label: "Không họa tiết" },
@@ -46,7 +50,39 @@ const SECTION_MOTIF_OPTIONS: Array<{ id: SectionMotif; label: string }> = [
   { id: "canva-musical", label: "Nốt nhạc" },
 ];
 
-export function SectionInspector() {
+function getConclusionCardWidth(
+  layout: ConclusionConfig["layout"],
+  index: number,
+) {
+  switch (layout) {
+    case "three-cards":
+      return 4;
+    case "two-cards":
+    case "masonry":
+      return 6;
+    case "compact":
+      return 3;
+    case "editorial":
+      return index === 0 ? 8 : 4;
+    case "spotlight":
+      return index === 0 ? 12 : 6;
+    case "stacked":
+    case "timeline":
+      return 12;
+  }
+}
+
+export interface SectionInspectorProps {
+  imageManagerFocusRequest?: {
+    projectId: string;
+    tab: 'docx';
+    requestId: number;
+  } | null;
+}
+
+export function SectionInspector({
+  imageManagerFocusRequest,
+}: SectionInspectorProps) {
   const {
     document,
     activeSectionIndex,
@@ -73,6 +109,33 @@ export function SectionInspector() {
 
   const idx = activeSectionIndex ?? 0;
   const section = document.sections[idx];
+  const conclusion =
+    section?.type === "contact"
+      ? section.conclusion ?? DEFAULT_CONCLUSION_CONFIG
+      : undefined;
+
+  const updateConclusion = (patch: Partial<ConclusionConfig>) => {
+    if (section?.type !== "contact") return;
+    updateSection(idx, {
+      ...section,
+      conclusion: {
+        ...(section.conclusion ?? DEFAULT_CONCLUSION_CONFIG),
+        ...patch,
+      },
+    });
+  };
+
+  const updateConclusionCard = (
+    cardIndex: number,
+    patch: Partial<ConclusionCard>,
+  ) => {
+    if (!conclusion) return;
+    updateConclusion({
+      cards: conclusion.cards.map((card, index) =>
+        index === cardIndex ? { ...card, ...patch } : card,
+      ),
+    });
+  };
 
   // Resolve Profile Owner state with fallback to hero section
   const heroSec = document.sections.find(
@@ -454,6 +517,35 @@ export function SectionInspector() {
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
+                {([
+                  { key: "backgroundColor", label: "Màu nền section", fallback: document.theme.backgroundColor },
+                  { key: "surfaceColor", label: "Màu nền thẻ", fallback: document.theme.surfaceColor },
+                  { key: "headingColor", label: "Màu tiêu đề", fallback: document.theme.textColor },
+                  { key: "textColor", label: "Màu nội dung", fallback: document.theme.textColor },
+                ] as const).map(({ key, label, fallback }) => (
+                  <div key={key} className="rounded-lg border border-stone-200 bg-white p-1.5">
+                    <label htmlFor={`section-${key}-${idx}`} className="block text-[10px] font-semibold text-stone-700">
+                      {label}
+                    </label>
+                    <div className="mt-1 flex items-center gap-1.5">
+                      <input
+                        id={`section-${key}-${idx}`}
+                        type="color"
+                        aria-label={`${label} riêng`}
+                        value={section[key] ?? fallback}
+                        onChange={(event) => updateSection(idx, { ...section, [key]: event.target.value })}
+                        className="h-7 w-9 cursor-pointer rounded border border-stone-200 bg-white p-0.5"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => updateSection(idx, { ...section, [key]: undefined })}
+                        className="text-[9px] font-medium text-indigo-700 hover:underline"
+                      >Theo theme</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label
                     htmlFor={`section-heading-font-${idx}`}
@@ -624,6 +716,56 @@ export function SectionInspector() {
                   </label>
                 </div>
                 <input type="text" value={section.avatar.url.startsWith("data:") ? "" : section.avatar.url} onChange={(e) => updateSection(idx, { ...section, avatar: { ...section.avatar, url: e.target.value, sourceType: "user-uploaded" as const } })} placeholder="Hoặc dán URL ảnh Hero" className="mt-2 w-full rounded-xl border border-stone-200 px-2.5 py-1.5 text-xs font-mono" />
+                <label className="mt-2 flex items-center gap-2 text-[11px] font-medium text-stone-700">
+                  <input
+                    type="checkbox"
+                    aria-label="Hiển thị ảnh ở trang đầu"
+                    checked={section.showAvatar !== false}
+                    onChange={(e) =>
+                      updateSection(idx, {
+                        ...section,
+                        showAvatar: e.target.checked,
+                      })
+                    }
+                    className="rounded border-stone-300"
+                  />
+                  Hiển thị ảnh ở trang đầu
+                </label>
+              </div>
+
+              <div className="space-y-2 rounded-xl border border-stone-200 bg-stone-50 p-2.5">
+                <label className="flex items-center gap-2 text-[11px] font-semibold text-stone-700">
+                  <input
+                    type="checkbox"
+                    aria-label="Hiển thị dòng Portfolio"
+                    checked={section.showPortfolioLabel !== false}
+                    onChange={(e) =>
+                      updateSection(idx, {
+                        ...section,
+                        showPortfolioLabel: e.target.checked,
+                      })
+                    }
+                    className="rounded border-stone-300"
+                  />
+                  Hiển thị dòng Portfolio
+                </label>
+                {section.showPortfolioLabel !== false && (
+                  <label className="block text-[11px] font-semibold text-stone-700">
+                    Nhãn Portfolio
+                    <input
+                      type="text"
+                      aria-label="Nhãn Portfolio"
+                      value={section.portfolioLabel ?? "Portfolio"}
+                      onChange={(e) =>
+                        updateSection(idx, {
+                          ...section,
+                          portfolioLabel: e.target.value,
+                        })
+                      }
+                      className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-2.5 py-1.5 text-xs"
+                    />
+                  </label>
+                )}
               </div>
 
               <div>
@@ -1004,6 +1146,122 @@ export function SectionInspector() {
                     }}
                   />
                 </div>
+              </div>
+
+              <div className="space-y-2 rounded-xl border border-stone-200 bg-white p-2.5">
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <p className="text-[11px] font-bold text-stone-800">Thông tin liên hệ trong thẻ About</p>
+                    <p className="text-[10px] text-stone-500">Bật/tắt các dòng có sẵn hoặc thêm mục kèm biểu tượng và liên kết.</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {([
+                    ["email", "Email"],
+                    ["phone", "Điện thoại"],
+                    ["location", "Địa điểm"],
+                    ["website", "Website"],
+                  ] as const).map(([key, label]) => {
+                    const hidden = (section.contactInfo.hiddenFields ?? []).includes(key);
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        aria-pressed={!hidden}
+                        onClick={() => {
+                          const hiddenFields = section.contactInfo.hiddenFields ?? [];
+                          const nextHidden = hidden
+                            ? hiddenFields.filter((field) => field !== key)
+                            : [...hiddenFields, key];
+                          updateSection(idx, {
+                            ...section,
+                            contactInfo: { ...section.contactInfo, hiddenFields: nextHidden },
+                          });
+                        }}
+                        className={`rounded-lg border px-2 py-1.5 text-[10px] font-semibold ${hidden ? "border-stone-200 bg-stone-50 text-stone-500" : "border-indigo-200 bg-indigo-50 text-indigo-700"}`}
+                      >
+                        {hidden ? "＋ Hiện" : "✓ Đang hiện"} {label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="space-y-2">
+                  {(section.contactInfo.customItems ?? []).map((item, itemIndex) => {
+                    const customItems = section.contactInfo.customItems ?? [];
+                    const updateItem = (patch: Partial<AboutContactItem>) => {
+                      const next = [...customItems];
+                      next[itemIndex] = { ...item, ...patch };
+                      updateSection(idx, { ...section, contactInfo: { ...section.contactInfo, customItems: next } });
+                    };
+                    return (
+                      <div key={item.id} className="rounded-lg border border-stone-200 bg-stone-50 p-2">
+                        <div className="mb-1.5 flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-stone-600">Mục liên hệ {itemIndex + 1}</span>
+                          <button
+                            type="button"
+                            aria-label={`Xóa mục liên hệ ${itemIndex + 1}`}
+                            onClick={() => updateSection(idx, {
+                              ...section,
+                              contactInfo: { ...section.contactInfo, customItems: customItems.filter((_, i) => i !== itemIndex) },
+                            })}
+                            className="rounded p-1 text-rose-600 hover:bg-rose-50"
+                          ><Trash2 className="h-3.5 w-3.5" /></button>
+                        </div>
+                        <div className="grid grid-cols-2 gap-1.5">
+                          <input
+                            type="text"
+                            aria-label={`Tên mục liên hệ ${itemIndex + 1}`}
+                            value={item.label}
+                            onChange={(event) => updateItem({ label: event.target.value })}
+                            placeholder="Tên mục"
+                            className="rounded border border-stone-200 bg-white px-2 py-1.5 text-[10px]"
+                          />
+                          <select
+                            aria-label={`Biểu tượng mục liên hệ ${itemIndex + 1}`}
+                            value={item.icon}
+                            onChange={(event) => updateItem({ icon: event.target.value as AboutContactItem["icon"] })}
+                            className="rounded border border-stone-200 bg-white px-2 py-1.5 text-[10px]"
+                          >
+                            <option value="link">Liên kết</option>
+                            <option value="mail">Email</option>
+                            <option value="phone">Điện thoại</option>
+                            <option value="pin">Địa điểm</option>
+                            <option value="globe">Website</option>
+                          </select>
+                          <input
+                            type="text"
+                            aria-label={`Nội dung mục liên hệ ${itemIndex + 1}`}
+                            value={item.value}
+                            onChange={(event) => updateItem({ value: event.target.value })}
+                            placeholder="Nội dung hiển thị"
+                            className="rounded border border-stone-200 bg-white px-2 py-1.5 text-[10px]"
+                          />
+                          <input
+                            type="url"
+                            aria-label={`Đường dẫn mục liên hệ ${itemIndex + 1}`}
+                            value={item.href ?? ""}
+                            onChange={(event) => updateItem({ href: event.target.value || undefined })}
+                            placeholder="Link (không bắt buộc)"
+                            className="rounded border border-stone-200 bg-white px-2 py-1.5 text-[10px]"
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => updateSection(idx, {
+                    ...section,
+                    contactInfo: {
+                      ...section.contactInfo,
+                      customItems: [...(section.contactInfo.customItems ?? []), {
+                        id: crypto.randomUUID(), label: "Liên hệ mới", value: "", icon: "link" as const,
+                      }],
+                    },
+                  })}
+                  className="inline-flex items-center gap-1 rounded-lg border border-dashed border-stone-300 px-2.5 py-1.5 text-[10px] font-semibold text-stone-700 hover:border-indigo-300 hover:bg-indigo-50"
+                ><Plus className="h-3 w-3" /> Thêm mục có icon</button>
               </div>
 
               {/* Rubric Criteria for About */}
@@ -1419,9 +1677,9 @@ export function SectionInspector() {
                         : "border-stone-200 bg-stone-100 text-stone-600 hover:bg-white"
                     }`}
                   >
-                    <p className="font-semibold">Route riêng ★</p>
+                    <p className="font-semibold">Trang riêng ★</p>
                     <p className="text-[10px] text-stone-500">
-                      /projects/[slug] (Tối ưu điểm Rubric)
+                      Trang độc lập /projects/[slug]
                     </p>
                   </button>
                 </div>
@@ -1581,6 +1839,69 @@ export function SectionInspector() {
                         />
                       </div>
                     </div>
+                    <div className="space-y-2 rounded-xl border border-stone-200 bg-stone-50 p-2.5">
+                      <p className="text-[11px] font-bold text-stone-800">Hiển thị chương &amp; mục</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <label className="inline-flex items-center gap-2 text-[10px] font-medium text-stone-700">
+                          <input
+                            type="checkbox"
+                            checked={currentProject.showChapter !== false}
+                            onChange={(event) => updateProject(currentProject.id, { showChapter: event.target.checked })}
+                            aria-label="Hiển thị chương"
+                            className="accent-amber-600"
+                          />
+                          Hiện chương
+                        </label>
+                        <label className="inline-flex items-center gap-2 text-[10px] font-medium text-stone-700">
+                          <input
+                            type="checkbox"
+                            checked={currentProject.showExercise !== false}
+                            onChange={(event) => updateProject(currentProject.id, { showExercise: event.target.checked })}
+                            aria-label="Hiển thị mã bài tập"
+                            className="accent-amber-600"
+                          />
+                          Hiện mã bài tập
+                        </label>
+                        <label className="text-[10px] font-semibold text-stone-700">
+                          Bố cục chương
+                          <select
+                            aria-label="Bố cục chương"
+                            value={currentProject.chapterLayout ?? "badge"}
+                            onChange={(event) => updateProject(currentProject.id, { chapterLayout: event.target.value as ProjectItem["chapterLayout"] })}
+                            className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-xs"
+                          >
+                            <option value="badge">Nhãn</option>
+                            <option value="banner">Dải nổi bật</option>
+                            <option value="minimal">Chữ tối giản</option>
+                          </select>
+                        </label>
+                        <label className="text-[10px] font-semibold text-stone-700">
+                          Bố cục bài tập
+                          <select
+                            aria-label="Bố cục bài tập"
+                            value={currentProject.exerciseLayout ?? "badge"}
+                            onChange={(event) => updateProject(currentProject.id, { exerciseLayout: event.target.value as ProjectItem["exerciseLayout"] })}
+                            className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-xs"
+                          >
+                            <option value="badge">Nhãn</option>
+                            <option value="inline">Chữ cùng dòng</option>
+                          </select>
+                        </label>
+                      </div>
+                      <label className="block text-[10px] font-semibold text-stone-700">
+                        Bố cục chi tiết bài
+                        <select
+                          aria-label="Bố cục chi tiết bài"
+                          value={currentProject.detailLayout ?? "standard"}
+                          onChange={(event) => updateProject(currentProject.id, { detailLayout: event.target.value as ProjectItem["detailLayout"] })}
+                          className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-xs"
+                        >
+                          <option value="standard">Tiêu chuẩn</option>
+                          <option value="compact">Gọn</option>
+                          <option value="two-column">Hai cột</option>
+                        </select>
+                      </label>
+                    </div>
                     <div>
                       <label
                         htmlFor={`project-docx-url-${currentProject.id}`}
@@ -1596,6 +1917,24 @@ export function SectionInspector() {
                         onChange={(e) =>
                           updateProject(currentProject.id, {
                             docxUrl: e.target.value || undefined,
+                          })
+                        }
+                        className="mt-1 w-full rounded-xl border border-stone-200 px-2.5 py-1.5 text-xs"
+                      />
+                      <label
+                        htmlFor={`project-docx-label-${currentProject.id}`}
+                        className="mt-2 block text-[11px] font-semibold text-stone-700"
+                      >
+                        Tên nút mở bài tập
+                      </label>
+                      <input
+                        id={`project-docx-label-${currentProject.id}`}
+                        type="text"
+                        value={currentProject.docxLinkLabel ?? ""}
+                        placeholder="Mở file DOCX"
+                        onChange={(e) =>
+                          updateProject(currentProject.id, {
+                            docxLinkLabel: e.target.value || undefined,
                           })
                         }
                         className="mt-1 w-full rounded-xl border border-stone-200 px-2.5 py-1.5 text-xs"
@@ -1772,63 +2111,91 @@ export function SectionInspector() {
                         />
                       </div>
 
+                      <div>
+                        <label className="block text-[10px] font-semibold text-stone-700">
+                          Nội dung trích xuất từ bài làm
+                        </label>
+                        <p className="mt-0.5 text-[9px] leading-relaxed text-stone-500">
+                          Chỉnh trực tiếp văn bản nhận diện từ tệp DOCX trước khi hiển thị trong trang chi tiết.
+                        </p>
+                        <textarea
+                          rows={5}
+                          aria-label="Nội dung trích xuất chi tiết"
+                          value={currentProject.fullRawExcerpt ?? ""}
+                          onChange={(e) =>
+                            updateProject(currentProject.id, {
+                              fullRawExcerpt: e.target.value || undefined,
+                            })
+                          }
+                          className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-xs leading-relaxed"
+                          placeholder="Nội dung trích xuất từ bài làm sẽ hiển thị ở đây..."
+                        />
+                      </div>
+
                       <div className="space-y-2">
                         <div className="flex items-center justify-between gap-2">
-                          <label className="block text-[10px] font-semibold text-stone-700">
-                            Kết quả &amp; điểm nhấn
-                          </label>
-                          <button
-                            type="button"
-                            aria-label="Thêm kết quả và điểm nhấn"
-                            onClick={() =>
-                              updateProject(currentProject.id, {
-                                keyTakeaways: [
-                                  ...currentProject.keyTakeaways,
-                                  "",
-                                ],
-                              })
-                            }
-                            className="inline-flex items-center gap-1 rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-[10px] font-semibold text-amber-900 hover:bg-amber-100"
-                          >
-                            <Plus className="h-3 w-3" />
-                            Thêm ý
-                          </button>
-                        </div>
-                        {currentProject.keyTakeaways.map((takeaway, index) => (
-                          <div key={index} className="flex items-start gap-1.5">
-                            <textarea
-                              aria-label={`Kết quả và điểm nhấn ${index + 1}`}
-                              rows={2}
-                              value={takeaway}
+                          <div>
+                            <label className="block text-[10px] font-semibold text-stone-700">
+                              Kết quả &amp; điểm nhấn
+                            </label>
+                            <p className="text-[9px] text-stone-500">
+                              Nhập vào 1 ô, mỗi ý bắt đầu bằng dấu gạch ngang (-) ở đầu dòng.
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <label className="text-[10px] font-medium text-stone-600">
+                              Hình dáng:
+                            </label>
+                            <select
+                              aria-label="Hình dáng gạch đầu dòng"
+                              value={currentProject.takeawayBulletShape ?? "circle"}
                               onChange={(e) =>
                                 updateProject(currentProject.id, {
-                                  keyTakeaways: currentProject.keyTakeaways.map(
-                                    (item, itemIndex) =>
-                                      itemIndex === index
-                                        ? e.target.value
-                                        : item,
-                                  ),
+                                  takeawayBulletShape: e.target.value as
+                                    | "circle"
+                                    | "square"
+                                    | "hyphen"
+                                    | "star"
+                                    | "check"
+                                    | "diamond",
                                 })
                               }
-                              className="w-full rounded-lg border border-stone-200 bg-white px-2 py-1 text-xs"
-                            />
-                            <button
-                              type="button"
-                              aria-label={`Xóa kết quả và điểm nhấn ${index + 1}`}
-                              onClick={() =>
-                                updateProject(currentProject.id, {
-                                  keyTakeaways:
-                                    currentProject.keyTakeaways.filter(
-                                      (_, itemIndex) => itemIndex !== index,
-                                    ),
-                                })
-                              }
-                              className="mt-1 rounded-md p-1 text-rose-600 hover:bg-rose-50"
+                              className="rounded border border-stone-200 bg-white px-2 py-0.5 text-[10px] text-stone-700"
                             >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
+                              <option value="circle">● Tròn (Mặc định)</option>
+                              <option value="square">■ Vuông</option>
+                              <option value="hyphen">- Dấu gạch</option>
+                              <option value="star">★ Ngôi sao</option>
+                              <option value="check">✔ Dấu tích</option>
+                              <option value="diamond">◆ Kim cương</option>
+                            </select>
                           </div>
-                        ))}
+                        </div>
+
+                        <textarea
+                          rows={4}
+                          aria-label="Kết quả & điểm nhấn"
+                          value={
+                            (currentProject.keyTakeaways ?? []).length > 0
+                              ? currentProject.keyTakeaways
+                                  .map((line) => (line.startsWith("- ") ? line : `- ${line}`))
+                                  .join("\n")
+                              : ""
+                          }
+                          placeholder="- Kết quả đạt được thứ nhất...&#10;- Vận dụng thành thạo kỹ năng...&#10;- Hoàn thành mục tiêu đề ra..."
+                          onChange={(e) => {
+                            const raw = e.target.value;
+                            const lines = raw
+                              .split("\n")
+                              .map((l) => l.trim())
+                              .filter(Boolean)
+                              .map((l) => (l.startsWith("-") ? l.replace(/^-\s*/, "") : l));
+                            updateProject(currentProject.id, {
+                              keyTakeaways: lines,
+                            });
+                          }}
+                          className="w-full rounded-lg border border-stone-200 bg-white px-2.5 py-1.5 font-mono text-xs leading-relaxed"
+                        />
                       </div>
 
                       <div className="space-y-2 border-t border-amber-100 pt-2">
@@ -1954,77 +2321,114 @@ export function SectionInspector() {
 
                       {/* Prompt Comparison Inputs for Rubric Ch.3 */}
                       <div className="rounded-lg border border-stone-200 bg-white p-2 space-y-1.5">
-                        <span className="font-semibold text-[10px] text-stone-700">
-                          Bảng So sánh Prompt (Rubric Chương 3)
-                        </span>
-                        <input
-                          type="text"
-                          value={
-                            currentProject.promptComparison?.initialPrompt ?? ""
-                          }
-                          placeholder="Prompt ban đầu (sơ sài)..."
-                          onChange={(e) =>
-                            updateProject(currentProject.id, {
-                              promptComparison: {
-                                initialPrompt: e.target.value,
-                                improvedPrompt:
-                                  currentProject.promptComparison
-                                    ?.improvedPrompt ?? "",
-                                aiOutput:
-                                  currentProject.promptComparison?.aiOutput ??
-                                  "",
-                              },
-                            })
-                          }
-                          className="w-full rounded border border-stone-200 px-2 py-0.5 text-xs"
-                        />
-                        <input
-                          type="text"
-                          value={
-                            currentProject.promptComparison?.improvedPrompt ??
-                            ""
-                          }
-                          placeholder="Prompt cải tiến (kỹ thuật RTF / Chain-of-Thought)..."
-                          onChange={(e) =>
-                            updateProject(currentProject.id, {
-                              promptComparison: {
-                                initialPrompt:
-                                  currentProject.promptComparison
-                                    ?.initialPrompt ?? "",
-                                improvedPrompt: e.target.value,
-                                aiOutput:
-                                  currentProject.promptComparison?.aiOutput ??
-                                  "",
-                              },
-                            })
-                          }
-                          className="w-full rounded border border-stone-200 px-2 py-0.5 text-xs"
-                        />
-                        <textarea
-                          rows={2}
-                          value={
-                            currentProject.promptComparison?.aiOutput ?? ""
-                          }
-                          placeholder="Kết quả AI phản hồi sau cải tiến..."
-                          onChange={(e) =>
-                            updateProject(currentProject.id, {
-                              promptComparison: {
-                                initialPrompt:
-                                  currentProject.promptComparison
-                                    ?.initialPrompt ?? "",
-                                improvedPrompt:
-                                  currentProject.promptComparison
-                                    ?.improvedPrompt ?? "",
-                                aiOutput: e.target.value,
-                              },
-                            })
-                          }
-                          className="w-full rounded border border-stone-200 px-2 py-0.5 text-xs"
-                        />
+                        <div className="flex items-center justify-between">
+                          <span className="font-semibold text-[10px] text-stone-700">
+                            Bảng So sánh Prompt (Rubric Chương 3)
+                          </span>
+                          <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                            <span className="text-[10px] text-stone-500 font-medium">
+                              {(currentProject.showPromptComparison ?? false) ? "Bật" : "Tắt"}
+                            </span>
+                            <input
+                              type="checkbox"
+                              checked={currentProject.showPromptComparison ?? false}
+                              onChange={(e) =>
+                                updateProject(currentProject.id, {
+                                  showPromptComparison: e.target.checked,
+                                })
+                              }
+                              className="h-3.5 w-3.5 rounded border-stone-300 text-amber-600 focus:ring-amber-500"
+                            />
+                          </label>
+                        </div>
+                        {(currentProject.showPromptComparison ?? false) ? (
+                          <>
+                            <input
+                              type="text"
+                              value={
+                                currentProject.promptComparison?.initialPrompt ?? ""
+                              }
+                              placeholder="Prompt ban đầu (sơ sài)..."
+                              onChange={(e) =>
+                                updateProject(currentProject.id, {
+                                  promptComparison: {
+                                    initialPrompt: e.target.value,
+                                    improvedPrompt:
+                                      currentProject.promptComparison
+                                        ?.improvedPrompt ?? "",
+                                    aiOutput:
+                                      currentProject.promptComparison?.aiOutput ??
+                                      "",
+                                  },
+                                })
+                              }
+                              className="w-full rounded border border-stone-200 px-2 py-0.5 text-xs"
+                            />
+                            <input
+                              type="text"
+                              value={
+                                currentProject.promptComparison?.improvedPrompt ??
+                                ""
+                              }
+                              placeholder="Prompt cải tiến (kỹ thuật RTF / Chain-of-Thought)..."
+                              onChange={(e) =>
+                                updateProject(currentProject.id, {
+                                  promptComparison: {
+                                    initialPrompt:
+                                      currentProject.promptComparison
+                                        ?.initialPrompt ?? "",
+                                    improvedPrompt: e.target.value,
+                                    aiOutput:
+                                      currentProject.promptComparison?.aiOutput ??
+                                      "",
+                                  },
+                                })
+                              }
+                              className="w-full rounded border border-stone-200 px-2 py-0.5 text-xs"
+                            />
+                            <textarea
+                              rows={2}
+                              value={
+                                currentProject.promptComparison?.aiOutput ?? ""
+                              }
+                              placeholder="Kết quả AI phản hồi sau cải tiến..."
+                              onChange={(e) =>
+                                updateProject(currentProject.id, {
+                                  promptComparison: {
+                                    initialPrompt:
+                                      currentProject.promptComparison
+                                        ?.initialPrompt ?? "",
+                                    improvedPrompt:
+                                      currentProject.promptComparison
+                                        ?.improvedPrompt ?? "",
+                                    aiOutput: e.target.value,
+                                  },
+                                })
+                              }
+                              className="w-full rounded border border-stone-200 px-2 py-0.5 text-xs"
+                            />
+                          </>
+                        ) : (
+                          <p className="text-[10px] italic text-stone-400 py-0.5">
+                            Đã tắt hiển thị bảng so sánh prompt cho bài tập này.
+                          </p>
+                        )}
                       </div>
                     </div>
 
-                    <ProjectImageManager project={currentProject} />
+                    <ProjectImageManager
+                      project={currentProject}
+                      focusTab={
+                        imageManagerFocusRequest?.projectId === currentProject.id
+                          ? imageManagerFocusRequest.tab
+                          : undefined
+                      }
+                      focusRequestId={
+                        imageManagerFocusRequest?.projectId === currentProject.id
+                          ? imageManagerFocusRequest.requestId
+                          : undefined
+                      }
+                    />
                   </div>
                 );
               })()}
@@ -2129,6 +2533,662 @@ export function SectionInspector() {
                   className="mt-1 w-full rounded-xl border border-stone-200 px-2.5 py-1.5 text-xs"
                 />
               </div>
+
+              {conclusion && (
+                <div className="space-y-3 rounded-xl border border-violet-200 bg-violet-50/40 p-2.5">
+                  <div className="border-b border-violet-100 pb-2">
+                    <h4 className="text-[11px] font-bold uppercase tracking-wide text-violet-900">
+                      Nội dung Conclusion
+                    </h4>
+                    <p className="mt-1 text-[10px] leading-relaxed text-stone-600">
+                      Chỉnh phần tổng kết độc lập với thông tin liên hệ bên dưới.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <label className="text-[10px] font-semibold text-stone-700">
+                      Tiêu đề
+                      <input
+                        aria-label="Tiêu đề Conclusion"
+                        value={conclusion.title}
+                        onChange={(event) =>
+                          updateConclusion({ title: event.target.value })
+                        }
+                        className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-xs"
+                      />
+                    </label>
+                    <label className="text-[10px] font-semibold text-stone-700">
+                      Dòng nhãn
+                      <input
+                        aria-label="Dòng nhãn Conclusion"
+                        value={conclusion.eyebrow}
+                        onChange={(event) =>
+                          updateConclusion({ eyebrow: event.target.value })
+                        }
+                        className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-xs"
+                      />
+                    </label>
+                  </div>
+
+                  <div>
+                    <p className="text-[10px] font-semibold text-stone-700">
+                      Bố cục Conclusion
+                    </p>
+                    <div className="mt-1 grid grid-cols-2 gap-1">
+                      {([
+                        ["three-cards", "3 cột"],
+                        ["two-cards", "2 cột"],
+                        ["stacked", "Xếp dọc"],
+                        ["editorial", "Editorial lệch"],
+                        ["masonry", "Masonry"],
+                        ["compact", "Lưới gọn"],
+                        ["timeline", "Dòng thời gian"],
+                        ["spotlight", "Tiêu điểm"],
+                      ] as const).map(([layout, label]) => (
+                        <button
+                          key={layout}
+                          type="button"
+                          aria-pressed={conclusion.layout === layout}
+                          onClick={() =>
+                            updateConclusion({
+                              layout,
+                              cards: conclusion.cards.map((card, cardIndex) => ({
+                                ...card,
+                                width: getConclusionCardWidth(layout, cardIndex),
+                              })),
+                            })
+                          }
+                          className={`rounded-lg border px-2 py-1.5 text-[10px] font-semibold ${
+                            conclusion.layout === layout
+                              ? "border-violet-500 bg-violet-100 text-violet-900"
+                              : "border-stone-200 bg-white text-stone-600 hover:bg-stone-50"
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {([
+                      ["backgroundColor", "Nền Conclusion", document.theme.backgroundColor],
+                      ["headingColor", "Màu tiêu đề", document.theme.textColor],
+                      ["textColor", "Màu nội dung", document.theme.textColor],
+                      ["accentColor", "Màu nhấn", document.theme.primaryColor],
+                      ["cardBackgroundColor", "Nền thẻ", document.theme.surfaceColor],
+                      ["cardBorderColor", "Viền thẻ", document.theme.primaryColor],
+                    ] as const).map(([key, label, fallback]) => (
+                      <label
+                        key={key}
+                        className="rounded-lg border border-stone-200 bg-white p-1.5 text-[10px] font-semibold text-stone-700"
+                      >
+                        {label}
+                        <span className="mt-1 flex items-center gap-1.5">
+                          <input
+                            type="color"
+                            aria-label={label}
+                            value={conclusion[key] || fallback}
+                            onChange={(event) =>
+                              updateConclusion({ [key]: event.target.value })
+                            }
+                            className="h-7 w-9 cursor-pointer rounded border border-stone-200 bg-white p-0.5"
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              updateConclusion({ [key]: undefined })
+                            }
+                            className="text-[9px] font-medium text-indigo-700 hover:underline"
+                          >
+                            Theo theme
+                          </button>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+
+                  <label className="block text-[10px] font-semibold text-stone-700">
+                    Font chữ Conclusion
+                    <select
+                      aria-label="Font chữ Conclusion"
+                      value={conclusion.fontFamily ?? ""}
+                      onChange={(event) =>
+                        updateConclusion({
+                          fontFamily: event.target.value || undefined,
+                        })
+                      }
+                      className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-xs"
+                    >
+                      <option value="">Theo theme</option>
+                      {VIETNAMESE_FONT_OPTIONS.map((font) => (
+                        <option key={font} value={font}>
+                          {font}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <div className="space-y-2 border-t border-violet-100 pt-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-[10px] font-semibold text-stone-700">
+                        Thẻ nội dung — kéo để đổi thứ tự
+                      </p>
+                      <button
+                        type="button"
+                        aria-label="Thêm thẻ Conclusion"
+                        onClick={() =>
+                          updateConclusion({
+                            cards: [
+                              ...conclusion.cards,
+                              {
+                                id: crypto.randomUUID(),
+                                number: String(conclusion.cards.length + 1).padStart(2, "0"),
+                                title: `Thẻ tổng kết ${conclusion.cards.length + 1}`,
+                                body: "",
+                                bullets: [],
+                                width: getConclusionCardWidth(
+                                  conclusion.layout,
+                                  conclusion.cards.length,
+                                ),
+                                height: 4,
+                              },
+                            ],
+                          })
+                        }
+                        className="inline-flex items-center gap-1 rounded-lg border border-violet-200 bg-white px-2 py-1 text-[10px] font-semibold text-violet-900 hover:bg-violet-100"
+                      >
+                        <Plus className="h-3 w-3" />
+                        Thêm thẻ
+                      </button>
+                    </div>
+                    <DraggableUnitList
+                      items={conclusion.cards.map((card) => ({
+                        id: card.id,
+                        title: card.title || "Thẻ Conclusion",
+                      }))}
+                      ariaLabel="Thứ tự thẻ Conclusion"
+                      onReorder={(oldIndex, newIndex) => {
+                        const cards = [...conclusion.cards];
+                        const [movedCard] = cards.splice(oldIndex, 1);
+                        cards.splice(newIndex, 0, movedCard);
+                        updateConclusion({ cards });
+                      }}
+                      onRemoveItem={(_, cardIndex) =>
+                        updateConclusion({
+                          cards: conclusion.cards.filter(
+                            (_, index) => index !== cardIndex,
+                          ),
+                        })
+                      }
+                      renderItem={(_, cardIndex) => {
+                        const card = conclusion.cards[cardIndex];
+                        if (!card) return null;
+                        const updateCard = (patch: Partial<ConclusionCard>) =>
+                          updateConclusionCard(cardIndex, patch);
+                        return (
+                          <div className="space-y-1.5">
+                            <div className="grid grid-cols-[64px_1fr] gap-1">
+                              <input
+                                aria-label={`Số thẻ Conclusion ${cardIndex + 1}`}
+                                value={card.number}
+                                onChange={(event) =>
+                                  updateCard({ number: event.target.value })
+                                }
+                                className="rounded border border-stone-200 bg-white px-2 py-1 text-[10px]"
+                                placeholder="01"
+                              />
+                              <input
+                                aria-label={`Tiêu đề thẻ Conclusion ${cardIndex + 1}`}
+                                value={card.title}
+                                onChange={(event) =>
+                                  updateCard({ title: event.target.value })
+                                }
+                                className="min-w-0 rounded border border-stone-200 bg-white px-2 py-1 text-[10px]"
+                                placeholder="Tiêu đề thẻ"
+                              />
+                            </div>
+                            <textarea
+                              aria-label={`Nội dung thẻ Conclusion ${cardIndex + 1}`}
+                              rows={2}
+                              value={card.body}
+                              onChange={(event) =>
+                                updateCard({ body: event.target.value })
+                              }
+                              className="w-full rounded border border-stone-200 bg-white px-2 py-1 text-[10px]"
+                              placeholder="Mô tả"
+                            />
+                            <div className="grid grid-cols-2 gap-1">
+                              <label className="text-[9px] font-semibold text-stone-600">
+                                Rộng (cột)
+                                <select
+                                  aria-label={`Độ rộng thẻ Conclusion ${cardIndex + 1}`}
+                                  value={card.width ?? 4}
+                                  onChange={(event) =>
+                                    updateCard({
+                                      width: Number(event.target.value),
+                                    })
+                                  }
+                                  className="mt-0.5 w-full rounded border border-stone-200 bg-white px-1.5 py-1 text-[10px]"
+                                >
+                                  {Array.from({ length: 12 }, (_, index) => index + 1).map((width) => (
+                                    <option key={width} value={width}>
+                                      {width}/12
+                                    </option>
+                                  ))}
+                                </select>
+                              </label>
+                              <label className="text-[9px] font-semibold text-stone-600">
+                                Cao (bậc)
+                                <select
+                                  aria-label={`Độ cao thẻ Conclusion ${cardIndex + 1}`}
+                                  value={card.height ?? 3}
+                                  onChange={(event) =>
+                                    updateCard({
+                                      height: Number(event.target.value),
+                                    })
+                                  }
+                                  className="mt-0.5 w-full rounded border border-stone-200 bg-white px-1.5 py-1 text-[10px]"
+                                >
+                                  {Array.from({ length: 6 }, (_, index) => index + 1).map((height) => (
+                                    <option key={height} value={height}>
+                                      {height}
+                                    </option>
+                                  ))}
+                                </select>
+                              </label>
+                            </div>
+                            <div className="grid grid-cols-3 gap-1">
+                              {([
+                                ["backgroundColor", "Nền thẻ", document.theme.surfaceColor],
+                                ["titleColor", "Tiêu đề", document.theme.textColor],
+                                ["textColor", "Nội dung", document.theme.textColor],
+                              ] as const).map(([key, label, fallback]) => (
+                                <label
+                                  key={key}
+                                  className="text-[9px] font-semibold text-stone-600"
+                                >
+                                  {label}
+                                  <input
+                                    type="color"
+                                    aria-label={`Màu ${label} thẻ Conclusion ${cardIndex + 1}`}
+                                    value={card[key] || fallback}
+                                    onChange={(event) =>
+                                      updateCard({ [key]: event.target.value })
+                                    }
+                                    className="mt-0.5 h-7 w-full cursor-pointer rounded border border-stone-200 bg-white p-0.5"
+                                  />
+                                </label>
+                              ))}
+                            </div>
+                            <div className="space-y-1.5 rounded-lg border border-stone-200 bg-stone-50 p-1.5">
+                              <p className="text-[9px] font-bold text-stone-700">
+                                Định dạng tiêu đề
+                              </p>
+                              <select
+                                aria-label={`Font tiêu đề thẻ Conclusion ${cardIndex + 1}`}
+                                value={card.titleFontFamily ?? ""}
+                                onChange={(event) =>
+                                  updateCard({
+                                    titleFontFamily: event.target.value || undefined,
+                                  })
+                                }
+                                className="w-full rounded border border-stone-200 bg-white px-2 py-1 text-[10px]"
+                              >
+                                <option value="">Theo font Conclusion</option>
+                                {VIETNAMESE_FONT_OPTIONS.map((font) => (
+                                  <option key={font} value={font}>
+                                    {font}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="grid grid-cols-2 gap-1">
+                                <select
+                                  aria-label={`Cỡ tiêu đề thẻ Conclusion ${cardIndex + 1}`}
+                                  value={card.titleFontSize ?? "lg"}
+                                  onChange={(event) =>
+                                    updateCard({
+                                      titleFontSize: event.target.value as ConclusionCard["titleFontSize"],
+                                    })
+                                  }
+                                  className="rounded border border-stone-200 bg-white px-2 py-1 text-[10px]"
+                                >
+                                  <option value="sm">Cỡ nhỏ</option>
+                                  <option value="base">Cỡ vừa</option>
+                                  <option value="lg">Cỡ lớn</option>
+                                  <option value="xl">Cỡ rất lớn</option>
+                                  <option value="2xl">Cỡ tiêu điểm</option>
+                                </select>
+                                <select
+                                  aria-label={`Căn tiêu đề thẻ Conclusion ${cardIndex + 1}`}
+                                  value={card.titleAlign ?? "left"}
+                                  onChange={(event) =>
+                                    updateCard({
+                                      titleAlign: event.target.value as ConclusionCard["titleAlign"],
+                                    })
+                                  }
+                                  className="rounded border border-stone-200 bg-white px-2 py-1 text-[10px]"
+                                >
+                                  <option value="left">Lề trái</option>
+                                  <option value="center">Căn giữa</option>
+                                  <option value="right">Lề phải</option>
+                                </select>
+                              </div>
+                              <p className="pt-1 text-[9px] font-bold text-stone-700">
+                                Định dạng nội dung
+                              </p>
+                              <select
+                                aria-label={`Font nội dung thẻ Conclusion ${cardIndex + 1}`}
+                                value={card.bodyFontFamily ?? ""}
+                                onChange={(event) =>
+                                  updateCard({
+                                    bodyFontFamily: event.target.value || undefined,
+                                  })
+                                }
+                                className="w-full rounded border border-stone-200 bg-white px-2 py-1 text-[10px]"
+                              >
+                                <option value="">Theo font Conclusion</option>
+                                {VIETNAMESE_FONT_OPTIONS.map((font) => (
+                                  <option key={font} value={font}>
+                                    {font}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="grid grid-cols-2 gap-1">
+                                <select
+                                  aria-label={`Cỡ nội dung thẻ Conclusion ${cardIndex + 1}`}
+                                  value={card.bodyFontSize ?? "sm"}
+                                  onChange={(event) =>
+                                    updateCard({
+                                      bodyFontSize: event.target.value as ConclusionCard["bodyFontSize"],
+                                    })
+                                  }
+                                  className="rounded border border-stone-200 bg-white px-2 py-1 text-[10px]"
+                                >
+                                  <option value="xs">Cỡ rất nhỏ</option>
+                                  <option value="sm">Cỡ nhỏ</option>
+                                  <option value="base">Cỡ vừa</option>
+                                  <option value="lg">Cỡ lớn</option>
+                                </select>
+                                <select
+                                  aria-label={`Căn nội dung thẻ Conclusion ${cardIndex + 1}`}
+                                  value={card.bodyAlign ?? "left"}
+                                  onChange={(event) =>
+                                    updateCard({
+                                      bodyAlign: event.target.value as ConclusionCard["bodyAlign"],
+                                    })
+                                  }
+                                  className="rounded border border-stone-200 bg-white px-2 py-1 text-[10px]"
+                                >
+                                  <option value="left">Lề trái</option>
+                                  <option value="center">Căn giữa</option>
+                                  <option value="right">Lề phải</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div className="space-y-1">
+                              {card.bullets.map((bullet, bulletIndex) => (
+                                <div
+                                  key={`${card.id}-bullet-${bulletIndex}`}
+                                  className="flex gap-1"
+                                >
+                                  <input
+                                    aria-label={`Ý thẻ Conclusion ${cardIndex + 1}.${bulletIndex + 1}`}
+                                    value={bullet}
+                                    onChange={(event) =>
+                                      updateCard({
+                                        bullets: card.bullets.map(
+                                          (line, index) =>
+                                            index === bulletIndex
+                                              ? event.target.value
+                                              : line,
+                                        ),
+                                      })
+                                    }
+                                    className="min-w-0 flex-1 rounded border border-stone-200 bg-white px-2 py-1 text-[10px]"
+                                  />
+                                  <button
+                                    type="button"
+                                    aria-label={`Xóa ý thẻ Conclusion ${cardIndex + 1}.${bulletIndex + 1}`}
+                                    onClick={() =>
+                                      updateCard({
+                                        bullets: card.bullets.filter(
+                                          (_, index) =>
+                                            index !== bulletIndex,
+                                        ),
+                                      })
+                                    }
+                                    className="rounded px-1 text-rose-600 hover:bg-rose-50"
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </button>
+                                </div>
+                              ))}
+                              <button
+                                type="button"
+                                aria-label={`Thêm ý thẻ Conclusion ${cardIndex + 1}`}
+                                onClick={() =>
+                                  updateCard({
+                                    bullets: [...card.bullets, ""],
+                                  })
+                                }
+                                className="text-[9px] font-semibold text-violet-800 hover:underline"
+                              >
+                                + Thêm ý
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      }}
+                    />
+                  </div>
+
+                  <div className="space-y-1.5 border-t border-violet-100 pt-2">
+                    <label className="block text-[10px] font-semibold text-stone-700">
+                      Tiêu đề danh sách bài tập
+                      <input
+                        value={conclusion.projectLinksTitle}
+                        onChange={(event) =>
+                          updateConclusion({
+                            projectLinksTitle: event.target.value,
+                          })
+                        }
+                        className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-xs"
+                      />
+                    </label>
+                    {conclusion.projectLinks.map((item, itemIndex) => (
+                      <div
+                        key={item.id}
+                        className="space-y-1 rounded-lg border border-stone-200 bg-white p-1.5"
+                      >
+                        <div className="flex gap-1">
+                          <input
+                            aria-label={`Tên liên kết Conclusion ${itemIndex + 1}`}
+                            value={item.title}
+                            onChange={(event) =>
+                              updateConclusion({
+                                projectLinks: conclusion.projectLinks.map(
+                                  (entry, index) =>
+                                    index === itemIndex
+                                      ? { ...entry, title: event.target.value }
+                                      : entry,
+                                ),
+                              })
+                            }
+                            className="min-w-0 flex-1 rounded border border-stone-200 px-2 py-1 text-[10px]"
+                            placeholder="Tên"
+                          />
+                          <button
+                            type="button"
+                            aria-label={`Xóa liên kết Conclusion ${itemIndex + 1}`}
+                            onClick={() =>
+                              updateConclusion({
+                                projectLinks: conclusion.projectLinks.filter(
+                                  (_, index) => index !== itemIndex,
+                                ),
+                              })
+                            }
+                            className="rounded px-1 text-rose-600 hover:bg-rose-50"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        </div>
+                        <input
+                          aria-label={`Mô tả liên kết Conclusion ${itemIndex + 1}`}
+                          value={item.text}
+                          onChange={(event) =>
+                            updateConclusion({
+                              projectLinks: conclusion.projectLinks.map(
+                                (entry, index) =>
+                                  index === itemIndex
+                                    ? { ...entry, text: event.target.value }
+                                    : entry,
+                              ),
+                            })
+                          }
+                          className="w-full rounded border border-stone-200 px-2 py-1 text-[10px]"
+                          placeholder="Mô tả"
+                        />
+                        <input
+                          aria-label={`URL liên kết Conclusion ${itemIndex + 1}`}
+                          value={item.href ?? ""}
+                          onChange={(event) =>
+                            updateConclusion({
+                              projectLinks: conclusion.projectLinks.map(
+                                (entry, index) =>
+                                  index === itemIndex
+                                    ? {
+                                        ...entry,
+                                        href: event.target.value || undefined,
+                                      }
+                                    : entry,
+                              ),
+                            })
+                          }
+                          className="w-full rounded border border-stone-200 px-2 py-1 text-[10px]"
+                          placeholder="URL hoặc #mục"
+                        />
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      aria-label="Thêm liên kết Conclusion"
+                      onClick={() =>
+                        updateConclusion({
+                          projectLinks: [
+                            ...conclusion.projectLinks,
+                            {
+                              id: crypto.randomUUID(),
+                              title: "Liên kết mới",
+                              text: "",
+                              href: "",
+                            },
+                          ],
+                        })
+                      }
+                      className="text-[10px] font-semibold text-violet-800 hover:underline"
+                    >
+                      + Thêm liên kết
+                    </button>
+                  </div>
+
+                  <div className="space-y-1.5 border-t border-violet-100 pt-2">
+                    <label className="block text-[10px] font-semibold text-stone-700">
+                      Tiêu đề công cụ AI
+                      <input
+                        value={conclusion.aiToolsTitle}
+                        onChange={(event) =>
+                          updateConclusion({ aiToolsTitle: event.target.value })
+                        }
+                        className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-xs"
+                      />
+                    </label>
+                    {conclusion.aiTools.map((item, itemIndex) => (
+                      <div
+                        key={item.id}
+                        className="space-y-1 rounded-lg border border-stone-200 bg-white p-1.5"
+                      >
+                        <div className="flex gap-1">
+                          <input
+                            aria-label={`Tên công cụ Conclusion ${itemIndex + 1}`}
+                            value={item.title}
+                            onChange={(event) =>
+                              updateConclusion({
+                                aiTools: conclusion.aiTools.map((entry, index) =>
+                                  index === itemIndex
+                                    ? { ...entry, title: event.target.value }
+                                    : entry,
+                                ),
+                              })
+                            }
+                            className="min-w-0 flex-1 rounded border border-stone-200 px-2 py-1 text-[10px]"
+                          />
+                          <button
+                            type="button"
+                            aria-label={`Xóa công cụ Conclusion ${itemIndex + 1}`}
+                            onClick={() =>
+                              updateConclusion({
+                                aiTools: conclusion.aiTools.filter(
+                                  (_, index) => index !== itemIndex,
+                                ),
+                              })
+                            }
+                            className="rounded px-1 text-rose-600 hover:bg-rose-50"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        </div>
+                        <textarea
+                          aria-label={`Mô tả công cụ Conclusion ${itemIndex + 1}`}
+                          rows={2}
+                          value={item.text}
+                          onChange={(event) =>
+                            updateConclusion({
+                              aiTools: conclusion.aiTools.map((entry, index) =>
+                                index === itemIndex
+                                  ? { ...entry, text: event.target.value }
+                                  : entry,
+                              ),
+                            })
+                          }
+                          className="w-full rounded border border-stone-200 px-2 py-1 text-[10px]"
+                        />
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      aria-label="Thêm công cụ Conclusion"
+                      onClick={() =>
+                        updateConclusion({
+                          aiTools: [
+                            ...conclusion.aiTools,
+                            {
+                              id: crypto.randomUUID(),
+                              title: "Công cụ mới",
+                              text: "",
+                            },
+                          ],
+                        })
+                      }
+                      className="text-[10px] font-semibold text-violet-800 hover:underline"
+                    >
+                      + Thêm công cụ
+                    </button>
+                    <label className="block text-[10px] font-semibold text-stone-700">
+                      Lời kết
+                      <textarea
+                        aria-label="Lời kết Conclusion"
+                        rows={3}
+                        value={conclusion.closingNote}
+                        onChange={(event) =>
+                          updateConclusion({ closingNote: event.target.value })
+                        }
+                        className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-xs"
+                      />
+                    </label>
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label
@@ -2342,9 +3402,31 @@ export function SectionInspector() {
                   </label>
                   <input
                     type="text"
-                    disabled
-                    value="INF2501 - Nhập môn Công nghệ số & ứng dụng AI"
-                    className="mt-1 w-full rounded border border-stone-200 bg-stone-100 px-2 py-1 text-xs text-stone-600"
+                    aria-label="Tên học phần"
+                    value={
+                      section.courseInfo?.courseName ??
+                      "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo"
+                    }
+                    placeholder="Nhập tên học phần..."
+                    onChange={(e) =>
+                      updateSection(idx, {
+                        ...section,
+                        courseInfo: {
+                          ...section.courseInfo,
+                          courseCode: section.courseInfo?.courseCode ?? "INF2501",
+                          courseName: e.target.value,
+                          institution:
+                            section.courseInfo?.institution ??
+                            "Trường ĐH Sư phạm Nghệ thuật TW",
+                          studentId: section.courseInfo?.studentId,
+                          studentName:
+                            section.courseInfo?.studentName ??
+                            ownerProfile.fullName,
+                          studentClass: section.courseInfo?.studentClass,
+                        },
+                      })
+                    }
+                    className="mt-1 w-full rounded border border-stone-200 bg-white px-2 py-1 text-xs"
                   />
                 </div>
               </div>

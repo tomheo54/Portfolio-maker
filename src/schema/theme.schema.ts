@@ -229,7 +229,7 @@ export const AUTOMATED_THEME_RULE_TABLE: AutomatedThemeRule[] = [
   },
   {
     domain: 'Canva Classic Editorial',
-    keywords: ['tuthivananh', 'canva', 'editorial', 'âm nhạc'],
+    keywords: ['portfolio-mau-hoan-chinh', 'canva', 'editorial', 'âm nhạc'],
     theme: {
       primaryColor: '#735340',
       secondaryColor: '#5D4037',
@@ -241,7 +241,7 @@ export const AUTOMATED_THEME_RULE_TABLE: AutomatedThemeRule[] = [
       borderRadius: 'lg',
       pageTransition: 'slide-deck',
     },
-    atmosphere: '1:1 Canva reference parity matching tuthivananhportfolio',
+    atmosphere: '1:1 Canva reference parity matching portfolio-mau-hoan-chinh',
   },
 ];
 
@@ -310,7 +310,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'canva-editorial-pastel',
     name: 'Canva Editorial Cream & Cocoa',
-    description: 'Chuẩn hóa 1:1 theo mẫu Canva Từ Thị Vân Anh: nền giấy kem #FFF3E6, bề mặt #FFF8F0, chữ nâu espresso #3E2723, nhấn mocha #735340 và cacao #5D4037.',
+    description: 'Chuẩn hóa 1:1 theo mẫu Canva hoàn chỉnh: nền giấy kem #FFF3E6, bề mặt #FFF8F0, chữ nâu espresso #3E2723, nhấn mocha #735340 và cacao #5D4037.',
     templateId: 'canva-editorial',
     recommendedVisualStyle: 'canva-pastel-graphic',
     theme: {
@@ -417,9 +417,9 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'canva-warm-editorial-slate',
-    name: 'Canva Warm Editorial Slate (Thu Trang)',
+    name: 'Canva Warm Editorial Slate',
     description:
-      'Phong cách biên tập ấm áp chuẩn hóa theo Dương Thu Trang: nền giấy archival #F0EFE2, xanh slate denim #326586, vàng bơ cát #F4E9D4, chữ espresso đậm #1C1412.',
+      'Phong cách biên tập ấm áp: nền giấy archival #F0EFE2, xanh slate denim #326586, vàng bơ cát #F4E9D4, chữ espresso đậm #1C1412.',
     templateId: 'warm-editorial',
     recommendedVisualStyle: 'editorial-illustration',
     theme: {
@@ -443,7 +443,7 @@ export const THEME_PRESETS: ThemePreset[] = [
       backgroundIllustration: {
         mode: 'preset',
         presetId: 'canva-musical',
-        opacity: 0.12,
+        opacity: 0.35,
         blur: 0,
         position: 'cover',
       },
@@ -453,7 +453,7 @@ export const THEME_PRESETS: ThemePreset[] = [
     id: 'canva-bold-creative-rose',
     name: 'Canva Bold Creative Rose (Hồng Quyên)',
     description:
-      'Phong cách đồ họa sáng tạo nổi bật chuẩn hóa theo Đinh Hồng Quyên: nền hồng phấn #FDF1F5, hồng tro ấm #92736C, xanh prussian ink #304254.',
+      'Phong cách đồ họa sáng tạo nổi bật: nền hồng phấn #FDF1F5, hồng tro ấm #92736C, xanh prussian ink #304254.',
     templateId: 'creative-bold',
     recommendedVisualStyle: 'canva-pastel-graphic',
     theme: {
@@ -477,7 +477,7 @@ export const THEME_PRESETS: ThemePreset[] = [
       backgroundIllustration: {
         mode: 'preset',
         presetId: 'abstract-blobs',
-        opacity: 0.15,
+        opacity: 0.35,
         blur: 0,
         position: 'cover',
       },
@@ -487,7 +487,7 @@ export const THEME_PRESETS: ThemePreset[] = [
     id: 'canva-minimal-chic-marine',
     name: 'Canva Minimal Chic Marine (Ngọc Mai)',
     description:
-      'Phong cách tối giản thanh lịch chuẩn hóa theo Nguyễn Thị Ngọc Mai: tương phản xanh hải quân #326586 và kem bơ custard #FFFCE2, khối liên hệ rõ nét.',
+      'Phong cách tối giản thanh lịch: tương phản xanh hải quân #326586 và kem bơ custard #FFFCE2, khối liên hệ rõ nét.',
     templateId: 'minimal-chic',
     recommendedVisualStyle: 'minimal-photo',
     theme: {
@@ -511,7 +511,7 @@ export const THEME_PRESETS: ThemePreset[] = [
       backgroundIllustration: {
         mode: 'preset',
         presetId: 'minimalist-contour',
-        opacity: 0.1,
+        opacity: 0.35,
         blur: 0,
         position: 'cover',
       },
@@ -521,7 +521,7 @@ export const THEME_PRESETS: ThemePreset[] = [
     id: 'canva-vibrant-student-indigo',
     name: 'Canva Vibrant Student Indigo (Bảo Châm)',
     description:
-      'Phong cách sinh viên y khoa năng động chuẩn hóa theo Lương Thị Bảo Châm: nền kem bơ #FFFCE2, xanh indigo cornflower #566E99, chữ than đậm #304254.',
+      'Phong cách sinh viên y khoa năng động: nền kem bơ #FFFCE2, xanh indigo cornflower #566E99, chữ than đậm #304254.',
     templateId: 'vibrant-student',
     recommendedVisualStyle: 'canva-pastel-graphic',
     theme: {
@@ -545,7 +545,7 @@ export const THEME_PRESETS: ThemePreset[] = [
       backgroundIllustration: {
         mode: 'preset',
         presetId: 'geometric-dots',
-        opacity: 0.15,
+        opacity: 0.35,
         blur: 0,
         position: 'pattern-repeat',
       },
@@ -555,7 +555,7 @@ export const THEME_PRESETS: ThemePreset[] = [
     id: 'canva-artistic-organic-burgundy',
     name: 'Canva Artistic Organic Burgundy (Chí Huế)',
     description:
-      'Phong cách nghệ thuật đường cong hữu cơ chuẩn hóa theo Ngô Thị Huệ: nền quả mơ đào #FFECD1, đỏ burgundy nhung #3E000C, espresso cherry #381313.',
+      'Phong cách nghệ thuật đường cong hữu cơ: nền quả mơ đào #FFECD1, đỏ burgundy nhung #3E000C, espresso cherry #381313.',
     templateId: 'artistic-organic',
     recommendedVisualStyle: 'editorial-illustration',
     theme: {
@@ -579,7 +579,7 @@ export const THEME_PRESETS: ThemePreset[] = [
       backgroundIllustration: {
         mode: 'preset',
         presetId: 'abstract-blobs',
-        opacity: 0.18,
+        opacity: 0.35,
         blur: 0,
         position: 'cover',
       },
@@ -587,9 +587,9 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'canva-academic-crimson',
-    name: 'Canva Academic Crimson (Võ Thị Hoài)',
+    name: 'Canva Academic Crimson',
     description:
-      'Phong cách học thuật sư phạm chuẩn hóa theo Võ Thị Hoài: nền đá vôi archival #EDEAE2, đỏ gạch crimson #9B302D, mahogany đậm #6A1C1B.',
+      'Phong cách học thuật sư phạm: nền đá vôi archival #EDEAE2, đỏ gạch crimson #9B302D, mahogany đậm #6A1C1B.',
     templateId: 'academic-presentation',
     recommendedVisualStyle: 'editorial-illustration',
     theme: {
@@ -613,7 +613,7 @@ export const THEME_PRESETS: ThemePreset[] = [
       backgroundIllustration: {
         mode: 'preset',
         presetId: 'vintage-parchment',
-        opacity: 0.2,
+        opacity: 0.35,
         blur: 0,
         position: 'cover',
       },

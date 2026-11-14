@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import tuthivananhSample from '@/data/presets/tuthivananh-sample.json';
+import completedPortfolioSample from '@/data/presets/portfolio-mau-hoan-chinh.json';
 import {
   PortfolioDocumentSchema,
   type PortfolioDocument,
@@ -50,8 +50,8 @@ export function getPortfolioBySlug(slug: string): PortfolioDocument | null {
     }
   }
 
-  if (safeSlug === 'tuthivananhportfolio') {
-    return PortfolioDocumentSchema.parse(tuthivananhSample);
+  if (safeSlug === 'portfolio-mau-hoan-chinh') {
+    return PortfolioDocumentSchema.parse(completedPortfolioSample);
   }
 
   const canvaPreset = getCanvaCreativePresetBySlug(safeSlug);
@@ -64,7 +64,7 @@ export function getPortfolioBySlug(slug: string): PortfolioDocument | null {
 
 export function listSavedPortfolios(): PortfolioDocument[] {
   const map = new Map<string, PortfolioDocument>();
-  const sample = PortfolioDocumentSchema.parse(tuthivananhSample);
+  const sample = PortfolioDocumentSchema.parse(completedPortfolioSample);
   map.set(sample.slug, sample);
 
   for (const presetDoc of ALL_CANVA_CREATIVE_DOCUMENTS) {

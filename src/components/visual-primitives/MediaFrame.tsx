@@ -47,7 +47,7 @@ export function MediaFrame({
 }: MediaFrameProps) {
   const darkSurface = isDarkColor(surfaceColor);
   const badgeNode = (
-    <div className="pointer-events-none absolute left-3 top-3 z-20">
+    <div className="pointer-events-auto absolute left-3 top-3 z-20">
       <ImageSourceBadge
         sourceType={media.sourceType}
         editable={editable}

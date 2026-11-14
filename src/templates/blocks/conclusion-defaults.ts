@@ -1,0 +1,56 @@
+import type { ConclusionConfig } from "@/schema/portfolio.schema";
+
+export const DEFAULT_CONCLUSION_CONFIG: ConclusionConfig = {
+  title: "Conclusion",
+  eyebrow: "05 // Reflect & Grow",
+  layout: "three-cards",
+  cards: [
+    {
+      id: "reflection-experience",
+      number: "01",
+      title: "Trải nghiệm & cảm nhận về chuỗi dự án",
+      body: "Quá trình học tập giúp tôi củng cố nền tảng Sư phạm Âm nhạc, từ nhạc lý, thanh nhạc, hòa tấu đến phương pháp tổ chức hoạt động âm nhạc. Tôi nhận ra âm nhạc không chỉ là biểu diễn mà còn khơi gợi cảm xúc, tư duy và sáng tạo của người học.",
+      bullets: [],
+      width: 4,
+      height: 4,
+    },
+    {
+      id: "reflection-skills",
+      number: "02",
+      title: "Kiến thức & kỹ năng cốt lõi",
+      body: "",
+      bullets: [
+        "Tìm kiếm, đánh giá và kiểm chứng thông tin.",
+        "Thiết kế prompt, sử dụng AI có trách nhiệm và sáng tạo học liệu số.",
+        "Cộng tác trực tuyến, trình bày sản phẩm và phản tư quá trình thực hiện.",
+      ],
+      width: 4,
+      height: 4,
+    },
+    {
+      id: "reflection-direction",
+      number: "03",
+      title: "Thử thách & định hướng",
+      body: "Thử thách lớn nhất là kết hợp chuyên môn với phương pháp truyền đạt phù hợp. Tôi tiếp tục rèn kỹ năng biểu diễn, thiết kế học liệu trực quan, quản lý thời gian và làm việc nhóm để trở thành giáo viên âm nhạc sáng tạo, linh hoạt và biết truyền cảm hứng.",
+      bullets: [],
+      width: 4,
+      height: 4,
+    },
+  ],
+  projectLinksTitle: "Tổng hợp đường dẫn bài tập",
+  projectLinks: [],
+  aiToolsTitle: "Công cụ AI & cách sử dụng",
+  aiTools: [
+    { id: "gemini", title: "Gemini", text: "Gợi ý ý tưởng, lập dàn ý và mở rộng hướng tìm hiểu; thông tin được đối chiếu trước khi đưa vào bài." },
+    { id: "chatgpt", title: "ChatGPT", text: "Hỗ trợ làm rõ câu hỏi, trao đổi và rà soát cấu trúc; nội dung được chọn lọc, chỉnh sửa theo mục tiêu học tập." },
+    { id: "canva-ai", title: "Canva AI", text: "Hỗ trợ phát triển hình ảnh, bố cục và học liệu trực quan; sản phẩm được kiểm tra về tính phù hợp." },
+  ],
+  closingNote: "AI hỗ trợ quá trình tìm ý và sáng tạo. Việc kiểm chứng thông tin, lựa chọn nội dung và quyết định sư phạm vẫn do tôi đảm nhiệm.",
+  backgroundColor: "",
+  headingColor: "",
+  textColor: "",
+  accentColor: "",
+  cardBackgroundColor: "",
+  cardBorderColor: "",
+  fontFamily: "",
+};

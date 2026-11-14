@@ -319,8 +319,8 @@ export function TemplateShell({
                 : tokens.borderSubtle,
         }}
       >
-        <div className="mx-auto flex max-w-6xl flex-col items-stretch gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6 lg:px-8">
-          <div className="flex min-w-0 items-center gap-2.5">
+        <div className="mx-auto flex max-w-6xl flex-col items-stretch gap-2 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-4 lg:px-8">
+          <div className="flex min-w-0 items-center gap-2.5 lg:max-w-[40%] lg:shrink-0">
             {resolvedNavVariant === "terminal-bar" && (
               <span className="inline-flex shrink-0 gap-1.5" aria-hidden="true">
                 <span className="h-2.5 w-2.5 rounded-full bg-rose-400" />
@@ -365,7 +365,7 @@ export function TemplateShell({
 
           <div
             data-testid="portfolio-section-navigation"
-            className={`flex w-full flex-wrap items-center justify-center sm:w-auto sm:flex-nowrap ${
+            className={`ml-2 hidden w-[calc(100%-0.5rem)] min-w-0 max-w-full flex-nowrap items-center justify-start overflow-x-auto overscroll-x-contain pb-1 lg:flex lg:flex-1 ${
               resolvedNavVariant === "badge-bar"
                 ? "gap-1 rounded-full border p-1"
                 : resolvedNavVariant === "minimal-bar" || isCanvaEditorial
@@ -492,9 +492,14 @@ export function TemplateShell({
           };
           const sectionStyle: React.CSSProperties = {
             fontFamily: getFontStack(sectionTheme.bodyFont),
+            color: section.textColor,
+            backgroundColor: section.backgroundColor,
             ["--font-heading" as string]: getFontStack(
               sectionTheme.headingFont,
             ),
+            ["--section-heading-color" as string]: section.headingColor,
+            ["--section-text-color" as string]: section.textColor,
+            ["--section-surface-color" as string]: section.surfaceColor,
           };
 
           const renderContent = () => {
@@ -594,6 +599,10 @@ export function TemplateShell({
               key={`${section.type}-${idx}`}
               data-section-type={section.type}
               data-section-motif={section.motif ?? "none"}
+              data-section-custom-background={section.backgroundColor ? "true" : "false"}
+              data-section-custom-surface={section.surfaceColor ? "true" : "false"}
+              data-section-custom-heading-color={section.headingColor ? "true" : "false"}
+              data-section-custom-text-color={section.textColor ? "true" : "false"}
               style={sectionStyle}
               onClick={() => {
                 if (editable && onSelectSection) {
@@ -612,7 +621,7 @@ export function TemplateShell({
                 <SectionMotif
                   presetId={section.motif}
                   primaryColor={section.accentColor ?? theme.primaryColor}
-                  opacity={0.12}
+                  opacity={0.22}
                   className="absolute inset-0"
                 />
               )}

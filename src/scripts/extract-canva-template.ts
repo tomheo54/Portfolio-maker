@@ -2,8 +2,15 @@ import fs from 'fs';
 import path from 'path';
 import { chromium } from 'playwright';
 
-const TARGET_URL = 'https://tntlab.my.canva.site/tuthivananhportfolio/';
-const OUTPUT_DIR = path.resolve(process.cwd(), 'references/canva-tuthivananh');
+const OUTPUT_DIR = path.resolve(process.cwd(), 'references/canva-sample');
+
+function getTargetUrl() {
+  const targetUrl = process.env.CANVA_TEMPLATE_URL?.trim();
+  if (!targetUrl) {
+    throw new Error('Set CANVA_TEMPLATE_URL before extracting a Canva template.');
+  }
+  return targetUrl;
+}
 
 async function autoScroll(page: import('playwright').Page) {
   await page.evaluate(async () => {
@@ -33,6 +40,7 @@ async function autoScroll(page: import('playwright').Page) {
 }
 
 async function run() {
+  const targetUrl = getTargetUrl();
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   const browser = await chromium.launch({ headless: true });
 
@@ -43,8 +51,8 @@ async function run() {
       locale: 'vi-VN',
     });
     const page = await desktopContext.newPage();
-    console.log(`Opening ${TARGET_URL} at 1440x900...`);
-    await page.goto(TARGET_URL, { waitUntil: 'networkidle', timeout: 45000 });
+    console.log(`Opening ${targetUrl} at 1440x900...`);
+    await page.goto(targetUrl, { waitUntil: 'networkidle', timeout: 45000 });
     await page.waitForTimeout(2500);
     await autoScroll(page);
     await page.waitForTimeout(1500);
@@ -212,8 +220,8 @@ async function run() {
       locale: 'vi-VN',
     });
     const mobilePage = await mobileContext.newPage();
-    console.log(`Opening ${TARGET_URL} at 390x844...`);
-    await mobilePage.goto(TARGET_URL, { waitUntil: 'networkidle', timeout: 45000 });
+    console.log(`Opening ${targetUrl} at 390x844...`);
+    await mobilePage.goto(targetUrl, { waitUntil: 'networkidle', timeout: 45000 });
     await mobilePage.waitForTimeout(2000);
     await autoScroll(mobilePage);
     await mobilePage.waitForTimeout(1000);

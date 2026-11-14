@@ -14,6 +14,7 @@ import {
   Sparkle,
   Move,
   Flame,
+  Compass,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
@@ -21,6 +22,7 @@ import { THEME_PRESETS, VIETNAMESE_FONT_OPTIONS } from "@/schema/theme.schema";
 import type {
   VisualEffectsConfig,
   BackgroundIllustrationConfig,
+  TableOfContentsConfig,
 } from "@/schema/portfolio.schema";
 import {
   CANVA_REFERENCE_THEME,
@@ -125,7 +127,7 @@ export function ThemeCustomizer() {
   } = usePortfolioStore();
 
   const [activeSection, setActiveSection] = useState<
-    "palette" | "effects" | "background"
+    "palette" | "effects" | "background" | "navigation"
   >("palette");
 
   const effects: VisualEffectsConfig = document.theme.effects ?? {
@@ -141,9 +143,14 @@ export function ThemeCustomizer() {
     .backgroundIllustration ?? {
     mode: "none",
     presetId: "none",
-    opacity: 0.15,
+    opacity: 0.35,
     blur: 0,
     position: "cover",
+  };
+  const tocConfig: TableOfContentsConfig = {
+    placement: document.theme.tableOfContents?.placement ?? "floating",
+    side: document.theme.tableOfContents?.side ?? "left",
+    style: document.theme.tableOfContents?.style ?? "pill",
   };
 
   const isCanvaReferenceTheme =
@@ -188,7 +195,7 @@ export function ThemeCustomizer() {
 
   return (
     <div className="border-t border-stone-200 pt-3 text-xs text-stone-800 space-y-3">
-      {/* Tab Switcher: Palette & Fonts vs Visual Effects vs Background Illustration */}
+      {/* Tab Switcher */}
       <div className="flex rounded-xl bg-stone-100 p-0.5 text-[11px] font-semibold">
         <button
           type="button"
@@ -226,6 +233,18 @@ export function ThemeCustomizer() {
           <ImageIcon className="h-3 w-3 text-emerald-600" />
           <span>Ảnh nền</span>
         </button>
+        <button
+          type="button"
+          onClick={() => setActiveSection("navigation")}
+          className={`flex-1 flex items-center justify-center gap-1 rounded-lg py-1.5 transition ${
+            activeSection === "navigation"
+              ? "bg-white text-stone-900 shadow-sm"
+              : "text-stone-500 hover:text-stone-800"
+          }`}
+        >
+          <Compass className="h-3 w-3 text-sky-600" />
+          <span>Mục lục</span>
+        </button>
       </div>
 
       {/* SECTION 1: Palette, Presets & Typography */}
@@ -240,7 +259,7 @@ export function ThemeCustomizer() {
                   <span>Chuẩn mẫu Canva gốc</span>
                 </div>
                 <p className="mt-0.5 text-xs font-bold">
-                  Canva Editorial (tuthivananhportfolio)
+                  Canva Editorial (mẫu hoàn chỉnh)
                 </p>
               </div>
               {isCanvaReferenceTheme && (
@@ -413,6 +432,83 @@ export function ThemeCustomizer() {
               ))}
             </select>
           </div>
+        </div>
+      )}
+
+      {activeSection === "navigation" && (
+        <div className="space-y-3 rounded-2xl border border-sky-100 bg-sky-50/40 p-3">
+          <div className="flex items-center justify-between border-b border-sky-100 pb-2">
+            <div>
+              <span className="font-bold text-sky-950">Mục lục Portfolio</span>
+              <p className="mt-0.5 text-[10px] text-stone-500">
+                Tùy chỉnh vị trí và kiểu hiển thị điều hướng
+              </p>
+            </div>
+            <Compass className="h-4 w-4 text-sky-600" />
+          </div>
+
+          <label className="block text-[11px] font-semibold text-stone-700">
+            Vị trí mục lục
+            <select
+              aria-label="Vị trí mục lục"
+              value={tocConfig.placement}
+              onChange={(e) =>
+                updateTheme({
+                  tableOfContents: {
+                    ...tocConfig,
+                    placement: e.target.value as TableOfContentsConfig["placement"],
+                  },
+                })
+              }
+              className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-2.5 py-2 text-xs font-medium"
+            >
+              <option value="floating">Nổi ở cạnh dưới trang</option>
+              <option value="top">Đầu trang</option>
+            </select>
+          </label>
+
+          {tocConfig.placement === "floating" && (
+            <label className="block text-[11px] font-semibold text-stone-700">
+              Cạnh hiển thị
+              <select
+                aria-label="Cạnh hiển thị mục lục"
+                value={tocConfig.side}
+                onChange={(e) =>
+                  updateTheme({
+                    tableOfContents: {
+                      ...tocConfig,
+                      side: e.target.value as TableOfContentsConfig["side"],
+                    },
+                  })
+                }
+                className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-2.5 py-2 text-xs font-medium"
+              >
+                <option value="left">Bên trái</option>
+                <option value="right">Bên phải</option>
+              </select>
+            </label>
+          )}
+
+          <label className="block text-[11px] font-semibold text-stone-700">
+            Kiểu hiển thị
+            <select
+              aria-label="Kiểu hiển thị mục lục"
+              value={tocConfig.style}
+              onChange={(e) =>
+                updateTheme({
+                  tableOfContents: {
+                    ...tocConfig,
+                    style: e.target.value as TableOfContentsConfig["style"],
+                  },
+                })
+              }
+              className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-2.5 py-2 text-xs font-medium"
+            >
+              <option value="pill">Viên nổi bật</option>
+              <option value="outline">Viền thanh lịch</option>
+              <option value="minimal">Tối giản</option>
+            </select>
+          </label>
         </div>
       )}
 

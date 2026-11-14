@@ -61,7 +61,10 @@ export function ImageSourceBadge({
             <button
               type="button"
               disabled={isGenerating}
-              onClick={onRegenerateAiImage}
+              onClick={(event) => {
+                event.stopPropagation();
+                onRegenerateAiImage();
+              }}
               className="inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-semibold text-stone-900 shadow-md ring-1 ring-stone-900/10 transition hover:bg-amber-50 disabled:cursor-not-allowed disabled:opacity-60"
               title="Tạo ảnh AI mới theo chủ đề bài tập"
             >
@@ -78,7 +81,10 @@ export function ImageSourceBadge({
             <button
               type="button"
               disabled={isGenerating}
-              onClick={onSwitchToDocx}
+              onClick={(event) => {
+                event.stopPropagation();
+                onSwitchToDocx();
+              }}
               className="inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-semibold text-stone-800 shadow-md ring-1 ring-stone-900/10 transition hover:bg-emerald-50 disabled:opacity-60"
               title="Chuyển sang ảnh bóc tách từ file DOCX"
             >

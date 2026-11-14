@@ -1,0 +1,248 @@
+{
+  "id": "batch-sampleassignmentsportfolio-e5aacbe5-1794676565701-0",
+  "slug": "sampleassignmentsportfolio-e5aacbe5",
+  "templateId": "canva-editorial",
+  "imageGenerationConfig": {
+    "mode": "docx-extract",
+    "visualStyle": "canva-pastel-graphic"
+  },
+  "seo": {
+    "title": "sample assignments | Digital Portfolio 2026",
+    "description": "Tổng hợp 2 bài tập và dự án thực hành về Thiết kế Truyền thông, AI Prompt Engineering được xây dựng bài bản và đo lường kết quả rõ ràng."
+  },
+  "theme": {
+    "primaryColor": "#735340",
+    "secondaryColor": "#5D4037",
+    "backgroundColor": "#FFF3E6",
+    "surfaceColor": "#FFF8F0",
+    "textColor": "#3E2723",
+    "headingFont": "Playfair Display",
+    "bodyFont": "Be Vietnam Pro",
+    "borderRadius": "lg",
+    "pageTransition": "slide-deck"
+  },
+  "sections": [
+    {
+      "type": "hero",
+      "variant": "canva-cover",
+      "headline": "Digital Portfolio",
+      "fullName": "sample assignments",
+      "roleTitle": "Digital Creator & AI Practical Portfolio",
+      "shortBio": "Tổng hợp 2 bài tập và dự án thực hành về Thiết kế Truyền thông, AI Prompt Engineering được xây dựng bài bản và đo lường kết quả rõ ràng.",
+      "avatar": {
+        "url": "",
+        "sourceType": "docx-extracted",
+        "frameStyle": "rounded-rect",
+        "aspectRatio": "3/4"
+      },
+      "quickTags": [
+        "Thiết kế Truyền thông",
+        "AI Prompt Engineering"
+      ],
+      "ctaButtons": [
+        {
+          "label": "Khám phá Dự án",
+          "href": "#projects",
+          "style": "primary"
+        },
+        {
+          "label": "Thông tin Liên hệ",
+          "href": "#contact",
+          "style": "outline"
+        }
+      ],
+      "decorations": [
+        {
+          "id": "dec-1",
+          "type": "floating-tag",
+          "label": "DIGITAL PORTFOLIO • 2026",
+          "position": {
+            "top": "8%",
+            "right": "5%",
+            "rotate": 4,
+            "zIndex": 3
+          }
+        },
+        {
+          "id": "dec-2",
+          "type": "badge",
+          "label": "✦ Sư phạm Âm nhạc & AI",
+          "position": {
+            "left": "4%",
+            "bottom": "12%",
+            "rotate": -3,
+            "zIndex": 3
+          }
+        }
+      ]
+    },
+    {
+      "type": "about",
+      "variant": "story-card",
+      "title": "About me • Giới thiệu bản thân",
+      "biography": "Xin chào! Mình là sample assignments (Digital Creator & AI Practical Portfolio). Portfolio này được tổng hợp trực tiếp từ hồ sơ bài tập thực chiến gồm 2 dự án thuộc các mảng Thiết kế Truyền thông, AI Prompt Engineering. Mỗi bài tập đều được chuẩn hóa theo tư duy Đề bài - Giải pháp - Kết quả nhằm thể hiện năng lực triển khai thực tế.",
+      "highlights": [
+        {
+          "label": "Dự án thực hành",
+          "value": "2 Case Studies"
+        },
+        {
+          "label": "Ảnh từ DOCX",
+          "value": "1 ảnh"
+        },
+        {
+          "label": "Ảnh AI bổ sung",
+          "value": "0 ảnh"
+        },
+        {
+          "label": "Lĩnh vực chính",
+          "value": "Thiết kế Truyền thông"
+        }
+      ],
+      "contactInfo": {
+        "socials": []
+      }
+    },
+    {
+      "type": "skills",
+      "variant": "canva-visual-grid",
+      "title": "Tools & Kỹ Năng Nổi Bật",
+      "categories": [
+        {
+          "name": "Chuyên môn & Thực chiến",
+          "skills": [
+            {
+              "name": "Thiết kế Truyền thông",
+              "level": 95
+            },
+            {
+              "name": "AI Prompt Engineering",
+              "level": 92
+            }
+          ]
+        },
+        {
+          "name": "Công cụ & Nền tảng",
+          "skills": [
+            {
+              "name": "Canva Visual & Editorial Design",
+              "level": 92
+            },
+            {
+              "name": "Figma Layout & Prototyping",
+              "level": 86
+            },
+            {
+              "name": "AI Prompt Engineering (ChatGPT / Gemini)",
+              "level": 94
+            },
+            {
+              "name": "Phân tích Insight & Dữ liệu Khách hàng",
+              "level": 88
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "education",
+      "title": "Education • Học vấn",
+      "items": []
+    },
+    {
+      "type": "projects",
+      "variant": "canva-slide-showcase",
+      "title": "Project • 02 Bài Tập Thực Hành",
+      "subtitle": "Nội dung được tổng hợp từ tài liệu DOCX đã nạp; vui lòng kiểm tra tính chính xác trước khi công bố.",
+      "projects": [
+        {
+          "id": "proj-docx-1-1794676565699",
+          "title": "Thiết kế Bộ Nhận diện Truyền thông & Landing Page Mùa Thu",
+          "category": "Thiết kế Truyền thông",
+          "sourceDocxFileName": "sample-assignments.docx",
+          "assignmentBrief": "Thiết kế hệ thống ấn phẩm truyền thông Social Media (Carousel Instagram, Banner Facebook) và bố cục Landing Page đồng bộ theo phong cách Editorial tối giản.",
+          "summary": "Chọn bảng màu kem ấm (#FAF5EE), cam san hô (#E06D53) và xanh matcha (#2B5B4E). Kết hợp font chữ Playfair Display và Be Vietnam Pro để đảm bảo đọc lướt nhanh trên di động. Thiết kế 12 template tái sử dụng trên Canva và Figma.",
+          "keyTakeaways": [
+            "Rút ngắn 60% thời gian sản xuất ấn phẩm hàng tuần cho đội ngũ",
+            "tỷ lệ nhấp chuột (CTR) quảng cáo đạt 4.8% vượt KPI 3.0%",
+            "Đạt giải Thiết kế ấn tượng nhất tuần"
+          ],
+          "fullRawExcerpt": "Bài tập 2: Thiết kế Bộ Nhận diện Truyền thông & Landing Page Mùa Thu\nĐề bài: Thiết kế hệ thống ấn phẩm truyền thông Social Media (Carousel Instagram, Banner Facebook) và bố cục Landing Page đồng bộ theo phong cách Editorial tối giản.\nCách làm: Chọn bảng màu kem ấm (#FAF5EE), cam san hô (#E06D53) và xanh matcha (#2B5B4E). Kết hợp font chữ Playfair Display và Be Vietnam Pro để đảm bảo đọc lướt nhanh trên di động. Thiết kế 12 template tái sử dụng trên Canva và Figma.\nKết quả: Rút ngắn 60% thời gian sản xuất ấn phẩm hàng tuần cho đội ngũ, tỷ lệ nhấp chuột (CTR) quảng cáo đạt 4.8% vượt KPI 3.0%. Đạt giải Thiết kế ấn tượng nhất tuần.",
+          "metrics": [
+            {
+              "label": "Chỉ số nổi bật",
+              "value": "60%"
+            },
+            {
+              "label": "Quy mô / Tác động",
+              "value": "12 template"
+            }
+          ],
+          "media": [
+            {
+              "id": "docx-img-1794676565685-2",
+              "url": "/uploads/docx-media/1794676565685-sample-assignments-2-d08009.png",
+              "caption": "Ảnh trích xuất từ sample-assignments.docx (#1)",
+              "sourceType": "docx-extracted",
+              "originalDocxMediaName": "word/media/image2.png"
+            }
+          ],
+          "suggestedAiImagePrompt": "Modern pastel editorial illustration representing \"Thiết kế Bộ Nhận diện Truyền thông & Landing Page Mùa Thu\" in the field of Thiết kế Truyền thông, clean visual storytelling cards, cohesive warm color palette",
+          "preferredImageStyle": "canva-pastel-graphic",
+          "links": [],
+          "tags": [
+            "Canva",
+            "Figma",
+            "Facebook",
+            "Landing Page"
+          ]
+        },
+        {
+          "id": "proj-docx-2-1794676565700",
+          "title": "Ứng dụng AI Prompt Engineering Tự động hóa Quy trình Nghiên cứu Thị trường",
+          "category": "AI Prompt Engineering",
+          "sourceDocxFileName": "sample-assignments.docx",
+          "assignmentBrief": "Xây dựng bộ khung Prompt AI hoàn chỉnh để tự động phân tích 500 phản hồi khách hàng, rút trích insight hành vi và đề xuất ý tưởng cải tiến sản phẩm trong thời gian dưới 15 phút.",
+          "summary": "Thiết kế chuỗi Chain-of-Thought Prompt kết hợp kỹ thuật Few-shot và xuất cấu trúc JSON. Phân nhóm cảm xúc khách hàng (Tích cực, Trung lập, Khiếu nại) và tự động tạo bảng ma trận Pain Point - Giải pháp bằng ChatGPT và Gemini.",
+          "keyTakeaways": [
+            "Xử lý 500 mẫu khảo sát chỉ trong 12 phút (nhanh hơn 10 lần so với phân tích thủ công)",
+            "độ chính xác phân loại đạt 94%",
+            "phát hiện 3 nhóm nhu cầu chưa được khai thác giúp tăng 24% điểm hài lòng CSAT"
+          ],
+          "fullRawExcerpt": "Bài tập 3: Ứng dụng AI Prompt Engineering Tự động hóa Quy trình Nghiên cứu Thị trường\nĐề bài: Xây dựng bộ khung Prompt AI hoàn chỉnh để tự động phân tích 500 phản hồi khách hàng, rút trích insight hành vi và đề xuất ý tưởng cải tiến sản phẩm trong thời gian dưới 15 phút.\nCách làm: Thiết kế chuỗi Chain-of-Thought Prompt kết hợp kỹ thuật Few-shot và xuất cấu trúc JSON. Phân nhóm cảm xúc khách hàng (Tích cực, Trung lập, Khiếu nại) và tự động tạo bảng ma trận Pain Point - Giải pháp bằng ChatGPT và Gemini.\nKết quả: Xử lý 500 mẫu khảo sát chỉ trong 12 phút (nhanh hơn 10 lần so với phân tích thủ công), độ chính xác phân loại đạt 94%, phát hiện 3 nhóm nhu cầu chưa được khai thác giúp tăng 24% điểm hài lòng CSAT.",
+          "metrics": [
+            {
+              "label": "Chỉ số nổi bật",
+              "value": "94%"
+            },
+            {
+              "label": "Quy mô / Tác động",
+              "value": "500 phản hồi"
+            },
+            {
+              "label": "Quy mô / Tác động",
+              "value": "15 phút"
+            }
+          ],
+          "media": [],
+          "suggestedAiImagePrompt": "Modern pastel editorial illustration representing \"Ứng dụng AI Prompt Engineering Tự động hóa Quy trình Nghiên cứu Thị trường\" in the field of AI Prompt Engineering, clean visual storytelling cards, cohesive warm color palette",
+          "preferredImageStyle": "canva-pastel-graphic",
+          "links": [],
+          "tags": [
+            "ChatGPT",
+            "Gemini",
+            "Prompt Engineering",
+            "Chain-of-Thought"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "contact",
+      "title": "Conclusion & Contact",
+      "subtitle": "Cảm ơn bạn đã xem hồ sơ của sample assignments. Vui lòng xác nhận thông tin liên hệ trước khi công bố.",
+      "thankYouMessage": "THANK YOU FOR WATCHING!",
+      "showContactForm": true
+    }
+  ]
+}

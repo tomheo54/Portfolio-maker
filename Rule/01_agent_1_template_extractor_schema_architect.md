@@ -234,5 +234,12 @@ Viết một script nhỏ tạo file `references/sample-assignments.docx` chứa
 ---
 
 ## 4. Tiêu chuẩn nghiệm thu (Definition of Done)
+- [ ] Ký hiệu DOCX đầu vào nhận diện rõ nhiều file nguồn và nhiều bài độc lập trong cùng file; schema có id nguồn để lọc/chọn mà không làm trộn nội dung.
+- [ ] Manifest ZIP có phiên bản, kiểm tra bằng Zod và giữ được dữ liệu cũ; chỉ thay schema khi Agent 1 đã chốt contract với Agent 3/4/5.
+
+## 5. Ưu tiên nâng cấp hệ thống
+- Là chủ sở hữu contract `PortfolioDocument`, kết quả nhận diện/chọn bài DOCX, batch task và editable archive manifest; không sửa UI hoặc service ngoài file scope.
+- Với migration, giữ đọc được draft/ZIP cũ khi đủ dữ liệu; mọi trường mới cần default an toàn và có ghi chú tương thích.
+- Trước khi giao contract cho agent khác, mô tả shape, validation và ví dụ input/output trong handover.
 - [ ] `PortfolioDocumentSchema` và `DocxIngestionSchema` biên dịch hoàn hảo (`tsc --noEmit`).
 - [ ] Có sẵn file `references/sample-assignments.docx` và `src/data/presets/tuthivananh-sample.json` hợp lệ.

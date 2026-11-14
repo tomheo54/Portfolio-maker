@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Send, CheckCircle2, Sparkles, Terminal, Mail } from "lucide-react";
 import type {
   ContactSection,
+  ConclusionCard,
   ProfileOwner,
   TemplateId,
   ThemeConfig,
@@ -19,6 +20,229 @@ import {
   CanvaSpiralMusicStaff,
   CanvaThankYouVinylBurst,
 } from "./CanvaOrnaments";
+import { DEFAULT_CONCLUSION_CONFIG } from "./conclusion-defaults";
+
+const CONCLUSION_CARD_SPAN_CLASSES = [
+  "",
+  "col-span-12 md:col-span-1",
+  "col-span-12 md:col-span-2",
+  "col-span-12 md:col-span-3",
+  "col-span-12 md:col-span-4",
+  "col-span-12 md:col-span-5",
+  "col-span-12 md:col-span-6",
+  "col-span-12 md:col-span-7",
+  "col-span-12 md:col-span-8",
+  "col-span-12 md:col-span-9",
+  "col-span-12 md:col-span-10",
+  "col-span-12 md:col-span-11",
+  "col-span-12 md:col-span-12",
+];
+
+function ConclusionBlock({ section, theme, projects = [], archetypeId }: {
+  section: ContactSection;
+  theme: ThemeConfig;
+  projects?: Array<{ id: string; title: string; category?: string; docxUrl?: string }>;
+  archetypeId: TemplateId;
+}) {
+  const config = section.conclusion ?? DEFAULT_CONCLUSION_CONFIG;
+  const projectLinks = config.projectLinks.length > 0
+    ? config.projectLinks
+    : projects.map((project, index) => ({ id: project.id || `project-${index + 1}`, title: project.title, text: "", href: project.docxUrl }));
+  const defaultSpan = config.layout === "three-cards" ? 4
+    : config.layout === "two-cards" ? 6
+      : config.layout === "compact" ? 3
+        : config.layout === "masonry" ? 6
+          : config.layout === "editorial" ? 8
+            : config.layout === "spotlight" ? 6
+            : 12;
+  const headingColor = config.headingColor || theme.textColor;
+  const textColor = config.textColor || theme.textColor;
+  const accentColor = config.accentColor || theme.primaryColor;
+  const family = config.fontFamily || undefined;
+  const cardGridClass = config.layout === "compact"
+    ? "grid grid-cols-12 items-start gap-3"
+    : config.layout === "masonry"
+      ? "columns-1 gap-5 md:columns-2"
+      : config.layout === "timeline"
+        ? "grid grid-cols-12 gap-0"
+        : "grid grid-cols-12 gap-5";
+  const panelsClass = config.layout === "stacked" || config.layout === "editorial"
+    ? "mt-10 grid grid-cols-1 gap-6"
+    : "mt-10 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]";
+  const card = (item: ConclusionCard, index: number) => {
+    const isMasonry = config.layout === "masonry";
+    const isTimeline = config.layout === "timeline";
+    const isEditorial = config.layout === "editorial";
+    const isFeatured = config.layout === "spotlight" && index === 0;
+    const isStacked = config.layout === "stacked";
+    const defaultCardSpan =
+      config.layout === "stacked" || config.layout === "timeline"
+        ? 12
+        : config.layout === "editorial"
+          ? index === 0
+            ? 8
+            : 4
+          : config.layout === "spotlight"
+            ? index === 0
+              ? 12
+              : 6
+            : defaultSpan;
+    const span = Math.max(1, Math.min(12, item.width ?? defaultCardSpan));
+    const spanClass = isMasonry
+      ? "mb-5 inline-block w-full break-inside-avoid"
+      : isTimeline
+        ? "col-span-12 ml-4 w-[calc(100%-1rem)]"
+        : CONCLUSION_CARD_SPAN_CLASSES[span];
+    const titleFontSizes = {
+      sm: "0.875rem",
+      base: "1rem",
+      lg: "1.125rem",
+      xl: "1.25rem",
+      "2xl": "1.5rem",
+    };
+    const bodyFontSizes = {
+      xs: "0.75rem",
+      sm: "0.875rem",
+      base: "1rem",
+      lg: "1.125rem",
+    };
+    return (
+      <article
+        key={item.id}
+        data-conclusion-card-id={item.id}
+        className={`${spanClass} relative overflow-hidden border ${
+          isTimeline
+            ? "border-y-0 border-r-0 border-l-2 pl-7 shadow-none"
+            : isEditorial
+              ? "rounded-2xl border-x-0 border-t-0 border-b-2 shadow-none"
+              : isStacked
+                ? "rounded-2xl"
+                : "rounded-3xl shadow-sm"
+        } ${config.layout === "compact" ? "p-4" : "p-5 sm:p-6"} ${
+          isFeatured ? "p-7 sm:p-9" : ""
+        }`}
+        style={{
+          minHeight:
+            config.layout === "compact" || isMasonry
+              ? undefined
+              : `${(item.height ?? 3) * 4}rem`,
+          backgroundColor: isFeatured
+            ? accentColor
+            : isEditorial || isTimeline
+              ? item.backgroundColor || "transparent"
+              : item.backgroundColor || config.cardBackgroundColor || theme.surfaceColor,
+          borderColor: isFeatured
+            ? accentColor
+            : isTimeline
+              ? `${accentColor}70`
+              : config.cardBorderColor || `${theme.primaryColor}35`,
+          color: isFeatured ? theme.backgroundColor : item.textColor || textColor,
+          fontFamily: item.bodyFontFamily || family,
+          textAlign: item.bodyAlign,
+        }}
+      >
+        {isTimeline && (
+          <span
+            className="absolute -left-[1.05rem] top-5 flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-bold"
+            style={{
+              backgroundColor: config.backgroundColor || theme.backgroundColor,
+              borderColor: accentColor,
+              color: accentColor,
+            }}
+          >
+            {item.number}
+          </span>
+        )}
+        {!isTimeline && (
+          <p
+            className={`font-editorial font-extrabold ${
+              isFeatured ? "text-4xl sm:text-5xl" : "text-2xl"
+            }`}
+            style={{
+              color: isFeatured
+                ? theme.backgroundColor
+                : accentColor,
+              fontFamily: item.titleFontFamily || family,
+              textAlign: item.titleAlign,
+            }}
+          >
+            {item.number}
+          </p>
+        )}
+        <h3
+          className={`${isFeatured ? "mt-3 text-2xl sm:text-3xl" : "mt-2 text-lg"} font-bold`}
+          style={{
+            color: isFeatured
+              ? theme.backgroundColor
+              : item.titleColor || headingColor,
+            fontFamily: item.titleFontFamily || family,
+            fontSize: item.titleFontSize
+              ? titleFontSizes[item.titleFontSize]
+              : undefined,
+            textAlign: item.titleAlign,
+          }}
+        >
+          {item.title}
+        </h3>
+        {item.body && (
+          <p
+            className="mt-3 whitespace-pre-line leading-relaxed"
+            style={{
+              fontSize: item.bodyFontSize
+                ? bodyFontSizes[item.bodyFontSize]
+                : "0.875rem",
+              textAlign: item.bodyAlign,
+            }}
+          >
+            {item.body}
+          </p>
+        )}
+        {item.bullets.length > 0 && (
+          <ul
+            className={`mt-3 space-y-2 leading-relaxed ${
+              item.bodyAlign === "center"
+                ? "list-none pl-0"
+                : "list-disc pl-5"
+            }`}
+            style={{
+              fontSize: item.bodyFontSize
+                ? bodyFontSizes[item.bodyFontSize]
+                : "0.875rem",
+              textAlign: item.bodyAlign,
+            }}
+          >
+            {item.bullets.map((line, bulletIndex) => (
+              <li key={`${item.id}-bullet-${bulletIndex}`}>{line}</li>
+            ))}
+          </ul>
+        )}
+      </article>
+    );
+  };
+  return (
+    <section id="conclusion" data-conclusion-layout={config.layout} className="relative mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8" style={{ backgroundColor: config.backgroundColor || undefined, color: textColor, fontFamily: family }}>
+      {archetypeId === "canva-editorial" && <CanvaSpiralMusicStaff className="pointer-events-none -left-16 -top-8 hidden h-64 w-72 opacity-85 md:absolute md:block" stroke={textColor} noteFill={textColor} />}
+      <div className="mb-8 flex items-end justify-between gap-4">
+        <div><p className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color: accentColor }}>{config.eyebrow}</p><h2 className="mt-2 font-editorial text-4xl font-bold sm:text-5xl" style={{ color: headingColor }}>{config.title}</h2></div>
+        <ContactStar className="mb-2 h-8 w-8 shrink-0" style={{ color: accentColor } as React.CSSProperties} />
+      </div>
+      <div className={cardGridClass}>
+        {config.cards.map(card)}
+      </div>
+      <div className={panelsClass}>
+        <div className="rounded-3xl border p-6 shadow-sm sm:p-8" style={{ backgroundColor: config.cardBackgroundColor || theme.surfaceColor, borderColor: config.cardBorderColor || `${theme.primaryColor}35`, color: textColor, fontFamily: family }}>
+          <h3 className="font-editorial text-xl font-bold sm:text-2xl" style={{ color: headingColor }}>{config.projectLinksTitle}</h3>
+          <ol className="mt-5 space-y-3">{projectLinks.map((item, index) => <li key={item.id} className="flex items-start gap-3 text-sm leading-relaxed"><span className="font-bold" style={{ color: accentColor }}>{String(index + 1).padStart(2, "0")}.</span>{item.href ? <a href={item.href} target={item.href.startsWith("#") ? undefined : "_blank"} rel={item.href.startsWith("#") ? undefined : "noreferrer"} className="underline decoration-current/30 underline-offset-4">{item.title}{item.text ? `: ${item.text}` : ""}</a> : <span>{item.title}{item.text ? `: ${item.text}` : ""}</span>}</li>)}</ol>
+        </div>
+        <div className="rounded-3xl border p-6 shadow-sm sm:p-8" style={{ backgroundColor: config.cardBackgroundColor || theme.surfaceColor, borderColor: config.cardBorderColor || `${theme.primaryColor}35`, color: textColor, fontFamily: family }}>
+          <h3 className="font-editorial text-xl font-bold sm:text-2xl" style={{ color: headingColor }}>{config.aiToolsTitle}</h3>
+          <ol className="mt-5 space-y-4 text-sm leading-relaxed">{config.aiTools.map((item) => <li key={item.id}><strong style={{ color: accentColor }}>{item.title}: </strong>{item.text}</li>)}</ol>
+          {config.closingNote && <p className="mt-5 border-t pt-4 text-xs leading-relaxed opacity-80" style={{ borderColor: config.cardBorderColor || `${theme.primaryColor}35` }}>{config.closingNote}</p>}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export interface ContactBlockProps {
   section: ContactSection;
@@ -48,13 +272,20 @@ const CONCLUSION_PILLS = [
   },
 ];
 
-function ContactStar({ className = "" }: { className?: string }) {
+function ContactStar({
+  className = "",
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   return (
     <svg
       aria-hidden="true"
       viewBox="0 0 40 40"
       fill="currentColor"
       className={className}
+      style={style}
     >
       <path d="M20 0c2.4 11.2 6.8 15.6 20 20-13.2 4.4-17.6 8.8-20 20C17.6 28.8 13.2 24.4 0 20 13.2 15.6 17.6 11.2 20 0Z" />
     </svg>
@@ -164,58 +395,7 @@ export function ContactBlock({
       <section
         className="reveal-on-scroll relative overflow-hidden pt-10"
       >
-        {/* Conclusion reflection, separated from the contact card below. */}
-        <section id="conclusion" className="reveal-on-scroll relative mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-          <CanvaSpiralMusicStaff
-            className="pointer-events-none -left-16 -top-8 hidden h-64 w-72 opacity-85 md:absolute md:block"
-            stroke="var(--text, #2E1D18)"
-            noteFill="var(--text, #2E1D18)"
-          />
-
-          <div className="relative z-10 flex flex-col items-center text-center">
-            <div className="flex items-center justify-center gap-6 sm:gap-12">
-              <CanvaFourPointStar
-                className="h-7 w-7 sm:h-9 sm:w-9"
-                color="var(--primary, #735340)"
-              />
-              <h2
-                className="font-editorial text-4xl font-extrabold tracking-tight sm:text-6xl"
-                style={{ color: "var(--text, #3E2723)" }}
-              >
-                Conclusion
-              </h2>
-              <CanvaFourPointStar
-                className="h-7 w-7 sm:h-9 sm:w-9"
-                color="var(--primary, #735340)"
-              />
-            </div>
-            <p className="mt-3 text-xs font-bold uppercase tracking-[0.18em] opacity-65" style={{ color: "var(--primary, #735340)" }}>
-              05 // Reflect &amp; Grow
-            </p>
-
-            <div className="mt-10 grid w-full grid-cols-1 gap-5 lg:grid-cols-3">
-              <article className="rounded-3xl border bg-white/75 p-5 shadow-sm sm:p-6" style={{ borderColor: "var(--primary, #735340)35" }}>
-                <p className="font-editorial text-3xl font-extrabold" style={{ color: "var(--primary, #735340)" }}>[01]</p>
-                <h3 className="mt-2 text-base font-bold sm:text-lg">Trải nghiệm &amp; cảm nhận về chuỗi dự án</h3>
-                <p className="mt-3 text-sm leading-relaxed opacity-85">Quá trình học tập giúp tôi củng cố kiến thức Sư phạm Âm nhạc, từ nhạc lý, thanh nhạc, hòa tấu đến phương pháp tổ chức hoạt động âm nhạc. Tôi nhận ra âm nhạc không chỉ là biểu diễn mà còn khơi gợi cảm xúc, tư duy và sự sáng tạo của người học.</p>
-              </article>
-              <article className="rounded-3xl border bg-white/75 p-5 shadow-sm sm:p-6" style={{ borderColor: "var(--primary, #735340)35" }}>
-                <p className="font-editorial text-3xl font-extrabold" style={{ color: "var(--primary, #735340)" }}>[02]</p>
-                <h3 className="mt-2 text-base font-bold sm:text-lg">Kiến thức &amp; kỹ năng cốt lõi đạt được</h3>
-                <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed opacity-85">
-                  <li>Vận dụng công nghệ số và AI vào học tập, sáng tạo học liệu âm nhạc.</li>
-                  <li>Tìm kiếm, đánh giá và kiểm chứng thông tin; thiết kế prompt rõ mục tiêu.</li>
-                  <li>Cộng tác trực tuyến, trình bày sản phẩm và phản tư về quá trình thực hiện.</li>
-                </ul>
-              </article>
-              <article className="rounded-3xl border bg-white/75 p-5 shadow-sm sm:p-6" style={{ borderColor: "var(--primary, #735340)35" }}>
-                <p className="font-editorial text-3xl font-extrabold" style={{ color: "var(--primary, #735340)" }}>[03]</p>
-                <h3 className="mt-2 text-base font-bold sm:text-lg">Tâm đắc, thử thách &amp; định hướng</h3>
-                <p className="mt-3 text-sm leading-relaxed opacity-85">Thử thách lớn nhất là kết hợp chuyên môn âm nhạc với phương pháp truyền đạt phù hợp. Tôi tiếp tục rèn kỹ năng biểu diễn, thiết kế học liệu trực quan, quản lý thời gian và làm việc nhóm. Đây là nền tảng để tôi hướng tới hình ảnh một giáo viên âm nhạc sáng tạo, linh hoạt và biết dùng công nghệ có trách nhiệm.</p>
-              </article>
-            </div>
-          </div>
-        </section>
+        <ConclusionBlock section={section} theme={theme} projects={projects} archetypeId={archetypeId} />
 
           {/* Slide 9: Large rounded Mocha block with floating Rota sheet music & exercise links */}
           <p className="mx-auto mt-8 max-w-5xl px-4 text-xs font-bold uppercase tracking-[0.18em] opacity-65 sm:px-6 lg:px-8" style={{ color: "var(--primary, #735340)" }}>
@@ -538,54 +718,7 @@ export function ContactBlock({
 
   return (
     <>
-    <section id="conclusion" className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
-      <div className="mb-8 flex items-end justify-between gap-4">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color: theme.primaryColor }}>05 // Reflect &amp; Grow</p>
-          <h2 className="mt-2 font-editorial text-4xl font-bold sm:text-5xl" style={{ color: theme.textColor }}>Conclusion</h2>
-        </div>
-        <ContactStar className="mb-2 h-8 w-8 shrink-0 text-amber-500" />
-      </div>
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-        <article className="rounded-3xl border bg-white p-6 shadow-sm" style={{ borderColor: `${theme.primaryColor}35` }}>
-          <p className="font-editorial text-3xl font-extrabold" style={{ color: theme.primaryColor }}>[01]</p>
-          <h3 className="mt-2 text-lg font-bold">Trải nghiệm &amp; cảm nhận về chuỗi dự án</h3>
-          <p className="mt-3 text-sm leading-relaxed opacity-80">Quá trình học tập giúp tôi củng cố nền tảng Sư phạm Âm nhạc, từ nhạc lý, thanh nhạc, hòa tấu đến phương pháp tổ chức hoạt động âm nhạc. Tôi nhận ra âm nhạc không chỉ là biểu diễn mà còn khơi gợi cảm xúc, tư duy và sáng tạo của người học.</p>
-        </article>
-        <article className="rounded-3xl border bg-white p-6 shadow-sm" style={{ borderColor: `${theme.primaryColor}35` }}>
-          <p className="font-editorial text-3xl font-extrabold" style={{ color: theme.primaryColor }}>[02]</p>
-          <h3 className="mt-2 text-lg font-bold">Kiến thức &amp; kỹ năng cốt lõi</h3>
-          <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed opacity-80"><li>Tìm kiếm, đánh giá và kiểm chứng thông tin.</li><li>Thiết kế prompt, sử dụng AI có trách nhiệm và sáng tạo học liệu số.</li><li>Cộng tác trực tuyến, trình bày sản phẩm và phản tư quá trình thực hiện.</li></ul>
-        </article>
-        <article className="rounded-3xl border bg-white p-6 shadow-sm" style={{ borderColor: `${theme.primaryColor}35` }}>
-          <p className="font-editorial text-3xl font-extrabold" style={{ color: theme.primaryColor }}>[03]</p>
-          <h3 className="mt-2 text-lg font-bold">Thử thách &amp; định hướng</h3>
-          <p className="mt-3 text-sm leading-relaxed opacity-80">Thử thách lớn nhất là kết hợp chuyên môn với phương pháp truyền đạt phù hợp. Tôi tiếp tục rèn kỹ năng biểu diễn, thiết kế học liệu trực quan, quản lý thời gian và làm việc nhóm để trở thành giáo viên âm nhạc sáng tạo, linh hoạt và biết truyền cảm hứng.</p>
-        </article>
-      </div>
-      <div className="mt-12 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="rounded-3xl border bg-white p-6 shadow-sm sm:p-8" style={{ borderColor: `${theme.primaryColor}35` }}>
-          <h3 className="font-editorial text-xl font-bold sm:text-2xl">Tổng hợp đường dẫn bài tập</h3>
-          <ol className="mt-5 space-y-3">
-            {projects.map((project, idx) => (
-              <li key={project.id || idx} className="flex items-start gap-3 text-sm leading-relaxed">
-                <span className="font-bold" style={{ color: theme.primaryColor }}>{String(idx + 1).padStart(2, "0")}.</span>
-                <a href={project.docxUrl || `#project-item-${idx}`} target={project.docxUrl ? "_blank" : undefined} rel={project.docxUrl ? "noreferrer" : undefined} className="underline decoration-current/30 underline-offset-4 hover:decoration-current">{project.title}</a>
-              </li>
-            ))}
-          </ol>
-        </div>
-        <div className="rounded-3xl border bg-white p-6 shadow-sm sm:p-8" style={{ borderColor: `${theme.primaryColor}35` }}>
-          <h3 className="font-editorial text-xl font-bold sm:text-2xl">Công cụ AI &amp; cách sử dụng</h3>
-          <ol className="mt-5 space-y-4 text-sm leading-relaxed">
-            <li><strong>Gemini:</strong> gợi ý ý tưởng, lập dàn ý và mở rộng hướng tìm hiểu; thông tin được đối chiếu trước khi đưa vào bài.</li>
-            <li><strong>ChatGPT:</strong> hỗ trợ làm rõ câu hỏi, trao đổi và rà soát cấu trúc; nội dung được chọn lọc, chỉnh sửa theo mục tiêu học tập.</li>
-            <li><strong>Canva AI:</strong> hỗ trợ phát triển hình ảnh, bố cục và học liệu trực quan; sản phẩm được kiểm tra về tính phù hợp.</li>
-          </ol>
-          <p className="mt-5 border-t pt-4 text-xs leading-relaxed opacity-70" style={{ borderColor: `${theme.primaryColor}25` }}>AI hỗ trợ quá trình tìm ý và sáng tạo. Việc kiểm chứng thông tin, lựa chọn nội dung và quyết định sư phạm vẫn do tôi đảm nhiệm.</p>
-        </div>
-      </div>
-    </section>
+    <ConclusionBlock section={section} theme={theme} projects={projects} archetypeId={archetypeId} />
     <section id="contact" className="mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 lg:px-8">
       <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em]" style={{ color: theme.primaryColor }}>06 // Contact</p>
       {contactVariant === "minimal-card" ? (

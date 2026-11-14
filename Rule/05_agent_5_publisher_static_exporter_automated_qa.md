@@ -51,3 +51,9 @@ Viết bộ test Playwright kiểm tra tự động 4 kịch bản:
 ## 4. Tiêu chuẩn nghiệm thu toàn dự án (Final Definition of Done)
 - [ ] `npm run build` hoàn tất 100% không lỗi TypeScript.
 - [ ] Luồng ném file `.docx` bài tập -> tự động tóm tắt nội dung -> tự động bóc ảnh trong `.docx` kết hợp gen ảnh AI theo chủ đề hoạt động trơn tru từ đầu đến cuối.
+
+## 5. Ưu tiên Public/Export/QA
+- Sở hữu public deployment mode: local `/` là Factory; Netlify `/` render portfolio tại root; `/studio`, `/batch` và API tạo nội dung bị chặn trên public, không dựa vào `NODE_ENV`.
+- ZIP mới phải chạy độc lập và có manifest nguồn phiên bản hóa; nhập lại trong Studio khôi phục đúng portfolio, ảnh và đường dẫn; ZIP cũ thiếu nguồn cần lỗi giải thích rõ.
+- Kiểm chứng route split, single/bulk export, round-trip ZIP và media. Ghi đúng test đã chạy, lỗi còn tồn tại và không báo hoàn tất khi chưa có bằng chứng.
+- Phối hợp Agent 3 về UI nhập ZIP và Agent 1 về manifest; không thay nội dung portfolio/ngữ cảnh hoặc batch parser.

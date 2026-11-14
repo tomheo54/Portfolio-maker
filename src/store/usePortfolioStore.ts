@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import { arrayMove } from '@dnd-kit/sortable';
-import tuthivananhPreset from '@/data/presets/tuthivananh-sample.json';
+import completedPortfolioPreset from '@/data/presets/portfolio-mau-hoan-chinh.json';
 import {
   PortfolioDocumentSchema,
   type PortfolioDocument,
@@ -22,10 +22,10 @@ import {
 import type { SummarizeAssignmentsResponse } from '@/schema/docx-ingestion.schema';
 import { THEME_PRESETS, resolveThemeFromContext } from '@/schema/theme.schema';
 
-const PARSED_PRESET_DOC = PortfolioDocumentSchema.parse(tuthivananhPreset);
+const PARSED_PRESET_DOC = PortfolioDocumentSchema.parse(completedPortfolioPreset);
 
 /**
- * Fixed Canva reference theme from https://tntlab.my.canva.site/tuthivananhportfolio/
+ * Fixed Canva reference theme for the completed sample portfolio.
  * (#FFF3E6 cream background, #3E2723 espresso text, #735340 & #5D4037 cocoa accents).
  */
 export const CANVA_REFERENCE_THEME: ThemeConfig = {
@@ -46,7 +46,7 @@ const INITIAL_DOC: PortfolioDocument = {
   templateId: 'canva-editorial',
   theme: { ...CANVA_REFERENCE_THEME },
   profileOwner: PARSED_PRESET_DOC.profileOwner ?? {
-    fullName: heroSecForInitial?.fullName ?? 'Từ Thị Vân Anh',
+    fullName: heroSecForInitial?.fullName ?? 'Nguyễn Văn A',
     roleTitle: heroSecForInitial?.roleTitle ?? 'Sinh viên Sư phạm Âm nhạc',
     avatarUrl: heroSecForInitial?.avatar.url ?? '',
     avatarSourceType: heroSecForInitial?.avatar.sourceType ?? 'user-uploaded',
@@ -91,6 +91,11 @@ interface PortfolioStoreState {
   lastSavedAt: string | null;
 
   setDocument: (doc: PortfolioDocument) => void;
+  restoreDraftSnapshot: (snapshot: {
+    document: PortfolioDocument;
+    history?: PortfolioDocument[];
+    future?: PortfolioDocument[];
+  }) => void;
   setActiveSectionIndex: (index: number | null) => void;
   setSelectedProjectId: (projectId: string | null) => void;
   setViewportMode: (mode: ViewportMode) => void;
@@ -204,6 +209,23 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
   setDocument: (doc) =>
     set((state) => pushHistory(state, doc)),
 
+  restoreDraftSnapshot: ({ document, history = [], future = [] }) => {
+    lastEditKey = '';
+    lastEditTimestamp = 0;
+    set((state) => ({
+      document,
+      history: history.slice(-40),
+      future: future.slice(0, 40),
+      activeSectionIndex:
+        state.activeSectionIndex === null
+          ? null
+          : Math.min(state.activeSectionIndex, Math.max(document.sections.length - 1, 0)),
+      selectedProjectId:
+        document.sections.find((section) => section.type === 'projects')?.projects[0]?.id ?? null,
+      docxExtractedPool: extractDocxPoolFromDoc(document),
+    }));
+  },
+
   setActiveSectionIndex: (index) => set({ activeSectionIndex: index }),
 
   setSelectedProjectId: (projectId) => set({ selectedProjectId: projectId }),
@@ -237,7 +259,12 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
           ...state.document.imageGenerationConfig,
           visualStyle: preset.recommendedVisualStyle,
         },
-        theme: nextTheme,
+        theme: {
+          ...nextTheme,
+          ...(state.document.theme.tableOfContents
+            ? { tableOfContents: state.document.theme.tableOfContents }
+            : {}),
+        },
       });
     }),
 
@@ -253,7 +280,12 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
       return pushHistory(state, {
         ...state.document,
         templateId,
-        theme: nextTheme,
+        theme: {
+          ...nextTheme,
+          ...(state.document.theme.tableOfContents
+            ? { tableOfContents: state.document.theme.tableOfContents }
+            : {}),
+        },
       });
     }),
 
@@ -520,7 +552,7 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
       const aboutSec = state.document.sections.find((s): s is AboutSection => s.type === 'about');
 
       const currentOwner: ProfileOwner = state.document.profileOwner ?? {
-        fullName: heroSec?.fullName ?? 'Từ Thị Vân Anh',
+        fullName: heroSec?.fullName ?? 'Nguyễn Văn A',
         roleTitle: heroSec?.roleTitle ?? 'Sinh viên Sư phạm Âm nhạc',
         avatarUrl: heroSec?.avatar.url ?? '',
         avatarSourceType: heroSec?.avatar.sourceType ?? 'user-uploaded',
@@ -601,7 +633,7 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
       const currentBg: BackgroundIllustrationConfig = state.document.theme.backgroundIllustration ?? {
         mode: 'none',
         presetId: 'none',
-        opacity: 0.15,
+        opacity: 0.35,
         blur: 0,
         position: 'cover',
       };
@@ -1074,7 +1106,12 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
             ...state.document.imageGenerationConfig,
             visualStyle: 'canva-pastel-graphic',
           },
-          theme: { ...CANVA_REFERENCE_THEME },
+          theme: {
+            ...CANVA_REFERENCE_THEME,
+            ...(state.document.theme.tableOfContents
+              ? { tableOfContents: state.document.theme.tableOfContents }
+              : {}),
+          },
           sections: restoredSections,
         }),
         activeSectionIndex: 0,

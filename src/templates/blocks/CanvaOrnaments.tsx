@@ -171,11 +171,13 @@ export function CanvaCoverStaffBottomRight({
  * Hero Cover centerpiece: "Digital" + oversized outlined "Portfolio" + "2026" (Slide 1).
  */
 export function CanvaPortfolioDisplayTitle({
+  title = 'Portfolio',
   textColor = 'var(--text, #1E120E)',
   strokeColor = 'var(--primary, #4B3128)',
   fillColor = 'var(--primary, #927869)',
   className = '',
 }: {
+  title?: string;
   textColor?: string;
   strokeColor?: string;
   fillColor?: string;
@@ -214,7 +216,7 @@ export function CanvaPortfolioDisplayTitle({
                 letterSpacing: '-0.03em',
               }}
             >
-              Portfolio
+              {title}
             </text>
           </g>
         </svg>

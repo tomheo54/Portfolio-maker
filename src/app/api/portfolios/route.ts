@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { privateApiUnavailableResponse } from '@/services/deployment/private-api-guard';
 import { PortfolioDocumentSchema } from '@/schema/portfolio.schema';
 import {
   getPortfolioBySlug,
@@ -7,6 +8,9 @@ import {
 } from '@/services/export/portfolio-repository';
 
 export async function GET(req: NextRequest) {
+  const unavailable = privateApiUnavailableResponse('/api/portfolios');
+  if (unavailable) return unavailable;
+
   const slug = req.nextUrl.searchParams.get('slug');
   if (slug) {
     const found = getPortfolioBySlug(slug);
@@ -19,6 +23,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const unavailable = privateApiUnavailableResponse('/api/portfolios');
+  if (unavailable) return unavailable;
+
   try {
     const body = await req.json();
     const doc = PortfolioDocumentSchema.parse(body);

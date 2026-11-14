@@ -58,3 +58,8 @@ export interface PortfolioRendererProps {
 ## 4. Tiêu chuẩn nghiệm thu (Definition of Done)
 - [ ] Bài tập có 1 ảnh, nhiều ảnh (từ `.docx`), hoặc ảnh AI đều tự động căn chỉnh khung hình đẹp mắt, không bị méo tỷ lệ (`object-cover` / `aspect-ratio` chuẩn).
 - [ ] Khi `editable={true}`, trên mỗi thẻ bài tập có nút bấm gọi trực tiếp callback `onRegenerateProjectImage` để tạo ảnh AI mới ngay trên Canvas.
+
+## 5. Ưu tiên nâng cấp Template/Render
+- Sở hữu visual blocks, responsive layout và typography; ưu tiên hierarchy trực quan cho văn bản dài, nhiều ảnh và phần kết luận có cấu trúc.
+- Giữ section id, anchors, navigation và khả năng mở chi tiết bài; không tự thay schema, Studio state, route hoặc exporter.
+- Dùng cùng contract portfolio ở public page, Studio preview và HTML ZIP; phối hợp Agent 1/5 khi block cần dữ liệu hoặc CSS xuất tĩnh mới.

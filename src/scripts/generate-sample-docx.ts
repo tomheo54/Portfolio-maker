@@ -317,7 +317,7 @@ async function generateSampleDocx() {
 
   const bodyBlocks = [
     paragraphXml('HỒ SƠ BÀI TẬP THỰC HÀNH - KHÓA CONTENT & AI CREATIVE TNT LAB'),
-    paragraphXml('Học viên: Từ Thị Vân Anh | Chuyên ngành: Digital Marketing & AI Content'),
+    paragraphXml('Học viên: Nguyễn Văn A | Chuyên ngành: Digital Marketing & AI Content'),
 
     // Assignment 1 (with image1.png)
     paragraphXml('Bài tập 1: Chiến dịch Content Marketing Ra mắt Sản phẩm Trà Thảo Mộc', 'Heading1'),

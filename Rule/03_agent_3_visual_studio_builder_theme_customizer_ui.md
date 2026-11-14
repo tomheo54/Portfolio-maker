@@ -52,3 +52,10 @@ Bạn **CHỈ ĐƯỢC PHÉP** tạo và chỉnh sửa các file trong:
 ## 4. Tiêu chuẩn nghiệm thu (Definition of Done)
 - [ ] Kéo thả file `.docx` vào Studio -> Hiển thị rõ số lượng bài tập phát hiện được và số lượng ảnh bóc tách được từ trong file `.docx`.
 - [ ] Người dùng có thể bấm nút **"Tạo ảnh AI theo chủ đề"** ở bất kỳ bài tập nào và thấy ảnh mới cập nhật trực tiếp lên giao diện Portfolio.
+
+## 5. Ưu tiên nâng cấp Studio
+- Sở hữu Studio UI/state và browser services giới hạn trong `portfolio-draft.ts` và `portfolio-image-library.ts`: nhiều draft, auto-save bền, lịch sử undo/redo sau refresh, backup/restore và thư viện ảnh dùng chung.
+- Cho phép chọn ảnh từ nhiều file/folder, clipboard và các bài khác; giữ ảnh hồ sơ ở hai vị trí độc lập khi người dùng chọn ảnh riêng.
+- Có draft picker trong Studio và trang Factory; mở đúng draft theo id, nhập ZIP qua component Agent 5, không tự publish khi autosave.
+- DOCX wizard trình bày hai cách nạp: một file nhiều bài hoặc nhiều file, mỗi file có thể chứa nhiều bài; lọc/chọn bài theo file nguồn trước khi áp dụng.
+- Không sửa schema/parser/export API. Phối hợp với Agent 1/4/5 bằng contract; tránh ghi portfolio đang public khi chỉ lưu draft cục bộ.

@@ -2,6 +2,8 @@
 
 *Sử dụng file này để đánh dấu tiến độ `[x]` khi các Agent hoàn thành công việc. AI cũng có thể tự đọc file này để biết việc gì chưa làm.*
 
+> Lượt đang triển khai có checkpoint để tiếp tục khi bị ngắt: [Rule/10_live_progress_upgrade.md](10_live_progress_upgrade.md). Sau mỗi mốc kiểm thử hoặc giao agent, cập nhật checkpoint và chỉ đánh dấu hoàn tất khi có kết quả xác nhận.
+
 ## 📌 Giai đoạn 1: Khởi tạo & Schema (Agent 1)
 - [x] Khởi tạo dự án Next.js (App Router), Tailwind CSS, Zustand, Zod.
 - [x] Cài đặt các thư viện: `mammoth`, `jszip`, `lucide-react`, `@dnd-kit/core`.
@@ -54,4 +56,55 @@
 - [x] Mở rộng & chạy **10/10 Playwright E2E Tests** (Test 1–10 pass) + `tsc --noEmit` + `next build`.
 
 ---
-**Trạng thái dự án hiện tại:** ✅ Hoàn tất 100% (7/7 Giai đoạn) & Đạt chuẩn QA (`tsc --noEmit` + `next build` + `10/10` Playwright E2E)
+**Trạng thái dự án:** Các giai đoạn 1–7 là mốc lịch sử. Kết quả `10/10` E2E trước đây không đại diện cho trạng thái kiểm thử hiện tại; theo dõi đợt nâng cấp mới ở Giai đoạn 8.
+
+## 🧰 Giai đoạn 8: Public root, DOCX/Batch Factory, Studio recovery và editable ZIP
+
+### Định tuyến và public mode (Agent 5)
+- [x] Local root giữ trang AI Portfolio Factory; Netlify root render portfolio trực tiếp bằng deployment mode, không chuyển URL sang slug.
+- [x] Chặn Studio, Batch và API riêng bằng layout/API guard ở public mode; giữ API export cần cho portfolio công khai.
+- [x] Xác minh build public cô lập: `/` và slug đều mở portfolio; Studio/Batch/API riêng trả 404; API export không bị public guard chặn.
+- [x] Xác minh build local cô lập: `/` mở AI Portfolio Factory, Studio và Batch vẫn truy cập được.
+- [ ] Kiểm chứng trên Netlify deploy preview thực tế sau khi có deploy mới.
+
+### Batch và nhận diện DOCX (Agent 4, Agent 1 contract)
+- [x] Batch lưu file/job/kết quả trong IndexedDB, hỗ trợ folder/CSV, trạng thái từng file, retry riêng và khôi phục sau refresh.
+- [x] Studio DOCX có lựa chọn một file chứa nhiều bài hoặc nhiều file của các bài khác nhau; mỗi file vẫn có thể chứa nhiều bài. Tách nhóm theo file nguồn, lọc và chọn từng bài trước khi nhập.
+- [x] Test chọn/lọc bài từ nhiều file DOCX và test batch resume sau refresh pass.
+
+### Studio, local storage và thư viện ảnh (Agent 3)
+- [x] Nhiều bản nháp, draft picker ở Studio/home, auto-save cục bộ, history qua refresh và backup/restore; test khôi phục draft/undo sau refresh pass.
+- [x] Thư viện ảnh dùng chung, chọn file/folder/clipboard và dùng ảnh của bài khác; E2E xác nhận ảnh chỉ gắn vào bài sau khi chọn.
+- [x] Autosave báo đúng lỗi lưu/quota, không hiện trạng thái thành công giả; E2E mô phỏng IndexedDB `QuotaExceededError`.
+- [x] Draft/Undo khôi phục sau refresh; giao diện chỉnh sửa template, bố cục, nội dung, ảnh và theme tiếp tục dùng các inspector hiện có.
+
+### ZIP round-trip và QA (Agent 5)
+- [x] ZIP mới có source manifest phiên bản hóa và asset nội bộ; importer xác thực và phục hồi ảnh.
+- [x] Tích hợp importer vào Studio; test ZIP import vào thư viện draft pass.
+- [x] Test trọn vòng export → import Studio → sửa nội dung/ảnh → export lại → mở offline; xác minh assets, CSS, trang chi tiết và liên kết DOCX.
+- [x] Bộ E2E tập trung cuối lượt **11/11 pass** cho routing, Batch, DOCX một/nhiều file, ZIP round-trip, thư viện ảnh, khôi phục draft/Undo và lỗi quota. Agent Batch xác nhận thêm test cấu hình theo file pass.
+- [x] `npm.cmd run typecheck` pass; production build cô lập `NETLIFY=true` và `PORTFOLIO_PUBLIC_ONLY=false` đều pass (không ghi vào `.next` server đang dùng).
+
+### Giao việc và handover (Master)
+- [x] Cập nhật ranh giới sở hữu/contract cho Master và Agent 1–5 trong Rule; đồng bộ prompt Antigravity đang được handover tham chiếu.
+- [x] Tạo và cập nhật file live progress; đồng bộ checklist/handover theo kết quả test/build thực tế.
+- [x] Tháo remote `origin` theo yêu cầu; giữ `.git`, lịch sử commit và file người dùng `das`.
+- [ ] Xác minh URL Netlify sau deploy preview thực tế; phiên này không có quyền truy cập site/deploy.
+
+## 🎨 Giai đoạn 9: Kết luận, tùy biến toàn cục và Batch → Studio
+
+- [x] Conclusion: sửa toàn bộ nội dung, sáu layout, kéo-thả/sắp xếp, resize, màu/font/nền; Contact tách biệt và portfolio cũ có fallback.
+- [x] Màu/font/nền section hoạt động trong preview; có màu riêng theo vùng/thẻ Conclusion và font riêng cho nội dung/thẻ About.
+- [x] Batch: mở portfolio đã tạo trong Studio như draft cục bộ; chỉnh sửa phục hồi sau refresh.
+- [x] Sửa hiệu ứng/ảnh nền từ preset/upload đến preview và ZIP; tôn trọng reduced-motion.
+- [x] 10 focused E2E pass, typecheck và isolated production build pass; xem live progress để biết coverage section-style còn thiếu fixture Experience.
+
+## 📄 Giai đoạn 10: Hai nhánh nhập DOCX ở Batch và Studio
+
+- [x] Batch: nhiều file DOCX, mỗi file chọn đúng một bài; thêm/xóa file để điều chỉnh số bài.
+- [x] Batch: một file DOCX, quét và chọn nhiều bài từ cùng tài liệu; nhánh này chỉ nhận một file.
+- [x] Studio: nhiều DOCX đóng góp đúng một bài/file; một DOCX quét và cho chọn nhiều bài. Có thể thêm/bỏ file hoặc bài theo nhánh.
+- [x] Đổi header CSV mặc định thành `tenfile,hoten,chucdanh,email` (không dấu); vẫn đọc header tiếng Anh cũ.
+- [x] 4 focused E2E hai nhánh pass, Batch → Studio 2/2 pass, typecheck và isolated production build pass.
+
+> Xem [live progress](10_live_progress_upgrade.md) và [handover](08_b_n_giao_c_ng_vi_c_cho_ai_handover.md) để biết caveat về Netlify deploy preview và fixture Experience.

@@ -3,29 +3,21 @@ import type {
   TemplateId,
 } from '@/schema/portfolio.schema';
 
-/**
- * Pre-configured Canva Creative Preset Documents matching the 6 empirical reference sites:
- * 1. Dương Thu Trang (Warm Editorial / Slate & Linen)
- * 2. Đinh Hồng Quyên (Bold Creative / Rosewater & Prussian Cocoa)
- * 3. Nguyễn Thị Ngọc Mai (Minimalist Chic / Marine & Buttercream)
- * 4. Lương Thị Bảo Châm (Vibrant Student / Indigo & Buttercream)
- * 5. Ngô Thị Huệ (Artistic Organic / Peach Glow & Burgundy)
- * 6. Võ Thị Hoài (Structured Academic / Brick Crimson & Chalk Stone)
- */
+/** Generic portfolio presets spanning six Canva-inspired visual archetypes. */
 
-export const THU_TRANG_PORTFOLIO_DOC: PortfolioDocument = {
-  id: 'canva-thu-trang-warm-editorial',
-  slug: 'thu-trang',
+export const CANVA_SAMPLE_01_PORTFOLIO_DOC: PortfolioDocument = {
+  id: 'canva-sample-01-warm-editorial',
+  slug: 'mau-portfolio-01',
   templateId: 'warm-editorial',
   imageGenerationConfig: {
     mode: 'hybrid-auto',
     visualStyle: 'editorial-illustration',
   },
   seo: {
-    title: 'Dương Thu Trang | Digital Portfolio 2026',
+    title: 'Nguyễn Văn A | Digital Portfolio 2026',
     description:
-      'Hồ sơ học tập và sản phẩm số của Dương Thu Trang - Sư phạm Ngữ văn & Giáo dục Khai phóng, môn INF2501.',
-    ogImage: '/presets/avatar-thutrang.svg',
+      'Hồ sơ học tập và sản phẩm số của Nguyễn Văn A - Sư phạm Ngữ văn & Giáo dục Khai phóng, môn INF2501.',
+    ogImage: '/presets/avatar-mau-02.svg',
   },
   theme: {
     primaryColor: '#326586',
@@ -48,37 +40,36 @@ export const THU_TRANG_PORTFOLIO_DOC: PortfolioDocument = {
     backgroundIllustration: {
       mode: 'preset',
       presetId: 'canva-musical',
-      opacity: 0.12,
+      opacity: 0.35,
       blur: 0,
       position: 'cover',
     },
   },
   profileOwner: {
-    fullName: 'Dương Thu Trang',
+    fullName: 'Nguyễn Văn A',
     roleTitle: 'Sư phạm Ngữ văn & Giáo dục Khai phóng',
-    avatarUrl: '/presets/avatar-thutrang.svg',
+    avatarUrl: '/presets/avatar-mau-02.svg',
     avatarSourceType: 'user-uploaded',
     frameStyle: 'arch-window',
     aspectRatio: '3/4',
     bioSnippet:
-      'Xin chào! Mình là Dương Thu Trang. Đam mê văn học, nghệ thuật sư phạm và ứng dụng công nghệ AI tạo sinh trong giáo dục hiện đại.',
+      'Xin chào! Mình là Nguyễn Văn A. Đam mê văn học, nghệ thuật sư phạm và ứng dụng công nghệ AI tạo sinh trong giáo dục hiện đại.',
     learningGoals:
       'Làm chủ công nghệ số, xây dựng hệ thống học liệu mở và vận dụng AI có trách nhiệm vào giảng dạy văn học.',
     portfolioObjective:
       'Hệ thống hóa toàn bộ các bài tập thực hành, minh chứng năng lực và tiến trình học phần INF2501 đạt chuẩn xuất sắc.',
-    introVideoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
   },
   sections: [
     {
       type: 'hero',
       variant: 'editorial-asymmetric',
       headline: 'Digital Portfolio',
-      fullName: 'Dương Thu Trang',
-      roleTitle: 'Sư phạm Ngữ văn & Giáo dục Khai phóng • ĐH Sư phạm Hà Nội',
+      fullName: 'Nguyễn Văn A',
+      roleTitle: 'Sư phạm Ngữ văn & Giáo dục Khai phóng • Trường Đại học Mẫu',
       shortBio:
-        'Xin chào! Mình là Dương Thu Trang. Mình yêu thích ngôn ngữ, giáo dục và mong muốn kết nối tri thức nhân loại thông qua công nghệ trí tuệ nhân tạo.',
+        'Xin chào! Mình là Nguyễn Văn A. Mình yêu thích ngôn ngữ, giáo dục và mong muốn kết nối tri thức nhân loại thông qua công nghệ trí tuệ nhân tạo.',
       avatar: {
-        url: '/presets/avatar-thutrang.svg',
+        url: '/presets/avatar-mau-02.svg',
         sourceType: 'user-uploaded',
         frameStyle: 'arch-window',
         aspectRatio: '3/4',
@@ -98,7 +89,7 @@ export const THU_TRANG_PORTFOLIO_DOC: PortfolioDocument = {
         {
           id: 'dec-tt-2',
           type: 'badge',
-          label: '✦ DUONG THU TRANG 2026',
+          label: '✦ NGUYEN VAN A 2026',
           position: { bottom: '10%', left: '5%', rotate: -2, zIndex: 3 },
         },
       ],
@@ -113,7 +104,6 @@ export const THU_TRANG_PORTFOLIO_DOC: PortfolioDocument = {
         'Hoàn thiện kỹ năng phân tích dữ liệu giáo dục và sử dụng thành thạo các mô hình ngôn ngữ lớn để hỗ trợ soạn giảng.',
       portfolioObjective:
         'Minh chứng rõ ràng cho tiến trình học tập liên tục, sáng tạo và tuân thủ liêm chính học thuật.',
-      introVideoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
       highlights: [
         { label: 'Học phần', value: 'INF2501' },
         { label: 'Điểm chuyên cần', value: '10.0' },
@@ -121,12 +111,12 @@ export const THU_TRANG_PORTFOLIO_DOC: PortfolioDocument = {
         { label: 'Mức đánh giá', value: 'Xuất sắc' },
       ],
       contactInfo: {
-        email: 'thutrang.duong@hnue.edu.vn',
-        phone: '0988 123 456',
-        location: 'Cầu Giấy, Hà Nội',
-        website: 'https://lttm.my.canva.site/thu-trang',
+        email: 'nguyenvana@example.com',
+        phone: '0000000000',
+        location: 'Việt Nam',
+        website: 'https://example.com/portfolio',
         socials: [
-          { platform: 'Canva', url: 'https://lttm.my.canva.site/thu-trang' },
+          { platform: 'Canva', url: 'https://example.com/portfolio' },
           { platform: 'LinkedIn', url: 'https://linkedin.com' },
         ],
       },
@@ -287,10 +277,10 @@ export const THU_TRANG_PORTFOLIO_DOC: PortfolioDocument = {
       courseInfo: {
         courseCode: 'INF2501',
         courseName: 'Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo',
-        institution: 'Trường ĐH Sư phạm Hà Nội (HNUE)',
-        studentClass: 'K72A - Sư phạm Ngữ văn',
-        studentId: '725102088',
-        studentName: 'Dương Thu Trang',
+        institution: 'Trường Đại học Mẫu',
+        studentClass: 'Lớp Mẫu - Sư phạm Ngữ văn',
+        studentId: 'SV-MAU-001',
+        studentName: 'Nguyễn Văn A',
       },
       aiToolsDeclaration: [
         {
@@ -318,19 +308,19 @@ export const THU_TRANG_PORTFOLIO_DOC: PortfolioDocument = {
   ],
 };
 
-export const HONG_QUYEN_PORTFOLIO_DOC: PortfolioDocument = {
-  id: 'canva-hq-creative-bold',
-  slug: 'hq',
+export const CANVA_SAMPLE_02_PORTFOLIO_DOC: PortfolioDocument = {
+  id: 'canva-sample-02-creative-bold',
+  slug: 'mau-portfolio-02',
   templateId: 'creative-bold',
   imageGenerationConfig: {
     mode: 'hybrid-auto',
     visualStyle: 'canva-pastel-graphic',
   },
   seo: {
-    title: 'Đinh Hồng Quyên | Creative Educator Portfolio 2026',
+    title: 'Nguyễn Văn A | Creative Educator Portfolio 2026',
     description:
-      'Portfolio sáng tạo của Đinh Hồng Quyên - Khoa học Giáo dục & Đổi mới Đào tạo số, môn INF2501.',
-    ogImage: '/presets/avatar-hongquyen.svg',
+      'Portfolio sáng tạo của Nguyễn Văn A - Khoa học Giáo dục & Đổi mới Đào tạo số, môn INF2501.',
+    ogImage: '/presets/avatar-mau-03.svg',
   },
   theme: {
     primaryColor: '#92736C',
@@ -353,15 +343,15 @@ export const HONG_QUYEN_PORTFOLIO_DOC: PortfolioDocument = {
     backgroundIllustration: {
       mode: 'preset',
       presetId: 'abstract-blobs',
-      opacity: 0.15,
+      opacity: 0.35,
       blur: 0,
       position: 'cover',
     },
   },
   profileOwner: {
-    fullName: 'Đinh Hồng Quyên',
+    fullName: 'Nguyễn Văn A',
     roleTitle: 'Khoa học Giáo dục & Đổi mới Công nghệ',
-    avatarUrl: '/presets/avatar-hongquyen.svg',
+    avatarUrl: '/presets/avatar-mau-03.svg',
     avatarSourceType: 'user-uploaded',
     frameStyle: 'polaroid',
     aspectRatio: '3/4',
@@ -377,12 +367,12 @@ export const HONG_QUYEN_PORTFOLIO_DOC: PortfolioDocument = {
       type: 'hero',
       variant: 'split-left',
       headline: 'Creative Portfolio',
-      fullName: 'Đinh Hồng Quyên',
+      fullName: 'Nguyễn Văn A',
       roleTitle: 'Educator & Creative Designer • Khoa học Giáo dục',
       shortBio:
         'Xin chào, tôi là Quyên – ngành Khoa học giáo dục. Ghi lại hành trình đổi mới công nghệ đào tạo và xây dựng sản phẩm học tập số mang đậm dấu ấn cá nhân.',
       avatar: {
-        url: '/presets/avatar-hongquyen.svg',
+        url: '/presets/avatar-mau-03.svg',
         sourceType: 'user-uploaded',
         frameStyle: 'polaroid',
         aspectRatio: '3/4',
@@ -423,10 +413,10 @@ export const HONG_QUYEN_PORTFOLIO_DOC: PortfolioDocument = {
         { label: 'Công cụ thành thạo', value: 'Canva, PPT, AI' },
       ],
       contactInfo: {
-        email: 'quyen.dinh@education.edu.vn',
-        phone: '0971 888 999',
-        location: 'Hà Nội',
-        socials: [{ platform: 'Canva', url: 'https://lttm.my.canva.site/hq' }],
+        email: 'nguyenvana@example.com',
+        phone: '0000000000',
+        location: 'Việt Nam',
+        socials: [{ platform: 'Canva', url: 'https://example.com/portfolio' }],
       },
     },
     {
@@ -505,28 +495,28 @@ export const HONG_QUYEN_PORTFOLIO_DOC: PortfolioDocument = {
       courseInfo: {
         courseCode: 'INF2501',
         courseName: 'Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo',
-        institution: 'Trường ĐH Sư phạm Nghệ thuật TW',
-        studentClass: 'K18 - Khoa học Giáo dục',
-        studentId: '185102009',
-        studentName: 'Đinh Hồng Quyên',
+        institution: 'Trường Đại học Mẫu',
+        studentClass: 'Lớp Mẫu - Khoa học Giáo dục',
+        studentId: 'SV-MAU-002',
+        studentName: 'Nguyễn Văn A',
       },
     },
   ],
 };
 
-export const NGOC_MAI_PORTFOLIO_DOC: PortfolioDocument = {
-  id: 'canva-ngoc-mai-minimal-chic',
-  slug: 'ngocmai',
+export const CANVA_SAMPLE_03_PORTFOLIO_DOC: PortfolioDocument = {
+  id: 'canva-sample-03-minimal-chic',
+  slug: 'mau-portfolio-03',
   templateId: 'minimal-chic',
   imageGenerationConfig: {
     mode: 'hybrid-auto',
     visualStyle: 'minimal-photo',
   },
   seo: {
-    title: 'Nguyễn Thị Ngọc Mai | Minimalist Portfolio 2026',
+    title: 'Nguyễn Văn A | Minimalist Portfolio 2026',
     description:
-      'Portfolio tối giản thanh lịch của Nguyễn Thị Ngọc Mai - Giáo dục Tiểu học, học phần INF2501.',
-    ogImage: '/presets/avatar-ngocmai.svg',
+      'Portfolio tối giản thanh lịch của Nguyễn Văn A - Giáo dục Tiểu học, học phần INF2501.',
+    ogImage: '/presets/avatar-mau-04.svg',
   },
   theme: {
     primaryColor: '#326586',
@@ -549,15 +539,15 @@ export const NGOC_MAI_PORTFOLIO_DOC: PortfolioDocument = {
     backgroundIllustration: {
       mode: 'preset',
       presetId: 'minimalist-contour',
-      opacity: 0.1,
+      opacity: 0.35,
       blur: 0,
       position: 'cover',
     },
   },
   profileOwner: {
-    fullName: 'Nguyễn Thị Ngọc Mai',
+    fullName: 'Nguyễn Văn A',
     roleTitle: 'Giáo dục Tiểu học & Sư phạm Số',
-    avatarUrl: '/presets/avatar-ngocmai.svg',
+    avatarUrl: '/presets/avatar-mau-04.svg',
     avatarSourceType: 'user-uploaded',
     frameStyle: 'rounded-rect',
     aspectRatio: '4/5',
@@ -573,12 +563,12 @@ export const NGOC_MAI_PORTFOLIO_DOC: PortfolioDocument = {
       type: 'hero',
       variant: 'centered',
       headline: 'PORTFOLIO 2026',
-      fullName: 'NGUYỄN THỊ NGỌC MAI',
+      fullName: 'NGUYỄN VĂN A',
       roleTitle: 'EDUCATOR • GIÁO DỤC TIỂU HỌC',
       shortBio:
-        'Chào mừng đến với không gian số của Ngọc Mai. Nơi lưu giữ những bước tiến vững chắc trong việc đưa công nghệ số vào giảng dạy bậc tiểu học.',
+        'Chào mừng đến với không gian số của Nguyễn Văn A. Nơi lưu giữ những bước tiến vững chắc trong việc đưa công nghệ số vào giảng dạy bậc tiểu học.',
       avatar: {
-        url: '/presets/avatar-ngocmai.svg',
+        url: '/presets/avatar-mau-04.svg',
         sourceType: 'user-uploaded',
         frameStyle: 'rounded-rect',
         aspectRatio: '4/5',
@@ -598,15 +588,15 @@ export const NGOC_MAI_PORTFOLIO_DOC: PortfolioDocument = {
         'Theo đuổi triết lý tối giản trong thiết kế và giảng dạy: thông tin rõ ràng, bố cục cân đối, mang lại trải nghiệm tiếp thu nhẹ nhàng và hiệu quả nhất.',
       highlights: [
         { label: 'Chuyên ngành', value: 'GD Tiểu học' },
-        { label: 'Khu vực', value: 'Hà Nội' },
+        { label: 'Khu vực', value: 'Việt Nam' },
         { label: 'Kỹ năng số', value: 'AI & Office 365' },
       ],
       contactInfo: {
-        email: 'ngmaiii0402@gmail.com',
-        phone: '0977 917 220',
-        location: 'Hà Nội',
+        email: 'nguyenvana@example.com',
+        phone: '0000000000',
+        location: 'Việt Nam',
         socials: [
-          { platform: 'Canva', url: 'https://tntdesignlab.my.canva.site/ngocmai' },
+          { platform: 'Canva', url: 'https://example.com/portfolio' },
         ],
       },
     },
@@ -670,32 +660,32 @@ export const NGOC_MAI_PORTFOLIO_DOC: PortfolioDocument = {
     {
       type: 'contact',
       title: 'Liên hệ',
-      subtitle: '0977 917 220 • ngmaiii0402@gmail.com • Hà Nội',
+      subtitle: '0000000000 • nguyenvana@example.com • Việt Nam',
       thankYouMessage: 'CẢM ƠN QUÝ THẦY CÔ ĐÃ THEO DÕI!',
       showContactForm: true,
       courseInfo: {
         courseCode: 'INF2501',
         courseName: 'Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo',
-        institution: 'Trường ĐH Sư phạm Nghệ thuật TW',
-        studentName: 'Nguyễn Thị Ngọc Mai',
+        institution: 'Trường Đại học Mẫu',
+        studentName: 'Nguyễn Văn A',
       },
     },
   ],
 };
 
-export const BAO_CHAM_PORTFOLIO_DOC: PortfolioDocument = {
-  id: 'canva-bt-vibrant-student',
-  slug: 'bt',
+export const CANVA_SAMPLE_04_PORTFOLIO_DOC: PortfolioDocument = {
+  id: 'canva-sample-04-vibrant-student',
+  slug: 'mau-portfolio-04',
   templateId: 'vibrant-student',
   imageGenerationConfig: {
     mode: 'hybrid-auto',
     visualStyle: 'canva-pastel-graphic',
   },
   seo: {
-    title: 'Lương Thị Bảo Châm | Medical Student Portfolio 2026',
+    title: 'Nguyễn Văn A | Medical Student Portfolio 2026',
     description:
-      'Hồ sơ năng lực số của Lương Thị Bảo Châm - Y Đa khoa, ĐH Y Dược ĐHQGHN, học phần INF2501.',
-    ogImage: '/presets/avatar-baocham.svg',
+      'Hồ sơ năng lực số của Nguyễn Văn A - Y Đa khoa, Trường Đại học Mẫu, học phần INF2501.',
+    ogImage: '/presets/avatar-mau-05.svg',
   },
   theme: {
     primaryColor: '#566E99',
@@ -718,15 +708,15 @@ export const BAO_CHAM_PORTFOLIO_DOC: PortfolioDocument = {
     backgroundIllustration: {
       mode: 'preset',
       presetId: 'geometric-dots',
-      opacity: 0.15,
+      opacity: 0.35,
       blur: 0,
       position: 'pattern-repeat',
     },
   },
   profileOwner: {
-    fullName: 'Lương Thị Bảo Châm',
-    roleTitle: 'Sinh viên Y Đa khoa • MSV: 25100237',
-    avatarUrl: '/presets/avatar-baocham.svg',
+    fullName: 'Nguyễn Văn A',
+    roleTitle: 'Sinh viên ngành Mẫu • MSV: SV-MAU-003',
+    avatarUrl: '/presets/avatar-mau-05.svg',
     avatarSourceType: 'user-uploaded',
     frameStyle: 'circle',
     aspectRatio: '1/1',
@@ -742,12 +732,12 @@ export const BAO_CHAM_PORTFOLIO_DOC: PortfolioDocument = {
       type: 'hero',
       variant: 'canva-cover',
       headline: 'Creative PORTFOLIO 2026',
-      fullName: 'LƯƠNG THỊ BẢO CHÂM',
-      roleTitle: 'TRƯỜNG ĐẠI HỌC Y DƯỢC - ĐHQGHN | UMP • MSV: 25100237',
+      fullName: 'NGUYỄN VĂN A',
+      roleTitle: 'TRƯỜNG ĐẠI HỌC MẪU • MSV: SV-MAU-003',
       shortBio:
         'Y học là khoa học điều trị, nhưng cũng là nghệ thuật của sự thấu cảm. Kết hợp nền tảng lâm sàng với công nghệ dữ liệu số trong chăm sóc sức khỏe.',
       avatar: {
-        url: '/presets/avatar-baocham.svg',
+        url: '/presets/avatar-mau-05.svg',
         sourceType: 'user-uploaded',
         frameStyle: 'circle',
         aspectRatio: '1/1',
@@ -761,7 +751,7 @@ export const BAO_CHAM_PORTFOLIO_DOC: PortfolioDocument = {
         {
           id: 'dec-bt-1',
           type: 'badge',
-          label: 'UMP • ĐHQGHN',
+          label: 'TRƯỜNG ĐẠI HỌC MẪU',
           position: { top: '8%', right: '5%', rotate: 0, zIndex: 3 },
         },
       ],
@@ -773,15 +763,15 @@ export const BAO_CHAM_PORTFOLIO_DOC: PortfolioDocument = {
       biography:
         'Là sinh viên y khoa thế hệ mới, mình luôn nỗ lực trau dồi cả y đức lẫn năng lực công nghệ, đặc biệt là kỹ năng phân tích và tổng hợp thông tin y tế đáng tin cậy.',
       highlights: [
-        { label: 'Trường', value: 'ĐH Y Dược - ĐHQGHN' },
-        { label: 'Mã sinh viên', value: '25100237' },
+        { label: 'Trường', value: 'Trường Đại học Mẫu' },
+        { label: 'Mã sinh viên', value: 'SV-MAU-003' },
         { label: 'Học phần', value: 'INF2501' },
       ],
       contactInfo: {
-        email: 'cham.ltb@ump.vnu.edu.vn',
-        phone: '0966 222 333',
-        location: 'Hà Nội',
-        socials: [{ platform: 'Canva', url: 'https://lttm.my.canva.site/bt' }],
+        email: 'nguyenvana@example.com',
+        phone: '0000000000',
+        location: 'Việt Nam',
+        socials: [{ platform: 'Canva', url: 'https://example.com/portfolio' }],
       },
     },
     {
@@ -850,27 +840,27 @@ export const BAO_CHAM_PORTFOLIO_DOC: PortfolioDocument = {
       courseInfo: {
         courseCode: 'INF2501',
         courseName: 'Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo',
-        institution: 'Trường Đại học Y Dược - ĐHQGHN',
-        studentId: '25100237',
-        studentName: 'Lương Thị Bảo Châm',
+        institution: 'Trường Đại học Mẫu',
+        studentId: 'SV-MAU-003',
+        studentName: 'Nguyễn Văn A',
       },
     },
   ],
 };
 
-export const CHI_HUE_PORTFOLIO_DOC: PortfolioDocument = {
-  id: 'canva-chi-hue-artistic-organic',
-  slug: 'chihue',
+export const CANVA_SAMPLE_05_PORTFOLIO_DOC: PortfolioDocument = {
+  id: 'canva-sample-05-artistic-organic',
+  slug: 'mau-portfolio-05',
   templateId: 'artistic-organic',
   imageGenerationConfig: {
     mode: 'hybrid-auto',
     visualStyle: 'editorial-illustration',
   },
   seo: {
-    title: 'Ngô Thị Huệ | Artistic Portfolio 2026',
+    title: 'Nguyễn Văn A | Artistic Portfolio 2026',
     description:
-      'Portfolio nghệ thuật đường cong hữu cơ của Ngô Thị Huệ - GD3 ĐH Giáo dục ĐHQGHN, học phần INF2501.',
-    ogImage: '/presets/avatar-chihue.svg',
+      'Portfolio nghệ thuật đường cong hữu cơ của Nguyễn Văn A - lớp mẫu ngành Giáo dục, học phần INF2501.',
+    ogImage: '/presets/avatar-mau-03.svg',
   },
   theme: {
     primaryColor: '#3E000C',
@@ -893,15 +883,15 @@ export const CHI_HUE_PORTFOLIO_DOC: PortfolioDocument = {
     backgroundIllustration: {
       mode: 'preset',
       presetId: 'abstract-blobs',
-      opacity: 0.18,
+      opacity: 0.35,
       blur: 0,
       position: 'cover',
     },
   },
   profileOwner: {
-    fullName: 'Ngô Thị Huệ',
-    roleTitle: 'Khoa học Giáo dục & Sáng tạo Nghệ thuật • GD3 - UEd',
-    avatarUrl: '/presets/avatar-chihue.svg',
+    fullName: 'Nguyễn Văn A',
+    roleTitle: 'Khoa học Giáo dục & Sáng tạo Nghệ thuật • Lớp Mẫu',
+    avatarUrl: '/presets/avatar-mau-03.svg',
     avatarSourceType: 'user-uploaded',
     frameStyle: 'cutout-blob',
     aspectRatio: '1/1',
@@ -917,17 +907,17 @@ export const CHI_HUE_PORTFOLIO_DOC: PortfolioDocument = {
       type: 'hero',
       variant: 'canva-cover',
       headline: 'Portfolio 2026',
-      fullName: 'Ngô Thị HUỆ',
-      roleTitle: 'EDUCATOR • GD3 - ĐẠI HỌC GIÁO DỤC, ĐHQGHN',
+      fullName: 'NGUYỄN VĂN A',
+      roleTitle: 'EDUCATOR • TRƯỜNG ĐẠI HỌC MẪU',
       shortBio:
-        'Xin chào! Mình là Ngô Thị Huệ. Giáo dục là nghệ thuật khơi dậy tiềm năng con người bằng sự chân thành, nhiệt huyết và công nghệ khai phóng.',
+        'Xin chào! Mình là Nguyễn Văn A. Giáo dục là nghệ thuật khơi dậy tiềm năng con người bằng sự chân thành, nhiệt huyết và công nghệ khai phóng.',
       avatar: {
-        url: '/presets/avatar-chihue.svg',
+        url: '/presets/avatar-mau-03.svg',
         sourceType: 'user-uploaded',
         frameStyle: 'cutout-blob',
         aspectRatio: '1/1',
       },
-      quickTags: ['GD3 - UEd', 'Kỹ năng sư phạm', 'Đổi mới', 'Sáng tạo'],
+      quickTags: ['Lớp Mẫu', 'Kỹ năng sư phạm', 'Đổi mới', 'Sáng tạo'],
       ctaButtons: [
         { label: 'Xem Dự án', href: '#projects', style: 'primary' },
         { label: 'Liên hệ', href: '#contact', style: 'secondary' },
@@ -936,7 +926,7 @@ export const CHI_HUE_PORTFOLIO_DOC: PortfolioDocument = {
         {
           id: 'dec-ch-1',
           type: 'sticker',
-          label: '~~~~ HUE HERE !!! ~~~~',
+          label: '~~~~ SAMPLE PORTFOLIO ~~~~',
           position: { top: '7%', left: '5%', rotate: 2, zIndex: 3 },
         },
       ],
@@ -946,18 +936,18 @@ export const CHI_HUE_PORTFOLIO_DOC: PortfolioDocument = {
       variant: 'story-card',
       title: 'Về tôi',
       biography:
-        'Hành trình tại Trường Đại học Giáo dục - ĐHQGHN giúp mình nhận ra sức mạnh to lớn của sự thấu cảm trong sư phạm, đặc biệt khi được trợ lực bởi các công cụ AI hiện đại.',
+        'Hành trình tại Trường Đại học Mẫu giúp mình nhận ra sức mạnh to lớn của sự thấu cảm trong sư phạm, đặc biệt khi được trợ lực bởi các công cụ AI hiện đại.',
       highlights: [
-        { label: 'Đơn vị', value: 'ĐH Giáo dục - ĐHQGHN' },
-        { label: 'Lớp', value: 'GD3' },
+        { label: 'Đơn vị', value: 'Trường Đại học Mẫu' },
+        { label: 'Lớp', value: 'Mẫu' },
         { label: 'Học phần', value: 'INF2501' },
       ],
       contactInfo: {
-        email: 'hue.ngo@ued.vnu.edu.vn',
-        phone: '0981 333 444',
-        location: 'Hà Nội',
+        email: 'nguyenvana@example.com',
+        phone: '0000000000',
+        location: 'Việt Nam',
         socials: [
-          { platform: 'Canva', url: 'https://tntdesignlab.my.canva.site/chihue' },
+          { platform: 'Canva', url: 'https://example.com/portfolio' },
         ],
       },
     },
@@ -1010,7 +1000,7 @@ export const CHI_HUE_PORTFOLIO_DOC: PortfolioDocument = {
             'Artistic organic portfolio card with warm apricot and black cherry burgundy gradients',
           preferredImageStyle: 'editorial-illustration',
           links: [],
-          tags: ['Quản trị số', 'UEd', 'Organic Shapes', 'INF2501'],
+          tags: ['Quản trị số', 'Trường Đại học Mẫu', 'Organic Shapes', 'INF2501'],
         },
       ],
     },
@@ -1023,26 +1013,26 @@ export const CHI_HUE_PORTFOLIO_DOC: PortfolioDocument = {
       courseInfo: {
         courseCode: 'INF2501',
         courseName: 'Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo',
-        institution: 'Trường Đại học Giáo dục - ĐHQGHN',
-        studentName: 'Ngô Thị Huệ',
+        institution: 'Trường Đại học Mẫu',
+        studentName: 'Nguyễn Văn A',
       },
     },
   ],
 };
 
-export const VO_HOAI_PORTFOLIO_DOC: PortfolioDocument = {
-  id: 'canva-hoai-academic-presentation',
-  slug: 'hoai',
+export const CANVA_SAMPLE_06_PORTFOLIO_DOC: PortfolioDocument = {
+  id: 'canva-sample-06-academic-presentation',
+  slug: 'mau-portfolio-06',
   templateId: 'academic-presentation',
   imageGenerationConfig: {
     mode: 'hybrid-auto',
     visualStyle: 'editorial-illustration',
   },
   seo: {
-    title: 'Võ Thị Hoài | Academic Presentation Portfolio 2026',
+    title: 'Nguyễn Văn A | Academic Presentation Portfolio 2026',
     description:
-      'Hồ sơ học thuật chuẩn mực của Võ Thị Hoài - Khoa học Giáo dục ĐH Giáo dục ĐHQGHN, học phần INF2501.',
-    ogImage: '/presets/avatar-vothihoai.svg',
+      'Hồ sơ học thuật chuẩn mực của Nguyễn Văn A - Khoa học Giáo dục, học phần INF2501.',
+    ogImage: '/presets/avatar-mau-01.svg',
   },
   theme: {
     primaryColor: '#9B302D',
@@ -1065,15 +1055,15 @@ export const VO_HOAI_PORTFOLIO_DOC: PortfolioDocument = {
     backgroundIllustration: {
       mode: 'preset',
       presetId: 'vintage-parchment',
-      opacity: 0.2,
+      opacity: 0.35,
       blur: 0,
       position: 'cover',
     },
   },
   profileOwner: {
-    fullName: 'Võ Thị Hoài',
-    roleTitle: 'Khoa học Giáo dục • ĐH Giáo dục - ĐHQGHN (UEd)',
-    avatarUrl: '/presets/avatar-vothihoai.svg',
+    fullName: 'Nguyễn Văn A',
+    roleTitle: 'Khoa học Giáo dục • Trường Đại học Mẫu',
+    avatarUrl: '/presets/avatar-mau-01.svg',
     avatarSourceType: 'user-uploaded',
     frameStyle: 'arch-window',
     aspectRatio: '3/4',
@@ -1089,17 +1079,17 @@ export const VO_HOAI_PORTFOLIO_DOC: PortfolioDocument = {
       type: 'hero',
       variant: 'canva-cover',
       headline: 'PORTFOLIO CREATIVE 2026',
-      fullName: 'VÕ THỊ HOÀI',
-      roleTitle: 'ĐHQGHN | TRƯỜNG ĐẠI HỌC GIÁO DỤC (UEd) • KHOA HỌC GIÁO DỤC',
+      fullName: 'NGUYỄN VĂN A',
+      roleTitle: 'TRƯỜNG ĐẠI HỌC MẪU • KHOA HỌC GIÁO DỤC',
       shortBio:
-        'Chào mừng đến với không gian học thuật số của Võ Thị Hoài. Lưu giữ các kết quả nghiên cứu và bài tập học phần Nhập môn Công nghệ số & Trí tuệ Nhân tạo.',
+        'Chào mừng đến với không gian học thuật số của Nguyễn Văn A. Lưu giữ các kết quả nghiên cứu và bài tập học phần Nhập môn Công nghệ số & Trí tuệ Nhân tạo.',
       avatar: {
-        url: '/presets/avatar-vothihoai.svg',
+        url: '/presets/avatar-mau-01.svg',
         sourceType: 'user-uploaded',
         frameStyle: 'arch-window',
         aspectRatio: '3/4',
       },
-      quickTags: ['Nghiên cứu GD', 'Dữ liệu Sư phạm', 'Đạo đức AI', 'UEd'],
+      quickTags: ['Nghiên cứu GD', 'Dữ liệu Sư phạm', 'Đạo đức AI', 'Trường Đại học Mẫu'],
       ctaButtons: [
         { label: 'Xem Nghiên cứu', href: '#projects', style: 'primary' },
         { label: 'Liên hệ', href: '#contact', style: 'outline' },
@@ -1108,7 +1098,7 @@ export const VO_HOAI_PORTFOLIO_DOC: PortfolioDocument = {
         {
           id: 'dec-vh-1',
           type: 'badge',
-          label: 'ĐHQGHN • UEd 2026',
+          label: 'Trường Đại học Mẫu • 2026',
           position: { top: '8%', right: '5%', rotate: 0, zIndex: 3 },
         },
       ],
@@ -1120,15 +1110,15 @@ export const VO_HOAI_PORTFOLIO_DOC: PortfolioDocument = {
       biography:
         'Với định hướng học thuật nghiêm cẩn, em tập trung vào việc áp dụng phương pháp nghiên cứu định lượng và các chuẩn mực liêm chính khoa học trong toàn bộ quá trình học tập.',
       highlights: [
-        { label: 'Trường', value: 'ĐH Giáo dục (UEd)' },
+        { label: 'Trường', value: 'Trường Đại học Mẫu' },
         { label: 'Chuyên ngành', value: 'Khoa học GD' },
         { label: 'Học phần', value: 'INF2501' },
       ],
       contactInfo: {
-        email: 'hoaiv286@gmail.com',
-        phone: '0396 873 006',
-        location: 'Hà Nội',
-        socials: [{ platform: 'Canva', url: 'https://lttm.my.canva.site/hoai' }],
+        email: 'nguyenvana@example.com',
+        phone: '0000000000',
+        location: 'Việt Nam',
+        socials: [{ platform: 'Canva', url: 'https://example.com/portfolio' }],
       },
     },
     {
@@ -1183,21 +1173,21 @@ export const VO_HOAI_PORTFOLIO_DOC: PortfolioDocument = {
             'Academic presentation research deck, brick crimson and archival stone chalk background, scholarly fonts',
           preferredImageStyle: 'editorial-illustration',
           links: [],
-          tags: ['Academic', 'UEd', 'Data Architecture', 'INF2501'],
+          tags: ['Academic', 'Trường Đại học Mẫu', 'Data Architecture', 'INF2501'],
         },
       ],
     },
     {
       type: 'contact',
       title: 'Thông tin Học thuật & Trao đổi',
-      subtitle: '0396873006 • hoaiv286@gmail.com • ĐH Giáo dục - ĐHQGHN',
+      subtitle: '0000000000 • nguyenvana@example.com • Trường Đại học Mẫu',
       thankYouMessage: 'XIN TRÂN TRỌNG CẢM ƠN QUÝ THẦY CÔ VÀ HỘI ĐỒNG ĐÁNH GIÁ!',
       showContactForm: true,
       courseInfo: {
         courseCode: 'INF2501',
         courseName: 'Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo',
-        institution: 'Trường Đại học Giáo dục - ĐHQGHN',
-        studentName: 'Võ Thị Hoài',
+        institution: 'Trường Đại học Mẫu',
+        studentName: 'Nguyễn Văn A',
       },
     },
   ],
@@ -1207,28 +1197,28 @@ export const VO_HOAI_PORTFOLIO_DOC: PortfolioDocument = {
  * Record of all 6 Canva Creative Preset Documents indexed by slug.
  */
 export const CANVA_CREATIVE_PRESETS: Record<string, PortfolioDocument> = {
-  'thu-trang': THU_TRANG_PORTFOLIO_DOC,
-  hq: HONG_QUYEN_PORTFOLIO_DOC,
-  ngocmai: NGOC_MAI_PORTFOLIO_DOC,
-  bt: BAO_CHAM_PORTFOLIO_DOC,
-  chihue: CHI_HUE_PORTFOLIO_DOC,
-  hoai: VO_HOAI_PORTFOLIO_DOC,
+  'mau-portfolio-01': CANVA_SAMPLE_01_PORTFOLIO_DOC,
+  'mau-portfolio-02': CANVA_SAMPLE_02_PORTFOLIO_DOC,
+  'mau-portfolio-03': CANVA_SAMPLE_03_PORTFOLIO_DOC,
+  'mau-portfolio-04': CANVA_SAMPLE_04_PORTFOLIO_DOC,
+  'mau-portfolio-05': CANVA_SAMPLE_05_PORTFOLIO_DOC,
+  'mau-portfolio-06': CANVA_SAMPLE_06_PORTFOLIO_DOC,
 };
 
 /**
  * Array containing all 6 Canva Creative Preset Documents.
  */
 export const ALL_CANVA_CREATIVE_DOCUMENTS: PortfolioDocument[] = [
-  THU_TRANG_PORTFOLIO_DOC,
-  HONG_QUYEN_PORTFOLIO_DOC,
-  NGOC_MAI_PORTFOLIO_DOC,
-  BAO_CHAM_PORTFOLIO_DOC,
-  CHI_HUE_PORTFOLIO_DOC,
-  VO_HOAI_PORTFOLIO_DOC,
+  CANVA_SAMPLE_01_PORTFOLIO_DOC,
+  CANVA_SAMPLE_02_PORTFOLIO_DOC,
+  CANVA_SAMPLE_03_PORTFOLIO_DOC,
+  CANVA_SAMPLE_04_PORTFOLIO_DOC,
+  CANVA_SAMPLE_05_PORTFOLIO_DOC,
+  CANVA_SAMPLE_06_PORTFOLIO_DOC,
 ];
 
 /**
- * Get a Canva Creative Preset Document by its slug (e.g. 'thu-trang', 'hq', 'ngocmai', 'bt', 'chihue', 'hoai').
+ * Get a Canva Creative Preset Document by its slug (e.g. 'mau-portfolio-01', 'mau-portfolio-02', 'mau-portfolio-03', 'mau-portfolio-04', 'mau-portfolio-05', 'mau-portfolio-06').
  */
 export function getCanvaCreativePresetBySlug(
   slug: string

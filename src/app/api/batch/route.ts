@@ -1,8 +1,10 @@
 import fs from "fs";
 import path from "path";
+import { createHash } from "crypto";
 import { z } from "zod";
 import { NextRequest, NextResponse } from "next/server";
-import tuthivananhPreset from "@/data/presets/tuthivananh-sample.json";
+import { privateApiUnavailableResponse } from "@/services/deployment/private-api-guard";
+import completedPortfolioPreset from "@/data/presets/portfolio-mau-hoan-chinh.json";
 import {
   ImageModeSchema,
   PortfolioDocumentSchema,
@@ -27,6 +29,40 @@ interface CsvRowInfo {
   avatarUrl?: string;
 }
 
+function parseCsvRecords(csvText: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let field = "";
+  let quoted = false;
+
+  for (let index = 0; index < csvText.length; index++) {
+    const char = csvText[index];
+    if (char === '"') {
+      if (quoted && csvText[index + 1] === '"') {
+        field += '"';
+        index++;
+      } else {
+        quoted = !quoted;
+      }
+    } else if (char === "," && !quoted) {
+      row.push(field.trim());
+      field = "";
+    } else if ((char === "\n" || char === "\r") && !quoted) {
+      if (char === "\r" && csvText[index + 1] === "\n") index++;
+      row.push(field.trim());
+      if (row.some(Boolean)) rows.push(row);
+      row = [];
+      field = "";
+    } else {
+      field += char;
+    }
+  }
+
+  row.push(field.trim());
+  if (row.some(Boolean)) rows.push(row);
+  return rows;
+}
+
 const BatchLayoutSchema = z.enum(["standard", "projects-first"]);
 const BatchFileOptionsSchema = z
   .object({
@@ -36,45 +72,17 @@ const BatchFileOptionsSchema = z
   })
   .strict();
 
-function splitCsvLine(line: string): string[] {
-  const cols: string[] = [];
-  let current = "";
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQuotes && line[i + 1] === '"') {
-        current += '"';
-        i++;
-      } else {
-        inQuotes = !inQuotes;
-      }
-    } else if (ch === "," && !inQuotes) {
-      cols.push(current.trim());
-      current = "";
-    } else {
-      current += ch;
-    }
-  }
-  cols.push(current.trim());
-  return cols;
-}
-
 function parseSimpleCsv(csvText: string): CsvRowInfo[] {
-  const lines = csvText
-    .split(/\r?\n/)
-    .map((l) => l.trim())
-    .filter(Boolean);
-  if (lines.length < 2) return [];
+  const [headerRow, ...rows] = parseCsvRecords(csvText);
+  if (!headerRow || rows.length === 0) return [];
 
-  const headers = splitCsvLine(lines[0]).map((h) => h.toLowerCase());
-  return lines.slice(1).map((line) => {
-    const cols = splitCsvLine(line);
+  const headers = headerRow.map((header) => header.toLowerCase());
+  return rows.map((cols) => {
     const row: CsvRowInfo = {};
     headers.forEach((h, i) => {
       if (h.includes("file")) row.fileName = cols[i];
       else if (h.includes("name") || h.includes("ten")) row.fullName = cols[i];
-      else if (h.includes("role") || h.includes("nganh"))
+      else if (h.includes("role") || h.includes("nganh") || h.includes("chucdanh"))
         row.roleTitle = cols[i];
       else if (h.includes("mail")) row.email = cols[i];
       else if (h.includes("avatar") || h.includes("anh"))
@@ -94,6 +102,9 @@ function inferNameFromFilename(fileName: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  const unavailable = privateApiUnavailableResponse('/api/batch');
+  if (unavailable) return unavailable;
+
   try {
     const formData = await req.formData();
     const useSampleBatch = formData.get("useSampleBatch") === "true";
@@ -112,11 +123,36 @@ export async function POST(req: NextRequest) {
     );
     const csvText = String(formData.get("csvText") || "");
     const csvRows = csvText ? parseSimpleCsv(csvText) : [];
+    const stableBatchId = String(formData.get("batchId") || "").trim();
+    const requestedFileId = String(formData.get("fileId") || "").trim();
+    const fileIndexValue = formData.get("fileIndex");
+    const requestedFileIndex = fileIndexValue === null ? Number.NaN : Number(fileIndexValue);
+    const requestedSourcePath = String(formData.get("sourcePath") || "").trim();
+    const assignmentModeValue = String(formData.get("assignmentMode") || "detect");
+    if (!["detect", "whole-file", "bai-headings"].includes(assignmentModeValue)) {
+      return NextResponse.json({ error: "Chế độ nhận diện bài DOCX không hợp lệ." }, { status: 400 });
+    }
+    const assignmentMode = assignmentModeValue as "detect" | "whole-file" | "bai-headings";
+    const selectedAssignmentValue = formData.get("selectedAssignmentIndexes");
+    let selectedAssignmentIndexes: number[] | undefined;
+    if (selectedAssignmentValue !== null) {
+      try {
+        const parsed = JSON.parse(String(selectedAssignmentValue)) as unknown;
+        if (!Array.isArray(parsed) || !parsed.every((index) => Number.isInteger(index) && index >= 0)) {
+          throw new Error("invalid assignment indexes");
+        }
+        selectedAssignmentIndexes = Array.from(new Set(parsed as number[]));
+      } catch {
+        return NextResponse.json({ error: "Danh sách bài tập được chọn không hợp lệ." }, { status: 400 });
+      }
+    }
 
-    const baseTemplateDoc = PortfolioDocumentSchema.parse(tuthivananhPreset);
+    const baseTemplateDoc = PortfolioDocumentSchema.parse(completedPortfolioPreset);
 
     type InputEntry = {
       fileName: string;
+      sourcePath: string;
+      stableId?: string;
       buffer: Buffer;
       overrideName?: string;
       overrideRole?: string;
@@ -140,6 +176,8 @@ export async function POST(req: NextRequest) {
       const sampleBuf = fs.readFileSync(samplePath);
       inputs.push({
         fileName: "sample-assignments.docx",
+        sourcePath: "sample-assignments.docx",
+        stableId: requestedFileId || undefined,
         buffer: sampleBuf,
         overrideName: "Hồ sơ minh họa",
         overrideRole: "Dữ liệu mẫu",
@@ -159,14 +197,26 @@ export async function POST(req: NextRequest) {
       for (let i = 0; i < uploadedFiles.length; i++) {
         const f = uploadedFiles[i];
         const buf = Buffer.from(await f.arrayBuffer());
+        const sourcePath = uploadedFiles.length === 1 && requestedSourcePath
+          ? requestedSourcePath
+          : ((f as File & { webkitRelativePath?: string }).webkitRelativePath || f.name);
+        const fileIndex = Number.isInteger(requestedFileIndex) && requestedFileIndex >= 0
+          ? requestedFileIndex
+          : i;
+        const normalizePath = (value: string) => value.replace(/\\/g, "/").replace(/^\.\//, "").toLowerCase();
         const csvMatch =
           csvRows.find(
-            (r) =>
-              r.fileName && r.fileName.toLowerCase() === f.name.toLowerCase(),
-          ) ?? csvRows[i];
+            (r) => r.fileName && normalizePath(r.fileName) === normalizePath(sourcePath),
+          ) ?? csvRows.find(
+            (r) => r.fileName && normalizePath(r.fileName).split("/").pop() === normalizePath(f.name),
+          ) ?? csvRows[fileIndex];
 
         inputs.push({
           fileName: f.name,
+          sourcePath,
+          stableId: uploadedFiles.length === 1 && requestedFileId
+            ? requestedFileId
+            : `${i}-${f.name}-${f.size}`,
           buffer: buf,
           overrideName: csvMatch?.fullName || inferNameFromFilename(f.name),
           overrideRole: csvMatch?.roleTitle,
@@ -242,7 +292,26 @@ export async function POST(req: NextRequest) {
         templateId === "canva-editorial"
           ? { ...baseTemplateDoc.theme }
           : { ...preset.theme };
-      const extraction = await parseDocxBuffer(entry.buffer, entry.fileName);
+      const parsedExtraction = await parseDocxBuffer(entry.buffer, entry.fileName, { assignmentMode });
+      let extraction = parsedExtraction;
+      if (selectedAssignmentIndexes) {
+        const selectedAssignments = parsedExtraction.detectedAssignments.filter((assignment) =>
+          selectedAssignmentIndexes?.includes(assignment.index),
+        );
+        if (selectedAssignments.length === 0) {
+          return NextResponse.json({ error: `Hãy chọn ít nhất một bài tập có trong ${entry.fileName}.` }, { status: 400 });
+        }
+        if (selectedAssignments.length !== selectedAssignmentIndexes.length) {
+          return NextResponse.json({ error: `Danh sách bài chọn có mục không tồn tại trong ${entry.fileName}.` }, { status: 400 });
+        }
+        const usedImageIds = new Set(selectedAssignments.flatMap((assignment) => assignment.imageIds));
+        extraction = {
+          ...parsedExtraction,
+          rawText: selectedAssignments.map((assignment) => assignment.rawText).join("\n\n"),
+          detectedAssignments: selectedAssignments,
+          extractedImages: parsedExtraction.extractedImages.filter((image) => usedImageIds.has(image.id)),
+        };
+      }
 
       const summary = await summarizeAssignments({
         extractions: [extraction],
@@ -261,10 +330,14 @@ export async function POST(req: NextRequest) {
       });
 
       const baseSlug = sanitizeSlug(`${summary.fullName}portfolio`);
-      let slug = baseSlug;
+      const stableSuffix = stableBatchId && entry.stableId
+        ? createHash("sha256").update(`${stableBatchId}:${entry.stableId}`).digest("hex").slice(0, 8)
+        : "";
+      const candidateSlug = stableSuffix ? `${baseSlug}-${stableSuffix}` : baseSlug;
+      let slug = candidateSlug;
       let suffix = 2;
       while (usedSlugs.has(slug)) {
-        slug = `${baseSlug}-${suffix++}`;
+        slug = `${candidateSlug}-${suffix++}`;
       }
       usedSlugs.add(slug);
 

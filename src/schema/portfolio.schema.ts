@@ -109,7 +109,7 @@ export const BackgroundIllustrationConfigSchema = z.object({
     ])
     .default("none"),
   customUrl: z.string().optional(),
-  opacity: z.number().min(0).max(1).default(0.15),
+  opacity: z.number().min(0).max(1).default(0.35),
   blur: z.number().min(0).max(20).default(0),
   position: z
     .enum(["cover", "pattern-repeat", "top-right", "bottom-left", "center"])
@@ -122,6 +122,12 @@ export const BackgroundIllustrationConfigSchema = z.object({
 export const ProjectDetailModeSchema = z
   .enum(["fullscreen-overlay", "dedicated-route"])
   .default("dedicated-route");
+
+export const TableOfContentsConfigSchema = z.object({
+  placement: z.enum(["floating", "top"]).default("floating"),
+  side: z.enum(["left", "right"]).default("left"),
+  style: z.enum(["pill", "outline", "minimal"]).default("pill"),
+});
 
 /**
  * Media item attached to a summarized project / assignment.
@@ -179,6 +185,10 @@ export const SectionMotifSchema = z.enum([
 export const SectionAppearanceSchema = z.object({
   motif: SectionMotifSchema.optional(),
   accentColor: z.string().optional(),
+  backgroundColor: z.string().optional(),
+  surfaceColor: z.string().optional(),
+  textColor: z.string().optional(),
+  headingColor: z.string().optional(),
   headingFont: z.string().optional(),
   bodyFont: z.string().optional(),
   tags: z.array(z.string()).optional(),
@@ -203,9 +213,12 @@ export const HeroSectionSchema = z.object({
     "bento",
   ]),
   headline: z.string(),
+  portfolioLabel: z.string().optional(),
+  showPortfolioLabel: z.boolean().optional(),
   fullName: z.string(),
   roleTitle: z.string(),
   shortBio: z.string(),
+  showAvatar: z.boolean().optional(),
   avatar: z.object({
     url: z.string(),
     sourceType: MediaSourceTypeSchema.default("user-uploaded"),
@@ -235,6 +248,14 @@ export const HeroSectionSchema = z.object({
 /**
  * About me / biography and contact summary section.
  */
+export const AboutContactItemSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  value: z.string(),
+  href: z.string().optional(),
+  icon: z.enum(["mail", "phone", "pin", "globe", "link"]),
+});
+
 export const AboutSectionSchema = z.object({
   ...SectionAppearanceSchema.shape,
   type: z.literal("about"),
@@ -266,6 +287,8 @@ export const AboutSectionSchema = z.object({
     phone: z.string().optional(),
     location: z.string().optional(),
     website: z.string().optional(),
+    hiddenFields: z.array(z.enum(["email", "phone", "location", "website"])).optional(),
+    customItems: z.array(AboutContactItemSchema).optional(),
     socials: z.array(
       z.object({
         platform: z.string(),
@@ -398,6 +421,7 @@ export const ProjectItemSchema = z.object({
   category: z.string(),
   sourceDocxFileName: z.string().optional(),
   docxUrl: z.string().optional(),
+  docxLinkLabel: z.string().optional(),
   assignmentBrief: z.string().optional(),
   summary: z.string(),
   keyTakeaways: z.array(z.string()).default([]),
@@ -427,15 +451,24 @@ export const ProjectItemSchema = z.object({
   // INF2501 Rubric additions
   chapterTitle: z.string().optional(),
   exerciseNumber: z.string().optional(),
+  showChapter: z.boolean().optional(),
+  showExercise: z.boolean().optional(),
+  chapterLayout: z.enum(["badge", "banner", "minimal"]).optional(),
+  exerciseLayout: z.enum(["badge", "inline"]).optional(),
+  detailLayout: z.enum(["standard", "compact", "two-column"]).optional(),
   academicIntegrityNote: z.string().optional(),
   processSteps: z.array(z.string()).optional(),
   obstaclesAndSolutions: z.string().optional(),
+  showPromptComparison: z.boolean().optional(),
   promptComparison: z
     .object({
       initialPrompt: z.string(),
       improvedPrompt: z.string(),
       aiOutput: z.string(),
     })
+    .optional(),
+  takeawayBulletShape: z
+    .enum(["circle", "square", "hyphen", "star", "check", "diamond"])
     .optional(),
   productType: z
     .enum([
@@ -473,6 +506,60 @@ export const ProjectsSectionSchema = z.object({
   detailViewMode: ProjectDetailModeSchema.optional(),
   navigationLoop: z.boolean().default(true).optional(),
   projects: z.array(ProjectItemSchema),
+});
+
+export const ConclusionCardSchema = z.object({
+  id: z.string(),
+  number: z.string(),
+  title: z.string(),
+  body: z.string(),
+  bullets: z.array(z.string()).default([]),
+  width: z.number().int().min(1).max(12).optional(),
+  height: z.number().int().min(1).max(6).optional(),
+  backgroundColor: z.string().optional(),
+  titleColor: z.string().optional(),
+  textColor: z.string().optional(),
+  titleFontFamily: z.string().optional(),
+  bodyFontFamily: z.string().optional(),
+  titleFontSize: z.enum(["sm", "base", "lg", "xl", "2xl"]).optional(),
+  bodyFontSize: z.enum(["xs", "sm", "base", "lg"]).optional(),
+  titleAlign: z.enum(["left", "center", "right"]).optional(),
+  bodyAlign: z.enum(["left", "center", "right"]).optional(),
+});
+
+export const ConclusionPanelItemSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  text: z.string(),
+  href: z.string().optional(),
+});
+
+export const ConclusionSchema = z.object({
+  title: z.string().default("Conclusion"),
+  eyebrow: z.string().default("05 // Reflect & Grow"),
+  layout: z.enum([
+    "three-cards",
+    "two-cards",
+    "stacked",
+    "editorial",
+    "masonry",
+    "compact",
+    "timeline",
+    "spotlight",
+  ]).default("three-cards"),
+  cards: z.array(ConclusionCardSchema).default([]),
+  projectLinksTitle: z.string().default("Tổng hợp đường dẫn bài tập"),
+  projectLinks: z.array(ConclusionPanelItemSchema).default([]),
+  aiToolsTitle: z.string().default("Công cụ AI & cách sử dụng"),
+  aiTools: z.array(ConclusionPanelItemSchema).default([]),
+  closingNote: z.string().default("AI hỗ trợ quá trình tìm ý và sáng tạo. Việc kiểm chứng thông tin, lựa chọn nội dung và quyết định sư phạm vẫn do tôi đảm nhiệm."),
+  backgroundColor: z.string().optional(),
+  headingColor: z.string().optional(),
+  textColor: z.string().optional(),
+  accentColor: z.string().optional(),
+  cardBackgroundColor: z.string().optional(),
+  cardBorderColor: z.string().optional(),
+  fontFamily: z.string().optional(),
 });
 
 /**
@@ -519,6 +606,7 @@ export const ContactSectionSchema = z.object({
       keyTakeawaysAndChallenges: z.string().optional(),
     })
     .optional(),
+  conclusion: ConclusionSchema.optional(),
 });
 
 /**
@@ -549,6 +637,7 @@ export const ThemeConfigSchema = z.object({
   pageTransition: z.enum(["slide-deck", "smooth-scroll", "fade"]),
   effects: VisualEffectsConfigSchema.optional(),
   backgroundIllustration: BackgroundIllustrationConfigSchema.optional(),
+  tableOfContents: TableOfContentsConfigSchema.optional(),
 });
 
 /**
@@ -582,7 +671,9 @@ export type BackgroundIllustrationConfig = z.infer<
   typeof BackgroundIllustrationConfigSchema
 >;
 export type ProjectDetailMode = z.infer<typeof ProjectDetailModeSchema>;
+export type TableOfContentsConfig = z.infer<typeof TableOfContentsConfigSchema>;
 export type ProjectMediaItem = z.infer<typeof ProjectMediaItemSchema>;
+export type AboutContactItem = z.infer<typeof AboutContactItemSchema>;
 export type VisualDecoration = z.infer<typeof VisualDecorationSchema>;
 export type SectionMotif = z.infer<typeof SectionMotifSchema>;
 export type HeroSection = z.infer<typeof HeroSectionSchema>;
@@ -593,6 +684,9 @@ export type EducationSection = z.infer<typeof EducationSectionSchema>;
 export type ProjectItem = z.infer<typeof ProjectItemSchema>;
 export type ProjectsSection = z.infer<typeof ProjectsSectionSchema>;
 export type ContactSection = z.infer<typeof ContactSectionSchema>;
+export type ConclusionConfig = z.infer<typeof ConclusionSchema>;
+export type ConclusionCard = z.infer<typeof ConclusionCardSchema>;
+export type ConclusionPanelItem = z.infer<typeof ConclusionPanelItemSchema>;
 export type PortfolioSection = z.infer<typeof PortfolioSectionSchema>;
 export type ThemeConfig = z.infer<typeof ThemeConfigSchema>;
 export type PortfolioDocument = z.infer<typeof PortfolioDocumentSchema>;

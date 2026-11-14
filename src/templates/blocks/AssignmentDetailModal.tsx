@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
   X,
+  ArrowLeft,
   Target,
   Lightbulb,
   CheckCircle2,
@@ -34,6 +35,7 @@ export interface AssignmentDetailModalProps {
   currentIndex?: number;
   onNavigateProject?: (project: ProjectItem, index: number) => void;
   navigationLoop?: boolean;
+  presentation?: "modal" | "page";
 }
 
 export function AssignmentDetailModal({
@@ -45,12 +47,14 @@ export function AssignmentDetailModal({
   currentIndex,
   onNavigateProject,
   navigationLoop = true,
+  presentation = "modal",
 }: AssignmentDetailModalProps) {
   const [activeImageIdx, setActiveImageIdx] = useState(initialImageIndex);
   const [lightboxZoomed, setLightboxZoomed] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const tokens = getThemeTokens(theme);
+  const isPage = presentation === "page";
   const mediaList = project?.media ?? [];
   const safeIdx =
     activeImageIdx >= 0 && activeImageIdx < mediaList.length
@@ -116,7 +120,7 @@ export function AssignmentDetailModal({
           setLightboxZoomed(false);
         } else if (isFullscreen) {
           setIsFullscreen(false);
-        } else {
+        } else if (!isPage) {
           onClose();
         }
       } else if (lightboxZoomed) {
@@ -143,6 +147,7 @@ export function AssignmentDetailModal({
     project,
     lightboxZoomed,
     isFullscreen,
+    isPage,
     mediaList.length,
     hasPrev,
     hasNext,
@@ -159,19 +164,33 @@ export function AssignmentDetailModal({
   const exerciseText =
     project.exerciseNumber ||
     `Bài tập ${currentNum}${currentNum <= 6 ? ` (mục ${currentNum}.4)` : ""}`;
+  const chapterLayout = project.chapterLayout ?? "badge";
+  const exerciseLayout = project.exerciseLayout ?? "badge";
+  const detailLayout = project.detailLayout ?? "standard";
+  const compactLayout = detailLayout === "compact";
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm transition-all duration-300 ${
-        isFullscreen ? "p-0" : "p-3 sm:p-6"
-      }`}
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={project.title}
+      className={
+        isPage
+          ? "min-h-screen px-3 py-5 sm:px-6 sm:py-8 lg:px-8"
+          : `fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm transition-all duration-300 ${
+              isFullscreen ? "p-0" : "p-3 sm:p-6"
+            }`
+      }
+      style={
+        isPage
+          ? { backgroundColor: theme.backgroundColor, color: theme.textColor }
+          : undefined
+      }
+      onClick={isPage ? undefined : onClose}
+      role={isPage ? undefined : "dialog"}
+      aria-modal={isPage ? undefined : true}
+      aria-label={isPage ? undefined : project.title}
+      data-detail-presentation={presentation}
     >
       {/* Edge Navigation Buttons (Left & Right) */}
-      {totalProjects > 1 && onNavigateProject && !isFullscreen && (
+      {!isPage && totalProjects > 1 && onNavigateProject && !isFullscreen && (
         <>
           <button
             type="button"
@@ -205,11 +224,15 @@ export function AssignmentDetailModal({
 
       {/* Modal Dialog Container */}
       <div
-        className={`relative flex flex-col overflow-hidden shadow-2xl transition-all duration-300 ${
-          isFullscreen
-            ? "h-screen w-screen max-h-none max-w-none rounded-none"
-            : "max-h-[92vh] w-full max-w-5xl rounded-3xl ring-1 ring-black/10"
-        }`}
+        className={
+          isPage
+            ? "relative mx-auto flex min-h-[78vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl shadow-xl ring-1 ring-black/5"
+            : `relative flex flex-col overflow-hidden shadow-2xl transition-all duration-300 ${
+                isFullscreen
+                  ? "h-screen w-screen max-h-none max-w-none rounded-none"
+                  : "max-h-[92vh] w-full max-w-5xl rounded-3xl ring-1 ring-black/10"
+              }`
+        }
         style={{
           backgroundColor: theme.surfaceColor,
           color: theme.textColor,
@@ -226,22 +249,38 @@ export function AssignmentDetailModal({
         >
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-              <span
-                className="rounded-full px-3 py-0.5 text-white shadow-sm"
-                style={{ backgroundColor: theme.primaryColor }}
-              >
-                {chapterText}
-              </span>
-              <span
-                className="rounded-full border px-2.5 py-0.5 font-bold"
-                style={{
-                  borderColor: `${theme.primaryColor}55`,
-                  color: theme.primaryColor,
-                  backgroundColor: `${theme.primaryColor}10`,
-                }}
-              >
-                {exerciseText}
-              </span>
+              {project.showChapter !== false && (
+                <span
+                  data-testid="project-chapter-label"
+                  className={chapterLayout === "banner"
+                    ? "w-full rounded-xl px-3 py-2 text-sm font-bold text-white shadow-sm"
+                    : chapterLayout === "minimal"
+                      ? "font-bold uppercase tracking-wider"
+                      : "rounded-full px-3 py-0.5 text-white shadow-sm"}
+                  style={{
+                    backgroundColor: chapterLayout === "badge" ? theme.primaryColor : chapterLayout === "banner" ? `${theme.primaryColor}E6` : "transparent",
+                    color: chapterLayout === "minimal" ? theme.primaryColor : undefined,
+                    border: chapterLayout === "minimal" ? `1px solid ${theme.primaryColor}55` : undefined,
+                  }}
+                >
+                  {chapterText}
+                </span>
+              )}
+              {project.showExercise !== false && (
+                <span
+                  data-testid="project-exercise-label"
+                  className={exerciseLayout === "inline"
+                    ? "font-bold uppercase tracking-wider"
+                    : "rounded-full border px-2.5 py-0.5 font-bold"}
+                  style={{
+                    borderColor: exerciseLayout === "badge" ? `${theme.primaryColor}55` : undefined,
+                    color: theme.primaryColor,
+                    backgroundColor: exerciseLayout === "badge" ? `${theme.primaryColor}10` : "transparent",
+                  }}
+                >
+                  {exerciseText}
+                </span>
+              )}
               {totalProjects > 1 && (
                 <span
                   className="rounded-full border px-2.5 py-0.5 opacity-80"
@@ -266,9 +305,33 @@ export function AssignmentDetailModal({
                   {project.sourceDocxFileName}
                 </span>
               )}
+              {project.docxUrl &&
+                (/^https?:\/\//i.test(project.docxUrl) ||
+                  project.docxUrl.startsWith("/")) && (
+                  <a
+                    href={project.docxUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={project.docxLinkLabel || "Mở file DOCX bài tập"}
+                    className="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 font-semibold transition hover:opacity-80"
+                    style={{
+                      borderColor: tokens.borderSubtle,
+                      color: theme.primaryColor,
+                      backgroundColor: theme.surfaceColor,
+                    }}
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    <FileText className="h-3 w-3" />
+                    {project.docxLinkLabel || "Mở file DOCX"}
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                )}
             </div>
 
-            <h3 className="mt-1.5 font-editorial text-xl font-bold leading-snug sm:text-2xl">
+            <h3
+              className="mt-1.5 font-editorial text-xl font-bold leading-snug sm:text-2xl"
+              style={{ fontFamily: theme.headingFont }}
+            >
               {project.title}
             </h3>
           </div>
@@ -305,45 +368,82 @@ export function AssignmentDetailModal({
               </div>
             )}
 
-            {/* Fullscreen Expand toggle */}
-            <button
-              type="button"
-              onClick={() => setIsFullscreen((prev) => !prev)}
-              className="rounded-full p-2 transition hover:opacity-75"
-              style={{ backgroundColor: `${theme.textColor}10` }}
-              aria-label={
-                isFullscreen ? "Thu nhỏ cửa sổ" : "Mở rộng toàn màn hình"
-              }
-              title={
-                isFullscreen
-                  ? "Thu nhỏ cửa sổ"
-                  : "Mở rộng toàn màn hình (100vw/100vh)"
-              }
-            >
-              {isFullscreen ? (
-                <Minimize2 className="h-5 w-5" />
-              ) : (
-                <Maximize2 className="h-5 w-5" />
-              )}
-            </button>
+            {!isPage && (
+              <button
+                type="button"
+                onClick={() => setIsFullscreen((prev) => !prev)}
+                className="rounded-full p-2 transition hover:opacity-75"
+                style={{ backgroundColor: `${theme.textColor}10` }}
+                aria-label={
+                  isFullscreen ? "Thu nhỏ cửa sổ" : "Mở rộng toàn màn hình"
+                }
+                title={
+                  isFullscreen
+                    ? "Thu nhỏ cửa sổ"
+                    : "Mở rộng toàn màn hình (100vw/100vh)"
+                }
+              >
+                {isFullscreen ? (
+                  <Minimize2 className="h-5 w-5" />
+                ) : (
+                  <Maximize2 className="h-5 w-5" />
+                )}
+              </button>
+            )}
 
-            {/* Close modal button */}
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full p-2 transition hover:opacity-75"
-              style={{ backgroundColor: `${theme.textColor}10` }}
-              aria-label="Đóng cửa sổ chi tiết"
+              className={`rounded-full transition hover:opacity-75 ${
+                isPage ? "inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold" : "p-2"
+              }`}
+              style={{
+                backgroundColor: `${theme.primaryColor}${isPage ? "18" : "10"}`,
+                color: theme.primaryColor,
+              }}
+              aria-label={isPage ? "Về portfolio" : "Đóng cửa sổ chi tiết"}
             >
-              <X className="h-5 w-5" />
+              {isPage ? (
+                <>
+                  <ArrowLeft className="h-4 w-4" />
+                  <span className="hidden sm:inline">Về portfolio</span>
+                </>
+              ) : (
+                <X className="h-5 w-5" />
+              )}
             </button>
           </div>
         </div>
 
         {/* Scrollable Content */}
-        <div className="grid flex-1 grid-cols-1 gap-6 overflow-y-auto p-6 lg:grid-cols-12">
+        <div
+          data-detail-layout={detailLayout}
+          className={`grid grid-cols-1 ${
+            isPage
+              ? compactLayout
+                ? "gap-3 p-4 sm:p-5 lg:p-6"
+                : "gap-6 p-4 sm:p-6 lg:p-8"
+              : `flex-1 overflow-y-auto ${
+                  compactLayout ? "gap-3 p-3 sm:p-4" : "gap-6 p-6"
+                }`
+          } lg:grid-cols-12`}
+        >
           {/* Left: Lightbox Media Gallery (zero distortion via object-contain) */}
-          <div className="space-y-4 lg:col-span-6">
+          <div className={`${
+            compactLayout
+              ? "space-y-3 lg:col-span-6"
+              : detailLayout === "two-column"
+                ? "space-y-4 lg:col-span-5"
+                : "space-y-4 lg:col-span-6"
+          } order-2 lg:order-1`}>
+            {isPage && (
+              <h3
+                className="text-xs font-bold uppercase tracking-wider mb-2"
+                style={{ color: theme.primaryColor }}
+              >
+                Sản phẩm cuối cùng & Minh chứng bài làm
+              </h3>
+            )}
             {activeMedia ? (
               <div className="space-y-3">
                 <div
@@ -481,7 +581,7 @@ export function AssignmentDetailModal({
             )}
 
             {/* Prompt Comparison Viewer if available */}
-            {project.promptComparison && (
+            {project.promptComparison && (project.showPromptComparison ?? true) && (
               <div
                 className="rounded-2xl border p-4 text-xs"
                 style={{
@@ -495,13 +595,13 @@ export function AssignmentDetailModal({
                     style={{ color: theme.primaryColor }}
                   />
                   <span style={{ color: theme.primaryColor }}>
-                    So sánh Prompt ban đầu vs Cải tiến
+                    So sánh Prompt ban đầu vs Prompt cải tiến
                   </span>
                 </div>
                 <div className="space-y-2">
                   <div className="rounded-lg p-2.5 bg-red-500/10 border border-red-500/20">
                     <span className="font-semibold text-red-600 dark:text-red-400">
-                      Ban đầu:
+                      1. Prompt ban đầu (Initial Prompt):
                     </span>
                     <p className="mt-0.5 opacity-85 font-mono text-[11px]">
                       {project.promptComparison.initialPrompt}
@@ -509,12 +609,22 @@ export function AssignmentDetailModal({
                   </div>
                   <div className="rounded-lg p-2.5 bg-emerald-500/10 border border-emerald-500/20">
                     <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                      Cải tiến:
+                      2. Prompt cải tiến (Improved Prompt):
                     </span>
                     <p className="mt-0.5 opacity-85 font-mono text-[11px]">
                       {project.promptComparison.improvedPrompt}
                     </p>
                   </div>
+                  {project.promptComparison.aiOutput && (
+                    <div className="rounded-lg p-2.5 bg-blue-500/10 border border-blue-500/20">
+                      <span className="font-semibold text-blue-600 dark:text-blue-400">
+                        3. Kết quả AI đạt được:
+                      </span>
+                      <p className="mt-0.5 opacity-85 text-[11px]">
+                        {project.promptComparison.aiOutput}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -547,9 +657,15 @@ export function AssignmentDetailModal({
           </div>
 
           {/* Right: Structured Summary & Full Details */}
-          <div className="space-y-4 lg:col-span-6">
+          <div className={`${
+            compactLayout
+              ? "space-y-3 lg:col-span-6"
+              : detailLayout === "two-column"
+                ? "space-y-4 lg:col-span-7"
+                : "space-y-4 lg:col-span-6"
+          } order-1 lg:order-2`}>
             {/* (a) Mục tiêu bài tập */}
-            {project.assignmentBrief && (
+            {(project.assignmentBrief || project.summary) && (
               <div
                 className="rounded-2xl border p-4"
                 style={{
@@ -561,11 +677,10 @@ export function AssignmentDetailModal({
                   className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
                   style={{ color: theme.primaryColor }}
                 >
-                  <Target className="h-4 w-4" /> Đề bài / Mục tiêu bài tập
-                  (INF2501)
+                  <Target className="h-4 w-4" /> Đề bài / Mục tiêu bài tập (INF2501) - Yêu cầu đề bài (Assignment Brief)
                 </div>
                 <p className="mt-1.5 text-sm leading-relaxed">
-                  {project.assignmentBrief}
+                  {project.assignmentBrief || project.summary}
                 </p>
               </div>
             )}
@@ -575,7 +690,7 @@ export function AssignmentDetailModal({
               className="rounded-2xl border p-4"
               style={{ borderColor: tokens.borderSubtle }}
             >
-              <div
+              <h3
                 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
                 style={{
                   color: tokens.isDarkSurface
@@ -583,9 +698,8 @@ export function AssignmentDetailModal({
                     : theme.secondaryColor,
                 }}
               >
-                <Lightbulb className="h-4 w-4" /> Giải pháp & Thực hiện (Quá
-                trình)
-              </div>
+                <Lightbulb className="h-4 w-4" /> Quá trình thực hiện
+              </h3>
               <p className="mt-1.5 text-sm leading-relaxed opacity-90">
                 {project.summary}
               </p>
@@ -620,17 +734,29 @@ export function AssignmentDetailModal({
                   className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
                   style={{ color: tokens.positiveAccent }}
                 >
-                  <CheckCircle2 className="h-4 w-4" /> Kết quả & Kỹ năng cốt lõi
+                  <CheckCircle2 className="h-4 w-4" /> Kỹ năng cốt lõi & Kết quả kỳ vọng
                 </div>
                 <ul className="mt-2 space-y-1.5">
                   {project.keyTakeaways
                     .filter((item) => item.trim())
                     .map((item, idx) => (
                       <li key={idx} className="flex items-start gap-2 text-sm">
-                        <span
-                          className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
-                          style={{ backgroundColor: theme.primaryColor }}
-                        />
+                        {project.takeawayBulletShape === "hyphen" ? (
+                          <span className="font-bold select-none" style={{ color: theme.primaryColor }}>—</span>
+                        ) : project.takeawayBulletShape === "square" ? (
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-none select-none" style={{ backgroundColor: theme.primaryColor }} />
+                        ) : project.takeawayBulletShape === "star" ? (
+                          <span className="text-xs select-none" style={{ color: theme.primaryColor }}>★</span>
+                        ) : project.takeawayBulletShape === "check" ? (
+                          <span className="text-xs font-bold select-none" style={{ color: theme.primaryColor }}>✔</span>
+                        ) : project.takeawayBulletShape === "diamond" ? (
+                          <span className="text-xs select-none" style={{ color: theme.primaryColor }}>◆</span>
+                        ) : (
+                          <span
+                            className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full select-none"
+                            style={{ backgroundColor: theme.primaryColor }}
+                          />
+                        )}
                         <span>{item}</span>
                       </li>
                     ))}

@@ -76,3 +76,9 @@ Cho phép một giáo viên / quản lý Lab (như TNT Lab) tạo hàng loạt P
 ## 4. Tiêu chuẩn nghiệm thu (Definition of Done)
 - [ ] Nạp file `references/sample-assignments.docx` vào API `/api/docx-ingest`: Trích xuất chính xác toàn bộ văn bản, tách đúng 3 bài tập, lấy được 2 ảnh có sẵn trong file `.docx`, và tự động tạo ảnh AI theo chủ đề cho bài tập thứ 3 (bài tập không có ảnh).
 - [ ] Kể cả khi chạy ở môi trường local chưa điền API Key trả phí, bộ tóm tắt thông minh và bộ tạo ảnh AI theo chủ đề vẫn hoạt động 100% không báo lỗi.
+
+## 5. Ưu tiên nâng cấp DOCX và Batch
+- DOCX parser/API nhận một hoặc nhiều file; trả assignments tách riêng, có source file, nhãn nhận diện và media mapping để Studio lọc/chọn đúng bài.
+- Hỗ trợ một DOCX chứa nhiều bài và nhiều DOCX, mỗi file chứa một hay nhiều bài; không gộp ngầm toàn bộ thành một assignment.
+- Batch là queue có kết quả/tiến độ từng học viên và từng file, retry lỗi riêng, resume từ IndexedDB, đối chiếu CSV và xuất kết quả theo từng portfolio.
+- Agent 4 sở hữu parser, AI, API và batch flow; Agent 1 chốt schema, Agent 3 làm trải nghiệm Studio. Không sửa route public, exporter hoặc draft Studio.

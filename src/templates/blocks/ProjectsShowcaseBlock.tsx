@@ -65,7 +65,13 @@ function getSafeDocxHref(url: string | undefined): string | null {
   return null;
 }
 
-function DocxFileLink({ url }: { url: string | undefined }) {
+function DocxFileLink({
+  url,
+  label,
+}: {
+  url: string | undefined;
+  label?: string;
+}) {
   const href = getSafeDocxHref(url);
   if (!href) return null;
 
@@ -74,7 +80,7 @@ function DocxFileLink({ url }: { url: string | undefined }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Mở file DOCX đính kèm"
+      aria-label={label || "Mở file DOCX đính kèm"}
       onClick={(event) => event.stopPropagation()}
       className="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold transition hover:opacity-80"
       style={{
@@ -84,12 +90,81 @@ function DocxFileLink({ url }: { url: string | undefined }) {
       }}
     >
       <FileText className="h-3 w-3" />
-      Mở file DOCX
+      {label || "Mở file DOCX"}
     </a>
   );
 }
 
-export interface ProjectsShowcaseBlockProps {
+export interface BulletShapeIconProps {
+  shape?: "circle" | "square" | "hyphen" | "star" | "check" | "diamond";
+  color?: string;
+  className?: string;
+}
+
+function BulletShapeIcon({ shape = "circle", color = "currentColor", className = "" }: BulletShapeIconProps) {
+  if (shape === "hyphen") {
+    return (
+      <span
+        className={`inline-block font-bold leading-none select-none ${className}`}
+        style={{ color }}
+        aria-hidden="true"
+      >
+        —
+      </span>
+    );
+  }
+  if (shape === "square") {
+    return (
+      <span
+        className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-none select-none ${className}`}
+        style={{ backgroundColor: color }}
+        aria-hidden="true"
+      />
+    );
+  }
+  if (shape === "star") {
+    return (
+      <span
+        className={`text-xs leading-none select-none ${className}`}
+        style={{ color }}
+        aria-hidden="true"
+      >
+        ★
+      </span>
+    );
+  }
+  if (shape === "check") {
+    return (
+      <span
+        className={`text-xs font-bold leading-none select-none ${className}`}
+        style={{ color }}
+        aria-hidden="true"
+      >
+        ✔
+      </span>
+    );
+  }
+  if (shape === "diamond") {
+    return (
+      <span
+        className={`text-xs leading-none select-none ${className}`}
+        style={{ color }}
+        aria-hidden="true"
+      >
+        ◆
+      </span>
+    );
+  }
+  return (
+    <span
+      className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full select-none ${className}`}
+      style={{ backgroundColor: color }}
+      aria-hidden="true"
+    />
+  );
+}
+
+interface ProjectsShowcaseBlockProps {
   section: ProjectsSection;
   theme: ThemeConfig;
   archetypeId?: TemplateId;
@@ -171,6 +246,7 @@ function SortableProjectCardWrapper({
     <article
       ref={setNodeRef}
       style={combinedStyle}
+      data-project-card="true"
       data-testid={`canvas-project-card-${id}`}
       data-project-media-position={mediaPosition}
       className={`relative group ${className} ${
@@ -261,7 +337,7 @@ export function ProjectsShowcaseBlock({
   const routePortfolioSlug =
     portfolioSlug ||
     (params?.portfolioSlug as string) ||
-    "tuthivananhportfolio";
+    "portfolio-mau-hoan-chinh";
 
   const reorderProjects = usePortfolioStore((s) => s.reorderProjects);
   const reorderProjectMedia = usePortfolioStore((s) => s.reorderProjectMedia);
@@ -520,7 +596,7 @@ export function ProjectsShowcaseBlock({
                   }}
                 >
                   {idx === 0 && editable && (
-                    <div className="pointer-events-none absolute left-2.5 top-2.5 z-20">
+                    <div className="pointer-events-auto absolute left-2.5 top-2.5 z-20">
                       <ImageSourceBadge
                         sourceType={m.sourceType}
                         editable={editable}
@@ -736,6 +812,7 @@ export function ProjectsShowcaseBlock({
       <section
         id="projects"
         className="reveal-on-scroll mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8"
+        style={{ color: `var(--section-text-color, ${theme.textColor})` }}
       >
         {/* Slide 3: Centered serif "project" flanked by 2 vinyl sketches + TOC Index Grid */}
         <div className="reveal-on-scroll pb-14">
@@ -821,6 +898,8 @@ export function ProjectsShowcaseBlock({
         <div className="space-y-16">
           {section.projects.map((project, index) => {
             const chapterNum = String(index + 1).padStart(2, "0");
+            const chapterLayout = project.chapterLayout ?? "badge";
+            const hasChapterBanner = project.showChapter !== false && chapterLayout === "banner";
             const mediaPosition = getProjectMediaPosition(project, "right");
             const mediaOrder = getProjectMediaOrder(mediaPosition);
             const hasMedia = (project.media?.length ?? 0) > 0;
@@ -833,29 +912,54 @@ export function ProjectsShowcaseBlock({
               <article
                 key={project.id}
                 id={`project-item-${index}`}
+                data-project-card="true"
                 data-project-media-position={mediaPosition}
-                className="reveal-on-scroll relative scroll-mt-20 border-t pt-12 transition-all duration-300 ease-out"
+                data-chapter-layout={chapterLayout}
+                className={`reveal-on-scroll relative scroll-mt-20 border-t pt-12 transition-all duration-300 ease-out ${
+                  hasChapterBanner ? "rounded-2xl px-5 pb-6" : ""
+                }`}
                 style={{
                   borderColor: "var(--primary, #735340)",
+                  backgroundColor: hasChapterBanner ? "var(--surface, #FFF8F0)" : undefined,
                   opacity: 0.95,
                 }}
               >
                 {/* Chapter Header: Giant serif numeral 01-06 + Title Stack */}
                 <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-8">
-                  <span
-                    className="font-editorial text-8xl sm:text-9xl leading-none font-normal tracking-tight"
-                    style={{ color: "var(--text, #3E2723)" }}
-                  >
-                    {chapterNum}
-                  </span>
-                  <div className="min-w-0 flex-1 pt-2">
+                  {project.showChapter !== false && chapterLayout === "badge" && (
+                    <span
+                      className="font-editorial text-8xl sm:text-9xl leading-none font-normal tracking-tight"
+                      style={{ color: "var(--text, #3E2723)" }}
+                    >
+                      {chapterNum}
+                    </span>
+                  )}
+                  <div className={`min-w-0 flex-1 pt-2 ${hasChapterBanner ? "rounded-xl px-4 py-3" : ""}`} style={hasChapterBanner ? { backgroundColor: "var(--primary, #735340)", color: "var(--bg, #FFF8F0)" } : undefined}>
                     <div className="flex flex-wrap items-center gap-2.5">
-                      <p
-                        className="text-sm font-bold uppercase tracking-[0.14em] sm:text-base"
-                        style={{ color: "var(--secondary, #5D4037)" }}
-                      >
-                        CHƯƠNG {index + 1} : {project.category}
-                      </p>
+                      {project.showChapter !== false && (
+                        <p
+                          data-testid="project-chapter-label"
+                          className={`text-sm font-bold uppercase tracking-[0.14em] sm:text-base ${hasChapterBanner ? "text-white" : chapterLayout === "minimal" ? "border-b pb-1" : ""}`}
+                          style={{
+                            color: hasChapterBanner ? "var(--bg, #FFF8F0)" : "var(--secondary, #5D4037)",
+                            borderColor: chapterLayout === "minimal" ? "var(--primary, #735340)" : undefined,
+                          }}
+                        >
+                          {project.chapterTitle || `CHƯƠNG ${index + 1} : ${project.category}`}
+                        </p>
+                      )}
+                      {project.showExercise !== false && (
+                        <span
+                          data-testid="project-exercise-label"
+                          className={`text-[11px] font-bold uppercase tracking-wider ${project.exerciseLayout === "inline" ? "px-1" : "rounded-full border px-2.5 py-1"}`}
+                          style={{
+                            borderColor: project.exerciseLayout === "inline" ? undefined : "var(--primary, #735340)",
+                            color: hasChapterBanner ? "var(--bg, #FFF8F0)" : "var(--primary, #735340)",
+                          }}
+                        >
+                          {project.exerciseNumber || `Bài tập ${index + 1}`}
+                        </span>
+                      )}
                       {project.sourceDocxFileName && (
                         <span
                           className="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px]"
@@ -869,7 +973,10 @@ export function ProjectsShowcaseBlock({
                           {project.sourceDocxFileName}
                         </span>
                       )}
-                      <DocxFileLink url={project.docxUrl} />
+                      <DocxFileLink
+                        url={project.docxUrl}
+                        label={project.docxLinkLabel}
+                      />
                     </div>
                     <h3
                       className="mt-2 font-editorial text-2xl font-bold uppercase leading-snug tracking-tight sm:text-3xl lg:text-4xl"
@@ -941,12 +1048,10 @@ export function ProjectsShowcaseBlock({
                                       opacity: 0.9,
                                     }}
                                   >
-                                    <span
-                                      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
-                                      style={{
-                                        backgroundColor:
-                                          "var(--primary, #735340)",
-                                      }}
+                                    <BulletShapeIcon
+                                      shape={project.takeawayBulletShape}
+                                      color="var(--primary, #735340)"
+                                      className="shrink-0"
                                     />
                                     <span>{takeaway}</span>
                                   </li>
@@ -1026,7 +1131,7 @@ export function ProjectsShowcaseBlock({
                           <span>
                             {(section.detailViewMode ?? "dedicated-route") ===
                               "dedicated-route" && !editable
-                              ? "Xem trang riêng bài làm ›"
+                              ? "Xem chi tiết bài làm ›"
                               : "Xem chi tiết bài làm"}
                           </span>
                         </button>
@@ -1094,43 +1199,55 @@ export function ProjectsShowcaseBlock({
 
           {/* Header badges */}
           <div className="flex flex-wrap items-center gap-2">
-            {isMinimal ? (
+            {project.showChapter !== false && (
+              <>
+                {isMinimal ? (
+                  <span
+                    className="font-mono text-xs font-bold tracking-wider"
+                    style={{ color: theme.primaryColor }}
+                  >
+                    {idxStr} —
+                  </span>
+                ) : (
+                  <span
+                    className={`inline-flex h-7 items-center justify-center px-2.5 text-xs font-bold text-white ${
+                      isTerminal ? "rounded-md font-mono" : "rounded-full"
+                    }`}
+                    style={{ backgroundColor: theme.secondaryColor }}
+                  >
+                    {isCreative
+                      ? `Exhibit ${idxStr}`
+                      : isTerminal
+                        ? `[${idxStr}]`
+                        : idxStr}
+                  </span>
+                )}
+                <span
+                  className={`px-3 py-1 text-xs font-semibold ${
+                    isTerminal ? "rounded-md font-mono" : isMinimal ? "rounded-md" : "rounded-full"
+                  }`}
+                  style={{
+                    backgroundColor: `${theme.primaryColor}18`,
+                    color: theme.primaryColor,
+                  }}
+                  data-testid="project-chapter-label"
+                >
+                  {project.chapterTitle || project.category}
+                </span>
+              </>
+            )}
+            {project.showExercise !== false && (
               <span
-                className="font-mono text-xs font-bold tracking-wider"
-                style={{ color: theme.primaryColor }}
+                data-testid="project-exercise-label"
+                className={project.exerciseLayout === "inline" ? "px-1 text-xs font-bold" : "rounded-full border px-2.5 py-1 text-xs font-bold"}
+                style={{
+                  borderColor: project.exerciseLayout === "inline" ? undefined : `${theme.primaryColor}55`,
+                  color: theme.primaryColor,
+                }}
               >
-                {idxStr} —
-              </span>
-            ) : (
-              <span
-                className={`inline-flex h-7 items-center justify-center px-2.5 text-xs font-bold text-white ${
-                  isTerminal ? "rounded-md font-mono" : "rounded-full"
-                }`}
-                style={{ backgroundColor: theme.secondaryColor }}
-              >
-                {isCreative
-                  ? `Exhibit ${idxStr}`
-                  : isTerminal
-                    ? `[${idxStr}]`
-                    : idxStr}
+                {project.exerciseNumber || `Bài tập ${index + 1}`}
               </span>
             )}
-
-            <span
-              className={`px-3 py-1 text-xs font-semibold ${
-                isTerminal
-                  ? "rounded-md font-mono"
-                  : isMinimal
-                    ? "rounded-md"
-                    : "rounded-full"
-              }`}
-              style={{
-                backgroundColor: `${theme.primaryColor}18`,
-                color: theme.primaryColor,
-              }}
-            >
-              {project.category}
-            </span>
 
             {project.sourceDocxFileName && (
               <span
@@ -1143,7 +1260,10 @@ export function ProjectsShowcaseBlock({
                 {project.sourceDocxFileName}
               </span>
             )}
-            <DocxFileLink url={project.docxUrl} />
+            <DocxFileLink
+              url={project.docxUrl}
+              label={project.docxLinkLabel}
+            />
           </div>
 
           <h3 className="font-editorial text-2xl font-bold leading-snug sm:text-[26px]">
@@ -1229,9 +1349,10 @@ export function ProjectsShowcaseBlock({
                       key={idx}
                       className="flex items-start gap-2 text-sm opacity-90"
                     >
-                      <span
-                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
-                        style={{ backgroundColor: theme.primaryColor }}
+                      <BulletShapeIcon
+                        shape={project.takeawayBulletShape}
+                        color={theme.primaryColor}
+                        className="shrink-0"
                       />
                       <span>{takeaway}</span>
                     </li>
@@ -1335,7 +1456,7 @@ export function ProjectsShowcaseBlock({
               <span>
                 {(section.detailViewMode ?? "dedicated-route") ===
                   "dedicated-route" && !editable
-                  ? "Xem trang riêng ›"
+                  ? "Xem chi tiết bài làm ›"
                   : "Xem chi tiết bài làm"}
               </span>
             </button>
@@ -1351,6 +1472,7 @@ export function ProjectsShowcaseBlock({
     <section
       id="projects"
       className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8"
+      style={{ color: `var(--section-text-color, ${theme.textColor})` }}
     >
       {/* Section Heading */}
       <div className="mb-10 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">

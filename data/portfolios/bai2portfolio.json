@@ -31,7 +31,7 @@
     "backgroundIllustration": {
       "mode": "preset",
       "presetId": "vintage-parchment",
-      "opacity": 0.2,
+      "opacity": 0.35,
       "blur": 0,
       "position": "cover"
     }

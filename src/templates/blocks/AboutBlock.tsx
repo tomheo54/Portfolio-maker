@@ -14,6 +14,8 @@ import {
   RefreshCw,
   LayoutTemplate,
   CheckCircle2,
+  Link2,
+  type LucideIcon,
 } from "lucide-react";
 import {
   DndContext,
@@ -32,6 +34,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type {
+  AboutContactItem,
   AboutSection,
   ProfileOwner,
   TemplateId,
@@ -45,6 +48,22 @@ import {
 } from "@/templates/archetypes/archetypeStyles";
 import { CanvaFourPointStar, CanvaVerticalMusicRibbon } from "./CanvaOrnaments";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
+
+const CONTACT_ITEM_ICONS: Record<AboutContactItem["icon"], LucideIcon> = {
+  mail: Mail,
+  phone: Phone,
+  pin: MapPin,
+  globe: Globe,
+  link: Link2,
+};
+
+function safeContactHref(value?: string): string | undefined {
+  const trimmed = value?.trim();
+  if (!trimmed) return undefined;
+  if (/^(mailto:|tel:|https?:\/\/)/i.test(trimmed)) return trimmed;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return undefined;
+  return `https://${trimmed}`;
+}
 
 export interface AboutBlockProps {
   section: AboutSection;
@@ -511,6 +530,7 @@ export function AboutBlock({
       },
     });
   };
+  const hiddenContactFields = section.contactInfo.hiddenFields ?? [];
   const updateEducationInfo = (
     field: "educationSchool" | "educationDegree" | "educationPeriod",
     value: string,
@@ -540,8 +560,8 @@ export function AboutBlock({
     ? {
         backgroundColor:
           customCardFrame === "glass"
-            ? `color-mix(in srgb, ${theme.surfaceColor} 78%, transparent)`
-            : theme.surfaceColor,
+            ? `color-mix(in srgb, var(--section-surface-color, ${theme.surfaceColor}) 78%, transparent)`
+            : `var(--section-surface-color, ${theme.surfaceColor})`,
         borderColor:
           customCardFrame === "outline" || customCardFrame === "dashed"
             ? theme.primaryColor
@@ -697,8 +717,8 @@ export function AboutBlock({
                 ? cardBodyFontStyle
                 : {
                     backgroundColor: isCreative
-                      ? "#FFFFFF"
-                      : theme.backgroundColor,
+                      ? "var(--section-surface-color, #FFFFFF)"
+                      : `var(--section-surface-color, ${theme.backgroundColor})`,
                     borderColor: isCreative ? undefined : tokens.borderSubtle,
                     ...cardBodyFontStyle,
                   }),
@@ -729,7 +749,7 @@ export function AboutBlock({
             </div>
 
             <div className="mt-4 space-y-2.5 text-xs">
-              {(section.contactInfo.email || editable) && (
+              {(section.contactInfo.email || editable) && !hiddenContactFields.includes("email") && (
                 <a
                   href={
                     section.contactInfo.email
@@ -754,7 +774,7 @@ export function AboutBlock({
                   />
                 </a>
               )}
-              {(section.contactInfo.phone || editable) && (
+              {(section.contactInfo.phone || editable) && !hiddenContactFields.includes("phone") && (
                 <div className="flex items-center gap-2 opacity-85">
                   <Phone
                     className="h-3.5 w-3.5 shrink-0"
@@ -768,7 +788,7 @@ export function AboutBlock({
                   />
                 </div>
               )}
-              {(section.contactInfo.location || editable) && (
+              {(section.contactInfo.location || editable) && !hiddenContactFields.includes("location") && (
                 <div className="flex items-center gap-2 opacity-85">
                   <MapPin
                     className="h-3.5 w-3.5 shrink-0"
@@ -782,7 +802,7 @@ export function AboutBlock({
                   />
                 </div>
               )}
-              {(section.contactInfo.website || editable) && (
+              {(section.contactInfo.website || editable) && !hiddenContactFields.includes("website") && (
                 <a
                   href={section.contactInfo.website || undefined}
                   target="_blank"
@@ -805,6 +825,35 @@ export function AboutBlock({
                   <ExternalLink className="h-2.5 w-2.5 opacity-60" />
                 </a>
               )}
+              {(section.contactInfo.customItems ?? []).map((item) => {
+                const Icon = CONTACT_ITEM_ICONS[item.icon] ?? Link2;
+                const href = safeContactHref(item.href);
+                const content = (
+                  <>
+                    <Icon className="h-3.5 w-3.5 shrink-0" style={{ color: theme.primaryColor }} />
+                    <span className="min-w-0 truncate">
+                      {item.label ? `${item.label}: ` : ""}{item.value}
+                    </span>
+                    {href && <ExternalLink className="h-2.5 w-2.5 shrink-0 opacity-60" />}
+                  </>
+                );
+                return href ? (
+                  <a
+                    key={item.id}
+                    href={href}
+                    target={/^https?:\/\//i.test(href) ? "_blank" : undefined}
+                    rel={/^https?:\/\//i.test(href) ? "noreferrer" : undefined}
+                    onClick={(event) => { if (editable) event.preventDefault(); }}
+                    className="flex items-center gap-2 truncate opacity-85 hover:underline"
+                  >
+                    {content}
+                  </a>
+                ) : (
+                  <div key={item.id} className="flex items-center gap-2 truncate opacity-85">
+                    {content}
+                  </div>
+                );
+              })}
             </div>
           </div>
         );
@@ -831,8 +880,8 @@ export function AboutBlock({
                 ? cardBodyFontStyle
                 : {
                     backgroundColor: isCreative
-                      ? "#FFFFFF"
-                      : theme.backgroundColor,
+                      ? "var(--section-surface-color, #FFFFFF)"
+                      : `var(--section-surface-color, ${theme.backgroundColor})`,
                     borderColor: isCreative ? undefined : tokens.borderSubtle,
                     ...cardBodyFontStyle,
                   }),
@@ -929,8 +978,8 @@ export function AboutBlock({
                 ? cardBodyFontStyle
                 : {
                     backgroundColor: isCreative
-                      ? "#FFFFFF"
-                      : theme.backgroundColor,
+                      ? "var(--section-surface-color, #FFFFFF)"
+                      : `var(--section-surface-color, ${theme.backgroundColor})`,
                     borderColor: isCreative ? undefined : tokens.borderSubtle,
                     ...cardBodyFontStyle,
                   }),
@@ -1104,7 +1153,7 @@ export function AboutBlock({
               aria-hidden="true"
               className="absolute left-0 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full border-4 text-[10px] font-bold"
               style={{
-                backgroundColor: theme.surfaceColor,
+                backgroundColor: `var(--section-surface-color, ${theme.surfaceColor})`,
                 borderColor: theme.primaryColor,
                 color: theme.primaryColor,
               }}
@@ -1245,12 +1294,20 @@ export function AboutBlock({
     <section
       id="about"
       className="reveal-on-scroll mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8"
+      style={{ color: `var(--section-text-color, ${theme.textColor})` }}
     >
       <div
-        className={`p-6 sm:p-10 ${cardDec.className} space-y-8 ${
+        className={`surface-block p-6 sm:p-10 ${cardDec.className} space-y-8 ${
           isCreative ? "border-4 border-black shadow-[8px_8px_0px_#000]" : ""
         } ${isOrganic ? "rounded-[3rem] border border-[var(--primary)]/25" : ""}`}
-        style={cardDec.style}
+        style={{
+          ...cardDec.style,
+          backgroundColor: `var(--section-surface-color, ${
+            typeof cardDec.style.backgroundColor === "string"
+              ? cardDec.style.backgroundColor
+              : "transparent"
+          })`,
+        }}
       >
         {/* Studio Direct Canvas Toolbar */}
         {editable && (
@@ -1309,7 +1366,7 @@ export function AboutBlock({
                       : "lg:col-span-5 lg:order-2"
             } ${
               activeLayout === "profile-dashboard"
-                ? "rounded-3xl border border-[var(--primary)]/20 bg-white/70 p-4 shadow-lg"
+                ? "surface-block rounded-3xl border border-[var(--primary)]/20 bg-white/70 p-4 shadow-lg"
                 : ""
             }`}
           >
@@ -1323,7 +1380,7 @@ export function AboutBlock({
               fullName={profileOwner?.fullName || avatarAlt}
               primaryColor={theme.primaryColor}
               secondaryColor={theme.secondaryColor}
-              surfaceColor={theme.surfaceColor}
+              surfaceColor={`var(--section-surface-color, ${theme.surfaceColor})`}
               enableTilt={theme.effects?.enableTilt}
               enableGlow={theme.effects?.enableGlow}
               className="w-full max-w-[320px] sm:max-w-[350px]"
@@ -1344,9 +1401,9 @@ export function AboutBlock({
                       : "lg:col-span-7 lg:order-1"
             } ${
               activeLayout === "editorial-poster"
-                ? "rounded-3xl border-l-4 border-[var(--primary)] bg-white/70 p-6 sm:p-8"
+                ? "surface-block rounded-3xl border-l-4 border-[var(--primary)] bg-white/70 p-6 sm:p-8"
                 : activeLayout === "profile-dashboard"
-                  ? "rounded-3xl border border-[var(--primary)]/15 bg-white/60 p-6 shadow-sm sm:p-8"
+                  ? "surface-block rounded-3xl border border-[var(--primary)]/15 bg-white/60 p-6 shadow-sm sm:p-8"
                   : ""
             }`}
           >
@@ -1402,11 +1459,11 @@ export function AboutBlock({
                         ...(isCreative
                           ? {}
                           : {
-                              backgroundColor: theme.backgroundColor,
+                              backgroundColor: `var(--section-surface-color, ${theme.backgroundColor})`,
                               borderColor: tokens.borderSubtle,
                             }),
                       }}
-                      className={`relative rounded-xl border p-3 ${widthClass} ${
+                      className={`surface-block relative rounded-xl border p-3 ${widthClass} ${
                         isCreative
                           ? "border-2 border-black bg-white shadow-[3px_3px_0px_#000]"
                           : ""
@@ -1533,7 +1590,12 @@ export function AboutBlock({
 
             <div role="tabpanel" className="pt-2">
               {activeTab === "bio" && (
-                <div className="rounded-2xl border p-6 bg-white/50 text-sm leading-relaxed">
+                <div
+                  className="surface-block rounded-2xl border p-6 bg-white/50 text-sm leading-relaxed"
+                  style={{
+                    backgroundColor: `var(--section-surface-color, ${theme.surfaceColor})`,
+                  }}
+                >
                   <h4 className="font-editorial text-lg font-bold mb-2">
                     Đôi nét về bản thân
                   </h4>

@@ -15,9 +15,88 @@ function extractImgSrcs(html: string): string[] {
 }
 
 test.describe("AI Portfolio Factory E2E Suite", () => {
-  test("Test 1: Canva Reference Parity, Full-Page Detail, Lightbox & ZIP Export (/tuthivananhportfolio)", async ({
+  test("Home page offers saved-project access and a completed sample portfolio", async ({
     page,
   }) => {
+    await page.goto("/");
+
+    await expect(
+      page.getByRole("heading", { name: "Thư viện dự án" }),
+    ).toHaveCount(0);
+    await expect(page.getByText("Dual Image Pipeline")).toBeVisible();
+    await expect(page.locator("body")).not.toContainText("TNT Lab Edition");
+    await expect(
+      page.getByRole("link", { name: "Xem portfolio hoàn thiện mẫu" }),
+    ).toHaveAttribute("href", "/portfolio-mau-hoan-chinh");
+
+    await expect(
+      page.getByRole("button", { name: "Mở thư viện dự án" }),
+    ).toHaveCount(0);
+
+    const savedDocument = JSON.parse(
+      fs.readFileSync(
+        path.join(process.cwd(), "data/portfolios/portfolio-mau-hoan-chinh.json"),
+        "utf8",
+      ),
+    ) as PortfolioDocument;
+    await page.evaluate(async (document) => {
+      const database = await new Promise<IDBDatabase>((resolve, reject) => {
+        const request = indexedDB.open("portfolio-studio-drafts", 2);
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains("drafts")) {
+            db.createObjectStore("drafts");
+          }
+          if (!db.objectStoreNames.contains("drafts_v2")) {
+            db.createObjectStore("drafts_v2", { keyPath: "id" });
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      const transaction = database.transaction("drafts_v2", "readwrite");
+      transaction.objectStore("drafts_v2").put({
+        formatVersion: 1,
+        id: "home-page-saved-project",
+        name: "Portfolio đã lưu",
+        document,
+        history: [],
+        future: [],
+        updatedAt: new Date().toISOString(),
+      });
+      await new Promise<void>((resolve, reject) => {
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = () => reject(transaction.error);
+        transaction.onabort = () => reject(transaction.error);
+      });
+      database.close();
+    }, savedDocument);
+    await page.reload();
+
+    await expect(
+      page.getByRole("heading", { name: "Thư viện dự án" }),
+    ).toBeVisible();
+    const savedProjectLink = page.getByRole("link", { name: /Portfolio đã lưu/ });
+    await expect(savedProjectLink).toHaveAttribute(
+      "href",
+      "/studio?draft=home-page-saved-project",
+    );
+    await expect(page.locator("article").filter({ has: savedProjectLink })).toHaveCount(1);
+    await page.getByRole("button", { name: "Mở thư viện dự án" }).click();
+    await expect(page).toHaveURL("/");
+    await expect(page.locator("article").filter({ has: savedProjectLink })).toContainText("Nháp");
+  });
+
+  test("Test 1: Canva Theme Parity, Dedicated Detail Page, Lightbox & ZIP Export (/portfolio-mau-hoan-chinh)", async ({
+    page,
+    request,
+  }) => {
+    const portfolioDocument = JSON.parse(
+      fs.readFileSync(
+        path.join(process.cwd(), "data/portfolios/portfolio-mau-hoan-chinh.json"),
+        "utf8",
+      ),
+    ) as PortfolioDocument;
     const consoleErrors: string[] = [];
     const pageErrors: string[] = [];
     page.on("console", (msg) => {
@@ -29,10 +108,10 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
       pageErrors.push(err.message);
     });
 
-    await page.goto("/tuthivananhportfolio", { waitUntil: "networkidle" });
+    await page.goto("/portfolio-mau-hoan-chinh", { waitUntil: "networkidle" });
 
     await expect(
-      page.getByRole("heading", { name: "Từ Thị Vân Anh" }),
+      page.getByRole("heading", { name: "Nguyễn Văn A" }),
     ).toBeVisible();
     await expect(page.locator("#hero")).toBeVisible();
     await expect(page.locator("#about")).toBeVisible();
@@ -45,7 +124,15 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
       .locator(".public-portfolio-print-root > div")
       .first()
       .evaluate((el) => getComputedStyle(el).backgroundColor);
-    expect(rootBg).toBe("rgb(255, 243, 230)");
+    const expectedRootBg = await page.evaluate((color) => {
+      const probe = document.createElement("div");
+      probe.style.backgroundColor = color;
+      document.body.appendChild(probe);
+      const computed = getComputedStyle(probe).backgroundColor;
+      probe.remove();
+      return computed;
+    }, portfolioDocument.theme.backgroundColor);
+    expect(rootBg).toBe(expectedRootBg);
 
     // Floating Vietnamese Section Navigation
     const floatingNav = page.getByRole("navigation", {
@@ -81,41 +168,38 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     });
     expect(brokenImages).toEqual([]);
 
-    // Open the full-page assignment detail and test its image lightbox
+    // The dedicated route renders a standalone page rather than a modal.
     await page
-      .getByRole("button", { name: /Xem trang riêng bài làm/i })
+      .getByRole("button", { name: /Xem chi tiết bài làm/i })
       .first()
       .click();
-    await expect(page).toHaveURL(/\/tuthivananhportfolio\/projects\/[^/]+$/);
-    await expect(
-      page.getByRole("heading", {
-        name: /Mục tiêu bài tập & Kỹ năng rèn luyện/i,
-      }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Quá trình thực hiện" }),
-    ).toBeVisible();
+    await expect(page).toHaveURL(/\/portfolio-mau-hoan-chinh\/projects\/[^/]+$/);
+    const projectDetailPage = page.getByTestId("project-detail-route");
+    await expect(projectDetailPage).toBeVisible();
+    await expect(projectDetailPage).toHaveAttribute(
+      "data-detail-presentation",
+      "page",
+    );
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(projectDetailPage.locator("[data-detail-layout]")).toBeVisible();
+    await expect(projectDetailPage.getByText(/Đề bài \/ Mục tiêu bài tập/i)).toBeVisible();
 
-    await page
-      .getByRole("button", { name: "Phóng to ảnh toàn màn hình" })
+    await projectDetailPage
+      .getByRole("button", { name: "Phóng to ảnh" })
       .click();
     await expect(
       page.getByRole("button", { name: "Thu nhỏ ảnh" }),
     ).toBeVisible();
     await page.getByRole("button", { name: "Thu nhỏ ảnh" }).click();
-    await page.goBack();
-    await expect(page).toHaveURL(/\/tuthivananhportfolio(?:#projects)?$/);
+    await projectDetailPage.getByRole("button", { name: "Về portfolio" }).click();
+    await expect(page).toHaveURL(/\/portfolio-mau-hoan-chinh$/);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
 
-    // Verify PDF Print & ZIP Download actions
-    await expect(page.getByRole("button", { name: "Xuất PDF" })).toBeVisible();
-    const downloadPromise = page.waitForEvent("download");
-    await page.getByRole("button", { name: "Tải ZIP" }).click();
-    const download = await downloadPromise;
-    expect(download.suggestedFilename()).toBe("tuthivananhportfolio.zip");
-
-    const zipPath = await download.path();
-    expect(zipPath).toBeTruthy();
-    const zip = await JSZip.loadAsync(fs.readFileSync(zipPath!));
+    const exportResponse = await request.post("/api/export", {
+      data: { document: portfolioDocument, format: "zip" },
+    });
+    expect(exportResponse.ok()).toBeTruthy();
+    const zip = await JSZip.loadAsync(await exportResponse.body());
     expect(Object.keys(zip.files)).toContain("index.html");
     expect(Object.keys(zip.files)).toContain("assets/styles.css");
     expect(
@@ -124,12 +208,15 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
 
     const singleHtml = await zip.file("index.html")!.async("string");
     const singleCss = await zip.file("assets/styles.css")!.async("string");
-    expect(singleCss).toContain("#FFF3E6");
-    expect(singleCss).toContain("#735340");
+    const contactSection = portfolioDocument.sections.find((section) => section.type === "contact");
+    expect(singleCss.toLowerCase()).toContain(portfolioDocument.theme.backgroundColor.toLowerCase());
+    expect(singleCss.toLowerCase()).toContain(portfolioDocument.theme.primaryColor.toLowerCase());
     expect(singleCss).not.toContain("canva-grid-bg");
     expect(singleCss).not.toContain("linear-gradient(to right");
     expect(singleHtml).toContain("Conclusion");
-    expect(singleHtml).toContain("Thank You !");
+    if (contactSection?.type === "contact") {
+      expect(singleHtml).toContain(contactSection.thankYouMessage);
+    }
     const singleImgSrcs = extractImgSrcs(singleHtml);
     expect(singleImgSrcs.length).toBeGreaterThanOrEqual(4);
     expect(
@@ -177,9 +264,18 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     await expect(
       wizard.locator('input[name="imageMode"][value="hybrid-auto"]'),
     ).toBeChecked();
-    await page
-      .getByRole("button", { name: /Phân tích & Tóm tắt Bài tập bằng AI/i })
-      .click();
+    await page.getByRole("button", { name: /Đọc các file DOCX/i }).click();
+
+    // The wizard keeps each detected assignment separate and lets the user
+    // select individual assignments before asking AI to summarize them.
+    const assignmentChoices = wizard.getByTestId("detected-assignment-checkbox");
+    await expect(assignmentChoices).toHaveCount(3, { timeout: 35_000 });
+    await expect(wizard.getByTestId("assignment-source-group")).toHaveCount(1);
+    await assignmentChoices.first().uncheck();
+    await expect(wizard.getByText(/Đã chọn 2 \/ 3 bài/)).toBeVisible();
+    await assignmentChoices.first().check();
+    await expect(wizard.getByText(/Đã chọn 3 \/ 3 bài/)).toBeVisible();
+    await page.getByRole("button", { name: /Tóm tắt 3 bài đã chọn/i }).click();
 
     // Wait for Review step (3 assignments, 2 docx images, 1 AI image)
     const assignmentsStat = wizard.getByText("Bài tập tách được").locator("..");
@@ -266,9 +362,12 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
       })
       .click();
     await page.getByRole("button", { name: /Tiếp tục cấu hình ảnh/i }).click();
-    await page
-      .getByRole("button", { name: /Phân tích & Tóm tắt Bài tập bằng AI/i })
-      .click();
+    await page.getByRole("button", { name: /Đọc file mẫu/i }).click();
+    const summarizeButton = page.getByRole("button", {
+      name: /Tóm tắt \d+ bài đã chọn/i,
+    });
+    await expect(summarizeButton).toBeVisible();
+    await summarizeButton.click();
     await expect(
       page.getByRole("button", { name: /Đổ vào Portfolio Canvas/i }),
     ).toBeVisible({ timeout: 35_000 });
@@ -286,6 +385,7 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     await firstArticle
       .getByRole("button", { name: /Tạo ảnh AI mới theo chủ đề/i })
       .click();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
 
     await expect(async () => {
       const updatedSrc = await firstProjectImg.getAttribute("src");
@@ -300,13 +400,24 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
 
     await expect(firstArticle.getByText("✨ Ảnh tạo bởi AI")).toBeVisible();
 
-    // Verify user can switch back to the preserved DOCX image
+    // The DOCX action opens the image editor for this assignment without
+    // changing the selected image until the user chooses one.
+    const srcBeforeDocxOpen = await firstProjectImg.getAttribute("src");
     await firstArticle
       .getByRole("button", { name: /Đổi ảnh khác trong DOCX/i })
       .click();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    const imageManager = page.getByTestId("project-image-manager");
+    await expect(imageManager).toHaveAttribute(
+      "aria-label",
+      "Bộ quản lý ảnh Chiến dịch Content Marketing Ra mắt Sản phẩm Trà Thảo Mộc. Có thể dán ảnh vào thư viện.",
+    );
+    await expect(
+      imageManager.getByRole("button", { name: /Ảnh từ DOCX/i }),
+    ).toHaveAttribute("aria-pressed", "true");
     await expect(firstProjectImg).toHaveAttribute(
       "src",
-      /\/uploads\/docx-media\//,
+      srcBeforeDocxOpen ?? "",
     );
   });
 
@@ -327,13 +438,13 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     ).toBeVisible({ timeout: 55_000 });
 
     await expect(
-      page.getByRole("cell", { name: "/tuthivananhportfolio", exact: true }),
+      page.getByRole("cell", { name: "/portfolio-mau-hoan-chinh", exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByRole("cell", { name: "/nguyenminhkhoaportfolio", exact: true }),
+      page.getByRole("cell", { name: "/portfolio-mau-02", exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByRole("cell", { name: "/lehamyportfolio", exact: true }),
+      page.getByRole("cell", { name: "/portfolio-mau-03", exact: true }),
     ).toBeVisible();
 
     // Verify Bulk ZIP download directly from /batch UI
@@ -348,9 +459,9 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     const bulkZip = await JSZip.loadAsync(fs.readFileSync(bulkZipPath!));
     const bulkFileNames = Object.keys(bulkZip.files);
     for (const slug of [
-      "tuthivananhportfolio",
-      "nguyenminhkhoaportfolio",
-      "lehamyportfolio",
+      "portfolio-mau-hoan-chinh",
+      "portfolio-mau-02",
+      "portfolio-mau-03",
     ]) {
       expect(bulkFileNames).toContain(`${slug}/index.html`);
       expect(bulkFileNames).toContain(`${slug}/assets/styles.css`);
@@ -366,9 +477,9 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     }
 
     // Verify newly published dynamic public portfolio route renders without broken images
-    await page.goto("/nguyenminhkhoaportfolio", { waitUntil: "networkidle" });
+    await page.goto("/portfolio-mau-02", { waitUntil: "networkidle" });
     await expect(
-      page.getByRole("heading", { name: "Nguyễn Minh Khoa" }),
+      page.getByRole("heading", { name: "Nguyễn Văn A" }),
     ).toBeVisible();
     const publicBroken = await page.evaluate(() =>
       Array.from(document.querySelectorAll("img"))
@@ -379,7 +490,7 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
 
     // Verify single ZIP export API bundles /uploads/docx-media/, /uploads/ai-generated/, /presets/, AND data:image/png;base64,...
     const presetRes = await request.get(
-      "/api/portfolios?slug=nguyenminhkhoaportfolio",
+      "/api/portfolios?slug=portfolio-mau-02",
     );
     expect(presetRes.status()).toBe(200);
     const portfolioDoc = (await presetRes.json()) as PortfolioDocument;
@@ -452,7 +563,7 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     page,
   }) => {
     await page.goto("/batch", { waitUntil: "networkidle" });
-    await page.getByRole("button", { name: "Nạp tài liệu mẫu" }).click();
+    await page.getByRole("button", { name: "Nạp lô mẫu" }).click();
 
     const batchTemplate = page.getByLabel("Template mặc định cho cả lô");
     const fileTemplate = page.getByLabel(
@@ -661,10 +772,10 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
   test("Test 6: Creative Canva Archetypes & Presets in Studio & Public View", async ({
     page,
   }) => {
-    // 1. Visit /thu-trang (Warm Editorial archetype)
-    await page.goto("/thu-trang", { waitUntil: "networkidle" });
+    // 1. Visit /mau-portfolio-01 (Warm Editorial archetype)
+    await page.goto("/mau-portfolio-01", { waitUntil: "networkidle" });
     await expect(
-      page.getByRole("heading", { name: "Dương Thu Trang" }),
+      page.getByRole("heading", { name: "Nguyễn Văn A" }),
     ).toBeVisible();
     await expect(page.locator("#hero")).toBeVisible();
     await expect(page.locator("#about")).toBeVisible();
@@ -683,7 +794,7 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     // 2. Visit /hq (Creative Bold archetype)
     await page.goto("/hq", { waitUntil: "networkidle" });
     await expect(
-      page.getByRole("heading", { name: "Đinh Hồng Quyên" }),
+      page.getByRole("heading", { name: "Nguyễn Văn A" }),
     ).toBeVisible();
     await expect(page.getByText("Khoa học Giáo dục").first()).toBeVisible();
     await expect(page.locator("#projects")).toBeVisible();
@@ -726,13 +837,13 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
 
     const inlineInput = page.getByTestId("inline-editable-input");
     await expect(inlineInput).toBeVisible();
-    await inlineInput.fill("Dương Thu Trang - Chuyên Gia Sư Phạm AI");
+    await inlineInput.fill("Nguyễn Văn A - Chuyên Gia Sư Phạm AI");
     await inlineInput.press("Enter");
 
     // Verify committed text is displayed
     await expect(
       page.getByTestId("inline-editable-trigger").first(),
-    ).toContainText("Dương Thu Trang - Chuyên Gia Sư Phạm AI");
+    ).toContainText("Nguyễn Văn A - Chuyên Gia Sư Phạm AI");
 
     // 2. Profile Owner Portrait & Frame Style Manager
     // Open Profile Owner Tab in Section Inspector
@@ -978,7 +1089,6 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
       "href",
       "https://example.com/Bai_02_Tim_Kiem_Hoc_Thuat.docx",
     );
-
     await page.getByRole("button", { name: "Masonry gallery" }).click();
     await expect(firstProject).toHaveClass(/lg:col-span-7/);
     await page.getByRole("button", { name: "Case study cards" }).click();
@@ -1033,6 +1143,39 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     ).toBeVisible();
   });
 
+  test("Project DOCX link label is editable and opens from assignment details", async ({
+    page,
+  }) => {
+    await page.goto("/studio", { waitUntil: "networkidle" });
+    await page.getByRole("button", { name: /Section đang chọn/i }).click();
+    await page
+      .getByLabel("Bố cục Sections và Giao diện")
+      .getByText(/Bài tập & Dự án/)
+      .click();
+
+    const assignmentUrl = "https://example.com/assignment.docx";
+    const customLabel = "Mở đề bài DOCX";
+    await page.getByLabel("Liên kết tới file DOCX").fill(assignmentUrl);
+    await page.getByLabel("Tên nút mở bài tập").fill(customLabel);
+
+    const firstProject = page.locator("#projects article").first();
+    await expect(
+      firstProject.getByRole("link", { name: customLabel }),
+    ).toHaveAttribute("href", assignmentUrl);
+    await firstProject
+      .getByRole("button", { name: /Xem chi tiết bài làm/i })
+      .click();
+
+    const detailDialog = page.getByRole("dialog");
+    await expect(detailDialog).toBeVisible();
+    await expect(detailDialog).toContainText(
+      "Giải pháp & Thực hiện (Quá trình)",
+    );
+    await expect(
+      detailDialog.getByRole("link", { name: customLabel }),
+    ).toHaveAttribute("href", assignmentUrl);
+  });
+
   test("Contact email is editable and updates its displayed mail link", async ({
     page,
   }) => {
@@ -1048,6 +1191,135 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     await expect(contactSection).toContainText(email);
   });
 
+  test("Conclusion content, layouts, card dimensions, drag order, and styling are editable", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 1900 });
+    await page.goto("/studio", { waitUntil: "networkidle" });
+    const preview = page.frameLocator("iframe");
+    const contactSection = preview.locator('[data-section-type="contact"]');
+    await contactSection.click();
+
+    const conclusion = preview.locator("#conclusion");
+    await expect(conclusion).toBeVisible();
+    await page.getByLabel("Tiêu đề Conclusion").fill("Kết luận của tôi");
+    await expect(conclusion.getByRole("heading", { name: "Kết luận của tôi" })).toBeVisible();
+
+    await page.getByRole("button", { name: "Xếp dọc" }).click();
+    await expect(conclusion).toHaveAttribute("data-conclusion-layout", "stacked");
+    await expect(
+      conclusion.locator("[data-conclusion-card-id]").first(),
+    ).toHaveClass(/md:col-span-12/);
+
+    await page.getByRole("button", { name: "3 cột" }).click();
+
+    const firstCardTitle = page.getByLabel("Tiêu đề thẻ Conclusion 1", {
+      exact: true,
+    });
+    await firstCardTitle.fill("Hành trình học tập");
+    const firstCardBody = page.getByLabel("Nội dung thẻ Conclusion 1", {
+      exact: true,
+    });
+    await firstCardBody.fill("Nội dung được chỉnh sửa trong Inspector.");
+    const firstRenderedCard = conclusion.locator("[data-conclusion-card-id]").first();
+    await expect(firstRenderedCard).toContainText("Hành trình học tập");
+    await expect(firstRenderedCard).toContainText("Nội dung được chỉnh sửa trong Inspector.");
+
+    await page
+      .getByLabel("Font tiêu đề thẻ Conclusion 1")
+      .selectOption("Lora");
+    await page
+      .getByLabel("Cỡ tiêu đề thẻ Conclusion 1")
+      .selectOption("2xl");
+    await page
+      .getByLabel("Căn tiêu đề thẻ Conclusion 1")
+      .selectOption("center");
+    await page
+      .getByLabel("Font nội dung thẻ Conclusion 1")
+      .selectOption("Be Vietnam Pro");
+    await page
+      .getByLabel("Cỡ nội dung thẻ Conclusion 1")
+      .selectOption("base");
+    await page
+      .getByLabel("Căn nội dung thẻ Conclusion 1")
+      .selectOption("right");
+    await expect(firstRenderedCard.locator("h3")).toHaveCSS("text-align", "center");
+    await expect(firstRenderedCard.locator("h3")).toHaveCSS("font-family", /Lora/);
+    await expect(firstRenderedCard.locator("p").last()).toHaveCSS("text-align", "right");
+
+    await page.getByLabel("Độ rộng thẻ Conclusion 1").selectOption("8");
+    await page.getByLabel("Độ cao thẻ Conclusion 1").selectOption("5");
+    await expect(firstRenderedCard).toHaveClass(/md:col-span-8/);
+    await expect(firstRenderedCard).toHaveCSS("min-height", "320px");
+
+    await page.getByLabel("Nền Conclusion").fill("#123456");
+    await expect(conclusion).toHaveCSS("background-color", "rgb(18, 52, 86)");
+
+    const cardRows = page
+      .getByLabel("Thứ tự thẻ Conclusion")
+      .locator('[data-testid^="draggable-unit-"]');
+    const firstCardId = await conclusion
+      .locator("[data-conclusion-card-id]")
+      .nth(0)
+      .getAttribute("data-conclusion-card-id");
+    const secondCardId = await conclusion
+      .locator("[data-conclusion-card-id]")
+      .nth(1)
+      .getAttribute("data-conclusion-card-id");
+    const firstHandle = cardRows.nth(0).getByRole("button", {
+      name: /^Kéo để sắp xếp:/,
+    });
+    await firstHandle.scrollIntoViewIfNeeded();
+    const firstHandleBox = await firstHandle.boundingBox();
+    const secondRowBox = await cardRows.nth(1).boundingBox();
+    if (!firstHandleBox || !secondRowBox) {
+      throw new Error("Conclusion card drag handles must be visible.");
+    }
+    await page.mouse.move(
+      firstHandleBox.x + firstHandleBox.width / 2,
+      firstHandleBox.y + firstHandleBox.height / 2,
+    );
+    await page.mouse.down();
+    await page.mouse.move(
+      secondRowBox.x + secondRowBox.width / 2,
+      secondRowBox.y + secondRowBox.height / 2,
+      { steps: 5 },
+    );
+    await page.mouse.up();
+    await expect(conclusion.locator("[data-conclusion-card-id]").nth(0)).toHaveAttribute(
+      "data-conclusion-card-id",
+      secondCardId!,
+    );
+    await expect(conclusion.locator("[data-conclusion-card-id]").nth(1)).toHaveAttribute(
+      "data-conclusion-card-id",
+      firstCardId!,
+    );
+
+    await page.getByRole("button", { name: "Dòng thời gian" }).click();
+    await expect(conclusion).toHaveAttribute("data-conclusion-layout", "timeline");
+    await expect(
+      conclusion.locator("[data-conclusion-card-id]").first(),
+    ).toHaveClass(/border-l-2/);
+
+    await page.getByRole("button", { name: "Tiêu điểm" }).click();
+    await expect(conclusion).toHaveAttribute("data-conclusion-layout", "spotlight");
+    await page.getByRole("button", { name: "Thêm thẻ Conclusion" }).click();
+    await expect(
+      page.getByRole("textbox", {
+        name: "Tiêu đề thẻ Conclusion 4",
+        exact: true,
+      }),
+    ).toHaveValue("Thẻ tổng kết 4");
+  });
+
+  test("Legacy portfolios without a conclusion config retain separate conclusion and contact sections", async ({
+    page,
+  }) => {
+    await page.goto("/portfolio-mau-hoan-chinh", { waitUntil: "networkidle" });
+    await expect(page.locator("#conclusion")).toBeVisible();
+    await expect(page.locator("#contact")).toBeVisible();
+  });
+
   test("Project tags can be edited, added, and removed", async ({ page }) => {
     await page.goto("/studio", { waitUntil: "networkidle" });
     const projectsSection = page.locator('[data-section-type="projects"]');
@@ -1058,6 +1330,7 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
       name: "Tag bài tập 1",
       exact: true,
     });
+
     await firstTag.fill("Tag có thể chỉnh sửa");
     await expect(firstProject).toContainText("Tag có thể chỉnh sửa");
 
@@ -1077,6 +1350,23 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
       .click();
     await expect(addedTag).toHaveCount(0);
     await expect(firstProject).not.toContainText("Tag mới");
+  });
+
+  test("Extracted assignment text can be edited in the Studio", async ({
+    page,
+  }) => {
+    await page.goto("/studio", { waitUntil: "networkidle" });
+    const preview = page.frameLocator("iframe");
+    await preview.locator('[data-section-type="projects"]').click();
+
+    const excerptEditor = page.getByRole("textbox", {
+      name: "Nội dung trích xuất chi tiết",
+    });
+    const editedExcerpt = "Nội dung trích xuất đã được biên tập lại.";
+    await excerptEditor.fill(editedExcerpt);
+    await preview.locator('[data-section-type="about"]').click();
+    await preview.locator('[data-section-type="projects"]').click();
+    await expect(excerptEditor).toHaveValue(editedExcerpt);
   });
 
   test("Project information chips can be edited, added, and removed", async ({
@@ -1244,7 +1534,7 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/tuthivananhportfolio", { waitUntil: "networkidle" });
+    await page.goto("/portfolio-mau-hoan-chinh", { waitUntil: "networkidle" });
 
     const menuButton = page.getByRole("button", {
       name: "Mở mục lục điều hướng",
@@ -1289,102 +1579,87 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     expect(pageWidth).toBeLessThanOrEqual(390);
   });
 
-  test("Test 8: Project Details Open as Full-Page Routes with Next/Prev Navigation", async ({
+  test("Test 8: Project Detail Routes Use a Standalone Page with Next/Prev Navigation", async ({
     page,
   }) => {
-    // 1. Dedicated Route Mode: /thu-trang/projects/quan-tri-tep-hoc-thuat
-    await page.goto("/thu-trang/projects/quan-tri-tep-hoc-thuat", {
+    await page.goto("/mau-portfolio-01/projects/quan-tri-tep-hoc-thuat", {
       waitUntil: "networkidle",
     });
 
-    // Verify header, chapter badge, and project title
-    await expect(
-      page.getByRole("heading", {
-        name: /01\. Làm chủ File Explorer & Tìm kiếm Học thuật/i,
-      }),
-    ).toBeVisible();
-    await expect(page.getByText(/Chương 1/i).first()).toBeVisible();
-    await expect(page.getByText(/Bài tập 1/i).first()).toBeVisible();
+    const firstProjectPage = page.getByTestId("project-detail-route");
+    await expect(firstProjectPage).toBeVisible();
+    await expect(firstProjectPage).toHaveAttribute(
+      "data-detail-presentation",
+      "page",
+    );
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(firstProjectPage.getByTestId("project-chapter-label")).toBeVisible();
+    await expect(firstProjectPage.getByTestId("project-exercise-label")).toBeVisible();
+    await expect(firstProjectPage.getByText(/Đề bài \/ Mục tiêu bài tập/i)).toBeVisible();
 
-    // Verify Breadcrumb
-    const breadcrumb = page.getByRole("navigation", { name: "Breadcrumb" });
-    await expect(breadcrumb).toBeVisible();
-
-    // Navigate to next project via 'Bài tiếp theo ›'
-    const nextBtn = page.getByRole("link", { name: "Bài tiếp theo ›" });
+    const nextBtn = firstProjectPage
+      .getByRole("button", { name: "Bài tiếp theo" })
+      .first();
     await expect(nextBtn).toBeVisible();
     await nextBtn.click();
 
-    // Expect navigation to project 2
     await expect(page).toHaveURL(/thiet-ke-prompt-ai-su-pham/);
     await expect(
-      page.getByRole("heading", {
+      page.getByTestId("project-detail-route").getByRole("heading", {
         name: /02\. Kỹ thuật Viết Prompt AI Đa tầng/i,
       }),
     ).toBeVisible();
 
-    // Keyboard navigation: ArrowLeft navigates back to project 1
     await page.keyboard.press("ArrowLeft");
     await expect(page).toHaveURL(/quan-tri-tep-hoc-thuat/);
     await expect(
-      page.getByRole("heading", {
+      page.getByTestId("project-detail-route").getByRole("heading", {
         name: /01\. Làm chủ File Explorer/i,
       }),
     ).toBeVisible();
 
-    // Keyboard navigation: Escape navigates back to portfolio projects section
-    await page.keyboard.press("Escape");
-    await expect(page).toHaveURL(/\/thu-trang#projects/);
+    await page.getByRole("button", { name: "Về portfolio" }).click();
+    await expect(page).toHaveURL(/\/mau-portfolio-01$/);
 
-    // 2. Default project details open as a normal, scrollable page
-    await page.goto("/tuthivananhportfolio", { waitUntil: "networkidle" });
+    await page.goto("/portfolio-mau-hoan-chinh", { waitUntil: "networkidle" });
     const viewDetailBtn = page
-      .getByRole("button", { name: /Xem trang riêng bài làm/i })
+      .getByRole("button", { name: /Xem chi tiết bài làm/i })
       .first();
     await viewDetailBtn.click();
 
-    await expect(page).toHaveURL(/\/tuthivananhportfolio\/projects\/[^/]+$/);
+    await expect(page).toHaveURL(/\/portfolio-mau-hoan-chinh\/projects\/[^/]+$/);
+    await expect(page.getByRole("dialog")).toHaveCount(0);
     await expect(
-      page.getByRole("navigation", { name: "Breadcrumb" }),
+      page.getByTestId("project-detail-route").locator("[data-detail-layout]"),
     ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: /Liêm chính học thuật/i }),
-    ).toHaveCount(0);
-    await expect(
-      page.getByRole("heading", {
-        name: /Công cụ AI & Mục đích ứng dụng trong bài tập/i,
-      }),
-    ).toHaveCount(0);
-    await page.evaluate(() =>
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth",
-      }),
-    );
-    await expect
-      .poll(() => page.evaluate(() => window.scrollY))
-      .toBeGreaterThan(0);
   });
 
-  test("Test 9: Visual Effects & Background Illustration Engine in Public View & Static ZIP Export", async ({
+  test("Test 9: Visual Effects & Background Illustration Engine in Public View & Interactive ZIP Export", async ({
     page,
     request,
   }) => {
-    // 1. Verify Visual Effects and Background Preset on /thu-trang
-    await page.goto("/thu-trang", { waitUntil: "networkidle" });
-
-    const visualEffects = page.getByTestId("portfolio-visual-effects");
-    await expect(visualEffects).toBeVisible();
-    await expect(visualEffects).toHaveCSS("position", "absolute");
-
-    // Check that floating ambient orbs or sparkles exist
-    const hasEffectsLayer = await page.evaluate(() => {
-      return Boolean(
-        document.querySelector(".animate-float") ||
-        document.querySelector('[class*="pointer-events-none fixed inset-0"]'),
-      );
-    });
-    expect(hasEffectsLayer).toBe(true);
+    // 1. Verify that selecting a background preset changes the live preview.
+    await page.goto("/studio", { waitUntil: "networkidle" });
+    await page.getByRole("button", { name: "Ảnh nền", exact: true }).click();
+    await page
+      .getByRole("button", { name: "Kho có sẵn", exact: true })
+      .click();
+    await page.getByRole("button", { name: /Nốt nhạc Canva/ }).click();
+    const preview = page.frameLocator('iframe[title^="Xem trước Portfolio"]');
+    const backgroundIllustration = preview.getByTestId(
+      "portfolio-background-illustration",
+    );
+    await expect(backgroundIllustration).toBeVisible();
+    await expect(backgroundIllustration.locator("svg").first()).toHaveAttribute(
+      "width",
+      "100%",
+    );
+    const backgroundOpacity = Number(
+      await backgroundIllustration.locator(":scope > div").evaluate((element) =>
+        getComputedStyle(element).opacity,
+      ),
+    );
+    expect(backgroundOpacity).toBeGreaterThanOrEqual(0.3);
 
     // 2. Test Custom Background Upload & Visual Effects Sync in ZIP Export
     const customDoc: PortfolioDocument = {
@@ -1558,6 +1833,11 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
 
     const indexHtml = await zip.file("index.html")!.async("string");
     expect(indexHtml).toContain("bg-illustration");
+    expect(indexHtml).toContain('class="portfolio-export-background"');
+    expect(indexHtml).toContain(
+      'class="portfolio-export-background-art portfolio-export-background-art--custom portfolio-export-background-art--cover" src="./assets/images/1-bg-illustration.png"',
+    );
+    expect(fileNames).toContain("assets/images/1-bg-illustration.png");
     expect(indexHtml).toContain("--section-heading-font:");
     expect(indexHtml).toContain("--section-body-font:");
     expect(indexHtml).toContain("'Merriweather', Georgia, serif");
@@ -1572,6 +1852,8 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     expect(cssContent).toContain(
       '.portfolio-export-root[data-effect-tilt="enabled"]',
     );
+    expect(cssContent).toContain(".portfolio-export-effects .effect-orb");
+    expect(cssContent).toContain("prefers-reduced-motion: reduce");
     expect(indexHtml).toContain("#hero");
     expect(indexHtml).toContain("#coursework");
     expect(indexHtml).toContain('data-about-layout="editorial-poster"');
@@ -1588,13 +1870,38 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     expect(indexHtml).toContain('style="grid-row:span 2;min-height:176px;"');
     expect(indexHtml).toContain("Liên hệ tùy chỉnh");
     expect(indexHtml).toContain("Đại học thử nghiệm");
+
+    const presetDoc: PortfolioDocument = {
+      ...customDoc,
+      theme: {
+        ...customDoc.theme,
+        backgroundIllustration: {
+          mode: "preset",
+          presetId: "canva-musical",
+          opacity: 0.12,
+          blur: 0,
+          position: "center",
+        },
+      },
+    };
+    const presetExportRes = await request.post("/api/export", {
+      data: { document: presetDoc, format: "zip" },
+    });
+    expect(presetExportRes.status()).toBe(200);
+    const presetZip = await JSZip.loadAsync(await presetExportRes.body());
+    const presetHtml = await presetZip.file("index.html")!.async("string");
+    expect(presetHtml).toContain('class="portfolio-export-background"');
+    expect(presetHtml).toContain(
+      'class="portfolio-export-background-art portfolio-export-background-art--preset portfolio-export-background-art--center"',
+    );
+    expect(presetHtml).toContain('<svg width="100%" height="100%"');
   });
 
   test("About highlight values scroll only when they overflow", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 414, height: 900 });
-    await page.goto("/tuthivananhportfolio", { waitUntil: "networkidle" });
+    await page.goto("/portfolio-mau-hoan-chinh", { waitUntil: "networkidle" });
 
     const aboutSection = page.locator("#about");
     const longValue = aboutSection.getByText("Sư phạm Âm nhạc", {
@@ -1681,8 +1988,8 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
   test("Test 10: About Goals, 3 Project Components, Prompt Comparison & Course Footer", async ({
     page,
   }) => {
-    // 1. Check About section on /thu-trang for INF2501 learning goals.
-    await page.goto("/thu-trang", { waitUntil: "networkidle" });
+    // 1. Check About section on /mau-portfolio-01 for INF2501 learning goals.
+    await page.goto("/mau-portfolio-01", { waitUntil: "networkidle" });
 
     const aboutSection = page.locator("#about");
     await expect(aboutSection).toBeVisible();
@@ -1702,8 +2009,8 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
       aboutSection.getByText(/Video giới thiệu bản thân|Video intro/i),
     ).toHaveCount(0);
 
-    // 2. Check Project Detail 3 Required Components on /thu-trang/projects/thiet-ke-prompt-ai-su-pham
-    await page.goto("/thu-trang/projects/thiet-ke-prompt-ai-su-pham", {
+    // 2. Check Project Detail 3 Required Components on /mau-portfolio-01/projects/thiet-ke-prompt-ai-su-pham
+    await page.goto("/mau-portfolio-01/projects/thiet-ke-prompt-ai-su-pham", {
       waitUntil: "networkidle",
     });
 
@@ -1750,7 +2057,7 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     await expect(page.getByText("3. Kết quả AI đạt được:")).toBeVisible();
 
     // 3. The portfolio omits the AI declaration and keeps the course footer.
-    await page.goto("/thu-trang", { waitUntil: "networkidle" });
+    await page.goto("/mau-portfolio-01", { waitUntil: "networkidle" });
     await expect(
       page.locator('[data-testid="ai-tools-declaration-table"]'),
     ).toHaveCount(0);
@@ -1772,7 +2079,7 @@ test.describe("AI Portfolio Factory E2E Suite", () => {
     // Course Footer
     const courseFooter = page.locator('[data-testid="rubric-course-footer"]');
     await expect(courseFooter).toBeVisible();
-    await expect(courseFooter.getByText("Dương Thu Trang")).toBeVisible();
+    await expect(courseFooter.getByText("Nguyễn Văn A")).toBeVisible();
     await expect(courseFooter.getByText(/MSSV:\s*725102088/)).toBeVisible();
     await expect(courseFooter.getByText(/INF2501/)).toBeVisible();
   });
