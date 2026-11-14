@@ -204,6 +204,7 @@
       "variant": "case-study-cards",
       "title": "Project • 06 Bài Tập Thực Hành",
       "subtitle": "Tổng hợp kết quả các bài thực hành kỹ năng số, hợp tác trực tuyến và ứng dụng AI trong học tập & sáng tạo nội dung.",
+      "detailViewMode": "fullscreen-overlay",
       "projects": [
         {
           "id": "proj-docx-1-1794602062747",
@@ -212,6 +213,7 @@
           "category": "Giáo dục & Sáng tạo",
           "sourceDocxFileName": "bài 1 - Nguyễn Phương Anh.docx",
           "docxUrl": "https://docs.google.com/document/d/1-nVcSBWoHmHpdAT3KhPm4EKlISBT_zPn0w1mg26he4A/edit?usp=drive_link",
+          "mediaType": "image",
           "assignmentBrief": "Bài thực hành nhằm giúp sinh viên nắm vững các thao tác quản lý tệp tin và thư mục trên File Explorer của hệ điều hành Windows, từ đó xây dựng hệ thống lưu trữ học liệu khoa học, chuẩn xác phục vụ học tập tại NUAE.",
           "summary": "Sinh viên khởi tạo thư mục gốc cá nhân và thư mục con TaiLieu, thực hiện tạo mới, đổi tên bằng phím F2, sao chép bằng Ctrl+C/Ctrl+V, di chuyển bằng Ctrl+X/Ctrl+V, đồng thời thực hành xóa tạm thời vào Recycle Bin, xóa vĩnh viễn bằng Shift+Delete và khôi phục dữ liệu nguyên vẹn về vị trí ban đầu.",
           "keyTakeaways": [

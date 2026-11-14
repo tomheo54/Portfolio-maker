@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import JSZip from 'jszip';
-import { ArrowRight, FileUp, FolderOpen, Loader2, Pencil, Save, Trash2, X } from 'lucide-react';
+import { ArrowRight, Check, Copy, ExternalLink, FileUp, FolderOpen, Loader2, Pencil, Save, Trash2, X } from 'lucide-react';
 import {
   deletePortfolioDraft,
   listPortfolioDrafts,
@@ -13,12 +13,54 @@ import {
   writePortfolioDraft,
   type PortfolioDraftRecord,
 } from '@/services/browser/portfolio-draft';
-import { PortfolioDocumentSchema } from '@/schema/portfolio.schema';
+import { PortfolioDocumentSchema, type PortfolioDocument } from '@/schema/portfolio.schema';
+import { sanitizeSlug } from '@/utils/slug';
 import {
   PORTFOLIO_SOURCE_MANIFEST_FILENAME,
   PortfolioSourceManifestSchema,
 } from '@/schema/portfolio-archive.schema';
 import { DraftDeleteConfirmation } from './DraftDeleteConfirmation';
+
+function MarqueeDraftTitle({ text }: { text: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLSpanElement>(null);
+  const [distance, setDistance] = useState(0);
+
+  useEffect(() => {
+    const update = () => {
+      if (containerRef.current && textRef.current) {
+        const diff = textRef.current.scrollWidth - containerRef.current.clientWidth;
+        setDistance(diff > 4 ? diff : 0);
+      }
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [text]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full overflow-hidden whitespace-nowrap"
+      title={text}
+    >
+      <span
+        ref={textRef}
+        style={
+          distance > 0
+            ? ({
+                '--marquee-dist': `-${distance + 14}px`,
+                animation: 'draftTitleMarquee 6s ease-in-out infinite alternate',
+              } as React.CSSProperties)
+            : undefined
+        }
+        className="inline-block text-sm font-bold text-stone-900 group-hover:text-[#A96B54] transition-colors"
+      >
+        {text}
+      </span>
+    </div>
+  );
+}
 
 function mimeTypeForPath(path: string): string {
   const extension = path.split('.').pop()?.toLowerCase();
@@ -93,6 +135,7 @@ export function RecentPortfolioDrafts() {
   const [nameDraft, setNameDraft] = useState('');
   const [renaming, setRenaming] = useState(false);
   const [importing, setImporting] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const importInputRef = useRef<HTMLInputElement>(null);
 
   const refreshDrafts = async () => {
@@ -242,6 +285,63 @@ export function RecentPortfolioDrafts() {
     }
   };
 
+  const duplicateDraft = async (draft: PortfolioDraftRecord) => {
+    try {
+      const copyName = `Copy của ${draft.name}`;
+      const baseSlug = draft.document.slug || sanitizeSlug(draft.name) || 'portfolio';
+      const cleanBaseSlug = baseSlug.startsWith('copy-cua-') ? baseSlug : `copy-cua-${baseSlug}`;
+      let copySlug = sanitizeSlug(cleanBaseSlug);
+      let counter = 1;
+      while (drafts.some((d) => d.id === copySlug || d.document.slug === copySlug)) {
+        copySlug = sanitizeSlug(`${cleanBaseSlug}-${counter}`);
+        counter += 1;
+      }
+      const copyId = copySlug;
+
+      const clonedDoc: PortfolioDocument = JSON.parse(JSON.stringify(draft.document));
+      clonedDoc.id = copyId;
+      clonedDoc.slug = copySlug;
+      if (clonedDoc.seo) {
+        clonedDoc.seo.title = `Copy của ${clonedDoc.seo.title || draft.name}`;
+      }
+      if (clonedDoc.profileOwner) {
+        clonedDoc.profileOwner.fullName = `Copy của ${clonedDoc.profileOwner.fullName || draft.name}`;
+      }
+      const hero = clonedDoc.sections?.find((s) => s.type === 'hero');
+      if (hero && hero.type === 'hero') {
+        hero.fullName = `Copy của ${hero.fullName || draft.name}`;
+      }
+
+      await writePortfolioDraft(
+        clonedDoc,
+        draft.history,
+        [],
+        copyId,
+        {
+          name: copyName,
+          status: 'draft',
+          activate: false,
+        },
+      );
+
+      try {
+        await fetch('/api/portfolios', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(clonedDoc),
+        });
+      } catch {
+        // local / offline mode
+      }
+
+      await refreshDrafts();
+      setFeedbackMessage(`Đã tạo bản sao: "${copyName}" (Link Studio: /studio?draft=${copyId})`);
+      setTimeout(() => setFeedbackMessage(null), 4000);
+    } catch (dupError) {
+      setError(dupError instanceof Error ? dupError.message : 'Không thể nhân bản dự án.');
+    }
+  };
+
   const visibleDrafts = libraryOpen ? drafts : drafts.slice(0, 3);
 
   return (
@@ -281,14 +381,81 @@ export function RecentPortfolioDrafts() {
           </button>
         </div>
       </div>
+
+      {feedbackMessage && (
+        <div className="mb-3 flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200 px-3.5 py-2.5 text-xs font-medium text-emerald-800 shadow-sm animate-in fade-in">
+          <Check className="h-4 w-4 text-emerald-600 shrink-0" />
+          <span>{feedbackMessage}</span>
+        </div>
+      )}
+
       {error && <p role="alert" className="mb-3 rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-700">{error}</p>}
       {drafts.length > 0 && (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {visibleDrafts.map((draft) => (
-            <article key={draft.id} className="group flex min-w-0 items-center gap-2 rounded-2xl border border-stone-200 bg-stone-50 p-2 transition hover:border-[#A96B54]/40 hover:bg-white">
+            <article
+              key={draft.id}
+              className="group relative flex flex-col justify-between rounded-2xl border border-stone-200 bg-white p-3.5 shadow-sm transition-all duration-200 hover:border-[#A96B54]/50 hover:shadow-md"
+            >
+              {/* Top Row: Icon + Badge trạng thái tách biệt + Bộ nút hành động */}
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#A96B54]/10 text-[#A96B54]">
+                    <FolderOpen className="h-4 w-4" />
+                  </span>
+                  <span
+                    className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide uppercase ${
+                      draft.status === 'completed'
+                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                        : 'bg-amber-50 text-amber-800 border border-amber-200'
+                    }`}
+                  >
+                    {draft.status === 'completed' ? '✓ Hoàn thành' : '✎ Bản nháp'}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-0.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => void duplicateDraft(draft)}
+                    className="rounded-lg p-1.5 text-stone-400 transition hover:bg-indigo-50 hover:text-indigo-600"
+                    title="Nhân bản (Tạo bản copy dự án)"
+                    aria-label={`Tạo bản copy của ${draft.name}`}
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                  </button>
+
+                  {editingDraftId !== draft.id && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingDraftId(draft.id);
+                        setNameDraft(draft.name);
+                      }}
+                      className="rounded-lg p-1.5 text-stone-400 transition hover:bg-amber-50 hover:text-amber-700"
+                      title="Đổi tên dự án"
+                      aria-label={`Đổi tên dự án ${draft.name}`}
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => setPendingDraft(draft)}
+                    className="rounded-lg p-1.5 text-stone-400 transition hover:bg-rose-50 hover:text-rose-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-500"
+                    title="Xóa dự án"
+                    aria-label={`Xóa bản nháp ${draft.name}`}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Middle Row: Tên dự án có Marquee chạy chữ toàn bộ chiều ngang */}
               {editingDraftId === draft.id ? (
                 <form
-                  className="flex min-w-0 flex-1 items-center gap-1"
+                  className="flex min-w-0 items-center gap-1 py-1"
                   onSubmit={(event) => {
                     event.preventDefault();
                     void saveDraftName(draft);
@@ -299,53 +466,62 @@ export function RecentPortfolioDrafts() {
                     aria-label="Tên dự án"
                     value={nameDraft}
                     onChange={(event) => setNameDraft(event.target.value)}
-                    className="min-w-0 flex-1 rounded-lg border border-stone-300 bg-white px-2 py-1.5 text-sm"
+                    className="min-w-0 flex-1 rounded-lg border border-stone-300 bg-white px-2 py-1 text-sm font-semibold"
                   />
-                  <button type="submit" onClick={() => void saveDraftName(draft)} disabled={renaming || !nameDraft.trim()} aria-label="Lưu tên dự án" className="rounded-lg p-2 text-emerald-700 hover:bg-emerald-50 disabled:opacity-40">
+                  <button
+                    type="submit"
+                    disabled={renaming || !nameDraft.trim()}
+                    aria-label="Lưu tên dự án"
+                    className="rounded-lg p-1.5 text-emerald-700 hover:bg-emerald-50 disabled:opacity-40"
+                  >
                     <Save className="h-4 w-4" />
                   </button>
-                  <button type="button" disabled={renaming} onClick={() => setEditingDraftId(null)} aria-label="Hủy đổi tên dự án" className="rounded-lg p-2 text-stone-500 hover:bg-stone-200 disabled:opacity-40">
+                  <button
+                    type="button"
+                    disabled={renaming}
+                    onClick={() => setEditingDraftId(null)}
+                    aria-label="Hủy đổi tên dự án"
+                    className="rounded-lg p-1.5 text-stone-500 hover:bg-stone-200 disabled:opacity-40"
+                  >
                     <X className="h-4 w-4" />
                   </button>
                 </form>
               ) : (
-                <Link href={`/studio?draft=${encodeURIComponent(draft.id)}`} className="flex min-w-0 flex-1 items-center gap-3 p-1">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#A96B54]/10 text-[#A96B54]"><FolderOpen className="h-5 w-5" /></span>
-                  <span className="min-w-0 flex-1">
-                    <span className="flex items-center gap-1.5">
-                      <span className="block truncate text-sm font-semibold text-stone-900">{draft.name}</span>
-                      <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${draft.status === 'completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
-                        {draft.status === 'completed' ? 'Hoàn thành' : 'Nháp'}
-                      </span>
+                <Link
+                  href={`/studio?draft=${encodeURIComponent(draft.id)}`}
+                  className="group/link block min-w-0 py-1"
+                  title={`Mở Studio: ${draft.name}`}
+                >
+                  <MarqueeDraftTitle text={draft.name} />
+                  <p className="mt-1 flex items-center justify-between text-[11px] text-stone-500">
+                    <span className="truncate font-mono opacity-80">/{draft.document.slug}</span>
+                    <span className="shrink-0 text-[10px] opacity-70">
+                      {new Date(draft.updatedAt).toLocaleDateString('vi-VN')}
                     </span>
-                    <span className="block truncate text-[11px] text-stone-500">/{draft.document.slug} · {new Date(draft.updatedAt).toLocaleDateString()}</span>
-                  </span>
-                  <ArrowRight className="h-4 w-4 shrink-0 text-stone-400 transition group-hover:translate-x-0.5 group-hover:text-[#A96B54]" />
+                  </p>
                 </Link>
               )}
-              {editingDraftId !== draft.id && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditingDraftId(draft.id);
-                    setNameDraft(draft.name);
-                  }}
-                  className="shrink-0 rounded-lg p-2 text-stone-400 transition hover:bg-amber-50 hover:text-amber-700"
-                  aria-label={`Đổi tên dự án ${draft.name}`}
-                  title="Đổi tên dự án"
+
+              {/* Bottom Row: Nút mở Studio và xem trang web xuất bản */}
+              <div className="mt-2.5 flex items-center justify-between border-t border-stone-100 pt-2 text-xs">
+                <Link
+                  href={`/studio?draft=${encodeURIComponent(draft.id)}`}
+                  className="inline-flex items-center gap-1.5 font-semibold text-[#735340] hover:text-[#A96B54] transition"
                 >
-                  <Pencil className="h-4 w-4" />
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => setPendingDraft(draft)}
-                className="shrink-0 rounded-lg p-2 text-stone-400 transition hover:bg-rose-50 hover:text-rose-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-500"
-                aria-label={`Xóa bản nháp ${draft.name}`}
-                title="Xóa dự án"
-              >
-                <Trash2 className="h-4 w-4" />
-              </button>
+                  <span>Mở chỉnh sửa</span>
+                  <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
+                </Link>
+
+                <Link
+                  href={`/${draft.document.slug}`}
+                  target="_blank"
+                  className="inline-flex items-center gap-1 text-[11px] text-stone-400 hover:text-stone-700 transition"
+                  title="Xem trang web đã xuất bản"
+                >
+                  <span>Xem trang</span>
+                  <ExternalLink className="h-3 w-3" />
+                </Link>
+              </div>
             </article>
           ))}
         </div>
