@@ -272,9 +272,8 @@ export default function StudioPage() {
     window.addEventListener('beforeunload', flushDraft);
     const initialDocument = usePortfolioStore.getState().document;
     const searchParams = new URLSearchParams(window.location.search);
-    const hasExplicitDraft = Boolean(searchParams.get('draft'));
-    const isNewCreation = searchParams.get('new') === '1' || searchParams.has('new') || !hasExplicitDraft;
-    const targetDraftId = hasExplicitDraft ? searchParams.get('draft') : null;
+    const targetDraftId = searchParams.get('draft');
+    const isNewCreation = searchParams.get('new') === '1' || searchParams.has('new') || !targetDraftId;
 
     if (isNewCreation) {
       usePortfolioStore.getState().resetToPreset();
@@ -288,32 +287,45 @@ export default function StudioPage() {
       }
       persist();
     });
-    void readPortfolioDraft(targetDraftId).then((draft) => {
-      if (!active) return;
-      const nextDraftId = draft?.id ?? targetDraftId ?? `draft-${crypto.randomUUID()}`;
-      draftIdRef.current = nextDraftId;
-      setDraftId(nextDraftId);
-      setActivePortfolioDraftId(nextDraftId);
-      if (draft && usePortfolioStore.getState().document === initialDocument && !changedWhileHydrating) {
-        restoringDraft = true;
-        usePortfolioStore.getState().restoreDraftSnapshot({
-          document: draft.document,
-          history: draft.history,
-          future: draft.future,
-        });
-        restoringDraft = false;
-      }
+
+    if (isNewCreation) {
+      // Khi bấm tạo mới: Cấp ngay một ID dự án mới toanh, không đọc lại bất kỳ bản nháp cũ nào
+      const brandNewDraftId = `draft-${crypto.randomUUID()}`;
+      draftIdRef.current = brandNewDraftId;
+      setDraftId(brandNewDraftId);
+      setActivePortfolioDraftId(brandNewDraftId);
       hydrated = true;
       const current = usePortfolioStore.getState();
-      void writePortfolioDraft(current.document, current.history, current.future, nextDraftId).catch(() => {
-        if (active) setActionError("Không thể lưu bản nháp trong trình duyệt.");
+      void writePortfolioDraft(current.document, current.history, current.future, brandNewDraftId).catch(() => {});
+    } else {
+      // Chỉ khi người dùng chủ động bấm vào một dự án cụ thể (?draft=...)
+      void readPortfolioDraft(targetDraftId).then((draft) => {
+        if (!active) return;
+        const nextDraftId = draft?.id ?? targetDraftId ?? `draft-${crypto.randomUUID()}`;
+        draftIdRef.current = nextDraftId;
+        setDraftId(nextDraftId);
+        setActivePortfolioDraftId(nextDraftId);
+        if (draft && usePortfolioStore.getState().document === initialDocument && !changedWhileHydrating) {
+          restoringDraft = true;
+          usePortfolioStore.getState().restoreDraftSnapshot({
+            document: draft.document,
+            history: draft.history,
+            future: draft.future,
+          });
+          restoringDraft = false;
+        }
+        hydrated = true;
+        const current = usePortfolioStore.getState();
+        void writePortfolioDraft(current.document, current.history, current.future, nextDraftId).catch(() => {
+          if (active) setActionError("Không thể lưu bản nháp trong trình duyệt.");
+        });
+        if (changedWhileHydrating) persist();
+      }).catch(() => {
+        if (!active) return;
+        hydrated = true;
+        if (changedWhileHydrating) persist();
       });
-      if (changedWhileHydrating) persist();
-    }).catch(() => {
-      if (!active) return;
-      hydrated = true;
-      if (changedWhileHydrating) persist();
-    });
+    }
     return () => {
       active = false;
       if (timer) clearTimeout(timer);
