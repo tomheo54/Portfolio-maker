@@ -112,12 +112,15 @@ function DocxFileLink({
 }
 
 export interface BulletShapeIconProps {
-  shape?: "circle" | "square" | "hyphen" | "star" | "check" | "diamond";
+  shape?: "circle" | "square" | "hyphen" | "star" | "check" | "diamond" | "none";
   color?: string;
   className?: string;
 }
 
 function BulletShapeIcon({ shape = "circle", color = "currentColor", className = "" }: BulletShapeIconProps) {
+  if (shape === "none") {
+    return null;
+  }
   if (shape === "hyphen") {
     return (
       <span
@@ -1162,17 +1165,23 @@ export function ProjectsShowcaseBlock({
                                 .map((takeaway, tIdx) => (
                                   <li
                                     key={tIdx}
-                                    className="flex items-start gap-2.5 text-sm leading-relaxed"
+                                    className={
+                                      project.takeawayBulletShape === "none"
+                                        ? "text-sm leading-relaxed"
+                                        : "flex items-start gap-2.5 text-sm leading-relaxed"
+                                    }
                                     style={{
                                       color: "var(--text, #3E2723)",
                                       opacity: 0.9,
                                     }}
                                   >
-                                    <BulletShapeIcon
-                                      shape={project.takeawayBulletShape}
-                                      color="var(--primary, #735340)"
-                                      className="shrink-0"
-                                    />
+                                    {project.takeawayBulletShape !== "none" && (
+                                      <BulletShapeIcon
+                                        shape={project.takeawayBulletShape}
+                                        color="var(--primary, #735340)"
+                                        className="shrink-0"
+                                      />
+                                    )}
                                     <span>{takeaway}</span>
                                   </li>
                                 ))}
@@ -1471,13 +1480,19 @@ export function ProjectsShowcaseBlock({
                   .map((takeaway, idx) => (
                     <li
                       key={idx}
-                      className="flex items-start gap-2 text-sm opacity-90"
+                      className={
+                        project.takeawayBulletShape === "none"
+                          ? "text-sm opacity-90 leading-relaxed"
+                          : "flex items-start gap-2 text-sm opacity-90"
+                      }
                     >
-                      <BulletShapeIcon
-                        shape={project.takeawayBulletShape}
-                        color={theme.primaryColor}
-                        className="shrink-0"
-                      />
+                      {project.takeawayBulletShape !== "none" && (
+                        <BulletShapeIcon
+                          shape={project.takeawayBulletShape}
+                          color={theme.primaryColor}
+                          className="shrink-0"
+                        />
+                      )}
                       <span>{takeaway}</span>
                     </li>
                   ))}

@@ -2762,7 +2762,9 @@ export function SectionInspector({
                               Kết quả &amp; điểm nhấn
                             </label>
                             <p className="text-[9px] text-stone-500">
-                              Nhập vào 1 ô, mỗi ý bắt đầu bằng dấu gạch ngang (-) ở đầu dòng.
+                              {currentProject.takeawayBulletShape === "none"
+                                ? "Hiển thị văn bản liền mạch (không có dấu đầu dòng)."
+                                : "Nhập vào 1 ô, mỗi ý bắt đầu bằng dấu gạch ngang (-) ở đầu dòng."}
                             </p>
                           </div>
                           <div className="flex items-center gap-1.5">
@@ -2780,7 +2782,8 @@ export function SectionInspector({
                                     | "hyphen"
                                     | "star"
                                     | "check"
-                                    | "diamond",
+                                    | "diamond"
+                                    | "none",
                                 })
                               }
                               className="rounded border border-stone-200 bg-white px-2 py-0.5 text-[10px] text-stone-700"
@@ -2791,6 +2794,7 @@ export function SectionInspector({
                               <option value="star">★ Ngôi sao</option>
                               <option value="check">✔ Dấu tích</option>
                               <option value="diamond">◆ Kim cương</option>
+                              <option value="none">None (Không có / Văn bản liền)</option>
                             </select>
                           </div>
                         </div>
@@ -2800,19 +2804,26 @@ export function SectionInspector({
                           aria-label="Kết quả & điểm nhấn"
                           value={
                             (currentProject.keyTakeaways ?? []).length > 0
-                              ? currentProject.keyTakeaways
-                                  .map((line) => (line.startsWith("- ") ? line : `- ${line}`))
-                                  .join("\n")
+                              ? currentProject.takeawayBulletShape === "none"
+                                ? currentProject.keyTakeaways.join("\n")
+                                : currentProject.keyTakeaways
+                                    .map((line) => (line.startsWith("- ") ? line : `- ${line}`))
+                                    .join("\n")
                               : ""
                           }
-                          placeholder="- Kết quả đạt được thứ nhất...&#10;- Vận dụng thành thạo kỹ năng...&#10;- Hoàn thành mục tiêu đề ra..."
+                          placeholder={
+                            currentProject.takeawayBulletShape === "none"
+                              ? "Nhập đoạn văn bản báo cáo / kết quả tóm tắt liền mạch không gạch đầu dòng..."
+                              : "- Kết quả đạt được thứ nhất...&#10;- Vận dụng thành thạo kỹ năng...&#10;- Hoàn thành mục tiêu đề ra..."
+                          }
                           onChange={(e) => {
                             const raw = e.target.value;
+                            const isNone = currentProject.takeawayBulletShape === "none";
                             const lines = raw
                               .split("\n")
-                              .map((l) => l.trim())
+                              .map((l) => (isNone ? l.replace(/^-\s*/, "").trim() : l.trim()))
                               .filter(Boolean)
-                              .map((l) => (l.startsWith("-") ? l.replace(/^-\s*/, "") : l));
+                              .map((l) => (!isNone && l.startsWith("-") ? l.replace(/^-\s*/, "") : l));
                             updateProject(currentProject.id, {
                               keyTakeaways: lines,
                             });

@@ -90,6 +90,7 @@ export function AssignmentDetailModal({
   const hasVisualMedia = hasVideo || hasImages;
 
   const renderBulletIcon = (shape?: string) => {
+    if (shape === "none") return null;
     if (shape === "hyphen") {
       return (
         <span className="font-bold select-none" style={{ color: theme.primaryColor }}>
@@ -398,6 +399,7 @@ export function AssignmentDetailModal({
   const hasVisualMedia = hasVideo || hasImages;
 
   const renderBulletIcon = (shape?: string) => {
+    if (shape === "none") return null;
     if (shape === "hyphen") {
       return (
         <span className="font-bold select-none" style={{ color: theme.primaryColor }}>
@@ -1170,7 +1172,14 @@ export function AssignmentDetailModal({
                       {project.keyTakeaways
                         .filter((item) => item.trim())
                         .map((item, idx) => (
-                          <li key={idx} className="flex items-start gap-2.5 text-sm leading-relaxed">
+                          <li
+                            key={idx}
+                            className={
+                              project.takeawayBulletShape === "none"
+                                ? "text-sm leading-relaxed"
+                                : "flex items-start gap-2.5 text-sm leading-relaxed"
+                            }
+                          >
                             {renderBulletIcon(project.takeawayBulletShape)}
                             <span>{item}</span>
                           </li>
@@ -1272,7 +1281,14 @@ export function AssignmentDetailModal({
                       {project.keyTakeaways
                         .filter((item) => item.trim())
                         .map((item, idx) => (
-                          <li key={idx} className="flex items-start gap-2 text-sm">
+                          <li
+                            key={idx}
+                            className={
+                              project.takeawayBulletShape === "none"
+                                ? "text-sm leading-relaxed"
+                                : "flex items-start gap-2 text-sm"
+                            }
+                          >
                             {renderBulletIcon(project.takeawayBulletShape)}
                             <span>{item}</span>
                           </li>
@@ -1367,6 +1383,7 @@ export function AssignmentDetailModal({
   const hasVisualMedia = hasVideo || hasImages;
 
   const renderBulletIcon = (shape?: string) => {
+    if (shape === "none") return null;
     if (shape === "hyphen") {
       return (
         <span className="font-bold select-none" style={{ color: theme.primaryColor }}>
