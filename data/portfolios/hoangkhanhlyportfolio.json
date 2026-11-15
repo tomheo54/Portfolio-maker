@@ -87,7 +87,7 @@
       "type": "about",
       "variant": "timeline",
       "title": "About me • Giới thiệu bản thân",
-      "biography": "Xin chào! Mình là Hoàng Khánh Ly (Sư phạm âm nhạc). Portfolio này được tổng hợp trực tiếp từ hồ sơ bài tập thực chiến gồm 5 dự án thuộc các mảng Content Marketing, Giáo dục & Sáng tạo, AI Prompt Engineering. Mỗi bài tập đều được chuẩn hóa theo tư duy Đề bài - Giải pháp - Kết quả nhằm thể hiện năng lực triển khai thực tế.",
+      "biography": "Xin chào! Mình là Hoàng Khánh Ly (Sư phạm âm nhạc). Portfolio này được tổng hợp trực tiếp từ hồ sơ bài tập thực chiến gồm 6 dự án thuộc các mảng Content Marketing, Giáo dục & Sáng tạo, AI Prompt Engineering. Mỗi bài tập đều được chuẩn hóa theo tư duy Đề bài - Giải pháp - Kết quả nhằm thể hiện năng lực triển khai thực tế.",
       "highlights": [],
       "contactInfo": {
         "email": "hoangkhanhly623@gmail.com",
@@ -117,10 +117,6 @@
           "name": "Chuyên môn & Thực chiến",
           "skills": [
             {
-              "name": "Content Marketing",
-              "level": 95
-            },
-            {
               "name": "Giáo dục & Sáng tạo",
               "level": 92
             },
@@ -134,7 +130,7 @@
           "name": "Công cụ & Nền tảng",
           "skills": [
             {
-              "name": "AI Prompt Engineering (ChatGPT / Gemini)",
+              "name": "ChatGPT / Gemini",
               "level": 94
             },
             {
@@ -158,8 +154,8 @@
           "school": "Trường Đại học Sư phạm Nghệ thuật Trung ương",
           "degree": "Ngành Sư phạm Âm nhạc",
           "period": "",
-          "gpaOrHonors": "Mã SV: SV-MAU-001 • Lớp Tín chỉ 03 (Nhập môn Công nghệ số & Ứng dụng AI)",
-          "details": "Tập trung nâng cao năng lực sư phạm, phương pháp giảng dạy âm nhạc hiện đại (Orff Schulwerk, Kodály, Gordon) và ứng dụng công nghệ AI trong soạn giảng."
+          "gpaOrHonors": "Mã SV: 2552210402 • Lớp Tín chỉ 01 (Nhập môn Công nghệ số & Ứng dụng AI)",
+          "details": "Tập trung nâng cao năng lực sư phạm, phương pháp giảng dạy âm nhạc hiện đại  và ứng dụng công nghệ AI trong soạn giảng."
         }
       ]
     },
