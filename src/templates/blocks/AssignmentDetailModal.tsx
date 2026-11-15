@@ -373,7 +373,25 @@ export function AssignmentDetailModal({
       }
     };
     window.addEventListener("keydown", handleKey);
-    const isVideo = isVideoMode(project);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [
+    project,
+    lightboxZoomed,
+    isFullscreen,
+    isPage,
+    mediaList.length,
+    hasPrev,
+    hasNext,
+    onNavigateProject,
+    handleNavigatePrev,
+    handleNavigateNext,
+    onClose,
+  ]);
+
+  if (!project) return null;
+  if (!isPage && !mounted) return null;
+
+  const isVideo = isVideoMode(project);
   const effectiveVideoUrl = getEffectiveVideoUrl(project);
   const hasVideo = isVideo && Boolean(effectiveVideoUrl);
   const hasImages = (mediaList?.length ?? 0) > 0 && Boolean(activeMedia);
@@ -564,24 +582,6 @@ export function AssignmentDetailModal({
       </div>
     );
   };
-
-  return () => window.removeEventListener("keydown", handleKey);
-  }, [
-    project,
-    lightboxZoomed,
-    isFullscreen,
-    isPage,
-    mediaList.length,
-    hasPrev,
-    hasNext,
-    onNavigateProject,
-    handleNavigatePrev,
-    handleNavigateNext,
-    onClose,
-  ]);
-
-  if (!project) return null;
-  if (!isPage && !mounted) return null;
 
   const chapterText =
     project.chapterTitle || `Chương ${currentNum}: ${project.category}`;
@@ -840,453 +840,433 @@ export function AssignmentDetailModal({
                 }`
           } lg:grid-cols-12`}
         >
-          {/* Left: Lightbox Media Gallery or Video Embed (zero distortion via object-contain) */}
-          <div className={`${
-            compactLayout
-              ? "space-y-3 lg:col-span-6"
-              : detailLayout === "two-column"
-                ? "space-y-4 lg:col-span-5"
-                : "space-y-4 lg:col-span-6"
-          } order-2 lg:order-1`}>
-            {isPage && (
-              <h3
-                className="text-xs font-bold uppercase tracking-wider mb-2"
-                style={{ color: theme.primaryColor }}
-              >
-                SẢN PHẨM CUỐI CÙNG & MINH CHỨNG BÀI LÀM
-              </h3>
-            )}
-
-            {isVideoMode(project) ? (
-              (() => {
-                const effectiveUrl = getEffectiveVideoUrl(project);
-                const embedUrl = effectiveUrl ? parseVideoEmbedUrl(effectiveUrl) : null;
-                const isDirectVideo = embedUrl ? /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(embedUrl) : false;
-                return embedUrl ? (
-                  <div className="space-y-3">
-                    <div
-                      className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-2xl border shadow-inner bg-stone-950"
-                      style={{
-                        borderColor: tokens.borderSubtle,
-                      }}
-                    >
-                      {isDirectVideo ? (
-                        <video
-                          src={embedUrl}
-                          controls
-                          playsInline
-                          className="absolute inset-0 h-full w-full object-contain"
-                        />
-                      ) : (
-                        <iframe
-                          src={embedUrl}
-                          title={`Video: ${project.title}`}
-                          className="absolute inset-0 h-full w-full border-0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                          loading="lazy"
-                        />
-                      )}
-                    </div>
-                    {effectiveUrl && (
-                      <div className="flex justify-end">
-                        <a
-                          href={effectiveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-stone-600 hover:text-stone-900 transition hover:underline"
-                        >
-                          <ExternalLink className="h-3.5 w-3.5" />
-                          <span>Mở video trong tab mới</span>
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="flex aspect-video w-full flex-col items-center justify-center rounded-2xl border border-dashed text-sm opacity-65 p-6 text-center gap-2">
-                    <p className="font-medium">Chưa có liên kết video hoặc link chưa hợp lệ</p>
-                    <p className="text-xs opacity-75">Hỗ trợ YouTube, Google Drive, Vimeo hoặc tệp video MP4</p>
-                  </div>
-                );
-              })()
-            ) : activeMedia ? (
-              <div className="space-y-3">
-                <div
-                  className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl border"
-                  style={{
-                    borderColor: tokens.borderSubtle,
-                    backgroundColor: tokens.isDarkSurface
-                      ? "rgba(0,0,0,0.35)"
-                      : "rgba(28,25,23,0.04)",
-                  }}
+          {/* If visual media exists, render Left column: Lightbox Media Gallery or Video Embed */}
+          {hasVisualMedia && (
+            <div className={`${
+              compactLayout
+                ? "space-y-3 lg:col-span-6"
+                : detailLayout === "two-column"
+                  ? "space-y-4 lg:col-span-5"
+                  : "space-y-4 lg:col-span-6"
+            } order-2 lg:order-1`}>
+              {isPage && (
+                <h3
+                  className="text-xs font-bold uppercase tracking-wider mb-2"
+                  style={{ color: theme.primaryColor }}
                 >
-                  <img
-                    src={activeMedia.url}
-                    alt={activeMedia.caption || project.title}
-                    onClick={() => setLightboxZoomed(true)}
-                    className="h-full w-full cursor-zoom-in object-contain p-1.5"
-                  />
+                  SẢN PHẨM CUỐI CÙNG & MINH CHỨNG BÀI LÀM
+                </h3>
+              )}
 
-                  <div className="absolute left-3 top-3 rounded-full bg-black/75 px-3 py-1 text-[11px] font-medium text-white backdrop-blur-sm">
-                    {activeMedia.sourceType === "docx-extracted"
-                      ? "📄 Ảnh trích xuất DOCX"
-                      : activeMedia.sourceType === "ai-generated"
-                        ? "✨ Ảnh minh họa AI"
-                        : "🖼️ Ảnh tải lên"}
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => setLightboxZoomed(true)}
-                    className="absolute right-3 top-3 rounded-full bg-black/70 p-1.5 text-white backdrop-blur-sm transition hover:bg-black/85"
-                    aria-label="Phóng to ảnh"
-                    title="Phóng to toàn màn hình"
-                  >
-                    <Maximize2 className="h-4 w-4" />
-                  </button>
-
-                  {mediaList.length > 1 && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setActiveImageIdx(
-                            (prev) =>
-                              (prev - 1 + mediaList.length) % mediaList.length,
-                          )
-                        }
-                        className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 text-stone-800 shadow-md hover:bg-white"
-                        aria-label="Ảnh trước"
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setActiveImageIdx(
-                            (prev) => (prev + 1) % mediaList.length,
-                          )
-                        }
-                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 text-stone-800 shadow-md hover:bg-white"
-                        aria-label="Ảnh tiếp theo"
-                      >
-                        <ChevronRight className="h-4 w-4" />
-                      </button>
-                    </>
-                  )}
-                </div>
-
-                {activeMedia.caption && (
-                  <p className="text-xs italic opacity-75">
-                    {activeMedia.caption}
-                  </p>
-                )}
-
-                {activeMedia.aiPromptUsed && (
-                  <div
-                    className="rounded-xl border p-3 text-xs"
-                    style={{
-                      borderColor: "rgba(245, 158, 11, 0.30)",
-                      backgroundColor: tokens.isDarkSurface
-                        ? "rgba(245, 158, 11, 0.10)"
-                        : "rgba(255, 251, 235, 0.85)",
-                    }}
-                  >
-                    <span
-                      className="inline-flex items-center gap-1 font-semibold"
-                      style={{
-                        color: tokens.isDarkSurface ? "#FCD34D" : "#92400E",
-                      }}
-                    >
-                      <Sparkles className="h-3.5 w-3.5" /> Prompt AI đã dùng:
-                    </span>
-                    <p className="mt-1 opacity-85">
-                      {activeMedia.aiPromptUsed}
-                    </p>
-                  </div>
-                )}
-
-                {mediaList.length > 1 && (
-                  <div className="flex gap-2 overflow-x-auto pb-1">
-                    {mediaList.map((m, i) => (
-                      <button
-                        key={m.id}
-                        type="button"
-                        onClick={() => setActiveImageIdx(i)}
-                        className={`relative h-16 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition ${
-                          i === safeIdx
-                            ? "ring-2 ring-offset-1"
-                            : "opacity-70 hover:opacity-100"
-                        }`}
+              {isVideo ? (
+                (() => {
+                  const effectiveUrl = effectiveVideoUrl;
+                  const embedUrl = effectiveUrl ? parseVideoEmbedUrl(effectiveUrl) : null;
+                  const isDirectVideo = embedUrl ? /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(embedUrl) : false;
+                  return embedUrl ? (
+                    <div className="space-y-3">
+                      <div
+                        className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-2xl border shadow-inner bg-stone-950"
                         style={{
-                          borderColor:
-                            i === safeIdx ? theme.primaryColor : "transparent",
+                          borderColor: tokens.borderSubtle,
                         }}
                       >
-                        <img
-                          src={m.url}
-                          alt={m.caption || ""}
-                          className="h-full w-full object-cover"
-                        />
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div
-                className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed text-sm opacity-65"
-                style={{
-                  borderColor: tokens.borderMedium,
-                  backgroundColor: theme.backgroundColor,
-                }}
-              >
-                Chưa có hình ảnh đính kèm cho bài tập này
-              </div>
-            )}
+                        {isDirectVideo ? (
+                          <video
+                            src={embedUrl}
+                            controls
+                            playsInline
+                            className="absolute inset-0 h-full w-full object-contain"
+                          />
+                        ) : (
+                          <iframe
+                            src={embedUrl}
+                            title={`Video: ${project.title}`}
+                            className="absolute inset-0 h-full w-full border-0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                            loading="lazy"
+                          />
+                        )}
+                      </div>
+                      {effectiveUrl && (
+                        <div className="flex justify-end">
+                          <a
+                            href={effectiveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-stone-600 hover:text-stone-900 transition hover:underline"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5" />
+                            <span>Mở video trong tab mới</span>
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  ) : null;
+                })()
+              ) : activeMedia ? (
+                <div className="space-y-3">
+                  <div
+                    className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl border"
+                    style={{
+                      borderColor: tokens.borderSubtle,
+                      backgroundColor: tokens.isDarkSurface
+                        ? "rgba(0,0,0,0.35)"
+                        : "rgba(28,25,23,0.04)",
+                    }}
+                  >
+                    <img
+                      src={activeMedia.url}
+                      alt={activeMedia.caption || project.title}
+                      onClick={() => setLightboxZoomed(true)}
+                      className="h-full w-full cursor-zoom-in object-contain p-1.5"
+                    />
 
-            {/* Prompt Comparison Viewer if available */}
-            {project.promptComparison && (project.showPromptComparison ?? true) && (
-              <div
-                className="rounded-2xl border p-4 text-xs"
-                style={{
-                  borderColor: tokens.borderSubtle,
-                  backgroundColor: theme.backgroundColor,
-                }}
-              >
-                <div className="flex items-center gap-2 font-bold uppercase tracking-wider mb-2">
-                  <Split
-                    className="h-4 w-4"
-                    style={{ color: theme.primaryColor }}
-                  />
-                  <span style={{ color: theme.primaryColor }}>
-                    So sánh Prompt ban đầu vs Prompt cải tiến
-                  </span>
-                </div>
-                <div className="space-y-2">
-                  <div className="rounded-lg p-2.5 bg-red-500/10 border border-red-500/20">
-                    <span className="font-semibold text-red-600 dark:text-red-400">
-                      1. Prompt ban đầu (Initial Prompt):
-                    </span>
-                    <p className="mt-0.5 opacity-85 font-mono text-[11px]">
-                      {project.promptComparison.initialPrompt}
-                    </p>
+                    <div className="absolute left-3 top-3 rounded-full bg-black/75 px-3 py-1 text-[11px] font-medium text-white backdrop-blur-sm">
+                      {activeMedia.sourceType === "docx-extracted"
+                        ? "📄 Ảnh trích xuất DOCX"
+                        : activeMedia.sourceType === "ai-generated"
+                          ? "✨ Ảnh minh họa AI"
+                          : "🖼️ Ảnh tải lên"}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setLightboxZoomed(true)}
+                      className="absolute right-3 top-3 rounded-full bg-black/70 p-1.5 text-white backdrop-blur-sm transition hover:bg-black/85"
+                      aria-label="Phóng to ảnh"
+                      title="Phóng to toàn màn hình"
+                    >
+                      <Maximize2 className="h-4 w-4" />
+                    </button>
+
+                    {mediaList.length > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setActiveImageIdx(
+                              (prev) =>
+                                (prev - 1 + mediaList.length) % mediaList.length,
+                            )
+                          }
+                          className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 text-stone-800 shadow-md hover:bg-white"
+                          aria-label="Ảnh trước"
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setActiveImageIdx(
+                              (prev) => (prev + 1) % mediaList.length,
+                            )
+                          }
+                          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 text-stone-800 shadow-md hover:bg-white"
+                          aria-label="Ảnh tiếp theo"
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
+                      </>
+                    )}
                   </div>
-                  <div className="rounded-lg p-2.5 bg-emerald-500/10 border border-emerald-500/20">
-                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                      2. Prompt cải tiến (Improved Prompt):
-                    </span>
-                    <p className="mt-0.5 opacity-85 font-mono text-[11px]">
-                      {project.promptComparison.improvedPrompt}
+
+                  {activeMedia.caption && (
+                    <p className="text-xs italic opacity-75">
+                      {activeMedia.caption}
                     </p>
-                  </div>
-                  {project.promptComparison.aiOutput && (
-                    <div className="rounded-lg p-2.5 bg-blue-500/10 border border-blue-500/20">
-                      <span className="font-semibold text-blue-600 dark:text-blue-400">
-                        3. Kết quả AI đạt được:
+                  )}
+
+                  {activeMedia.aiPromptUsed && (
+                    <div
+                      className="rounded-xl border p-3 text-xs"
+                      style={{
+                        borderColor: "rgba(245, 158, 11, 0.30)",
+                        backgroundColor: tokens.isDarkSurface
+                          ? "rgba(245, 158, 11, 0.10)"
+                          : "rgba(255, 251, 235, 0.85)",
+                      }}
+                    >
+                      <span
+                        className="inline-flex items-center gap-1 font-semibold"
+                        style={{
+                          color: tokens.isDarkSurface ? "#FCD34D" : "#92400E",
+                        }}
+                      >
+                        <Sparkles className="h-3.5 w-3.5" /> Prompt AI đã dùng:
                       </span>
-                      <p className="mt-0.5 opacity-85 text-[11px]">
-                        {project.promptComparison.aiOutput}
+                      <p className="mt-1 opacity-85">
+                        {activeMedia.aiPromptUsed}
                       </p>
                     </div>
                   )}
-                </div>
-              </div>
-            )}
 
-            {/* Metrics */}
-            {project.metrics.length > 0 && (
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-                {project.metrics.map((metric, idx) => (
+                  {mediaList.length > 1 && (
+                    <div className="flex gap-2 overflow-x-auto pb-1">
+                      {mediaList.map((m, i) => (
+                        <button
+                          key={m.id}
+                          type="button"
+                          onClick={() => setActiveImageIdx(i)}
+                          className={`relative h-16 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition ${
+                            i === safeIdx
+                              ? "ring-2 ring-offset-1"
+                              : "opacity-70 hover:opacity-100"
+                          }`}
+                          style={{
+                            borderColor:
+                              i === safeIdx ? theme.primaryColor : "transparent",
+                          }}
+                        >
+                          <img
+                            src={m.url}
+                            alt={m.caption || ""}
+                            className="h-full w-full object-cover"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : null}
+
+              {/* Prompt Comparison Viewer if available */}
+              {renderPromptComparison()}
+
+              {/* Metrics */}
+              {renderMetrics()}
+            </div>
+          )}
+
+          {/* Right (or Full Width when !hasVisualMedia): Structured Summary & Full Details */}
+          <div className={`${
+            !hasVisualMedia
+              ? "space-y-4 lg:col-span-12 w-full"
+              : compactLayout
+                ? "space-y-3 lg:col-span-6"
+                : detailLayout === "two-column"
+                  ? "space-y-4 lg:col-span-7"
+                  : "space-y-4 lg:col-span-6"
+          } order-1 lg:order-2`}>
+            {!hasVisualMedia ? (
+              /* Balanced full-width layout without image: Brief & Process side-by-side on desktop */
+              <div className="space-y-4">
+                {(project.assignmentBrief || project.summary) && project.summary ? (
+                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    <div
+                      className="rounded-2xl border p-5"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}10`,
+                        borderColor: `${theme.primaryColor}30`,
+                      }}
+                    >
+                      <div
+                        className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+                        style={{ color: theme.primaryColor }}
+                      >
+                        <Target className="h-4 w-4 shrink-0" /> Đề bài / Mục tiêu bài tập (INF2501) - Yêu cầu đề bài (Assignment Brief)
+                      </div>
+                      <p className="mt-2 text-sm leading-relaxed">
+                        {project.assignmentBrief || project.summary}
+                      </p>
+                    </div>
+
+                    <div
+                      className="rounded-2xl border p-5"
+                      style={{ borderColor: tokens.borderSubtle }}
+                    >
+                      <h3
+                        className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+                        style={{
+                          color: tokens.isDarkSurface
+                            ? theme.primaryColor
+                            : theme.secondaryColor,
+                        }}
+                      >
+                        <Lightbulb className="h-4 w-4 shrink-0" /> Quá trình thực hiện
+                      </h3>
+                      <p className="mt-2 text-sm leading-relaxed opacity-90">
+                        {project.summary}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  (project.assignmentBrief || project.summary) && (
+                    <div
+                      className="rounded-2xl border p-5"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}10`,
+                        borderColor: `${theme.primaryColor}30`,
+                      }}
+                    >
+                      <div
+                        className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+                        style={{ color: theme.primaryColor }}
+                      >
+                        <Target className="h-4 w-4 shrink-0" /> Đề bài / Mục tiêu bài tập (INF2501) - Yêu cầu đề bài (Assignment Brief)
+                      </div>
+                      <p className="mt-2 text-sm leading-relaxed">
+                        {project.assignmentBrief || project.summary}
+                      </p>
+                    </div>
+                  )
+                )}
+
+                {/* Obstacles & Solutions if available */}
+                {project.obstaclesAndSolutions && (
                   <div
-                    key={idx}
-                    className="rounded-xl border p-3"
+                    className="rounded-2xl border p-5"
                     style={{
-                      backgroundColor: theme.backgroundColor,
                       borderColor: tokens.borderSubtle,
+                      backgroundColor: theme.backgroundColor,
                     }}
                   >
-                    <p className="text-[11px] uppercase tracking-wider opacity-65">
-                      {metric.label}
-                    </p>
-                    <p
-                      className="mt-0.5 text-base font-bold"
-                      style={{ color: theme.primaryColor }}
-                    >
-                      {metric.value}
+                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider opacity-80">
+                      <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" /> Khó khăn & Giải pháp
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed opacity-90">
+                      {project.obstaclesAndSolutions}
                     </p>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                )}
 
-          {/* Right: Structured Summary & Full Details */}
-          <div className={`${
-            compactLayout
-              ? "space-y-3 lg:col-span-6"
-              : detailLayout === "two-column"
-                ? "space-y-4 lg:col-span-7"
-                : "space-y-4 lg:col-span-6"
-          } order-1 lg:order-2`}>
-            {/* (a) Mục tiêu bài tập */}
-            {(project.assignmentBrief || project.summary) && (
-              <div
-                className="rounded-2xl border p-4"
-                style={{
-                  backgroundColor: `${theme.primaryColor}10`,
-                  borderColor: `${theme.primaryColor}30`,
-                }}
-              >
-                <div
-                  className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
-                  style={{ color: theme.primaryColor }}
-                >
-                  <Target className="h-4 w-4" /> Đề bài / Mục tiêu bài tập (INF2501) - Yêu cầu đề bài (Assignment Brief)
-                </div>
-                <p className="mt-1.5 text-sm leading-relaxed">
-                  {project.assignmentBrief || project.summary}
-                </p>
-              </div>
-            )}
-
-            {/* (b) Quá trình thực hiện & Giải pháp */}
-            <div
-              className="rounded-2xl border p-4"
-              style={{ borderColor: tokens.borderSubtle }}
-            >
-              <h3
-                className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
-                style={{
-                  color: tokens.isDarkSurface
-                    ? theme.primaryColor
-                    : theme.secondaryColor,
-                }}
-              >
-                <Lightbulb className="h-4 w-4" /> Quá trình thực hiện
-              </h3>
-              <p className="mt-1.5 text-sm leading-relaxed opacity-90">
-                {project.summary}
-              </p>
-            </div>
-
-            {/* Obstacles & Solutions if available */}
-            {project.obstaclesAndSolutions && (
-              <div
-                className="rounded-2xl border p-4"
-                style={{
-                  borderColor: tokens.borderSubtle,
-                  backgroundColor: theme.backgroundColor,
-                }}
-              >
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider opacity-80">
-                  <AlertTriangle className="h-4 w-4 text-amber-600" /> Khó khăn
-                  & Giải pháp
-                </div>
-                <p className="mt-1.5 text-xs leading-relaxed opacity-90">
-                  {project.obstaclesAndSolutions}
-                </p>
-              </div>
-            )}
-
-            {/* (c) Key Takeaways */}
-            {project.keyTakeaways.some((item) => item.trim()) && (
-              <div
-                className="rounded-2xl border p-4"
-                style={{ borderColor: tokens.borderSubtle }}
-              >
-                <div
-                  className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
-                  style={{ color: tokens.positiveAccent }}
-                >
-                  <CheckCircle2 className="h-4 w-4" /> Kỹ năng cốt lõi & Kết quả kỳ vọng
-                </div>
-                <ul className="mt-2 space-y-1.5">
-                  {project.keyTakeaways
-                    .filter((item) => item.trim())
-                    .map((item, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-sm">
-                        {project.takeawayBulletShape === "hyphen" ? (
-                          <span className="font-bold select-none" style={{ color: theme.primaryColor }}>—</span>
-                        ) : project.takeawayBulletShape === "square" ? (
-                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-none select-none" style={{ backgroundColor: theme.primaryColor }} />
-                        ) : project.takeawayBulletShape === "star" ? (
-                          <span className="text-xs select-none" style={{ color: theme.primaryColor }}>★</span>
-                        ) : project.takeawayBulletShape === "check" ? (
-                          <span className="text-xs font-bold select-none" style={{ color: theme.primaryColor }}>✔</span>
-                        ) : project.takeawayBulletShape === "diamond" ? (
-                          <span className="text-xs select-none" style={{ color: theme.primaryColor }}>◆</span>
-                        ) : (
-                          <span
-                            className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full select-none"
-                            style={{ backgroundColor: theme.primaryColor }}
-                          />
-                        )}
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Links */}
-            {project.links.length > 0 && (
-              <div className="flex flex-wrap gap-2 pt-1">
-                {project.links.map((link, idx) => (
-                  <a
-                    key={idx}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition hover:opacity-80"
-                    style={{
-                      borderColor: theme.primaryColor,
-                      color: theme.primaryColor,
-                      backgroundColor: `${theme.primaryColor}10`,
-                    }}
-                  >
-                    <ExternalLink className="h-3.5 w-3.5" />
-                    <span>{link.label}</span>
-                  </a>
-                ))}
-              </div>
-            )}
-
-            {/* Full raw excerpt - chỉ hiển thị nếu có nội dung và được bật (mặc định tắt) */}
-            {project.fullRawExcerpt && project.showRawExcerpt && (
-              <details
-                className="rounded-2xl border p-4 transition"
-                style={{
-                  backgroundColor: theme.backgroundColor,
-                  borderColor: tokens.borderSubtle,
-                }}
-              >
-                <summary className="cursor-pointer text-xs font-bold uppercase tracking-wider opacity-70">
-                  <span className="inline-flex items-center gap-1.5">
-                    <FileCheck className="h-3.5 w-3.5" /> Nội dung trích xuất
-                    chi tiết từ bài làm
-                  </span>
-                </summary>
-                <pre className="mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap font-sans text-xs leading-relaxed opacity-85">
-                  {project.fullRawExcerpt}
-                </pre>
-              </details>
-            )}
-
-            {/* Tags */}
-            {project.tags.length > 0 && (
-              <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                <Tag className="h-3.5 w-3.5 opacity-55" />
-                {project.tags.map((tag, idx) => (
-                  <span
-                    key={idx}
-                    className="rounded-full border px-2.5 py-0.5 text-xs font-medium opacity-80"
+                {/* (c) Key Takeaways */}
+                {project.keyTakeaways.some((item) => item.trim()) && (
+                  <div
+                    className="rounded-2xl border p-5"
                     style={{ borderColor: tokens.borderSubtle }}
                   >
-                    #{tag}
-                  </span>
-                ))}
+                    <div
+                      className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+                      style={{ color: tokens.positiveAccent }}
+                    >
+                      <CheckCircle2 className="h-4 w-4 shrink-0" /> Kỹ năng cốt lõi & Kết quả kỳ vọng
+                    </div>
+                    <ul className="mt-2.5 space-y-2">
+                      {project.keyTakeaways
+                        .filter((item) => item.trim())
+                        .map((item, idx) => (
+                          <li key={idx} className="flex items-start gap-2.5 text-sm leading-relaxed">
+                            {renderBulletIcon(project.takeawayBulletShape)}
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Prompt comparison when no visual media */}
+                {renderPromptComparison()}
+
+                {/* Metrics when no visual media */}
+                {renderMetrics()}
+
+                {/* Links */}
+                {renderLinks()}
+
+                {/* Raw excerpt */}
+                {renderRawExcerpt()}
+
+                {/* Tags */}
+                {renderTags()}
               </div>
+            ) : (
+              /* Standard right column layout when media is present */
+              <>
+                {/* (a) Mục tiêu bài tập */}
+                {(project.assignmentBrief || project.summary) && (
+                  <div
+                    className="rounded-2xl border p-4"
+                    style={{
+                      backgroundColor: `${theme.primaryColor}10`,
+                      borderColor: `${theme.primaryColor}30`,
+                    }}
+                  >
+                    <div
+                      className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+                      style={{ color: theme.primaryColor }}
+                    >
+                      <Target className="h-4 w-4" /> Đề bài / Mục tiêu bài tập (INF2501) - Yêu cầu đề bài (Assignment Brief)
+                    </div>
+                    <p className="mt-1.5 text-sm leading-relaxed">
+                      {project.assignmentBrief || project.summary}
+                    </p>
+                  </div>
+                )}
+
+                {/* (b) Quá trình thực hiện & Giải pháp */}
+                <div
+                  className="rounded-2xl border p-4"
+                  style={{ borderColor: tokens.borderSubtle }}
+                >
+                  <h3
+                    className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+                    style={{
+                      color: tokens.isDarkSurface
+                        ? theme.primaryColor
+                        : theme.secondaryColor,
+                    }}
+                  >
+                    <Lightbulb className="h-4 w-4" /> Quá trình thực hiện
+                  </h3>
+                  <p className="mt-1.5 text-sm leading-relaxed opacity-90">
+                    {project.summary}
+                  </p>
+                </div>
+
+                {/* Obstacles & Solutions if available */}
+                {project.obstaclesAndSolutions && (
+                  <div
+                    className="rounded-2xl border p-4"
+                    style={{
+                      borderColor: tokens.borderSubtle,
+                      backgroundColor: theme.backgroundColor,
+                    }}
+                  >
+                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider opacity-80">
+                      <AlertTriangle className="h-4 w-4 text-amber-600" /> Khó khăn & Giải pháp
+                    </div>
+                    <p className="mt-1.5 text-xs leading-relaxed opacity-90">
+                      {project.obstaclesAndSolutions}
+                    </p>
+                  </div>
+                )}
+
+                {/* (c) Key Takeaways */}
+                {project.keyTakeaways.some((item) => item.trim()) && (
+                  <div
+                    className="rounded-2xl border p-4"
+                    style={{ borderColor: tokens.borderSubtle }}
+                  >
+                    <div
+                      className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+                      style={{ color: tokens.positiveAccent }}
+                    >
+                      <CheckCircle2 className="h-4 w-4" /> Kỹ năng cốt lõi & Kết quả kỳ vọng
+                    </div>
+                    <ul className="mt-2 space-y-1.5">
+                      {project.keyTakeaways
+                        .filter((item) => item.trim())
+                        .map((item, idx) => (
+                          <li key={idx} className="flex items-start gap-2 text-sm">
+                            {renderBulletIcon(project.takeawayBulletShape)}
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Links */}
+                {renderLinks()}
+
+                {/* Full raw excerpt */}
+                {renderRawExcerpt()}
+
+                {/* Tags */}
+                {renderTags()}
+              </>
             )}
           </div>
         </div>
