@@ -116,3 +116,4 @@ Giai đoạn 8–11 đã tích hợp và kiểm tra cục bộ & triển khai Gi
 - [x] **Tuân thủ quy tắc làm việc cho khách:** Tuyệt đối không chạy lệnh build đè hay restart dev server khi người dùng đang chạy sản phẩm phục vụ khách hàng.
 - [x] **Tùy biến chân trang (Footer 2 dòng góc phải):** Bổ sung ô nhập độc lập cho Mã học phần (`courseCode`), Tên học phần (`courseName`) và Tên cơ sở/Trường (`institution`), loại bỏ lỗi ghi đè dữ liệu, đồng bộ sang web và bản xuất HTML.
 - [x] **Bật/tắt ảnh mục About Me & Tự động mở rộng Full-width:** Bổ sung checkbox `Hiển thị ảnh ở phần giới thiệu` trong Studio Inspector; khi tắt hoặc không có ảnh, cột nội dung tiểu sử & thẻ highlights tự động dàn trải 100% chiều rộng không để lại khoảng trống.
+- [x] **Thêm nhiều nút mở link / file DOCX cho bài tập:** Cho phép bổ sung không giới hạn các nút đính kèm (URL hoặc tải file DOCX) kèm tùy chỉnh tên nút riêng biệt; hiển thị đồng bộ trên thẻ bài tập, modal xem chi tiết và bản xuất HTML ZIP.

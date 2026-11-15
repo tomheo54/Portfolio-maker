@@ -737,6 +737,29 @@ export function AssignmentDetailModal({
                     <ExternalLink className="h-3 w-3" />
                   </a>
                 )}
+              {project.links?.map((link, lIdx) => {
+                if (!link.url) return null;
+                return (
+                  <a
+                    key={`modal-link-${lIdx}`}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={link.label || "Mở file đính kèm"}
+                    className="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 font-semibold transition hover:opacity-80"
+                    style={{
+                      borderColor: tokens.borderSubtle,
+                      color: theme.primaryColor,
+                      backgroundColor: theme.surfaceColor,
+                    }}
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    <FileText className="h-3 w-3" />
+                    {link.label || "Mở file"}
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                );
+              })}
             </div>
 
             <h3

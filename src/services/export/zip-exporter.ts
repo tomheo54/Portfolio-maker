@@ -2445,6 +2445,9 @@ function renderProjectsHtml(
                 : ""
             }
             ${renderDocxLink(proj.docxUrl, proj.docxLinkLabel)}
+            ${(proj.links || [])
+              .map((l) => renderDocxLink(l.url, l.label))
+              .join("")}
           </div>
           <h3 class="chapter-title font-editorial" data-open-project="${modalIdx}" style="cursor:pointer;">${escapeHtml(proj.title)}</h3>
         </div>
@@ -3374,6 +3377,20 @@ export function renderStandaloneHtml(
           headerRow.appendChild(docxLink);
         }
 
+        (proj.links || []).forEach(function(l) {
+          if (l && l.url) {
+            var lHref = /^https?:\/\//i.test(l.url) || l.url.startsWith('/') ? l.url : '';
+            if (lHref) {
+              var lPill = makeEl('a', 'pill', '🔗 ' + (l.label || 'Mở file'));
+              lPill.href = lHref;
+              lPill.target = '_blank';
+              lPill.rel = 'noopener noreferrer';
+              lPill.style.textDecoration = 'none';
+              headerRow.appendChild(lPill);
+            }
+          }
+        });
+
         var linkStandalone = makeEl('a', 'pill', 'Mở trang chi tiết ↗');
         linkStandalone.href = 'projects/project-' + (projIdx + 1) + '.html';
         linkStandalone.target = '_top';
@@ -4016,6 +4033,12 @@ export function renderStandaloneProjectPageHtml(
       <div class="detail-actions">
         <a class="detail-link" href="../index.html#projects">← Xem các bài làm</a>
         ${docxHref ? `<a class="detail-link" href="${escapeHtml(docxHref)}" target="_blank" rel="noopener noreferrer">${escapeHtml(project.docxLinkLabel || "Mở file DOCX")} ↗</a>` : ""}
+        ${(project.links || [])
+          .map((l) => {
+            const lHref = safeDocxHref(l.url);
+            return lHref ? `<a class="detail-link" href="${escapeHtml(lHref)}" target="_blank" rel="noopener noreferrer">${escapeHtml(l.label || "Mở file")} ↗</a>` : "";
+          })
+          .join("")}
       </div>
     </article>
     <div class="detail-grid">

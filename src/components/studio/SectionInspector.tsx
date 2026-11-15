@@ -2380,6 +2380,151 @@ export function SectionInspector({
                         />
                       </label>
                       {docxUploadError && <p role="alert" className="mt-1 text-[10px] text-rose-600">{docxUploadError}</p>}
+
+                      {/* Các nút link / file DOCX bổ sung */}
+                      <div className="mt-3 space-y-2 border-t border-stone-200/60 pt-2.5">
+                        <div className="flex items-center justify-between">
+                          <label className="block text-[11px] font-semibold text-stone-700">
+                            Các nút link / file DOCX đính kèm thêm
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const currentLinks = currentProject.links ?? [];
+                              updateProject(currentProject.id, {
+                                links: [
+                                  ...currentLinks,
+                                  {
+                                    label: `Mở file ${currentLinks.length + 2}`,
+                                    url: "",
+                                  },
+                                ],
+                              });
+                            }}
+                            className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 hover:text-amber-800"
+                          >
+                            <Plus className="h-3 w-3" /> Thêm nút link / file
+                          </button>
+                        </div>
+
+                        {(currentProject.links ?? []).map((link, linkIdx) => (
+                          <div
+                            key={linkIdx}
+                            className="rounded-lg border border-stone-200 bg-stone-50/70 p-2 space-y-1.5"
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[10px] font-bold text-stone-600">
+                                Nút #{linkIdx + 2}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = (currentProject.links ?? []).filter(
+                                    (_, i) => i !== linkIdx,
+                                  );
+                                  updateProject(currentProject.id, { links: updated });
+                                }}
+                                className="text-rose-500 hover:text-rose-700 p-0.5 rounded hover:bg-rose-50"
+                                title="Xóa nút này"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </button>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                              <div>
+                                <label className="block text-[9px] font-medium text-stone-600">
+                                  Tên nút hiển thị
+                                </label>
+                                <input
+                                  type="text"
+                                  value={link.label}
+                                  placeholder="Mở file DOCX / Link bài..."
+                                  onChange={(e) => {
+                                    const updated = (currentProject.links ?? []).map(
+                                      (item, i) =>
+                                        i === linkIdx
+                                          ? { ...item, label: e.target.value }
+                                          : item,
+                                    );
+                                    updateProject(currentProject.id, { links: updated });
+                                  }}
+                                  className="mt-0.5 w-full rounded border border-stone-200 bg-white px-2 py-1 text-xs"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[9px] font-medium text-stone-600">
+                                  URL liên kết / file
+                                </label>
+                                <input
+                                  type="url"
+                                  value={link.url}
+                                  placeholder="https://... hoặc tải file bên dưới"
+                                  onChange={(e) => {
+                                    const updated = (currentProject.links ?? []).map(
+                                      (item, i) =>
+                                        i === linkIdx
+                                          ? { ...item, url: e.target.value }
+                                          : item,
+                                    );
+                                    updateProject(currentProject.id, { links: updated });
+                                  }}
+                                  className="mt-0.5 w-full rounded border border-stone-200 bg-white px-2 py-1 text-xs"
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label className="inline-flex cursor-pointer items-center gap-1 rounded border border-stone-200 bg-white px-2 py-1 text-[10px] font-semibold text-stone-700 hover:bg-stone-50">
+                                <Upload className="h-2.5 w-2.5" />
+                                <span>Tải DOCX lên cho nút này</span>
+                                <input
+                                  type="file"
+                                  accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                  className="hidden"
+                                  onChange={async (e) => {
+                                    const file = e.target.files?.[0];
+                                    e.target.value = "";
+                                    if (!file) return;
+                                    setDocxUploadError(null);
+                                    try {
+                                      const formData = new FormData();
+                                      formData.append("file", file);
+                                      const response = await fetch("/api/docx-files", {
+                                        method: "POST",
+                                        body: formData,
+                                      });
+                                      const result = await response.json();
+                                      if (!response.ok)
+                                        throw new Error(result.error || "Tải DOCX thất bại.");
+                                      const updated = (currentProject.links ?? []).map(
+                                        (item, i) =>
+                                          i === linkIdx
+                                            ? {
+                                                ...item,
+                                                url: result.url,
+                                                label:
+                                                  item.label && !item.label.startsWith("Mở file")
+                                                    ? item.label
+                                                    : file.name,
+                                              }
+                                            : item,
+                                      );
+                                      updateProject(currentProject.id, { links: updated });
+                                    } catch (error) {
+                                      setDocxUploadError(
+                                        error instanceof Error
+                                          ? error.message
+                                          : "Tải DOCX thất bại.",
+                                      );
+                                    }
+                                  }}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                       <div className="mt-3 flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-3 py-2">
                         <div>
                           <span className="block text-[11px] font-bold text-stone-800">

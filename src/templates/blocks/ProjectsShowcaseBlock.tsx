@@ -1090,6 +1090,13 @@ export function ProjectsShowcaseBlock({
                         url={project.docxUrl}
                         label={project.docxLinkLabel}
                       />
+                      {project.links?.map((link, lIdx) => (
+                        <DocxFileLink
+                          key={`extra-link-${lIdx}`}
+                          url={link.url}
+                          label={link.label}
+                        />
+                      ))}
                     </div>
                     <h3
                       className="mt-2 font-editorial text-2xl font-bold uppercase leading-snug tracking-tight sm:text-3xl lg:text-4xl"
@@ -1374,6 +1381,13 @@ export function ProjectsShowcaseBlock({
               url={project.docxUrl}
               label={project.docxLinkLabel}
             />
+            {project.links?.map((link, lIdx) => (
+              <DocxFileLink
+                key={`extra-link-alt-${lIdx}`}
+                url={link.url}
+                label={link.label}
+              />
+            ))}
           </div>
 
           <h3 className="font-editorial text-2xl font-bold leading-snug sm:text-[26px]">
