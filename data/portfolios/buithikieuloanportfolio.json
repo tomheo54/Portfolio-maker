@@ -178,7 +178,7 @@
       "title": "Education • Học vấn",
       "items": [
         {
-          "school": "Trường Đại học Mẫu",
+          "school": "Trường Đại học Sư phạm Nghệ thuật Trung ương",
           "degree": "Ngành Sư phạm Âm nhạc",
           "period": "",
           "gpaOrHonors": "Mã SV: 2552210084 • Nhập môn Công nghệ số & Ứng dụng AI"
@@ -600,20 +600,6 @@
             }
           ],
           "media": [
-            {
-              "id": "docx-img-1794738999659-2",
-              "url": "/uploads/docx-media/1794738999659-b-i-5-2-b3c8d6.png",
-              "caption": "Ảnh trích xuất từ Bài 5.docx (#2)",
-              "sourceType": "docx-extracted",
-              "originalDocxMediaName": "word/media/image2.png"
-            },
-            {
-              "id": "docx-img-1794738999659-3",
-              "url": "/uploads/docx-media/1794738999659-b-i-5-3-661856.png",
-              "caption": "Ảnh trích xuất từ Bài 5.docx (#3)",
-              "sourceType": "docx-extracted",
-              "originalDocxMediaName": "word/media/image3.png"
-            },
             {
               "id": "docx-img-1794738999659-4",
               "url": "/uploads/docx-media/1794738999659-b-i-5-4-ffc4d8.png",
