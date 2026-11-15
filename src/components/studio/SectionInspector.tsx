@@ -2360,24 +2360,51 @@ export function SectionInspector({
                     </div>
 
                     <div className="rounded-xl border border-stone-200 bg-stone-50 p-2.5">
-                      <label
-                        htmlFor={`project-media-position-${currentProject.id}`}
-                        className="block text-[11px] font-semibold text-stone-700"
-                      >
-                        Vị trí ảnh trong bài tập
-                      </label>
+                      <div className="flex items-center justify-between">
+                        <label
+                          htmlFor={`project-media-position-${currentProject.id}`}
+                          className="block text-[11px] font-semibold text-stone-700"
+                        >
+                          Vị trí ảnh trong bài tập
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const cur =
+                              currentProject.mediaPosition ??
+                              (currentProject.layoutInverted
+                                ? "right"
+                                : document.templateId === "canva-editorial"
+                                ? "right"
+                                : "left");
+                            const nextPos: "left" | "right" =
+                              cur === "left" ? "right" : "left";
+                            updateProject(currentProject.id, {
+                              mediaPosition: nextPos,
+                              layoutInverted: nextPos === "right",
+                            });
+                          }}
+                          className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 hover:text-amber-800"
+                        >
+                          <RefreshCw className="h-3 w-3" /> Đổi vị trí ảnh / văn bản
+                        </button>
+                      </div>
                       <select
                         id={`project-media-position-${currentProject.id}`}
                         value={
                           currentProject.mediaPosition ??
-                          (currentProject.layoutInverted ? "right" : "left")
+                          (currentProject.layoutInverted
+                            ? "right"
+                            : document.templateId === "canva-editorial"
+                            ? "right"
+                            : "left")
                         }
                         onChange={(e) => {
                           const mediaPosition = e.target.value as
                             "left" | "right" | "top" | "bottom";
                           updateProject(currentProject.id, {
                             mediaPosition,
-                            layoutInverted: undefined,
+                            layoutInverted: mediaPosition === "right",
                           });
                         }}
                         className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-xs"

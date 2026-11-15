@@ -1530,7 +1530,11 @@ export function ProjectsShowcaseBlock({
                 data-testid={`swap-project-layout-${project.id}`}
                 onClick={(e) => {
                   e.stopPropagation();
-                  swapProjectLayout(project.id);
+                  const curPos = getProjectMediaPosition(
+                    project,
+                    isCanvaEditorial ? "right" : "left",
+                  );
+                  swapProjectLayout(project.id, curPos);
                 }}
                 className="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1.5 text-xs font-semibold text-amber-800 shadow-xs hover:bg-amber-100 transition cursor-pointer"
                 title="Đổi vị trí Ảnh và Nội dung bài tập này"

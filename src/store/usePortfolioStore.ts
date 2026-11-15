@@ -123,7 +123,10 @@ interface PortfolioStoreState {
   reorderAboutCards: (oldIndex: number, newIndex: number) => void;
   swapHeroLayout: () => void;
   swapAboutLayout: () => void;
-  swapProjectLayout: (projectId: string) => void;
+  swapProjectLayout: (
+    projectId: string,
+    currentMediaPos?: 'left' | 'right' | 'top' | 'bottom'
+  ) => void;
   updateSectionVariant: (sectionIndex: number, variant: string) => void;
   updateProfileOwner: (owner: Partial<ProfileOwner>) => void;
   updateThemeEffects: (effects: Partial<VisualEffectsConfig>) => void;
@@ -503,18 +506,23 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
       );
     }),
 
-  swapProjectLayout: (projectId) =>
+  swapProjectLayout: (projectId, currentMediaPos) =>
     set((state) => {
+      const isCanva = state.document.templateId === 'canva-editorial';
+      const defaultPos = isCanva ? 'right' : 'left';
       const nextSections = state.document.sections.map((sec) => {
         if (sec.type !== 'projects') return sec;
         const nextProjects = sec.projects.map((proj) => {
           if (proj.id !== projectId) return proj;
-          const nextInverted = !(proj.layoutInverted ?? false);
+          const effectiveCurrent =
+            currentMediaPos ??
+            proj.mediaPosition ??
+            (proj.layoutInverted ? 'right' : defaultPos);
           const nextPosition: 'left' | 'right' =
-            proj.mediaPosition === 'left' ? 'right' : 'left';
+            effectiveCurrent === 'left' ? 'right' : 'left';
           return {
             ...proj,
-            layoutInverted: nextInverted,
+            layoutInverted: nextPosition === 'right',
             mediaPosition: nextPosition,
           };
         });
