@@ -2105,11 +2105,13 @@ function renderAboutHtml(
       .map((p) => p.trim())
       .filter(Boolean);
 
-    return `<section id="about" class="about-wrap reveal-on-scroll" data-about-layout="${escapeHtml(about.variant)}">
-      <div style="position:relative; z-index:2;">
-        <!-- Top Grid: Left 7 cols Bio, Right 5 cols Student Portrait (3:4 ratio) -->
-        <div class="about-hero-grid">
-          <div>
+    const isImageLeft =
+      about.mediaPosition === "left" ||
+      (about.mediaPosition !== "right" && Boolean(about.layoutInverted));
+    const isImageTop = about.mediaPosition === "top";
+    const isImageBottom = about.mediaPosition === "bottom";
+
+    const bioColHtml = `<div>
             <h2 class="section-heading font-editorial" style="margin:0 0 16px;">${escapeHtml(about.title || "About me")}</h2>
             ${
               bioParagraphs.length > 0
@@ -2122,12 +2124,33 @@ function renderAboutHtml(
                 : `<p style="font-size:16px;line-height:1.7;margin:0 0 12px;opacity:0.92;">${escapeHtml(about.biography)}</p>`
             }
             ${aboutHighlightsHtml}
-          </div>
-          <div style="display:flex;justify-content:center;">
+          </div>`;
+
+    const avatarColHtml = `<div style="display:flex;justify-content:center;">
             <div style="aspect-ratio:3/4;border-radius:28px;border:3px solid var(--primary);overflow:hidden;background:var(--surface);width:100%;max-width:320px;box-shadow:0 12px 24px -8px rgba(0,0,0,0.12);">
               ${heroAvatarUrl ? `<img src="${escapeHtml(heroAvatarUrl)}" alt="${escapeHtml(heroFullName || "Portrait")}" style="width:100%;height:100%;object-fit:cover;display:block;" />` : ""}
             </div>
-          </div>
+          </div>`;
+
+    const gridStyle = isImageTop || isImageBottom
+      ? "grid-template-columns: 1fr; gap: 24px;"
+      : isImageLeft
+        ? "grid-template-columns: 0.7fr 1.5fr;"
+        : "";
+
+    const gridContentHtml = isImageTop
+      ? `${avatarColHtml}${bioColHtml}`
+      : isImageBottom
+        ? `${bioColHtml}${avatarColHtml}`
+        : isImageLeft
+          ? `${avatarColHtml}${bioColHtml}`
+          : `${bioColHtml}${avatarColHtml}`;
+
+    return `<section id="about" class="about-wrap reveal-on-scroll" data-about-layout="${escapeHtml(about.variant)}">
+      <div style="position:relative; z-index:2;">
+        <!-- Top Grid: Bio & Student Portrait -->
+        <div class="about-hero-grid"${gridStyle ? ` style="${gridStyle}"` : ""}>
+          ${gridContentHtml}
         </div>
 
         ${aboutCardsHtml}

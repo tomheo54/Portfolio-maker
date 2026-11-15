@@ -581,10 +581,11 @@ export function AboutBlock({
       }
     : {};
 
-  // Inverted layout check
-  const isInverted = Boolean(
-    section.layoutInverted ?? section.mediaPosition === "left",
-  );
+  // Inverted / position layout check
+  const mediaPos = section.mediaPosition ?? (section.layoutInverted ? "left" : "right");
+  const isInverted = mediaPos === "left";
+  const isTop = mediaPos === "top";
+  const isBottom = mediaPos === "bottom";
 
   // Card order resolution
   const visibleCardIds = new Set(["contact", "education", "learningGoals"]);
@@ -1349,7 +1350,9 @@ export function AboutBlock({
           className={`grid grid-cols-1 items-center gap-10 ${
             activeLayout === "spotlight"
               ? "mx-auto max-w-4xl text-center"
-              : "lg:grid-cols-12"
+              : isTop || isBottom
+                ? "grid-cols-1"
+                : "lg:grid-cols-12"
           }`}
         >
           {/* Framed Portrait Photo */}
@@ -1357,13 +1360,21 @@ export function AboutBlock({
             className={`flex justify-center ${
               activeLayout === "spotlight"
                 ? "order-1"
-                : activeLayout === "editorial-poster"
-                  ? "lg:col-span-4 lg:order-2"
-                  : activeLayout === "profile-dashboard"
-                    ? "lg:col-span-4 lg:row-span-2 lg:order-2"
-                    : isInverted
-                      ? "lg:col-span-5 lg:order-1"
-                      : "lg:col-span-5 lg:order-2"
+                : isTop
+                  ? "col-span-12 order-1 w-full"
+                  : isBottom
+                    ? "col-span-12 order-2 w-full"
+                    : activeLayout === "editorial-poster"
+                      ? isInverted
+                        ? "lg:col-span-4 lg:order-1"
+                        : "lg:col-span-4 lg:order-2"
+                      : activeLayout === "profile-dashboard"
+                        ? isInverted
+                          ? "lg:col-span-4 lg:row-span-2 lg:order-1"
+                          : "lg:col-span-4 lg:row-span-2 lg:order-2"
+                        : isInverted
+                          ? "lg:col-span-5 lg:order-1"
+                          : "lg:col-span-5 lg:order-2"
             } ${
               activeLayout === "profile-dashboard"
                 ? "surface-block rounded-3xl border border-[var(--primary)]/20 bg-white/70 p-4 shadow-lg"
@@ -1392,16 +1403,26 @@ export function AboutBlock({
             className={`space-y-5 ${
               activeLayout === "spotlight"
                 ? "order-2 text-center"
-                : activeLayout === "editorial-poster"
-                  ? "lg:col-span-8 lg:order-1"
-                  : activeLayout === "profile-dashboard"
-                    ? "lg:col-span-8 lg:order-1"
-                    : isInverted
-                      ? "lg:col-span-7 lg:order-2"
-                      : "lg:col-span-7 lg:order-1"
+                : isTop
+                  ? "col-span-12 order-2 w-full"
+                  : isBottom
+                    ? "col-span-12 order-1 w-full"
+                    : activeLayout === "editorial-poster"
+                      ? isInverted
+                        ? "lg:col-span-8 lg:order-2"
+                        : "lg:col-span-8 lg:order-1"
+                      : activeLayout === "profile-dashboard"
+                        ? isInverted
+                          ? "lg:col-span-8 lg:order-2"
+                          : "lg:col-span-8 lg:order-1"
+                        : isInverted
+                          ? "lg:col-span-7 lg:order-2"
+                          : "lg:col-span-7 lg:order-1"
             } ${
               activeLayout === "editorial-poster"
-                ? "surface-block rounded-3xl border-l-4 border-[var(--primary)] bg-white/70 p-6 sm:p-8"
+                ? isInverted
+                  ? "surface-block rounded-3xl border-r-4 border-[var(--primary)] bg-white/70 p-6 sm:p-8"
+                  : "surface-block rounded-3xl border-l-4 border-[var(--primary)] bg-white/70 p-6 sm:p-8"
                 : activeLayout === "profile-dashboard"
                   ? "surface-block rounded-3xl border border-[var(--primary)]/15 bg-white/60 p-6 shadow-sm sm:p-8"
                   : ""

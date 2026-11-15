@@ -234,7 +234,7 @@ export const HeroSectionSchema = z.object({
     aspectRatio: z.string().default("3/4"),
   }),
   layoutInverted: z.boolean().optional(),
-  mediaPosition: z.enum(["left", "right"]).optional(),
+  mediaPosition: z.enum(["left", "right", "top", "bottom"]).optional(),
   quickTags: z.array(z.string()),
   ctaButtons: z.array(
     z.object({
@@ -298,7 +298,7 @@ export const AboutSectionSchema = z.object({
     ),
   }),
   layoutInverted: z.boolean().optional(),
-  mediaPosition: z.enum(["left", "right"]).optional(),
+  mediaPosition: z.enum(["left", "right", "top", "bottom"]).optional(),
   cardOrder: z
     .array(z.string())
     .default(["contact", "education", "learningGoals"])

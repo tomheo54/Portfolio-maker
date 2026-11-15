@@ -480,9 +480,11 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
         (s): s is AboutSection => s.type === 'about'
       );
       if (!targetSec) return state;
-      const nextInverted = !(targetSec.layoutInverted ?? false);
-      const nextPosition: 'left' | 'right' =
-        targetSec.mediaPosition === 'left' ? 'right' : 'left';
+      const isCurrentlyLeft =
+        targetSec.mediaPosition === 'left' ||
+        (targetSec.mediaPosition !== 'right' && Boolean(targetSec.layoutInverted));
+      const nextPosition: 'left' | 'right' = isCurrentlyLeft ? 'right' : 'left';
+      const nextInverted = nextPosition === 'left';
       const nextSections = state.document.sections.map((sec) => {
         if (sec.type !== 'about') return sec;
         return {

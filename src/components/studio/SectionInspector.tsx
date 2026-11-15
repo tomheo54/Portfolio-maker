@@ -12,6 +12,7 @@ import {
   Code2,
   Eye,
   Repeat,
+  RefreshCw,
   Compass,
 } from "lucide-react";
 import type {
@@ -948,6 +949,56 @@ export function SectionInspector({
                     </button>
                   ))}
                 </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor={`about-media-position-${idx}`}
+                    className="block text-[11px] font-semibold text-stone-700"
+                  >
+                    Vị trí ảnh giới thiệu
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const cur =
+                        section.mediaPosition ??
+                        (section.layoutInverted ? "left" : "right");
+                      const nextPos = cur === "left" ? "right" : "left";
+                      updateSection(idx, {
+                        ...section,
+                        mediaPosition: nextPos,
+                        layoutInverted: nextPos === "left",
+                      });
+                    }}
+                    className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 hover:text-amber-800"
+                  >
+                    <RefreshCw className="h-3 w-3" /> Đổi vị trí ảnh / văn bản
+                  </button>
+                </div>
+                <select
+                  id={`about-media-position-${idx}`}
+                  value={
+                    section.mediaPosition ??
+                    (section.layoutInverted ? "left" : "right")
+                  }
+                  onChange={(e) => {
+                    const mediaPosition = e.target.value as
+                      "left" | "right" | "top" | "bottom";
+                    updateSection(idx, {
+                      ...section,
+                      mediaPosition,
+                      layoutInverted: mediaPosition === "left",
+                    });
+                  }}
+                  className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-xs"
+                >
+                  <option value="right">Ảnh bên phải, văn bản bên trái (Mặc định)</option>
+                  <option value="left">Ảnh bên trái, văn bản bên phải</option>
+                  <option value="top">Ảnh ở trên, văn bản ở dưới</option>
+                  <option value="bottom">Ảnh ở dưới, văn bản ở trên</option>
+                </select>
               </div>
 
               <div className="space-y-2 rounded-xl border border-stone-200 bg-stone-50 p-2.5">
