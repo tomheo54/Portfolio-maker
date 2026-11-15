@@ -49,7 +49,7 @@
       "headline": "",
       "fullName": "BÙI TRÍ DŨNG",
       "roleTitle": "Sinh viên Ngành Sư phạm Âm nhạc • ĐH Sư phạm Nghệ thuật Trung ương",
-      "shortBio": "Tổng hợp 6 bài tập và dự án thực hành về Content Marketing, Giáo dục & Sáng tạo, AI Prompt Engineering, Phân tích & Nghiên cứu được xây dựng bài bản và đo lường kết quả rõ ràng.",
+      "shortBio": "Tổng hợp 6 bài tập và dự án thực hành về các chủ đề Giáo dục & Sáng tạo, AI Prompt Engineering, Phân tích & Nghiên cứu được xây dựng bài bản và đo lường kết quả rõ ràng.",
       "showAvatar": false,
       "avatar": {
         "url": "/presets/avatar-mau-01.svg",
@@ -100,7 +100,7 @@
       "type": "about",
       "variant": "bento-facts",
       "title": "About me • Giới thiệu bản thân",
-      "biography": "Xin chào! Mình là BÙI TRÍ DŨNG (Sinh viên Ngành Sư phạm Âm nhạc • ĐH Sư phạm Nghệ thuật Trung ương). Portfolio này được tổng hợp trực tiếp từ hồ sơ bài tập thực chiến gồm 6 dự án thuộc các mảng Content Marketing, Giáo dục & Sáng tạo, AI Prompt Engineering, Phân tích & Nghiên cứu. Mỗi bài tập đều được chuẩn hóa theo tư duy Đề bài - Giải pháp - Kết quả nhằm thể hiện năng lực triển khai thực tế.",
+      "biography": "Xin chào! Mình là BÙI TRÍ DŨNG (Sinh viên Ngành Sư phạm Âm nhạc • ĐH Sư phạm Nghệ thuật Trung ương). Portfolio này được tổng hợp trực tiếp từ hồ sơ bài tập thực chiến gồm 6 dự án thuộc các mảng Giáo dục & Sáng tạo, AI Prompt Engineering, Phân tích & Nghiên cứu. Mỗi bài tập đều được chuẩn hóa theo tư duy Đề bài - Giải pháp - Kết quả nhằm thể hiện năng lực triển khai thực tế.",
       "highlights": [],
       "contactInfo": {
         "email": "tridungguitar17@gmail.com",
@@ -687,6 +687,6 @@
     "avatarSourceType": "user-uploaded",
     "frameStyle": "none",
     "aspectRatio": "1/1",
-    "bioSnippet": "Xin chào! Mình là Bùi Trí Dũng. Với niềm đam mê âm nhạc cháy bỏng, mình luôn không ngừng học hỏi, sáng tạo và mong muốn lan tỏa những giá trị tích cực thông qua sự giao thoa giữa nghệ thuật truyền thống và công nghệ AI hiện đại."
+    "bioSnippet": "Tổng hợp 6 bài tập và dự án thực hành về các chủ đề Giáo dục & Sáng tạo, AI Prompt Engineering, Phân tích & Nghiên cứu được xây dựng bài bản và đo lường kết quả rõ ràng."
   }
 }
