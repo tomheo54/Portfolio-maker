@@ -99,8 +99,8 @@ export function DocxImportWizard({ open, onClose }: DocxImportWizardProps) {
   const aboutSec = document?.sections?.find((s): s is AboutSection => s.type === 'about');
   const currentFullName = document?.profileOwner?.fullName || heroSec?.fullName || '';
   const currentRoleTitle = document?.profileOwner?.roleTitle || heroSec?.roleTitle || '';
-  const currentEmail = document?.profileOwner?.email || aboutSec?.contactInfo?.email || '';
-  const currentAvatar = document?.profileOwner?.avatar?.url || heroSec?.avatar?.url || '';
+  const currentEmail = aboutSec?.contactInfo?.email || '';
+  const currentAvatar = document?.profileOwner?.avatarUrl || heroSec?.avatar?.url || '';
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [intakeMode, setIntakeMode] = useState<DocxIntakeMode>('single');

@@ -965,7 +965,7 @@ export function SectionInspector({
                       const cur =
                         section.mediaPosition ??
                         (section.layoutInverted ? "left" : "right");
-                      const nextPos = cur === "left" ? "right" : "left";
+                      const nextPos: "left" | "right" = cur === "left" ? "right" : "left";
                       updateSection(idx, {
                         ...section,
                         mediaPosition: nextPos,

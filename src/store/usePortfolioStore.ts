@@ -859,8 +859,7 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
       const nextRoleTitle = summary.roleTitle?.trim() && summary.roleTitle.trim() !== 'AI Content Creator & Digital Marketer'
         ? summary.roleTitle.trim()
         : (currentDoc.profileOwner?.roleTitle || heroSec?.roleTitle || summary.roleTitle?.trim() || '');
-      const nextEmail = studentEmail?.trim() || currentDoc.profileOwner?.email;
-      const nextAvatarUrl = studentAvatarUrl?.trim() || currentDoc.profileOwner?.avatar?.url;
+      const nextAvatarUrl = studentAvatarUrl?.trim() || currentDoc.profileOwner?.avatarUrl || heroSec?.avatar?.url;
 
       return {
         ...pushHistory(state, {
@@ -878,19 +877,14 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
             title: nextFullName ? `${nextFullName} | Digital Portfolio` : currentDoc.seo?.title || INITIAL_DOC.seo?.title,
             description: summary.shortBio?.trim() || currentDoc.seo?.description || INITIAL_DOC.seo?.description,
           },
-          profileOwner: {
-            ...currentDoc.profileOwner,
-            fullName: nextFullName,
-            roleTitle: nextRoleTitle,
-            email: nextEmail,
-            avatar: nextAvatarUrl
-              ? {
-                  ...(currentDoc.profileOwner?.avatar || {}),
-                  url: nextAvatarUrl,
-                  sourceType: 'user-uploaded' as const,
-                }
-              : currentDoc.profileOwner?.avatar,
-          },
+          profileOwner: currentDoc.profileOwner
+            ? {
+                ...currentDoc.profileOwner,
+                fullName: nextFullName || currentDoc.profileOwner.fullName,
+                roleTitle: nextRoleTitle || currentDoc.profileOwner.roleTitle,
+                avatarUrl: nextAvatarUrl || currentDoc.profileOwner.avatarUrl,
+              }
+            : undefined,
           sections: nextSections,
         }),
         docxExtractedPool: {
