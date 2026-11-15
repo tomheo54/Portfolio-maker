@@ -140,6 +140,7 @@ interface PortfolioStoreState {
   updateSection: (index: number, nextSection: PortfolioSection) => void;
   updateProject: (projectId: string, partial: Partial<ProjectItem>) => void;
   setProjectMedia: (projectId: string, media: ProjectMediaItem[]) => void;
+  addDocxExtractedImages: (projectId: string, images: ProjectMediaItem[]) => void;
 
   applyDocxSummaryToPortfolio: (params: {
     summary: SummarizeAssignmentsResponse;
@@ -759,6 +760,17 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
         sections: nextSections,
       });
     }),
+
+  addDocxExtractedImages: (projectId, images) =>
+    set((state) => ({
+      docxExtractedPool: {
+        ...state.docxExtractedPool,
+        [projectId]: [
+          ...(state.docxExtractedPool[projectId] ?? []),
+          ...images,
+        ],
+      },
+    })),
 
   applyDocxSummaryToPortfolio: ({
     summary,

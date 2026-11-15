@@ -33,6 +33,7 @@ import type { ProjectItem, VisualStyle, ProjectMediaItem } from '@/schema/portfo
 import { usePortfolioStore } from '@/store/usePortfolioStore';
 import {
   imageFileToDataUrl,
+  extractImagesFromDocxFile,
   listPortfolioLibraryImages,
   savePortfolioLibraryImage,
   deletePortfolioLibraryImage,
@@ -140,6 +141,7 @@ export function ProjectImageManager({
     docxExtractedPool,
     generatingProjectId,
     setProjectMedia,
+    addDocxExtractedImages,
     updateProject,
     regenerateProjectAiImage,
     reorderProjectMedia,
@@ -167,6 +169,9 @@ export function ProjectImageManager({
   const [genError, setGenError] = useState<string | null>(null);
   const [savedLibraryItems, setSavedLibraryItems] = useState<ProjectMediaItem[]>([]);
   const [libraryError, setLibraryError] = useState<string | null>(null);
+  const [docxExtractionSuccess, setDocxExtractionSuccess] = useState<string | null>(null);
+  const [isProcessingFiles, setIsProcessingFiles] = useState(false);
+  const [processingStatus, setProcessingStatus] = useState<string | null>(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
@@ -257,28 +262,87 @@ export function ProjectImageManager({
 
   const addFilesToLibrary = async (files: File[]) => {
     const imageFiles = files.filter((file) => file.type.startsWith('image/'));
-    if (imageFiles.length === 0) {
-      setLibraryError('Hãy chọn hoặc dán ít nhất một file ảnh.');
+    const docxFiles = files.filter(
+      (file) =>
+        file.name.toLowerCase().endsWith('.docx') ||
+        file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    );
+
+    if (imageFiles.length === 0 && docxFiles.length === 0) {
+      setLibraryError('Hãy chọn ít nhất một file ảnh hoặc file Word (.docx).');
       return;
     }
 
     setLibraryError(null);
+    setDocxExtractionSuccess(null);
+    setIsProcessingFiles(true);
+    setProcessingStatus('Đang xử lý tệp...');
+
     try {
-      const imported = await Promise.all(imageFiles.map(async (file) => ({
-        id: crypto.randomUUID(),
-        url: await imageFileToDataUrl(file),
-        caption: file.name,
-        originalDocxMediaName: file.name,
-        sourceType: 'user-uploaded' as const,
-      })));
-      for (const item of imported) await savePortfolioLibraryImage(item);
-      setSavedLibraryItems((current) => [...imported, ...current]);
+      const imported: ProjectMediaItem[] = [];
+      let totalDocxExtracted = 0;
+
+      // 1. Xử lý các file ảnh thông thường
+      if (imageFiles.length > 0) {
+        setProcessingStatus(`Đang nạp ${imageFiles.length} file ảnh...`);
+        const regularImages = await Promise.all(
+          imageFiles.map(async (file) => ({
+            id: crypto.randomUUID(),
+            url: await imageFileToDataUrl(file),
+            caption: file.name,
+            originalDocxMediaName: file.name,
+            sourceType: 'user-uploaded' as const,
+          }))
+        );
+        imported.push(...regularImages);
+      }
+
+      // 2. Xử lý các file DOCX: tự động lọc ảnh bên trong file word
+      if (docxFiles.length > 0) {
+        setProcessingStatus(`Đang lọc ảnh từ ${docxFiles.length} file Word (.docx)...`);
+        for (const docxFile of docxFiles) {
+          const docxImages = await extractImagesFromDocxFile(docxFile);
+          if (docxImages.length > 0) {
+            totalDocxExtracted += docxImages.length;
+            imported.push(...docxImages);
+            addDocxExtractedImages(project.id, docxImages);
+          }
+          if (!project.sourceDocxFileName) {
+            updateProject(project.id, { sourceDocxFileName: docxFile.name });
+          }
+        }
+
+        if (totalDocxExtracted === 0 && imageFiles.length === 0) {
+          setLibraryError(
+            `Không tìm thấy hình ảnh nào bên trong file Word (${docxFiles.map((f) => f.name).join(', ')}).`
+          );
+          return;
+        }
+      }
+
+      if (imported.length > 0) {
+        for (const item of imported) {
+          await savePortfolioLibraryImage(item);
+        }
+        setSavedLibraryItems((current) => [...imported, ...current]);
+        // Tự động gán ngay các ảnh mới lọc vào bài tập
+        setProjectMedia(project.id, [...imported, ...project.media]);
+
+        if (totalDocxExtracted > 0) {
+          setDocxExtractionSuccess(
+            `Đã tự động lọc và thêm ${totalDocxExtracted} ảnh từ file DOCX vào bài tập!`
+          );
+        }
+      }
     } catch (error) {
       setLibraryError(
         error instanceof Error
-          ? `${error.message} Hãy thử ảnh nhỏ hơn hoặc sao lưu rồi xóa bớt ảnh cũ.`
-          : 'Không thể lưu ảnh vào thư viện trên máy này.',
+          ? `${error.message} Hãy thử file nhỏ hơn.`
+          : 'Không thể đọc hoặc lưu ảnh vào thư viện trên máy này.'
       );
+    } finally {
+      setIsProcessingFiles(false);
+      setProcessingStatus(null);
     }
   };
 
@@ -307,13 +371,26 @@ export function ProjectImageManager({
   };
 
   const handleLibraryPaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
-    const files = Array.from(event.clipboardData.items)
-      .filter((item) => item.type.startsWith('image/'))
+    const items = Array.from(event.clipboardData.items);
+    const filesFromItems = items
+      .filter(
+        (item) =>
+          item.type.startsWith('image/') ||
+          item.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      )
       .map((item) => item.getAsFile())
       .filter((file): file is File => Boolean(file));
-    if (files.length === 0) return;
+
+    const filesFromFiles = Array.from(event.clipboardData.files ?? []).filter(
+      (file) =>
+        file.type.startsWith('image/') ||
+        file.name.toLowerCase().endsWith('.docx')
+    );
+
+    const merged = Array.from(new Set([...filesFromItems, ...filesFromFiles]));
+    if (merged.length === 0) return;
     event.preventDefault();
-    void addFilesToLibrary(files);
+    void addFilesToLibrary(merged);
   };
 
   const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -492,20 +569,54 @@ export function ProjectImageManager({
 
       {tab === 'library' ? (
         <div className="space-y-2">
-          <p className="text-[10px] text-stone-500">Ảnh của tất cả bài tập đều có thể dùng cho bài này.</p>
           <div className="flex flex-wrap items-center justify-between gap-1.5">
             <span className="text-[10px] text-stone-500">Ảnh của tất cả bài tập đều có thể dùng cho bài này.</span>
             <div className="flex flex-wrap items-center gap-1.5">
-              <input ref={imageInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileInput} />
-              <input ref={folderInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileInput} />
-              <button type="button" onClick={() => imageInputRef.current?.click()} className="inline-flex items-center gap-1 rounded-lg border border-stone-300 bg-white px-2 py-1 text-[10px] font-semibold text-stone-700 hover:bg-stone-100">
-                <ImagePlus className="h-3 w-3" /> Thêm ảnh
+              <input
+                ref={imageInputRef}
+                type="file"
+                accept="image/*,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                multiple
+                className="hidden"
+                onChange={handleFileInput}
+              />
+              <input
+                ref={folderInputRef}
+                type="file"
+                accept="image/*,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                multiple
+                className="hidden"
+                onChange={handleFileInput}
+              />
+              <button
+                type="button"
+                disabled={isProcessingFiles}
+                onClick={() => imageInputRef.current?.click()}
+                className="inline-flex items-center gap-1 rounded-lg border border-stone-300 bg-white px-2 py-1 text-[10px] font-semibold text-stone-700 hover:bg-stone-100 disabled:opacity-50"
+                title="Thêm ảnh hoặc chọn file DOCX để tự động trích xuất ảnh"
+              >
+                {isProcessingFiles ? (
+                  <>
+                    <Loader2 className="h-3 w-3 animate-spin text-amber-600" />
+                    <span>{processingStatus || 'Đang xử lý...'}</span>
+                  </>
+                ) : (
+                  <>
+                    <ImagePlus className="h-3 w-3 text-amber-600" />
+                    <span>Thêm ảnh / DOCX</span>
+                  </>
+                )}
               </button>
-              <button type="button" onClick={() => {
-                folderInputRef.current?.setAttribute('webkitdirectory', '');
-                folderInputRef.current?.setAttribute('directory', '');
-                folderInputRef.current?.click();
-              }} className="inline-flex items-center gap-1 rounded-lg border border-stone-300 bg-white px-2 py-1 text-[10px] font-semibold text-stone-700 hover:bg-stone-100">
+              <button
+                type="button"
+                disabled={isProcessingFiles}
+                onClick={() => {
+                  folderInputRef.current?.setAttribute('webkitdirectory', '');
+                  folderInputRef.current?.setAttribute('directory', '');
+                  folderInputRef.current?.click();
+                }}
+                className="inline-flex items-center gap-1 rounded-lg border border-stone-300 bg-white px-2 py-1 text-[10px] font-semibold text-stone-700 hover:bg-stone-100 disabled:opacity-50"
+              >
                 <FolderOpen className="h-3 w-3" /> Chọn folder
               </button>
               {savedLibraryItems.length > 0 && (
@@ -520,10 +631,17 @@ export function ProjectImageManager({
               )}
             </div>
           </div>
-          <p className="text-[10px] text-stone-400">Ảnh trong thư viện có thể dùng lại ở mọi bài tập trên máy này. Bấm vào vùng quản lý rồi nhấn Ctrl+V để dán ảnh đã sao chép. Hover vào ảnh để xóa khỏi thư viện.</p>
+          <p className="text-[10px] text-stone-400">
+            Hỗ trợ chọn ảnh trực tiếp hoặc chọn file Word (.docx) để tự động lọc ảnh vào bài tập. Bấm vào vùng quản lý rồi nhấn Ctrl+V để dán ảnh đã sao chép.
+          </p>
           {libraryError && <p role="alert" className="rounded-lg bg-rose-50 px-2.5 py-1.5 text-[10px] text-rose-700">{libraryError}</p>}
+          {docxExtractionSuccess && (
+            <p role="status" className="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[10px] font-medium text-emerald-800 border border-emerald-200">
+              {docxExtractionSuccess}
+            </p>
+          )}
           {libraryItems.length === 0 ? (
-            <p className="rounded-xl border border-dashed border-stone-300 bg-white p-3 text-center text-xs text-stone-500">Chưa có ảnh trong thư viện. Tạo ảnh AI hoặc nhập ảnh DOCX để bắt đầu.</p>
+            <p className="rounded-xl border border-dashed border-stone-300 bg-white p-3 text-center text-xs text-stone-500">Chưa có ảnh trong thư viện. Chọn ảnh hoặc tải file DOCX để bắt đầu.</p>
           ) : (
             <div className="grid grid-cols-2 gap-2">
               {libraryItems.map(({ item, projectTitle }) => {
@@ -568,43 +686,89 @@ export function ProjectImageManager({
         </div>
       ) : tab === 'docx' ? (
         <div className="space-y-2">
-          {allDocxCandidates.length === 0 ? (
-            <p className="rounded-xl border border-dashed border-stone-300 bg-white p-3 text-center text-xs text-stone-500">
-              Bài tập này chưa có ảnh nhúng từ file .docx. Hãy chuyển sang tab{' '}
-              <strong>AI Image Studio</strong> để tạo ảnh minh họa theo chủ đề!
+          {docxExtractionSuccess && (
+            <p role="status" className="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[10px] font-medium text-emerald-800 border border-emerald-200">
+              {docxExtractionSuccess}
             </p>
+          )}
+          {libraryError && <p role="alert" className="rounded-lg bg-rose-50 px-2.5 py-1.5 text-[10px] text-rose-700">{libraryError}</p>}
+          {allDocxCandidates.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-stone-300 bg-white p-4 text-center space-y-2">
+              <p className="text-xs text-stone-500">
+                Bài tập này chưa có ảnh nhúng từ file .docx.
+              </p>
+              <button
+                type="button"
+                disabled={isProcessingFiles}
+                onClick={() => imageInputRef.current?.click()}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 disabled:opacity-50"
+              >
+                {isProcessingFiles ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    <span>{processingStatus || 'Đang lọc ảnh từ DOCX...'}</span>
+                  </>
+                ) : (
+                  <>
+                    <FileText className="h-3.5 w-3.5" />
+                    <span>Tải file DOCX để tự động lọc ảnh</span>
+                  </>
+                )}
+              </button>
+            </div>
           ) : (
-            <div className="grid grid-cols-2 gap-2">
-              {allDocxCandidates.map((item) => {
-                const isSelected = project.media.some((m) => m.url === item.url);
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleToggleDocxImage(item)}
-                    className={`group relative overflow-hidden rounded-xl border-2 text-left transition ${
-                      isSelected ? 'border-emerald-600' : 'border-stone-200 opacity-75'
-                    }`}
-                  >
-                    <img
-                      src={item.url}
-                      alt={item.caption || ''}
-                      className="aspect-[4/3] w-full object-cover"
-                    />
-                    <span
-                      className={`absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full text-white shadow ${
-                        isSelected ? 'bg-emerald-600' : 'bg-stone-700/70'
+            <div className="space-y-2">
+              <div className="flex items-center justify-between pb-0.5">
+                <span className="text-[10px] text-stone-500">
+                  Ảnh trích xuất từ file DOCX ({allDocxCandidates.length} ảnh):
+                </span>
+                <button
+                  type="button"
+                  disabled={isProcessingFiles}
+                  onClick={() => imageInputRef.current?.click()}
+                  className="inline-flex items-center gap-1 rounded-lg border border-stone-300 bg-white px-2 py-1 text-[10px] font-semibold text-stone-700 hover:bg-stone-100 disabled:opacity-50"
+                  title="Chọn file DOCX khác để lọc thêm ảnh"
+                >
+                  {isProcessingFiles ? (
+                    <Loader2 className="h-3 w-3 animate-spin text-amber-600" />
+                  ) : (
+                    <Plus className="h-3 w-3" />
+                  )}
+                  <span>Thêm file DOCX</span>
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {allDocxCandidates.map((item) => {
+                  const isSelected = project.media.some((m) => m.url === item.url);
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => handleToggleDocxImage(item)}
+                      className={`group relative overflow-hidden rounded-xl border-2 text-left transition ${
+                        isSelected ? 'border-emerald-600' : 'border-stone-200 opacity-75'
                       }`}
                     >
-                      {isSelected ? (
-                        <Check className="h-3 w-3" />
-                      ) : (
-                        <Plus className="h-3 w-3" />
-                      )}
-                    </span>
-                  </button>
-                );
-              })}
+                      <img
+                        src={item.url}
+                        alt={item.caption || ''}
+                        className="aspect-[4/3] w-full object-cover"
+                      />
+                      <span
+                        className={`absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full text-white shadow ${
+                          isSelected ? 'bg-emerald-600' : 'bg-stone-700/70'
+                        }`}
+                      >
+                        {isSelected ? (
+                          <Check className="h-3 w-3" />
+                        ) : (
+                          <Plus className="h-3 w-3" />
+                        )}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>

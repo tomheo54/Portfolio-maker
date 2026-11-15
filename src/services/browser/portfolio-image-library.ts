@@ -1,4 +1,5 @@
 import type { ProjectMediaItem } from "@/schema/portfolio.schema";
+import JSZip from "jszip";
 
 const DATABASE_NAME = "portfolio-studio-image-library";
 const STORE_NAME = "images";
@@ -90,4 +91,60 @@ export function imageFileToDataUrl(file: File): Promise<string> {
     reader.onerror = () => reject(reader.error ?? new Error("Không đọc được ảnh."));
     reader.readAsDataURL(file);
   });
+}
+
+/**
+ * Extract embedded images from a Word (.docx) document in the browser using JSZip.
+ */
+export async function extractImagesFromDocxFile(file: File): Promise<ProjectMediaItem[]> {
+  const zip = await JSZip.loadAsync(file);
+  const mediaFolder = zip.folder("word/media");
+  if (!mediaFolder) return [];
+
+  const entries: { name: string; zipEntry: JSZip.JSZipObject }[] = [];
+  mediaFolder.forEach((relativePath, zipEntry) => {
+    if (!zipEntry.dir && relativePath.match(/\.(png|jpe?g|webp|gif|svg|bmp)$/i)) {
+      entries.push({ name: relativePath, zipEntry });
+    }
+  });
+
+  entries.sort((a, b) =>
+    a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
+  );
+
+  const results: ProjectMediaItem[] = [];
+  const baseName = file.name.replace(/\.docx$/i, "");
+
+  for (let i = 0; i < entries.length; i++) {
+    const entry = entries[i];
+    const filename = entry.name.split("/").pop() || entry.name;
+    const ext = filename.split(".").pop()?.toLowerCase() || "png";
+    const mimeType =
+      ext === "png"
+        ? "image/png"
+        : ext === "jpg" || ext === "jpeg"
+        ? "image/jpeg"
+        : ext === "webp"
+        ? "image/webp"
+        : ext === "gif"
+        ? "image/gif"
+        : ext === "svg"
+        ? "image/svg+xml"
+        : ext === "bmp"
+        ? "image/bmp"
+        : "image/png";
+
+    const base64 = await entry.zipEntry.async("base64");
+    const dataUrl = `data:${mimeType};base64,${base64}`;
+
+    results.push({
+      id: crypto.randomUUID(),
+      url: dataUrl,
+      caption: `${baseName} - Ảnh ${i + 1}`,
+      originalDocxMediaName: filename,
+      sourceType: "docx-extracted",
+    });
+  }
+
+  return results;
 }
