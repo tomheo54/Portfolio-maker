@@ -345,6 +345,10 @@ export function ContactBlock({
   const studentNamePosition = courseInfo?.studentNamePosition || "left";
   const studentId = courseInfo?.studentId || "";
   const studentClass = courseInfo?.studentClass || "";
+  const instructorName =
+    courseInfo?.instructorName ||
+    profileOwner?.instructorName ||
+    "";
   const courseCode = courseInfo?.courseCode || "INF2501";
   const courseName =
     courseInfo?.courseName ||
@@ -373,6 +377,11 @@ export function ContactBlock({
           {studentId && (
             <span className="rounded bg-stone-800 px-2 py-0.5 font-mono text-stone-300">
               MSSV: {studentId}
+            </span>
+          )}
+          {instructorName && (
+            <span className="rounded bg-stone-800/80 px-2 py-0.5 text-stone-300">
+              GVHD: {instructorName}
             </span>
           )}
           {studentClass && (
@@ -594,20 +603,22 @@ export function ContactBlock({
               className="font-editorial text-5xl font-extrabold tracking-tight sm:text-7xl lg:text-8xl"
               style={{ color: "var(--text, #3E2723)" }}
             >
-              Thank You !
+              {section.thankYouTitle || "Thank You !"}
             </h2>
             <p
               className="mt-5 text-xs font-bold uppercase tracking-[0.2em] sm:text-sm"
               style={{ color: "var(--text, #3E2723)" }}
             >
-              {[ownerName, ownerRole].filter(Boolean).join(" • ") ||
-                section.thankYouMessage}
+              {section.thankYouSubtitle !== undefined && section.thankYouSubtitle !== ""
+                ? section.thankYouSubtitle
+                : [ownerName, ownerRole].filter(Boolean).join(" • ") ||
+                  section.thankYouMessage}
             </p>
             <p
               className="mt-1 text-xs font-semibold uppercase tracking-[0.18em]"
               style={{ color: "var(--secondary, #5D4037)" }}
             >
-              {section.thankYouMessage}
+              {section.thankYouMessage || "THANK YOU FOR WATCHING!"}
             </p>
           </div>
         </section>

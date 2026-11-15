@@ -83,7 +83,199 @@ export function AssignmentDetailModal({
     if (!isPage && project) {
       const originalOverflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
-      return () => {
+      const isVideo = isVideoMode(project);
+  const effectiveVideoUrl = getEffectiveVideoUrl(project);
+  const hasVideo = isVideo && Boolean(effectiveVideoUrl);
+  const hasImages = (mediaList?.length ?? 0) > 0 && Boolean(activeMedia);
+  const hasVisualMedia = hasVideo || hasImages;
+
+  const renderBulletIcon = (shape?: string) => {
+    if (shape === "hyphen") {
+      return (
+        <span className="font-bold select-none" style={{ color: theme.primaryColor }}>
+          —
+        </span>
+      );
+    }
+    if (shape === "square") {
+      return (
+        <span
+          className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-none select-none"
+          style={{ backgroundColor: theme.primaryColor }}
+        />
+      );
+    }
+    if (shape === "star") {
+      return (
+        <span className="text-xs select-none" style={{ color: theme.primaryColor }}>
+          ★
+        </span>
+      );
+    }
+    if (shape === "check") {
+      return (
+        <span className="text-xs font-bold select-none" style={{ color: theme.primaryColor }}>
+          ✔
+        </span>
+      );
+    }
+    if (shape === "diamond") {
+      return (
+        <span className="text-xs select-none" style={{ color: theme.primaryColor }}>
+          ◆
+        </span>
+      );
+    }
+    return (
+      <span
+        className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full select-none"
+        style={{ backgroundColor: theme.primaryColor }}
+      />
+    );
+  };
+
+  const renderPromptComparison = () => {
+    if (!project.promptComparison || !(project.showPromptComparison ?? true)) return null;
+    return (
+      <div
+        className="rounded-2xl border p-4 text-xs"
+        style={{
+          borderColor: tokens.borderSubtle,
+          backgroundColor: theme.backgroundColor,
+        }}
+      >
+        <div className="flex items-center gap-2 font-bold uppercase tracking-wider mb-2">
+          <Split className="h-4 w-4" style={{ color: theme.primaryColor }} />
+          <span style={{ color: theme.primaryColor }}>
+            So sánh Prompt ban đầu vs Prompt cải tiến
+          </span>
+        </div>
+        <div className="space-y-2">
+          <div className="rounded-lg p-2.5 bg-red-500/10 border border-red-500/20">
+            <span className="font-semibold text-red-600 dark:text-red-400">
+              1. Prompt ban đầu (Initial Prompt):
+            </span>
+            <p className="mt-0.5 opacity-85 font-mono text-[11px]">
+              {project.promptComparison.initialPrompt}
+            </p>
+          </div>
+          <div className="rounded-lg p-2.5 bg-emerald-500/10 border border-emerald-500/20">
+            <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+              2. Prompt cải tiến (Improved Prompt):
+            </span>
+            <p className="mt-0.5 opacity-85 font-mono text-[11px]">
+              {project.promptComparison.improvedPrompt}
+            </p>
+          </div>
+          {project.promptComparison.aiOutput && (
+            <div className="rounded-lg p-2.5 bg-blue-500/10 border border-blue-500/20">
+              <span className="font-semibold text-blue-600 dark:text-blue-400">
+                3. Kết quả AI đạt được:
+              </span>
+              <p className="mt-0.5 opacity-85 text-[11px]">
+                {project.promptComparison.aiOutput}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderMetrics = () => {
+    if (project.metrics.length === 0) return null;
+    return (
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+        {project.metrics.map((metric, idx) => (
+          <div
+            key={idx}
+            className="rounded-xl border p-3"
+            style={{
+              backgroundColor: theme.backgroundColor,
+              borderColor: tokens.borderSubtle,
+            }}
+          >
+            <p className="text-[11px] uppercase tracking-wider opacity-65">
+              {metric.label}
+            </p>
+            <p
+              className="mt-0.5 text-base font-bold"
+              style={{ color: theme.primaryColor }}
+            >
+              {metric.value}
+            </p>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderLinks = () => {
+    if (project.links.length === 0) return null;
+    return (
+      <div className="flex flex-wrap gap-2 pt-1">
+        {project.links.map((link, idx) => (
+          <a
+            key={idx}
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition hover:opacity-80"
+            style={{
+              borderColor: theme.primaryColor,
+              color: theme.primaryColor,
+              backgroundColor: `${theme.primaryColor}10`,
+            }}
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+            <span>{link.label}</span>
+          </a>
+        ))}
+      </div>
+    );
+  };
+
+  const renderRawExcerpt = () => {
+    if (!project.fullRawExcerpt || !project.showRawExcerpt) return null;
+    return (
+      <details
+        className="rounded-2xl border p-4 transition"
+        style={{
+          backgroundColor: theme.backgroundColor,
+          borderColor: tokens.borderSubtle,
+        }}
+      >
+        <summary className="cursor-pointer text-xs font-bold uppercase tracking-wider opacity-70">
+          <span className="inline-flex items-center gap-1.5">
+            <FileCheck className="h-3.5 w-3.5" /> Nội dung trích xuất chi tiết từ bài làm
+          </span>
+        </summary>
+        <pre className="mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap font-sans text-xs leading-relaxed opacity-85">
+          {project.fullRawExcerpt}
+        </pre>
+      </details>
+    );
+  };
+
+  const renderTags = () => {
+    if (project.tags.length === 0) return null;
+    return (
+      <div className="flex flex-wrap items-center gap-1.5 pt-1">
+        <Tag className="h-3.5 w-3.5 opacity-55" />
+        {project.tags.map((tag, idx) => (
+          <span
+            key={idx}
+            className="rounded-full border px-2.5 py-0.5 text-xs font-medium opacity-80"
+            style={{ borderColor: tokens.borderSubtle }}
+          >
+            #{tag}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
+  return () => {
         document.body.style.overflow = originalOverflow;
       };
     }
@@ -181,7 +373,199 @@ export function AssignmentDetailModal({
       }
     };
     window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
+    const isVideo = isVideoMode(project);
+  const effectiveVideoUrl = getEffectiveVideoUrl(project);
+  const hasVideo = isVideo && Boolean(effectiveVideoUrl);
+  const hasImages = (mediaList?.length ?? 0) > 0 && Boolean(activeMedia);
+  const hasVisualMedia = hasVideo || hasImages;
+
+  const renderBulletIcon = (shape?: string) => {
+    if (shape === "hyphen") {
+      return (
+        <span className="font-bold select-none" style={{ color: theme.primaryColor }}>
+          —
+        </span>
+      );
+    }
+    if (shape === "square") {
+      return (
+        <span
+          className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-none select-none"
+          style={{ backgroundColor: theme.primaryColor }}
+        />
+      );
+    }
+    if (shape === "star") {
+      return (
+        <span className="text-xs select-none" style={{ color: theme.primaryColor }}>
+          ★
+        </span>
+      );
+    }
+    if (shape === "check") {
+      return (
+        <span className="text-xs font-bold select-none" style={{ color: theme.primaryColor }}>
+          ✔
+        </span>
+      );
+    }
+    if (shape === "diamond") {
+      return (
+        <span className="text-xs select-none" style={{ color: theme.primaryColor }}>
+          ◆
+        </span>
+      );
+    }
+    return (
+      <span
+        className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full select-none"
+        style={{ backgroundColor: theme.primaryColor }}
+      />
+    );
+  };
+
+  const renderPromptComparison = () => {
+    if (!project.promptComparison || !(project.showPromptComparison ?? true)) return null;
+    return (
+      <div
+        className="rounded-2xl border p-4 text-xs"
+        style={{
+          borderColor: tokens.borderSubtle,
+          backgroundColor: theme.backgroundColor,
+        }}
+      >
+        <div className="flex items-center gap-2 font-bold uppercase tracking-wider mb-2">
+          <Split className="h-4 w-4" style={{ color: theme.primaryColor }} />
+          <span style={{ color: theme.primaryColor }}>
+            So sánh Prompt ban đầu vs Prompt cải tiến
+          </span>
+        </div>
+        <div className="space-y-2">
+          <div className="rounded-lg p-2.5 bg-red-500/10 border border-red-500/20">
+            <span className="font-semibold text-red-600 dark:text-red-400">
+              1. Prompt ban đầu (Initial Prompt):
+            </span>
+            <p className="mt-0.5 opacity-85 font-mono text-[11px]">
+              {project.promptComparison.initialPrompt}
+            </p>
+          </div>
+          <div className="rounded-lg p-2.5 bg-emerald-500/10 border border-emerald-500/20">
+            <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+              2. Prompt cải tiến (Improved Prompt):
+            </span>
+            <p className="mt-0.5 opacity-85 font-mono text-[11px]">
+              {project.promptComparison.improvedPrompt}
+            </p>
+          </div>
+          {project.promptComparison.aiOutput && (
+            <div className="rounded-lg p-2.5 bg-blue-500/10 border border-blue-500/20">
+              <span className="font-semibold text-blue-600 dark:text-blue-400">
+                3. Kết quả AI đạt được:
+              </span>
+              <p className="mt-0.5 opacity-85 text-[11px]">
+                {project.promptComparison.aiOutput}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderMetrics = () => {
+    if (project.metrics.length === 0) return null;
+    return (
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+        {project.metrics.map((metric, idx) => (
+          <div
+            key={idx}
+            className="rounded-xl border p-3"
+            style={{
+              backgroundColor: theme.backgroundColor,
+              borderColor: tokens.borderSubtle,
+            }}
+          >
+            <p className="text-[11px] uppercase tracking-wider opacity-65">
+              {metric.label}
+            </p>
+            <p
+              className="mt-0.5 text-base font-bold"
+              style={{ color: theme.primaryColor }}
+            >
+              {metric.value}
+            </p>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderLinks = () => {
+    if (project.links.length === 0) return null;
+    return (
+      <div className="flex flex-wrap gap-2 pt-1">
+        {project.links.map((link, idx) => (
+          <a
+            key={idx}
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition hover:opacity-80"
+            style={{
+              borderColor: theme.primaryColor,
+              color: theme.primaryColor,
+              backgroundColor: `${theme.primaryColor}10`,
+            }}
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+            <span>{link.label}</span>
+          </a>
+        ))}
+      </div>
+    );
+  };
+
+  const renderRawExcerpt = () => {
+    if (!project.fullRawExcerpt || !project.showRawExcerpt) return null;
+    return (
+      <details
+        className="rounded-2xl border p-4 transition"
+        style={{
+          backgroundColor: theme.backgroundColor,
+          borderColor: tokens.borderSubtle,
+        }}
+      >
+        <summary className="cursor-pointer text-xs font-bold uppercase tracking-wider opacity-70">
+          <span className="inline-flex items-center gap-1.5">
+            <FileCheck className="h-3.5 w-3.5" /> Nội dung trích xuất chi tiết từ bài làm
+          </span>
+        </summary>
+        <pre className="mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap font-sans text-xs leading-relaxed opacity-85">
+          {project.fullRawExcerpt}
+        </pre>
+      </details>
+    );
+  };
+
+  const renderTags = () => {
+    if (project.tags.length === 0) return null;
+    return (
+      <div className="flex flex-wrap items-center gap-1.5 pt-1">
+        <Tag className="h-3.5 w-3.5 opacity-55" />
+        {project.tags.map((tag, idx) => (
+          <span
+            key={idx}
+            className="rounded-full border px-2.5 py-0.5 text-xs font-medium opacity-80"
+            style={{ borderColor: tokens.borderSubtle }}
+          >
+            #{tag}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
+  return () => window.removeEventListener("keydown", handleKey);
   }, [
     project,
     lightboxZoomed,
@@ -973,7 +1357,199 @@ export function AssignmentDetailModal({
   ) : null;
 
   if (isPage) {
+    const isVideo = isVideoMode(project);
+  const effectiveVideoUrl = getEffectiveVideoUrl(project);
+  const hasVideo = isVideo && Boolean(effectiveVideoUrl);
+  const hasImages = (mediaList?.length ?? 0) > 0 && Boolean(activeMedia);
+  const hasVisualMedia = hasVideo || hasImages;
+
+  const renderBulletIcon = (shape?: string) => {
+    if (shape === "hyphen") {
+      return (
+        <span className="font-bold select-none" style={{ color: theme.primaryColor }}>
+          —
+        </span>
+      );
+    }
+    if (shape === "square") {
+      return (
+        <span
+          className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-none select-none"
+          style={{ backgroundColor: theme.primaryColor }}
+        />
+      );
+    }
+    if (shape === "star") {
+      return (
+        <span className="text-xs select-none" style={{ color: theme.primaryColor }}>
+          ★
+        </span>
+      );
+    }
+    if (shape === "check") {
+      return (
+        <span className="text-xs font-bold select-none" style={{ color: theme.primaryColor }}>
+          ✔
+        </span>
+      );
+    }
+    if (shape === "diamond") {
+      return (
+        <span className="text-xs select-none" style={{ color: theme.primaryColor }}>
+          ◆
+        </span>
+      );
+    }
     return (
+      <span
+        className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full select-none"
+        style={{ backgroundColor: theme.primaryColor }}
+      />
+    );
+  };
+
+  const renderPromptComparison = () => {
+    if (!project.promptComparison || !(project.showPromptComparison ?? true)) return null;
+    return (
+      <div
+        className="rounded-2xl border p-4 text-xs"
+        style={{
+          borderColor: tokens.borderSubtle,
+          backgroundColor: theme.backgroundColor,
+        }}
+      >
+        <div className="flex items-center gap-2 font-bold uppercase tracking-wider mb-2">
+          <Split className="h-4 w-4" style={{ color: theme.primaryColor }} />
+          <span style={{ color: theme.primaryColor }}>
+            So sánh Prompt ban đầu vs Prompt cải tiến
+          </span>
+        </div>
+        <div className="space-y-2">
+          <div className="rounded-lg p-2.5 bg-red-500/10 border border-red-500/20">
+            <span className="font-semibold text-red-600 dark:text-red-400">
+              1. Prompt ban đầu (Initial Prompt):
+            </span>
+            <p className="mt-0.5 opacity-85 font-mono text-[11px]">
+              {project.promptComparison.initialPrompt}
+            </p>
+          </div>
+          <div className="rounded-lg p-2.5 bg-emerald-500/10 border border-emerald-500/20">
+            <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+              2. Prompt cải tiến (Improved Prompt):
+            </span>
+            <p className="mt-0.5 opacity-85 font-mono text-[11px]">
+              {project.promptComparison.improvedPrompt}
+            </p>
+          </div>
+          {project.promptComparison.aiOutput && (
+            <div className="rounded-lg p-2.5 bg-blue-500/10 border border-blue-500/20">
+              <span className="font-semibold text-blue-600 dark:text-blue-400">
+                3. Kết quả AI đạt được:
+              </span>
+              <p className="mt-0.5 opacity-85 text-[11px]">
+                {project.promptComparison.aiOutput}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderMetrics = () => {
+    if (project.metrics.length === 0) return null;
+    return (
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+        {project.metrics.map((metric, idx) => (
+          <div
+            key={idx}
+            className="rounded-xl border p-3"
+            style={{
+              backgroundColor: theme.backgroundColor,
+              borderColor: tokens.borderSubtle,
+            }}
+          >
+            <p className="text-[11px] uppercase tracking-wider opacity-65">
+              {metric.label}
+            </p>
+            <p
+              className="mt-0.5 text-base font-bold"
+              style={{ color: theme.primaryColor }}
+            >
+              {metric.value}
+            </p>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderLinks = () => {
+    if (project.links.length === 0) return null;
+    return (
+      <div className="flex flex-wrap gap-2 pt-1">
+        {project.links.map((link, idx) => (
+          <a
+            key={idx}
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition hover:opacity-80"
+            style={{
+              borderColor: theme.primaryColor,
+              color: theme.primaryColor,
+              backgroundColor: `${theme.primaryColor}10`,
+            }}
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+            <span>{link.label}</span>
+          </a>
+        ))}
+      </div>
+    );
+  };
+
+  const renderRawExcerpt = () => {
+    if (!project.fullRawExcerpt || !project.showRawExcerpt) return null;
+    return (
+      <details
+        className="rounded-2xl border p-4 transition"
+        style={{
+          backgroundColor: theme.backgroundColor,
+          borderColor: tokens.borderSubtle,
+        }}
+      >
+        <summary className="cursor-pointer text-xs font-bold uppercase tracking-wider opacity-70">
+          <span className="inline-flex items-center gap-1.5">
+            <FileCheck className="h-3.5 w-3.5" /> Nội dung trích xuất chi tiết từ bài làm
+          </span>
+        </summary>
+        <pre className="mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap font-sans text-xs leading-relaxed opacity-85">
+          {project.fullRawExcerpt}
+        </pre>
+      </details>
+    );
+  };
+
+  const renderTags = () => {
+    if (project.tags.length === 0) return null;
+    return (
+      <div className="flex flex-wrap items-center gap-1.5 pt-1">
+        <Tag className="h-3.5 w-3.5 opacity-55" />
+        {project.tags.map((tag, idx) => (
+          <span
+            key={idx}
+            className="rounded-full border px-2.5 py-0.5 text-xs font-medium opacity-80"
+            style={{ borderColor: tokens.borderSubtle }}
+          >
+            #{tag}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
+  return (
       <div
         className="relative w-full"
         data-detail-presentation="page"

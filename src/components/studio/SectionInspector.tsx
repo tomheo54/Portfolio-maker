@@ -2599,21 +2599,65 @@ export function SectionInspector({
                 </div>
               </div>
 
-              <div>
-                <label className="block text-[11px] font-semibold text-stone-700">
-                  Thông điệp cảm ơn
-                </label>
-                <input
-                  type="text"
-                  value={section.thankYouMessage}
-                  onChange={(e) =>
-                    updateSection(idx, {
-                      ...section,
-                      thankYouMessage: e.target.value,
-                    })
-                  }
-                  className="mt-1 w-full rounded-xl border border-stone-200 px-2.5 py-1.5 text-xs"
-                />
+              {/* Khối tri ân "Thank You !" (Mẫu Canva Editorial) */}
+              <div className="space-y-2 rounded-xl border border-amber-200 bg-amber-50/50 p-2.5">
+                <span className="block text-[11px] font-bold text-amber-900">
+                  🌟 Khối tri ân &amp; Lời cảm ơn (Canva Thank You)
+                </span>
+                <div>
+                  <label className="block text-[10px] font-semibold text-stone-700">
+                    Tiêu đề cảm ơn lớn
+                  </label>
+                  <input
+                    type="text"
+                    value={section.thankYouTitle ?? "Thank You !"}
+                    placeholder="Thank You !"
+                    onChange={(e) =>
+                      updateSection(idx, {
+                        ...section,
+                        thankYouTitle: e.target.value,
+                      })
+                    }
+                    className="mt-1 w-full rounded-lg border border-amber-300 bg-white px-2 py-1.5 text-xs font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-semibold text-stone-700">
+                    Dòng thông tin phụ (Tên • Chuyên ngành • Trường)
+                  </label>
+                  <input
+                    type="text"
+                    value={section.thankYouSubtitle ?? ""}
+                    placeholder="HOÀNG KHÁNH LY • SINH VIÊN SƯ PHẠM ÂM NHẠC • ĐH SPNTTW"
+                    onChange={(e) =>
+                      updateSection(idx, {
+                        ...section,
+                        thankYouSubtitle: e.target.value,
+                      })
+                    }
+                    className="mt-1 w-full rounded-lg border border-amber-300 bg-white px-2 py-1.5 text-xs font-medium"
+                  />
+                  <p className="mt-0.5 text-[9px] text-stone-500">
+                    Để trống sẽ tự động hiển thị Họ tên và Chức danh/Chuyên ngành của bạn.
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-semibold text-stone-700">
+                    Thông điệp cảm ơn dưới cùng
+                  </label>
+                  <input
+                    type="text"
+                    value={section.thankYouMessage ?? "THANK YOU FOR WATCHING!"}
+                    placeholder="THANK YOU FOR WATCHING!"
+                    onChange={(e) =>
+                      updateSection(idx, {
+                        ...section,
+                        thankYouMessage: e.target.value,
+                      })
+                    }
+                    className="mt-1 w-full rounded-lg border border-amber-300 bg-white px-2 py-1.5 text-xs font-medium"
+                  />
+                </div>
               </div>
 
               <div>
@@ -3450,7 +3494,7 @@ export function SectionInspector({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <div>
                     <label className="block text-[10px] font-semibold text-stone-700">
                       Mã sinh viên (MSSV)
@@ -3458,7 +3502,7 @@ export function SectionInspector({
                     <input
                       type="text"
                       value={section.courseInfo?.studentId ?? ""}
-                      placeholder="22010123"
+                      placeholder="2552210402"
                       onChange={(e) =>
                         updateSection(idx, {
                           ...section,
@@ -3471,6 +3515,7 @@ export function SectionInspector({
                               section.courseInfo?.institution ??
                               "Trường ĐH Sư phạm Nghệ thuật TW",
                             studentClass: section.courseInfo?.studentClass,
+                            instructorName: section.courseInfo?.instructorName,
                             studentName:
                               section.courseInfo?.studentName ??
                               ownerProfile.fullName,
@@ -3483,12 +3528,48 @@ export function SectionInspector({
                   </div>
                   <div>
                     <label className="block text-[10px] font-semibold text-stone-700">
+                      Giảng viên hướng dẫn
+                    </label>
+                    <input
+                      type="text"
+                      value={
+                        section.courseInfo?.instructorName ??
+                        ownerProfile.instructorName ??
+                        ""
+                      }
+                      placeholder="ThS. Nguyễn Văn A"
+                      onChange={(e) => {
+                        updateSection(idx, {
+                          ...section,
+                          courseInfo: {
+                            ...section.courseInfo,
+                            courseCode: "INF2501",
+                            courseName:
+                              "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo",
+                            institution:
+                              section.courseInfo?.institution ??
+                              "Trường ĐH Sư phạm Nghệ thuật TW",
+                            studentId: section.courseInfo?.studentId,
+                            studentClass: section.courseInfo?.studentClass,
+                            studentName:
+                              section.courseInfo?.studentName ??
+                              ownerProfile.fullName,
+                            instructorName: e.target.value,
+                          },
+                        });
+                        updateProfileOwner({ instructorName: e.target.value });
+                      }}
+                      className="mt-1 w-full rounded border border-stone-200 bg-white px-2 py-1 text-xs font-medium"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-semibold text-stone-700">
                       Lớp sinh viên
                     </label>
                     <input
                       type="text"
                       value={section.courseInfo?.studentClass ?? ""}
-                      placeholder="K22 Sư phạm Âm nhạc"
+                      placeholder="Lớp: 01"
                       onChange={(e) =>
                         updateSection(idx, {
                           ...section,
@@ -3501,6 +3582,7 @@ export function SectionInspector({
                               section.courseInfo?.institution ??
                               "Trường ĐH Sư phạm Nghệ thuật TW",
                             studentId: section.courseInfo?.studentId,
+                            instructorName: section.courseInfo?.instructorName,
                             studentName:
                               section.courseInfo?.studentName ??
                               ownerProfile.fullName,

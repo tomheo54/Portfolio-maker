@@ -172,7 +172,8 @@
           "title": "Thao tác cơ bản với tệp tin và thư mục ",
           "category": "Content Marketing",
           "sourceDocxFileName": "Bài 1-HOÀNG KHÁNH LY.docx",
-          "docxUrl": "/api/docx-files?id=159f43f0-fc63-4e2b-bfd9-afa046eb6c88&name=B%C3%A0i%201-HO%C3%80NG%20KH%C3%81NH%20LY.docx",
+          "docxUrl": "https://docs.google.com/document/d/11vX3FxPZV63OsbSqrT2DAYekyNVYfYr_/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
+          "mediaType": "image",
           "assignmentBrief": "Làm quen và thành thạo các thao tác quản lý dữ liệu cơ bản trên hệ điều hành Windows thông qua công cụ File Explorer.",
           "summary": "Hoàn thành trọn vẹn bộ hướng dẫn thực hành gồm 12 bước kèm hình ảnh chụp màn hình minh chứng trực quan cho từng thao tác.   Điểm nhấn: Phân biệt và kiểm chứng rõ ràng sự khác biệt giữa sao chép và di chuyển tệp, cũng như cơ chế an toàn dữ liệu giữa xóa thông thường và xóa vĩnh viễn.   ",
           "keyTakeaways": [
@@ -316,14 +317,15 @@
           "mediaPosition": "right",
           "chapterTitle": "Chương 1: Máy tính và các thiết bị ngoại vi ",
           "exerciseNumber": "Mục  1.4",
-          "takeawayBulletShape": "check"
+          "takeawayBulletShape": "check",
+          "productType": "image"
         },
         {
           "id": "proj-docx-2-1794695457672",
           "title": "Tìm kiếm và đánh giá thông tin học thuật",
           "category": "Giáo dục & Sáng tạo",
           "sourceDocxFileName": "Bài 2.docx",
-          "docxUrl": "/api/docx-files?id=965c2541-3c80-47aa-8b5d-4b9b4a638bd1&name=B%C3%A0i%202.docx",
+          "docxUrl": "https://docs.google.com/document/d/1naKjpt1oNb_prbDeuOiS2ZpYeckkBF82/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
           "assignmentBrief": "Rèn luyện kỹ năng tìm kiếm, tổng hợp và thẩm định độ tin cậy của tài liệu khoa học xoay quanh chủ đề: \"Mức độ quan tâm của giới trẻ đối với âm nhạc dân gian Việt Nam: suy giảm hay chuyển dạng?\".",
           "summary": "Đưa ra kết luận khoa học: giới trẻ không \"mất quan tâm\" mà sự quan tâm đang \"chuyển dạng\" sang các hình thức kết hợp hiện đại; đồng thời chỉ ra việc thiếu dữ liệu theo dõi nhiều năm nên chưa đủ cơ sở khẳng định xu hướng \"giảm dần\".   Điểm nhấn: Tư duy phản biện chặt chẽ (tự nhận diện hạn chế do chưa tiếp cận được Scopus/Web of Science hay toàn văn một số bài báo) và danh mục tài liệu tham khảo chuẩn Harvard chỉn chu. ",
           "keyTakeaways": [
@@ -351,7 +353,7 @@
           "title": "Viết Prompt hiệu quả cho các tác vụ học tập ",
           "category": "AI Prompt Engineering",
           "sourceDocxFileName": "Bài 3.docx",
-          "docxUrl": "/api/docx-files?id=1533a56b-d6a1-4baf-9be0-a6fce6c77273&name=B%C3%A0i%203.docx",
+          "docxUrl": "https://docs.google.com/document/d/1WTlopmj3nvWUlDaMrmaXb3gOPWvfQfFK/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
           "assignmentBrief": "Phát triển kỹ năng thiết kế câu lệnh (prompt) có chủ đích để tối ưu hóa khả năng hỗ trợ của mô hình ngôn ngữ lớn (ChatGPT) trong việc học và ôn tập môn Triết học Mác – Lênin.",
           "summary": "Đúc kết được 5 nguyên tắc vàng khi viết prompt: Rõ ràng cụ thể – Xác định cấu trúc – Gán vai trò – Giới hạn nguồn – Phù hợp mục đích.   Điểm nhấn: Chỉ ra sự phù hợp của từng cấp độ prompt theo nhu cầu thực tế: Prompt cơ bản dùng để nắm ý nhanh, Prompt cải tiến tối ưu nhất cho việc học thuộc thi cử, và Prompt nâng cao phù hợp nhất để làm tiểu luận chuyên sâu.   ",
           "keyTakeaways": [
@@ -397,7 +399,7 @@
           "title": "Sử dụng công cụ hợp tác trực tuyến cho dự án nhóm",
           "category": "AI Prompt Engineering",
           "sourceDocxFileName": "Bài 4.docx",
-          "docxUrl": "/api/docx-files?id=37b311b3-32f6-41df-a204-52d1a80b0d40&name=B%C3%A0i%204.docx",
+          "docxUrl": "https://docs.google.com/document/d/1aajh1_DdTWZ6qZ_5NqZ1lK4UNZmlG_nY/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
           "assignmentBrief": "Thực hành quy trình tổ chức, điều hành và ghi nhận một cuộc họp nhóm trực tuyến chuyên nghiệp về chủ đề: \"Ứng dụng AI trong học tập của sinh viên: lợi ích, rủi ro và nguyên tắc sử dụng\".",
           "summary": "Thống nhất 3 nguyên tắc cốt lõi khi dùng AI trong nhóm: Chỉ dùng để tham khảo hỗ trợ – Bắt buộc kiểm chứng thông tin từ giáo trình – Khai báo minh bạch khi sử dụng.   Điểm nhấn: Quy trình vận hành cực kỳ kỷ luật, có đầy đủ ảnh minh chứng đầu – cuối cuộc họp cùng những đề xuất cải thiện thực tế cho từng vị trí (như dùng đồng hồ đếm ngược 1 phút/lượt nói, gửi slide trước khi họp).  ",
           "keyTakeaways": [
@@ -471,7 +473,7 @@
           "title": "Sử dụng AI có trách nhiệm trong học tập và nghiên  cứu",
           "category": "AI Prompt Engineering",
           "sourceDocxFileName": "Bài 6.docx",
-          "docxUrl": "/api/docx-files?id=b94ae82e-44af-4f0c-be9b-940b262257d5&name=B%C3%A0i%206.docx",
+          "docxUrl": "https://docs.google.com/document/d/1HJ4DH6eSMi12xNLb431cXQKFaIccWQ7M/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
           "assignmentBrief": "Nghiên cứu quy chế liêm chính học thuật về AI, thực hành ứng dụng AI có phản biện trong chuyên ngành Sư phạm Âm nhạc và xây dựng bộ nguyên tắc đạo đức cá nhân.",
           "summary": "Hoàn thiện sản phẩm học thuật chuẩn mực quốc tế với trích dẫn và khai báo sử dụng AI theo chuẩn APA 7th Edition.   Điểm nhấn: Sáng tạo ra Bộ nguyên tắc 6 chữ \"CHORUS\" (Check policy – Human ear first – Original design – Respect copyright – Unbiased cultural review – State transparently) cùng bản thiết kế Infographic \"The Baton of Integrity\" mang đậm bản sắc ngành Sư phạm Âm nhạc. ",
           "keyTakeaways": [

@@ -70,6 +70,7 @@ export const ProfileOwnerSchema = z.object({
   learningGoals: z.string().optional(),
   portfolioObjective: z.string().optional(),
   introVideoUrl: z.string().optional(),
+  instructorName: z.string().optional(),
 });
 
 /**
@@ -341,6 +342,7 @@ export const AboutSectionSchema = z.object({
   learningGoals: z.string().optional(),
   portfolioObjective: z.string().optional(),
   introVideoUrl: z.string().optional(),
+  instructorName: z.string().optional(),
 });
 
 /**
@@ -577,6 +579,8 @@ export const ContactSectionSchema = z.object({
     .optional(),
   title: z.string(),
   subtitle: z.string(),
+  thankYouTitle: z.string().default("Thank You !").optional(),
+  thankYouSubtitle: z.string().optional(),
   thankYouMessage: z.string().default("THANK YOU FOR WATCHING!"),
   showContactForm: z.boolean().default(true),
   // INF2501 Rubric additions
@@ -590,6 +594,7 @@ export const ContactSectionSchema = z.object({
       studentClass: z.string().optional(),
       studentId: z.string().optional(),
       studentName: z.string().optional(),
+      instructorName: z.string().optional(),
       studentNamePosition: z.enum(["left", "center", "right"]).optional(),
     })
     .optional(),
