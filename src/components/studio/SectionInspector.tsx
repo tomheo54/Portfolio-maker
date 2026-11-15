@@ -116,6 +116,33 @@ export function SectionInspector({
       ? section.conclusion ?? DEFAULT_CONCLUSION_CONFIG
       : undefined;
 
+  const contactCourseInfo =
+    section?.type === "contact"
+      ? {
+          courseCode: section.courseInfo?.courseCode ?? "INF2501",
+          courseName:
+            section.courseInfo?.courseName ??
+            "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo",
+          institution:
+            section.courseInfo?.institution ??
+            "Trường ĐH Sư phạm Nghệ thuật TW",
+          ...section.courseInfo,
+        }
+      : undefined;
+
+  const updateContactCourseInfo = (
+    patch: Partial<NonNullable<typeof contactCourseInfo>>,
+  ) => {
+    if (section?.type !== "contact" || !contactCourseInfo) return;
+    updateSection(idx, {
+      ...section,
+      courseInfo: {
+        ...contactCourseInfo,
+        ...patch,
+      },
+    });
+  };
+
   const updateConclusion = (patch: Partial<ConclusionConfig>) => {
     if (section?.type !== "contact") return;
     updateSection(idx, {
@@ -3719,19 +3746,7 @@ export function SectionInspector({
                       }
                       placeholder="Nhập tên muốn hiển thị"
                       onChange={(e) => {
-                        updateSection(idx, {
-                          ...section,
-                          courseInfo: {
-                            ...section.courseInfo,
-                            courseCode: "INF2501",
-                            courseName:
-                              "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo",
-                            institution:
-                              section.courseInfo?.institution ??
-                              "Trường ĐH Sư phạm Nghệ thuật TW",
-                            studentName: e.target.value,
-                          },
-                        });
+                        updateContactCourseInfo({ studentName: e.target.value });
                         updateProfileOwner({ fullName: e.target.value });
                       }}
                       className="mt-1 w-full rounded border border-stone-200 bg-white px-2 py-1 text-xs"
@@ -3745,19 +3760,11 @@ export function SectionInspector({
                       aria-label="Vị trí tên ở chân trang"
                       value={section.courseInfo?.studentNamePosition ?? "left"}
                       onChange={(e) =>
-                        updateSection(idx, {
-                          ...section,
-                          courseInfo: {
-                            ...section.courseInfo,
-                            courseCode: "INF2501",
-                            courseName:
-                              "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo",
-                            institution:
-                              section.courseInfo?.institution ??
-                              "Trường ĐH Sư phạm Nghệ thuật TW",
-                            studentNamePosition: e.target.value as
-                              "left" | "center" | "right",
-                          },
+                        updateContactCourseInfo({
+                          studentNamePosition: e.target.value as
+                            | "left"
+                            | "center"
+                            | "right",
                         })
                       }
                       className="mt-1 w-full rounded border border-stone-200 bg-white px-2 py-1 text-xs"
@@ -3785,34 +3792,6 @@ export function SectionInspector({
                   />
                 </div>
 
-                <div>
-                  <label className="block text-[10px] font-semibold text-stone-700">
-                    Tên trường hiển thị
-                  </label>
-                  <input
-                    type="text"
-                    aria-label="Tên trường hiển thị"
-                    value={
-                      section.courseInfo?.institution ??
-                      "Trường ĐH Sư phạm Nghệ thuật TW"
-                    }
-                    placeholder="Nhập tên trường"
-                    onChange={(e) =>
-                      updateSection(idx, {
-                        ...section,
-                        courseInfo: {
-                          ...section.courseInfo,
-                          courseCode: "INF2501",
-                          courseName:
-                            "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo",
-                          institution: e.target.value,
-                        },
-                      })
-                    }
-                    className="mt-1 w-full rounded border border-stone-200 bg-white px-2 py-1 text-xs"
-                  />
-                </div>
-
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <div>
                     <label className="block text-[10px] font-semibold text-stone-700">
@@ -3823,24 +3802,7 @@ export function SectionInspector({
                       value={section.courseInfo?.studentId ?? ""}
                       placeholder="2552210402"
                       onChange={(e) =>
-                        updateSection(idx, {
-                          ...section,
-                          courseInfo: {
-                            ...section.courseInfo,
-                            courseCode: "INF2501",
-                            courseName:
-                              "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo",
-                            institution:
-                              section.courseInfo?.institution ??
-                              "Trường ĐH Sư phạm Nghệ thuật TW",
-                            studentClass: section.courseInfo?.studentClass,
-                            instructorName: section.courseInfo?.instructorName,
-                            studentName:
-                              section.courseInfo?.studentName ??
-                              ownerProfile.fullName,
-                            studentId: e.target.value,
-                          },
-                        })
+                        updateContactCourseInfo({ studentId: e.target.value })
                       }
                       className="mt-1 w-full rounded border border-stone-200 bg-white px-2 py-1 text-xs"
                     />
@@ -3858,24 +3820,7 @@ export function SectionInspector({
                       }
                       placeholder="ThS. Nguyễn Văn A"
                       onChange={(e) => {
-                        updateSection(idx, {
-                          ...section,
-                          courseInfo: {
-                            ...section.courseInfo,
-                            courseCode: "INF2501",
-                            courseName:
-                              "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo",
-                            institution:
-                              section.courseInfo?.institution ??
-                              "Trường ĐH Sư phạm Nghệ thuật TW",
-                            studentId: section.courseInfo?.studentId,
-                            studentClass: section.courseInfo?.studentClass,
-                            studentName:
-                              section.courseInfo?.studentName ??
-                              ownerProfile.fullName,
-                            instructorName: e.target.value,
-                          },
-                        });
+                        updateContactCourseInfo({ instructorName: e.target.value });
                         updateProfileOwner({ instructorName: e.target.value });
                       }}
                       className="mt-1 w-full rounded border border-stone-200 bg-white px-2 py-1 text-xs font-medium"
@@ -3890,62 +3835,73 @@ export function SectionInspector({
                       value={section.courseInfo?.studentClass ?? ""}
                       placeholder="Lớp: 01"
                       onChange={(e) =>
-                        updateSection(idx, {
-                          ...section,
-                          courseInfo: {
-                            ...section.courseInfo,
-                            courseCode: "INF2501",
-                            courseName:
-                              "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo",
-                            institution:
-                              section.courseInfo?.institution ??
-                              "Trường ĐH Sư phạm Nghệ thuật TW",
-                            studentId: section.courseInfo?.studentId,
-                            instructorName: section.courseInfo?.instructorName,
-                            studentName:
-                              section.courseInfo?.studentName ??
-                              ownerProfile.fullName,
-                            studentClass: e.target.value,
-                          },
-                        })
+                        updateContactCourseInfo({ studentClass: e.target.value })
                       }
                       className="mt-1 w-full rounded border border-stone-200 bg-white px-2 py-1 text-xs"
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-[10px] font-semibold text-stone-700">
-                    Tên học phần
-                  </label>
-                  <input
-                    type="text"
-                    aria-label="Tên học phần"
-                    value={
-                      section.courseInfo?.courseName ??
-                      "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo"
-                    }
-                    placeholder="Nhập tên học phần..."
-                    onChange={(e) =>
-                      updateSection(idx, {
-                        ...section,
-                        courseInfo: {
-                          ...section.courseInfo,
-                          courseCode: section.courseInfo?.courseCode ?? "INF2501",
-                          courseName: e.target.value,
-                          institution:
-                            section.courseInfo?.institution ??
-                            "Trường ĐH Sư phạm Nghệ thuật TW",
-                          studentId: section.courseInfo?.studentId,
-                          studentName:
-                            section.courseInfo?.studentName ??
-                            ownerProfile.fullName,
-                          studentClass: section.courseInfo?.studentClass,
-                        },
-                      })
-                    }
-                    className="mt-1 w-full rounded border border-stone-200 bg-white px-2 py-1 text-xs"
-                  />
+                {/* Chỉnh sửa 2 dòng bên phải Footer */}
+                <div className="rounded-lg border border-amber-300/80 bg-white/90 p-2.5 space-y-2 mt-1">
+                  <div className="text-[10px] font-bold text-amber-900 uppercase tracking-wide">
+                    2 dòng thông tin góc phải Footer
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-[10px] font-semibold text-stone-700">
+                        Dòng 1: Mã học phần
+                      </label>
+                      <input
+                        type="text"
+                        aria-label="Mã học phần"
+                        value={section.courseInfo?.courseCode ?? "INF2501"}
+                        placeholder="INF2501"
+                        onChange={(e) =>
+                          updateContactCourseInfo({ courseCode: e.target.value })
+                        }
+                        className="mt-1 w-full rounded border border-stone-200 bg-white px-2 py-1 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-semibold text-stone-700">
+                        Dòng 1: Tên học phần
+                      </label>
+                      <input
+                        type="text"
+                        aria-label="Tên học phần"
+                        value={
+                          section.courseInfo?.courseName ??
+                          "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo"
+                        }
+                        placeholder="Nhập tên học phần..."
+                        onChange={(e) =>
+                          updateContactCourseInfo({ courseName: e.target.value })
+                        }
+                        className="mt-1 w-full rounded border border-stone-200 bg-white px-2 py-1 text-xs"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-semibold text-stone-700">
+                      Dòng 2: Tên trường / Cơ sở đào tạo
+                    </label>
+                    <input
+                      type="text"
+                      aria-label="Tên trường / Cơ sở đào tạo"
+                      value={
+                        section.courseInfo?.institution ??
+                        "Trường ĐH Sư phạm Nghệ thuật TW"
+                      }
+                      placeholder="Nhập tên trường..."
+                      onChange={(e) =>
+                        updateContactCourseInfo({ institution: e.target.value })
+                      }
+                      className="mt-1 w-full rounded border border-stone-200 bg-white px-2 py-1 text-xs"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

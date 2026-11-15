@@ -349,12 +349,13 @@ export function ContactBlock({
     courseInfo?.instructorName ||
     profileOwner?.instructorName ||
     "";
-  const courseCode = courseInfo?.courseCode || "INF2501";
+  const courseCode = courseInfo?.courseCode ?? "INF2501";
   const courseName =
-    courseInfo?.courseName ||
+    courseInfo?.courseName ??
     "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo";
   const institution =
-    courseInfo?.institution || "Trường ĐH Sư phạm Nghệ thuật TW";
+    courseInfo?.institution ?? "Trường ĐH Sư phạm Nghệ thuật TW";
+  const footerCourseText = [courseCode, courseName].filter(Boolean).join(" - ");
 
   const renderCourseFooter = () => (
     <footer
@@ -390,10 +391,12 @@ export function ContactBlock({
         </div>
 
         <div className="text-right text-[11px] text-stone-400 sm:text-xs">
-          <p className="font-semibold text-stone-200">
-            {courseCode} - {courseName}
-          </p>
-          <p className="opacity-80">{institution}</p>
+          {footerCourseText && (
+            <p className="font-semibold text-stone-200">
+              {footerCourseText}
+            </p>
+          )}
+          {institution && <p className="opacity-80">{institution}</p>}
         </div>
       </div>
     </footer>

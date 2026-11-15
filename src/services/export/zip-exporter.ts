@@ -2712,12 +2712,22 @@ function renderContactHtml(
         : "flex-start";
   const studentId = courseInfo?.studentId || "25010001";
   const studentClass = courseInfo?.studentClass || "K18 - INF2501";
-  const courseCode = courseInfo?.courseCode || "INF2501";
+  const courseCode = courseInfo?.courseCode ?? "INF2501";
   const courseName =
-    courseInfo?.courseName ||
+    courseInfo?.courseName ??
     "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo";
   const institution =
-    courseInfo?.institution || "Trường ĐH Sư phạm Nghệ thuật TW";
+    courseInfo?.institution ?? "Trường ĐH Sư phạm Nghệ thuật TW";
+  const footerCourseText = [courseCode, courseName]
+    .filter(Boolean)
+    .map((s) => escapeHtml(s))
+    .join(" - ");
+  const courseTextHtml = footerCourseText
+    ? `<p style="margin:0;font-weight:600;color:#f5f5f4;">${footerCourseText}</p>`
+    : "";
+  const institutionHtml = institution
+    ? `<p style="margin:2px 0 0;color:#a8a29e;font-size:11px;">${escapeHtml(institution)}</p>`
+    : "";
 
   const courseFooterHtml = `
     <footer data-testid="rubric-course-footer" style="margin-top:32px;border-top:1px solid rgba(0,0,0,0.1);background:#1c1917;padding:16px 24px;color:#d6d3d1;font-size:12px;">
@@ -2728,8 +2738,8 @@ function renderContactHtml(
           <span style="margin-left:12px;color:#a8a29e;">Lớp: ${escapeHtml(studentClass)}</span>
         </div>
         <div style="text-align:right;">
-          <p style="margin:0;font-weight:600;color:#f5f5f4;">${escapeHtml(courseCode)} - ${escapeHtml(courseName)}</p>
-          <p style="margin:2px 0 0;color:#a8a29e;font-size:11px;">${escapeHtml(institution)}</p>
+          ${courseTextHtml}
+          ${institutionHtml}
         </div>
       </div>
     </footer>`;
