@@ -114,3 +114,5 @@ Giai đoạn 8–11 đã tích hợp và kiểm tra cục bộ & triển khai Gi
   - Đồng bộ hiển thị trực tiếp trên Studio Canvas, trang công khai và file xuất bản ZIP/HTML.
 - [x] **Chuẩn hóa Typecheck & Deploy Vercel:** Khắc phục lỗi cú pháp JSON và các lỗi TypeScript trên `ProfileOwner` và `mediaPosition`. Kiểm tra `tsc --noEmit` đạt 0 lỗi (pass 100%), deploy thành công trên GitHub & Vercel.
 - [x] **Tuân thủ quy tắc làm việc cho khách:** Tuyệt đối không chạy lệnh build đè hay restart dev server khi người dùng đang chạy sản phẩm phục vụ khách hàng.
+- [x] **Tùy biến chân trang (Footer 2 dòng góc phải):** Bổ sung ô nhập độc lập cho Mã học phần (`courseCode`), Tên học phần (`courseName`) và Tên cơ sở/Trường (`institution`), loại bỏ lỗi ghi đè dữ liệu, đồng bộ sang web và bản xuất HTML.
+- [x] **Bật/tắt ảnh mục About Me & Tự động mở rộng Full-width:** Bổ sung checkbox `Hiển thị ảnh ở phần giới thiệu` trong Studio Inspector; khi tắt hoặc không có ảnh, cột nội dung tiểu sử & thẻ highlights tự động dàn trải 100% chiều rộng không để lại khoảng trống.
