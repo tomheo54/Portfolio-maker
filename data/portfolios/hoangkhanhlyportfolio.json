@@ -106,7 +106,7 @@
       },
       "cardFrame": "glass",
       "educationSchool": "Trường Đại học Sư phạm Nghệ thuật Trung ương",
-      "educationPeriod": "Học phần INF2501"
+      "educationPeriod": "Học phần INF2501_1"
     },
     {
       "type": "skills",
@@ -154,7 +154,7 @@
           "school": "Trường Đại học Sư phạm Nghệ thuật Trung ương",
           "degree": "Ngành Sư phạm Âm nhạc",
           "period": "",
-          "gpaOrHonors": "Mã SV: 2552210402 • Lớp Tín chỉ 01 (Nhập môn Công nghệ số & Ứng dụng AI)",
+          "gpaOrHonors": "Mã SV: 2552210402 • Lớp K20H (Nhập môn Công nghệ số & Ứng dụng AI)",
           "details": "Tập trung nâng cao năng lực sư phạm, phương pháp giảng dạy âm nhạc hiện đại  và ứng dụng công nghệ AI trong soạn giảng."
         }
       ]
@@ -518,7 +518,7 @@
         "courseCode": "INF2501",
         "courseName": "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo",
         "institution": "Trường ĐH Sư phạm Nghệ thuật TW",
-        "studentClass": "01",
+        "studentClass": "K20H",
         "studentId": "2552210402",
         "studentName": "HOÀNG KHÁNH LY",
         "instructorName": "Vũ Việt Hoàng"
