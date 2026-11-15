@@ -1166,7 +1166,7 @@ export function ProjectsShowcaseBlock({
                                   <li
                                     key={tIdx}
                                     className={
-                                      project.takeawayBulletShape === "none"
+                                      (project.takeawayBulletShape ?? "none") === "none"
                                         ? "text-sm leading-relaxed"
                                         : "flex items-start gap-2.5 text-sm leading-relaxed"
                                     }
@@ -1175,7 +1175,7 @@ export function ProjectsShowcaseBlock({
                                       opacity: 0.9,
                                     }}
                                   >
-                                    {project.takeawayBulletShape !== "none" && (
+                                    {(project.takeawayBulletShape ?? "none") !== "none" && (
                                       <BulletShapeIcon
                                         shape={project.takeawayBulletShape}
                                         color="var(--primary, #735340)"
@@ -1481,12 +1481,12 @@ export function ProjectsShowcaseBlock({
                     <li
                       key={idx}
                       className={
-                        project.takeawayBulletShape === "none"
+                        (project.takeawayBulletShape ?? "none") === "none"
                           ? "text-sm opacity-90 leading-relaxed"
                           : "flex items-start gap-2 text-sm opacity-90"
                       }
                     >
-                      {project.takeawayBulletShape !== "none" && (
+                      {(project.takeawayBulletShape ?? "none") !== "none" && (
                         <BulletShapeIcon
                           shape={project.takeawayBulletShape}
                           color={theme.primaryColor}

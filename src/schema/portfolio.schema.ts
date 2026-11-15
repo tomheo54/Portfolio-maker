@@ -480,7 +480,8 @@ export const ProjectItemSchema = z.object({
     })
     .optional(),
   takeawayBulletShape: z
-    .enum(["circle", "square", "hyphen", "star", "check", "diamond", "none"])
+    .enum(["none", "circle", "square", "hyphen", "star", "check", "diamond"])
+    .default("none")
     .optional(),
   productType: z
     .enum([

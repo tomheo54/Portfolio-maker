@@ -1893,6 +1893,7 @@ export function SectionInspector({
                         "Modern pastel editorial illustration of digital assignment showcase",
                       preferredImageStyle: "canva-pastel-graphic",
                       links: [],
+                      takeawayBulletShape: "none",
                       tags: ["INF2501", "Portfolio"],
                     };
                     updateSection(idx, {
@@ -2764,34 +2765,34 @@ export function SectionInspector({
                             <span className="text-[9px] text-stone-500">Kiểu:</span>
                             <select
                               aria-label="Hình dáng gạch đầu dòng"
-                              value={currentProject.takeawayBulletShape ?? "circle"}
+                              value={currentProject.takeawayBulletShape ?? "none"}
                               onChange={(e) =>
                                 updateProject(currentProject.id, {
                                   takeawayBulletShape: e.target.value as
+                                    | "none"
                                     | "circle"
                                     | "square"
                                     | "hyphen"
                                     | "star"
                                     | "check"
-                                    | "diamond"
-                                    | "none",
+                                    | "diamond",
                                 })
                               }
                               className="rounded border border-stone-200 bg-white px-1.5 py-0.5 text-[10px] text-stone-700 outline-none focus:border-amber-500"
                             >
+                              <option value="none">None (Liền dòng)</option>
                               <option value="circle">● Tròn</option>
                               <option value="square">■ Vuông</option>
                               <option value="hyphen">- Dấu gạch</option>
                               <option value="star">★ Ngôi sao</option>
                               <option value="check">✔ Dấu tích</option>
                               <option value="diamond">◆ Kim cương</option>
-                              <option value="none">None (Liền dòng)</option>
                             </select>
                           </div>
                         </div>
                         <p className="text-[9px] leading-snug text-stone-500">
-                          {currentProject.takeawayBulletShape === "none"
-                            ? "Hiển thị văn bản liền mạch (không có dấu đầu dòng)."
+                          {(currentProject.takeawayBulletShape ?? "none") === "none"
+                            ? "Hiển thị văn bản liền mạch (không có dấu đầu dòng). Nhập dấu (-) ở đầu dòng để tự đổi sang dấu tròn."
                             : "Nhập vào 1 ô, mỗi ý bắt đầu bằng dấu gạch ngang (-) ở đầu dòng."}
                         </p>
 
@@ -2800,7 +2801,7 @@ export function SectionInspector({
                           aria-label="Kết quả & điểm nhấn"
                           value={
                             (currentProject.keyTakeaways ?? []).length > 0
-                              ? currentProject.takeawayBulletShape === "none"
+                              ? (currentProject.takeawayBulletShape ?? "none") === "none"
                                 ? currentProject.keyTakeaways.join("\n")
                                 : currentProject.keyTakeaways
                                     .map((line) => (line.startsWith("- ") ? line : `- ${line}`))
@@ -2808,19 +2809,28 @@ export function SectionInspector({
                               : ""
                           }
                           placeholder={
-                            currentProject.takeawayBulletShape === "none"
-                              ? "Nhập đoạn văn bản báo cáo / kết quả tóm tắt liền mạch không gạch đầu dòng..."
+                            (currentProject.takeawayBulletShape ?? "none") === "none"
+                              ? "Nhập đoạn văn bản báo cáo / kết quả tóm tắt liền mạch (nếu nhập dấu '-' đầu dòng sẽ tự đổi sang dấu tròn)..."
                               : "- Kết quả đạt được thứ nhất...&#10;- Vận dụng thành thạo kỹ năng...&#10;- Hoàn thành mục tiêu đề ra..."
                           }
                           onChange={(e) => {
                             const raw = e.target.value;
-                            const isNone = currentProject.takeawayBulletShape === "none";
+                            const currentShape = currentProject.takeawayBulletShape ?? "none";
+                            const hasHyphen = raw.split("\n").some((l) => l.trim().startsWith("-"));
+                            let newShape = currentShape;
+                            if (hasHyphen && currentShape === "none") {
+                              newShape = "circle";
+                            }
+                            const isNone = newShape === "none";
                             const lines = raw
                               .split("\n")
                               .map((l) => (isNone ? l.replace(/^-\s*/, "").trim() : l.trim()))
                               .filter(Boolean)
                               .map((l) => (!isNone && l.startsWith("-") ? l.replace(/^-\s*/, "") : l));
                             updateProject(currentProject.id, {
+                              ...(newShape !== currentProject.takeawayBulletShape
+                                ? { takeawayBulletShape: newShape }
+                                : {}),
                               keyTakeaways: lines,
                             });
                           }}

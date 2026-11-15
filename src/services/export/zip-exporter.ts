@@ -2483,7 +2483,7 @@ function renderProjectsHtml(
                           .filter((takeaway) => takeaway.trim())
                           .map(
                             (k) => {
-                              var shape = proj.takeawayBulletShape || "circle";
+                              var shape = proj.takeawayBulletShape || "none";
                               var dotHtml = shape === "none" ? ""
                                 : shape === "hyphen" ? `<span style="font-weight:bold;color:var(--primary);margin-right:2px;">—</span>`
                                 : shape === "square" ? `<span class="takeaway-dot" style="border-radius:0;"></span>`
@@ -3602,7 +3602,7 @@ export function renderStandaloneHtml(
         if (takeaways.length > 0) {
           var takeBox = makeEl('div', 'brief-box');
           takeBox.appendChild(makeEl('strong', '', '✅ Kỹ năng cốt lõi & Kết quả kỳ vọng: '));
-          var bulletShape = proj.takeawayBulletShape || 'circle';
+          var bulletShape = proj.takeawayBulletShape || 'none';
           var bulletChar = bulletShape === 'none' ? ''
             : bulletShape === 'hyphen' ? '— '
             : bulletShape === 'square' ? '■ '
@@ -3616,14 +3616,20 @@ export function renderStandaloneHtml(
           ul.style.margin = '6px 0 0';
           for (var k = 0; k < takeaways.length; k++) {
             var li = makeEl('li');
-            li.style.display = 'flex';
-            li.style.alignItems = 'flex-start';
-            li.style.gap = '6px';
+            if (bulletShape !== 'none') {
+              li.style.display = 'flex';
+              li.style.alignItems = 'flex-start';
+              li.style.gap = '6px';
+            } else {
+              li.style.display = 'block';
+            }
             li.style.marginBottom = '4px';
-            var bSpan = makeEl('span', '', bulletChar);
-            bSpan.style.color = 'var(--primary)';
-            bSpan.style.fontWeight = 'bold';
-            li.appendChild(bSpan);
+            if (bulletShape !== 'none') {
+              var bSpan = makeEl('span', '', bulletChar);
+              bSpan.style.color = 'var(--primary)';
+              bSpan.style.fontWeight = 'bold';
+              li.appendChild(bSpan);
+            }
             li.appendChild(document.createTextNode(takeaways[k]));
             ul.appendChild(li);
           }
@@ -4058,7 +4064,7 @@ export function renderStandaloneProjectPageHtml(
         <section class="detail-panel"><h2>Quá trình thực hiện &amp; Giải pháp</h2><p>${escapeHtml(project.summary)}</p></section>
         ${project.processSteps?.length ? `<section class="detail-panel"><h2>Các bước thực hiện</h2><ol>${project.processSteps.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol></section>` : ""}
         ${project.obstaclesAndSolutions ? `<section class="detail-panel"><h2>Khó khăn &amp; Giải pháp</h2><p>${escapeHtml(project.obstaclesAndSolutions)}</p></section>` : ""}
-        ${project.keyTakeaways.some((item) => item.trim()) ? `<section class="detail-panel"><h2>Kỹ năng cốt lõi &amp; Kết quả kỳ vọng</h2><ul style="${project.takeawayBulletShape === "none" ? "list-style:none;padding-left:0;" : ""}">${project.keyTakeaways.filter((item) => item.trim()).map((item) => `<li style="${project.takeawayBulletShape === "none" ? "margin-bottom:8px;" : ""}">${escapeHtml(item)}</li>`).join("")}</ul></section>` : ""}
+        ${project.keyTakeaways.some((item) => item.trim()) ? `<section class="detail-panel"><h2>Kỹ năng cốt lõi &amp; Kết quả kỳ vọng</h2><ul style="${(project.takeawayBulletShape || "none") === "none" ? "list-style:none;padding-left:0;" : ""}">${project.keyTakeaways.filter((item) => item.trim()).map((item) => `<li style="${(project.takeawayBulletShape || "none") === "none" ? "margin-bottom:8px;" : ""}">${escapeHtml(item)}</li>`).join("")}</ul></section>` : ""}
         ${project.promptComparison && project.showPromptComparison === true ? `<section class="detail-panel"><h2>So sánh Prompt</h2><p><strong>Ban đầu:</strong> ${escapeHtml(project.promptComparison.initialPrompt)}</p><p><strong>Cải tiến:</strong> ${escapeHtml(project.promptComparison.improvedPrompt)}</p><p><strong>Kết quả AI:</strong> ${escapeHtml(project.promptComparison.aiOutput)}</p></section>` : ""}
         ${projectLinksHtml ? `<div class="detail-links">${projectLinksHtml}</div>` : ""}
         ${project.fullRawExcerpt ? `<details class="detail-panel detail-raw"><summary>Nội dung trích xuất chi tiết từ bài làm</summary><pre>${escapeHtml(project.fullRawExcerpt)}</pre></details>` : ""}

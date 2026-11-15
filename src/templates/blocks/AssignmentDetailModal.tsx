@@ -90,7 +90,7 @@ export function AssignmentDetailModal({
   const hasVisualMedia = hasVideo || hasImages;
 
   const renderBulletIcon = (shape?: string) => {
-    if (shape === "none") return null;
+    if (!shape || shape === "none") return null;
     if (shape === "hyphen") {
       return (
         <span className="font-bold select-none" style={{ color: theme.primaryColor }}>
@@ -399,7 +399,7 @@ export function AssignmentDetailModal({
   const hasVisualMedia = hasVideo || hasImages;
 
   const renderBulletIcon = (shape?: string) => {
-    if (shape === "none") return null;
+    if (!shape || shape === "none") return null;
     if (shape === "hyphen") {
       return (
         <span className="font-bold select-none" style={{ color: theme.primaryColor }}>
@@ -1175,7 +1175,7 @@ export function AssignmentDetailModal({
                           <li
                             key={idx}
                             className={
-                              project.takeawayBulletShape === "none"
+                              (project.takeawayBulletShape ?? "none") === "none"
                                 ? "text-sm leading-relaxed"
                                 : "flex items-start gap-2.5 text-sm leading-relaxed"
                             }
@@ -1284,7 +1284,7 @@ export function AssignmentDetailModal({
                           <li
                             key={idx}
                             className={
-                              project.takeawayBulletShape === "none"
+                              (project.takeawayBulletShape ?? "none") === "none"
                                 ? "text-sm leading-relaxed"
                                 : "flex items-start gap-2 text-sm"
                             }
@@ -1383,7 +1383,7 @@ export function AssignmentDetailModal({
   const hasVisualMedia = hasVideo || hasImages;
 
   const renderBulletIcon = (shape?: string) => {
-    if (shape === "none") return null;
+    if (!shape || shape === "none") return null;
     if (shape === "hyphen") {
       return (
         <span className="font-bold select-none" style={{ color: theme.primaryColor }}>
