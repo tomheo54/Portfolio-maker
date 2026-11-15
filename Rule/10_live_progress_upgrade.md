@@ -1,11 +1,11 @@
 # Live Progress — AI Portfolio Factory Upgrade
 
-**Cập nhật:** 13/11/2026 (Asia/Bangkok)  
+**Cập nhật:** 15/11/2026 (Asia/Bangkok)  
 **Mục tiêu:** checkpoint đầy đủ để agent tiếp theo tiếp tục nếu phiên bị gián đoạn. Đọc file này trước, sau đó đối chiếu [checklist](07_master_task_checklist.md) và [handover](08_b_n_giao_c_ng_vi_c_cho_ai_handover.md).
 
 ## Trạng thái hiện tại
 
-Giai đoạn 8–10 đã tích hợp và kiểm tra cục bộ. Còn một kiểm tra ngoài repo cần quyền truy cập Netlify: xác nhận URL sau deploy preview thực tế. Phiên làm việc không có quyền site/deploy nên không thể tự deploy hoặc xác minh URL đó.
+Giai đoạn 8–11 đã tích hợp và kiểm tra cục bộ & triển khai GitHub/Vercel thành công. Toàn bộ tính năng mở rộng Studio, dàn trang full-width không có ảnh, hoán đổi ảnh/chữ About, chỉnh width/height Skills, bảo toàn bố cục khi nhập DOCX, sửa lỗi TOC cuộn quá trớn, và kiểm soát type-checking 100% đều đã hoàn tất và vận hành ổn định.
 
 ## Đã tích hợp
 
@@ -93,3 +93,24 @@ Giai đoạn 8–10 đã tích hợp và kiểm tra cục bộ. Còn một kiể
 - [x] Studio DOCX wizard: nhiều DOCX chọn đúng một bài/file và có thể thêm/bỏ file; một DOCX quét và chọn nhiều bài.
 - [x] Đổi các header CSV hiển thị mặc định sang `tenfile,hoten,chucdanh,email`; vẫn tương thích dữ liệu cũ với `filename,fullName,roleTitle,email`.
 - [x] E2E hai nhánh Batch/Studio **4/4 pass**, Batch → Studio **2/2 pass**, typecheck và isolated production build pass.
+
+---
+
+## Giai đoạn 11 — Tinh chỉnh bố cục, Bổ sung tính năng Studio & Độ ổn định Vercel (Cập nhật 15/11/2026)
+
+- [x] **Git Automation (.bat):** Cung cấp script tự động hóa đẩy git `push_to_git.bat` hỗ trợ commit & push nhanh, hiển thị thông báo tiếng Việt không dấu chuẩn xác trên console Windows.
+- [x] **Sửa độ lệch mục lục cuộn trang (TOC scroll-mt):** Căn chỉnh lại `scroll-mt-24 sm:scroll-mt-28` cho các khối Kỹ năng, Học vấn, Bài tập, giải quyết triệt để lỗi click mục lục bị nhảy/cuộn quá trớn.
+- [x] **Tùy biến Thank You & Giảng viên hướng dẫn (Canva Editorial):** Bổ sung trường `instructorName` trong Contact/Profile schema, hiển thị linh hoạt ở footer giữa MSSV và Lớp. Cho phép chỉnh sửa nội dung khối Thank You.
+- [x] **Dàn trang 100% full-width khi bài tập không có ảnh:**
+  - Loại bỏ hoàn toàn khối đứt nét "Bài tập chưa có ảnh minh họa" trên giao diện bài tập chính (`ProjectsShowcaseBlock`) và file xuất ZIP/HTML.
+  - Tự động đẩy phần nội dung chi tiết (Mục tiêu, Giải pháp, Kết quả...) mở rộng tràn trang đạt 100% (`lg:col-span-12 w-full`) trên tất cả các template (Canva, Grid, List, Bento, Case study, v.v.).
+- [x] **Hero Headline & Sparkle Icon:** Tự động ẩn hoàn toàn khối eyebrow và icon lấp lánh khi người dùng xóa rỗng trường Headline, không còn hiển thị nhãn rác hay icon trống.
+- [x] **Hoán đổi vị trí Ảnh / Chữ phần Giới thiệu (About Section):** Thêm trường `mediaPosition` (`left`, `right`, `top`, `bottom`) và nút bấm đảo nhanh ⇄ trong Studio Inspector tương tự mục Bài tập.
+- [x] **DOCX Ingestion không phá vỡ bố cục (Non-destructive import):**
+  - Cập nhật hàm `applyDocxSummaryToPortfolio`: giữ nguyên 100% layout hiện tại (templateId, theme palette, section variants, vị trí ảnh, thứ tự card, headline).
+  - Tự động nạp thông tin người dùng hiện tại vào form wizard; các trường người dùng để trống sẽ giữ nguyên dữ liệu gốc, không ghi đè.
+- [x] **Tùy chỉnh Width & Height thẻ Kỹ năng (Skills):**
+  - Bổ sung bộ điều khiển kích thước thẻ trong Section Inspector: chọn nhanh %, kéo thanh slider px, nhập số px/%, chọn số cột (1-4) và căn lề (Trái/Giữa/Phải).
+  - Đồng bộ hiển thị trực tiếp trên Studio Canvas, trang công khai và file xuất bản ZIP/HTML.
+- [x] **Chuẩn hóa Typecheck & Deploy Vercel:** Khắc phục lỗi cú pháp JSON và các lỗi TypeScript trên `ProfileOwner` và `mediaPosition`. Kiểm tra `tsc --noEmit` đạt 0 lỗi (pass 100%), deploy thành công trên GitHub & Vercel.
+- [x] **Tuân thủ quy tắc làm việc cho khách:** Tuyệt đối không chạy lệnh build đè hay restart dev server khi người dùng đang chạy sản phẩm phục vụ khách hàng.

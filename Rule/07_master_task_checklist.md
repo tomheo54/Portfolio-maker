@@ -107,4 +107,17 @@
 - [x] Đổi header CSV mặc định thành `tenfile,hoten,chucdanh,email` (không dấu); vẫn đọc header tiếng Anh cũ.
 - [x] 4 focused E2E hai nhánh pass, Batch → Studio 2/2 pass, typecheck và isolated production build pass.
 
-> Xem [live progress](10_live_progress_upgrade.md) và [handover](08_b_n_giao_c_ng_vi_c_cho_ai_handover.md) để biết caveat về Netlify deploy preview và fixture Experience.
+## 🚀 Giai đoạn 11: Nâng cấp trải nghiệm Studio, Bố cục bài tập và Xuất bản thực tế (14–15/11/2026)
+
+- [x] **Git Automation (.bat):** Cung cấp script đẩy git nhanh `push_to_git.bat` với thông báo tiếng Việt không dấu chuẩn Unicode console.
+- [x] **Scroll Offset TOC:** Sửa khoảng cách nhảy cuộn `scroll-mt` cho Kỹ năng, Học vấn, Bài tập để click từ Mục lục không bị trôi/chạy quá vị trí.
+- [x] **Footer & Thank You (Canva Editorial):** Chỉnh sửa tùy biến nội dung Thank You, bổ sung trường Giảng viên hướng dẫn (`instructorName`) hiển thị linh hoạt giữa MSSV và Lớp.
+- [x] **Tự động tràn trang 100% khi bài tập không có ảnh:** Xóa bỏ hoàn toàn khung nét đứt "Bài tập chưa có ảnh minh họa" trên trang showcase và modal; tự động mở rộng nội dung chi tiết đạt `100%` (`lg:col-span-12 w-full`) trên mọi template và file xuất bản ZIP/HTML.
+- [x] **Ẩn hoàn toàn Headline khi xóa rỗng:** Hero Section ẩn triệt để cả nhãn tiêu đề và icon lấp lánh (sparkle pill) khi người dùng xóa trống trường Headline.
+- [x] **Đổi vị trí Ảnh / Chữ mục Giới thiệu (About):** Hỗ trợ `mediaPosition` (`left`, `right`, `top`, `bottom`) và nút bấm đổi vị trí nhanh ⇄ trong Studio Inspector tương tự mục Bài tập.
+- [x] **Nhập DOCX bảo toàn bố cục (Non-destructive import):** Giữ nguyên 100% theme, variant, vị trí ảnh, thứ tự card, headline; tự động điền thông tin hiện tại và không ghi đè nếu để trống.
+- [x] **Tùy chỉnh Width & Height thẻ Kỹ năng (Skills):** Bổ sung bộ điều khiển chọn nhanh %, kéo thanh trượt slider px, ô nhập trực tiếp, số cột (1–4) và căn lề (Trái/Giữa/Phải) trong Studio Inspector và đồng bộ sang file ZIP/HTML.
+- [x] **Kiểm thử Typecheck & Deploy Vercel:** Khắc phục lỗi cú pháp JSON và các lỗi TypeScript (`ProfileOwner`, `mediaPosition`), `tsc --noEmit` pass 100%, deploy an toàn trên Vercel / GitHub.
+- [x] **Quy tắc vận hành nghiêm ngặt:** Tuyệt đối không dừng/chạy đè build gây gián đoạn server cổng 3000 khi người dùng đang thao tác.
+
+> Xem [live progress](10_live_progress_upgrade.md) và [handover](08_b_n_giao_c_ng_vi_c_cho_ai_handover.md) để biết chi tiết các cập nhật mới nhất.

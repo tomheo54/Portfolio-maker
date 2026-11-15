@@ -1,29 +1,29 @@
 # BẢN BÀN GIAO TOÀN DIỆN DỰ ÁN (PROJECT HANDOVER SPECIFICATION)
 > **Dự án**: AI Portfolio Factory (Production Ready)  
 > **Thư mục làm việc**: `e:\Vibe code\Porfollio`  
-> **Trạng thái cập nhật 13/11/2026**: Giai đoạn 8–10 đã tích hợp và kiểm tra cục bộ: Conclusion sáu layout/chỉnh sửa sâu; màu/font/nền theo section; Batch → Studio draft; hiệu ứng/nền preview và ZIP; tách nhánh DOCX ở Batch/Studio (nhiều file, một bài/file hoặc một file chứa nhiều bài); CSV mặc định `tenfile,hoten,chucdanh,email` không dấu và vẫn hỗ trợ header tiếng Anh cũ. Focused E2E, typecheck và isolated production build pass; caveat/các test coverage thiếu ghi trong [live progress](10_live_progress_upgrade.md). Chưa thể xác minh URL Netlify thực tế vì phiên này không có quyền deploy/site. Remote `origin` đã tháo theo yêu cầu, `.git` và lịch sử được giữ; `das` được giữ nguyên.
-> **Ngày lập**: 13/11/2026
+> **Trạng thái cập nhật 15/11/2026**: Giai đoạn 8–11 đã hoàn thành và triển khai thực tế. Bổ sung script git tự động `push_to_git.bat`; sửa độ lệch cuộn TOC; bổ sung trường Giảng viên hướng dẫn & chỉnh sửa Thank You footer; bài tập không có ảnh tự động tràn 100% toàn trang (ẩn khung rỗng "Bài tập chưa có ảnh minh họa"); ẩn hoàn toàn Hero Headline & icon lấp lánh khi xóa trống; đảo vị trí ảnh/văn bản mục About; nhập DOCX không phá vỡ bố cục và giữ nguyên các trường để trống; điều chỉnh kích thước Width/Height/Columns/Align thẻ Kỹ năng; chuẩn hóa kiểu dữ liệu TypeScript 100% pass và deploy thành công trên GitHub & Vercel. Remote `origin` được kết nối tới repository chính thức `https://github.com/tomheo54/Portfolio-maker`.
+> **Ngày cập nhật**: 15/11/2026
 
 ---
 
 ## 1. Hướng dẫn dành cho AI mới tiếp quản (Quickstart for Next AI)
 
-> **Tiếp tục upgrade đang chạy:** đọc [Rule/10_live_progress_upgrade.md](10_live_progress_upgrade.md) trước để lấy trạng thái gần nhất, các caveat test và việc còn lại. Sau đó đối chiếu checklist Giai đoạn 10 bên dưới.
+> **Tiếp tục upgrade đang chạy:** đọc [Rule/10_live_progress_upgrade.md](10_live_progress_upgrade.md) trước để lấy trạng thái gần nhất, các caveat test và việc còn lại. Sau đó đối chiếu checklist Giai đoạn 11 bên dưới.
 
 Khi một AI mới được đưa vào thư mục này, AI chỉ cần đọc tài liệu này và làm theo các bước sau để tiếp tục phát triển mà không bị mất ngữ cảnh:
 
 1. **Kiểm tra mà không ảnh hưởng server người dùng**:
    ```powershell
-   # Typecheck toàn bộ dự án
-   npm.cmd run typecheck
+   # Typecheck toàn bộ dự án mà không build hay tắt server
+   npx tsc --noEmit
    ```
-   Production build và E2E cần chạy trên bản sao cô lập/cổng riêng; cấu hình Playwright mặc định trỏ cổng 3000 nên không chạy lại nguyên trạng nếu cổng đó đang phục vụ người dùng. Không chạy `npm.cmd run build` trong workspace đang được `next start` dùng vì build ghi đè `.next`.
+   **LƯU Ý ĐẶC BIỆT QUAN TRỌNG:** Người dùng thường xuyên chạy ứng dụng phục vụ khách hàng trực tiếp trên cổng 3000. **TUYỆT ĐỐI KHÔNG** chạy `npm run build` hoặc dừng server Next.js dev đang chạy vì sẽ gây gián đoạn công việc của người dùng. Next.js có Fast Refresh tự động hot-reload khi chỉnh sửa code.
 2. **Giữ server ứng dụng hiện có**:
    ```powershell
    # Chỉ khởi động server mới khi cổng 3000 chưa có listener.
    npm.cmd run dev
    ```
-   Nếu cổng 3000 đã có listener thì giữ nguyên process đó; dùng cổng khác cho bản test cô lập.
+   Nếu cổng 3000 đã có listener thì giữ nguyên process đó; không can thiệp.
 3. **Các trang quan trọng**:
    - Studio Canvas: `http://localhost:3000/studio`
    - Batch Ingestion & Packager: `http://localhost:3000/batch`

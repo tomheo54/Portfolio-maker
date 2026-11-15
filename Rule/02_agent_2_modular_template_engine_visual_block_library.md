@@ -33,10 +33,13 @@ Trong các Portfolio khóa học / thực chiến (như TNT Lab), phần Dự á
      - 💡 **Giải pháp & Thực hiện (`summary`)**: Văn bản tóm tắt súc tích.
      - ✅ **Kết quả / Điểm nhấn (`keyTakeaways` & `metrics`)**: Hiển thị dạng bullet tags hoặc con số nổi bật.
 2. **Trình bày Hình ảnh thông minh (Adaptive Media Layout)**:
+   - Nếu bài tập **không có ảnh/video**: Ẩn hoàn toàn khối placeholder "Bài tập chưa có ảnh minh họa", tự động đẩy khối nội dung tóm tắt tràn rộng 100% toàn bộ hàng ngang (`lg:col-span-12 w-full`) trên cả bản xem ngoài trang và Modal chi tiết.
    - Nếu bài tập có **1 ảnh** (từ `.docx` hoặc AI gen): Hiển thị dạng Split-Slide 50/50 kiểu Canva (một bên là nội dung tóm tắt, một bên là ảnh kích thước lớn đặt trong khung nghệ thuật).
    - Nếu bài tập có **2 - 4 ảnh** (trích xuất từ `.docx`): Tự động xếp dạng lưới Collage / Bento hoặc Carousel trượt mượt mà.
 3. **Modal Xem Chi Tiết Bài Tập (`<AssignmentDetailModal />`)**:
-   - Khi người xem bấm vào *"Xem chi tiết bài làm"*, mở ra một Drawer/Modal đẹp mắt hiển thị đầy đủ phần trích dẫn chi tiết từ file `.docx` (`fullRawExcerpt`) và bộ sưu tập toàn bộ hình ảnh kích thước lớn (Lightbox).
+   - Khi người xem bấm vào *"Xem chi tiết bài làm"*, mở ra một Drawer/Modal đẹp mắt hiển thị đầy đủ phần trích dẫn chi tiết từ file `.docx` (`fullRawExcerpt`) và bộ sưu tập toàn bộ hình ảnh kích thước lớn (Lightbox). Khi không có ảnh, văn bản cũng tự động dàn đều toàn bộ chiều rộng.
+4. **Khối Kỹ năng (`<SkillsBlock />`)**:
+   - Hỗ trợ cấu hình kích thước thẻ tùy chỉnh (`cardWidth`, `cardHeight`, `cardColumns`, `cardAlign`): hỗ trợ chọn nhanh %, kéo thanh trượt slider px, ô nhập trực tiếp và căn lề linh hoạt.
 
 ### Task 3.3: Hoàn thiện 6 Archetype Templates (`src/templates/archetypes/`)
 Đảm bảo cả 6 mẫu (`canva-editorial`, `bento-grid`, `framer-minimal`, `creative-showcase`, `growth-marketer`, `tech-developer`) đều hiển thị mượt mà cấu trúc bài tập tóm tắt và tự động đồng bộ bảng màu với hình ảnh.

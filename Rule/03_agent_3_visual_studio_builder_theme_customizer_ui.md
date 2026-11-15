@@ -45,7 +45,12 @@ Bạn **CHỈ ĐƯỢC PHÉP** tạo và chỉnh sửa các file trong:
 - **Topbar**: Nút `📄 Nhập file .docx bài tập`, chọn nhanh 6 bộ Template (`Canva Editorial`, `Bento Grid`, `Framer Minimal`...), chuyển đổi Desktop/Tablet/Mobile, `Undo/Redo`, và nút `Xuất bản`.
 - **Left Sidebar**: Quản lý thứ tự các Section bằng kéo-thả (`@dnd-kit`), chỉnh bảng màu Theme & Font chữ tiếng Việt; cho phép kéo-thả và xóa từng kỹ năng/công cụ trong Section Skills.
 - **Center Canvas**: Nhúng `<PortfolioRenderer editable={true} />` phản hồi tức thì mọi thao tác chỉnh sửa.
-- **Right Inspector**: Biểu mẫu chỉnh sửa chi tiết nội dung văn bản tóm tắt, kỹ năng, thông tin cá nhân và trình quản lý ảnh.
+- **Right Inspector**: Biểu mẫu chỉnh sửa chi tiết:
+  - *Hero Section*: Khi xóa rỗng trường Headline, ẩn hoàn toàn tiêu đề nhãn và icon lấp lánh (sparkle pill).
+  - *About Section*: Bổ sung điều khiển vị trí ảnh `mediaPosition` (`left`, `right`, `top`, `bottom`) và nút bấm đảo nhanh ⇄ ảnh/văn bản.
+  - *Skills Section*: Bổ sung bộ điều khiển kích thước thẻ (Width & Height) với nút chọn nhanh %, thanh trượt slider px, ô nhập trực tiếp, số cột (1–4) và căn lề (Trái/Giữa/Phải).
+  - *Projects Section*: Quản lý ảnh/video, tóm tắt bài tập và liên kết DOCX.
+- **DOCX Import Wizard**: Cơ chế nhập bảo toàn bố cục (Non-destructive import) giữ nguyên 100% template, theme, variant, vị trí ảnh; tự động nạp thông tin hiện tại và không ghi đè nếu người dùng để trống.
 
 ---
 
