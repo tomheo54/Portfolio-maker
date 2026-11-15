@@ -76,7 +76,8 @@ export function HeroBlock({
     portfolioLabel.replace(/^digital\s+/i, "").trim() || "Portfolio";
   const portfolioDisplayLabel = `Digital ${portfolioTitle}`;
   const showPortfolioLabel = section.showPortfolioLabel !== false;
-  const headlineIsPortfolio = /portfolio/i.test(section.headline);
+  const hasHeadline = Boolean(section.headline?.trim());
+  const headlineIsPortfolio = hasHeadline && /portfolio/i.test(section.headline);
 
   const isCentered =
     section.variant === "centered" || section.variant === "minimal-center";
@@ -185,6 +186,8 @@ export function HeroBlock({
   }
 
   const renderEyebrow = () => {
+    if (!hasHeadline) return null;
+
     const IconComponent = isTerminal
       ? Terminal
       : isGrowth

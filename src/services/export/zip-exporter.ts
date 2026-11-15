@@ -1857,7 +1857,8 @@ function renderHeroHtml(
   const portfolioTitle =
     hero.portfolioLabel?.trim().replace(/^digital\s+/i, "") || "Portfolio";
   const portfolioDisplayLabel = `Digital ${portfolioTitle}`;
-  const headlineIsPortfolio = /portfolio/i.test(hero.headline);
+  const hasHeadline = Boolean(hero.headline?.trim());
+  const headlineIsPortfolio = hasHeadline && /portfolio/i.test(hero.headline);
   const stickerTags = hero.decorations
     .filter((d) => d.assetUrl)
     .map(
@@ -1908,15 +1909,19 @@ function renderHeroHtml(
     <div class="hero-grid ${showAvatar ? "" : "hero-grid--centered"}" style="position:relative;z-index:2;padding: 18px 0 36px;">
       <div class="${showAvatar ? "" : "hero-copy-centered"}">
         ${
-          showPortfolioLabel && !headlineIsPortfolio
+          hasHeadline && showPortfolioLabel && !headlineIsPortfolio
             ? `<p class="hero-portfolio-line">${escapeHtml(portfolioDisplayLabel)}</p>`
             : ""
         }
-        <p class="hero-eyebrow">${escapeHtml(
-          showPortfolioLabel && headlineIsPortfolio
-            ? portfolioDisplayLabel
-            : hero.headline,
-        )}</p>
+        ${
+          hasHeadline
+            ? `<p class="hero-eyebrow">${escapeHtml(
+                showPortfolioLabel && headlineIsPortfolio
+                  ? portfolioDisplayLabel
+                  : hero.headline,
+              )}</p>`
+            : ""
+        }
         <h1 style="font-size: clamp(38px, 5vw, 56px); line-height: 1.12; margin: 8px 0 10px;">${escapeHtml(
           hero.fullName,
         )}</h1>

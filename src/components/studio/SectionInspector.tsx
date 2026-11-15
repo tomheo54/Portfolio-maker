@@ -775,7 +775,7 @@ export function SectionInspector({
                 </label>
                 <input
                   type="text"
-                  value={section.headline}
+                  value={section.headline || ""}
                   onChange={(e) =>
                     updateSection(idx, { ...section, headline: e.target.value })
                   }
