@@ -2438,8 +2438,8 @@ function renderProjectsHtml(
         </div>
       </div>
 
-      <div class="project-grid" data-project-media-position="${proj.mediaPosition ?? "right"}">
-        <div class="chapter-left-flex">
+      <div class="project-grid ${proj.media.length > 0 ? "" : "no-media"}" data-project-media-position="${proj.mediaPosition ?? "right"}" style="${proj.media.length > 0 ? "" : "grid-template-columns: 1fr;"}">
+        <div class="chapter-left-flex" style="${proj.media.length > 0 ? "" : "width: 100%; max-width: 100%;"}">
           ${
             isCanvaEditorial && idx % 2 === 1
               ? `<div class="chapter-stars-col" aria-hidden="true">
@@ -2531,7 +2531,9 @@ function renderProjectsHtml(
           </div>
         </div>
 
-        <div class="project-media-stack">
+        ${
+          proj.media.length > 0
+            ? `<div class="project-media-stack">
           ${proj.media
             .map((m, mIdx) => {
               const sourceLabel =
@@ -2548,7 +2550,9 @@ function renderProjectsHtml(
             </div>`;
             })
             .join("")}
-        </div>
+        </div>`
+            : ""
+        }
       </div>
     </article>`;
       })

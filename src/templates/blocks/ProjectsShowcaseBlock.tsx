@@ -1626,22 +1626,26 @@ export function ProjectsShowcaseBlock({
                     index % 2 === 1 ? "md:translate-y-8" : "";
                   const mediaPosition = getProjectMediaPosition(project);
                   const mediaOrder = getProjectMediaOrder(mediaPosition);
+                  const isVideo = isProjectVideoMode(project);
+                  const hasMedia = (project.media?.length ?? 0) > 0 || isVideo;
                   return (
                     <SortableProjectCardWrapper
                       key={project.id}
                       id={project.id}
                       editable={editable}
                       mediaPosition={mediaPosition}
-                      className={`grid grid-cols-1 justify-between gap-5 p-6 rounded-3xl border-4 border-black bg-white shadow-[8px_8px_0px_#000] ${staggerClass} relative before:absolute before:-top-3 before:right-8 before:w-16 before:h-5 before:bg-amber-300 before:rotate-[-2deg] before:z-10 ${mediaOrder.vertical ? "md:grid-cols-1" : "md:grid-cols-2"}`}
+                      className={`grid grid-cols-1 justify-between gap-5 p-6 rounded-3xl border-4 border-black bg-white shadow-[8px_8px_0px_#000] ${staggerClass} relative before:absolute before:-top-3 before:right-8 before:w-16 before:h-5 before:bg-amber-300 before:rotate-[-2deg] before:z-10 ${!hasMedia || mediaOrder.vertical ? "md:grid-cols-1" : "md:grid-cols-2"}`}
                     >
+                      {hasMedia && (
+                        <div
+                          className={mediaOrder.media}
+                          data-project-content="media"
+                        >
+                          {renderAdaptiveMedia(project, index)}
+                        </div>
+                      )}
                       <div
-                        className={mediaOrder.media}
-                        data-project-content="media"
-                      >
-                        {renderAdaptiveMedia(project, index)}
-                      </div>
-                      <div
-                        className={mediaOrder.details}
+                        className={`${!hasMedia ? "w-full" : mediaOrder.details}`}
                         data-project-content="details"
                       >
                         {renderProjectDetails(project, index)}
@@ -1709,27 +1713,33 @@ export function ProjectsShowcaseBlock({
                   </div>
                 </div>
 
-                {curProject && (
-                  <SortableProjectCardWrapper
-                    id={curProject.id}
-                    editable={editable}
-                    mediaPosition={mediaPosition}
-                    className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
-                  >
-                    <div
-                      className={`${mediaOrder.vertical ? "lg:col-span-12" : "lg:col-span-6"} ${mediaOrder.media}`}
-                      data-project-content="media"
+                {curProject && (() => {
+                  const isCurVideo = isProjectVideoMode(curProject);
+                  const hasCurMedia = (curProject.media?.length ?? 0) > 0 || isCurVideo;
+                  return (
+                    <SortableProjectCardWrapper
+                      id={curProject.id}
+                      editable={editable}
+                      mediaPosition={mediaPosition}
+                      className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
                     >
-                      {renderAdaptiveMedia(curProject, curIndex)}
-                    </div>
-                    <div
-                      className={`${mediaOrder.vertical ? "lg:col-span-12" : "lg:col-span-6"} ${mediaOrder.details}`}
-                      data-project-content="details"
-                    >
-                      {renderProjectDetails(curProject, curIndex)}
-                    </div>
-                  </SortableProjectCardWrapper>
-                )}
+                      {hasCurMedia && (
+                        <div
+                          className={`${mediaOrder.vertical ? "lg:col-span-12" : "lg:col-span-6"} ${mediaOrder.media}`}
+                          data-project-content="media"
+                        >
+                          {renderAdaptiveMedia(curProject, curIndex)}
+                        </div>
+                      )}
+                      <div
+                        className={`${!hasCurMedia ? "lg:col-span-12 w-full" : mediaOrder.vertical ? "lg:col-span-12" : "lg:col-span-6"} ${mediaOrder.details}`}
+                        data-project-content="details"
+                      >
+                        {renderProjectDetails(curProject, curIndex)}
+                      </div>
+                    </SortableProjectCardWrapper>
+                  );
+                })()}
               </div>
             );
           }
@@ -1741,6 +1751,8 @@ export function ProjectsShowcaseBlock({
                 {section.projects.map((project, index) => {
                   const mediaPosition = getProjectMediaPosition(project);
                   const mediaOrder = getProjectMediaOrder(mediaPosition);
+                  const isVideo = isProjectVideoMode(project);
+                  const hasMedia = (project.media?.length ?? 0) > 0 || isVideo;
                   return (
                     <SortableProjectCardWrapper
                       key={project.id}
@@ -1753,14 +1765,16 @@ export function ProjectsShowcaseBlock({
                         <div className="md:col-span-1 text-center font-editorial text-2xl font-bold opacity-60">
                           {String(index + 1).padStart(2, "0")}
                         </div>
+                        {hasMedia && (
+                          <div
+                            className={`${mediaOrder.vertical ? "md:col-span-11" : "md:col-span-4"} ${mediaOrder.media}`}
+                            data-project-content="media"
+                          >
+                            {renderAdaptiveMedia(project, index)}
+                          </div>
+                        )}
                         <div
-                          className={`${mediaOrder.vertical ? "md:col-span-11" : "md:col-span-4"} ${mediaOrder.media}`}
-                          data-project-content="media"
-                        >
-                          {renderAdaptiveMedia(project, index)}
-                        </div>
-                        <div
-                          className={`${mediaOrder.vertical ? "md:col-span-11" : "md:col-span-7"} ${mediaOrder.details}`}
+                          className={`${!hasMedia ? "md:col-span-11" : mediaOrder.vertical ? "md:col-span-11" : "md:col-span-7"} ${mediaOrder.details}`}
                           data-project-content="details"
                         >
                           {renderProjectDetails(project, index)}
@@ -1780,27 +1794,31 @@ export function ProjectsShowcaseBlock({
                 {section.projects.map((project, index) => {
                   const mediaPosition = getProjectMediaPosition(project);
                   const mediaOrder = getProjectMediaOrder(mediaPosition);
+                  const isVideo = isProjectVideoMode(project);
+                  const hasMedia = (project.media?.length ?? 0) > 0 || isVideo;
                   return (
                     <SortableProjectCardWrapper
                       key={project.id}
                       id={project.id}
                       editable={editable}
                       mediaPosition={mediaPosition}
-                      className={`grid grid-cols-1 justify-between gap-5 p-6 rounded-2xl border ${mediaOrder.vertical ? "lg:grid-cols-1" : "lg:grid-cols-2"} ${cardDec.className} ${
+                      className={`grid grid-cols-1 justify-between gap-5 p-6 rounded-2xl border ${!hasMedia || mediaOrder.vertical ? "lg:grid-cols-1" : "lg:grid-cols-2"} ${cardDec.className} ${
                         isMinimal
                           ? "border-[1px] border-[var(--primary)]/20 shadow-none"
                           : ""
                       }`}
                       style={cardDec.style}
                     >
+                      {hasMedia && (
+                        <div
+                          className={mediaOrder.media}
+                          data-project-content="media"
+                        >
+                          {renderAdaptiveMedia(project, index)}
+                        </div>
+                      )}
                       <div
-                        className={mediaOrder.media}
-                        data-project-content="media"
-                      >
-                        {renderAdaptiveMedia(project, index)}
-                      </div>
-                      <div
-                        className={mediaOrder.details}
+                        className={`${!hasMedia ? "w-full" : mediaOrder.details}`}
                         data-project-content="details"
                       >
                         {renderProjectDetails(project, index)}
@@ -1818,12 +1836,44 @@ export function ProjectsShowcaseBlock({
                 {section.projects.map((project, index) => {
                   const mediaPosition = getProjectMediaPosition(project);
                   const mediaOrder = getProjectMediaOrder(mediaPosition);
+                  const isVideo = isProjectVideoMode(project);
+                  const hasMedia = (project.media?.length ?? 0) > 0 || isVideo;
                   const mediaSpan = mediaOrder.vertical
                     ? "lg:col-span-12"
                     : "lg:col-span-7";
                   const detailsSpan = mediaOrder.vertical
                     ? "lg:col-span-12"
                     : "lg:col-span-5";
+
+                  if (!hasMedia) {
+                    return (
+                      <SortableProjectCardWrapper
+                        key={project.id}
+                        id={project.id}
+                        editable={editable}
+                        mediaPosition={mediaPosition}
+                        className="grid grid-cols-1 items-start gap-6 border-b pb-10 last:border-b-0 lg:grid-cols-12 lg:gap-10"
+                        style={{ borderColor: tokens.borderSubtle }}
+                      >
+                        <div
+                          className="flex items-start gap-4 lg:col-span-12 w-full"
+                          data-project-content="details"
+                        >
+                          <span
+                            aria-hidden="true"
+                            className="hidden shrink-0 font-editorial text-4xl leading-none opacity-45 sm:block pt-1"
+                            style={{ color: theme.primaryColor }}
+                          >
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            {renderProjectDetails(project, index)}
+                          </div>
+                        </div>
+                      </SortableProjectCardWrapper>
+                    );
+                  }
+
                   return (
                     <SortableProjectCardWrapper
                       key={project.id}
@@ -1867,6 +1917,8 @@ export function ProjectsShowcaseBlock({
                 {section.projects.map((project, index) => {
                   const mediaPosition = getProjectMediaPosition(project);
                   const mediaOrder = getProjectMediaOrder(mediaPosition);
+                  const isVideo = isProjectVideoMode(project);
+                  const hasMedia = (project.media?.length ?? 0) > 0 || isVideo;
                   return (
                     <SortableProjectCardWrapper
                       key={project.id}
@@ -1881,14 +1933,16 @@ export function ProjectsShowcaseBlock({
                         borderColor: tokens.borderSubtle,
                       }}
                     >
+                      {hasMedia && (
+                        <div
+                          className={`p-4 ${mediaOrder.vertical ? "md:col-span-12" : "md:col-span-5"} md:p-6 ${mediaOrder.media}`}
+                          data-project-content="media"
+                        >
+                          {renderAdaptiveMedia(project, index)}
+                        </div>
+                      )}
                       <div
-                        className={`p-4 ${mediaOrder.vertical ? "md:col-span-12" : "md:col-span-5"} md:p-6 ${mediaOrder.media}`}
-                        data-project-content="media"
-                      >
-                        {renderAdaptiveMedia(project, index)}
-                      </div>
-                      <div
-                        className={`flex min-w-0 flex-col justify-center p-5 pt-2 ${mediaOrder.vertical ? "md:col-span-12" : "md:col-span-7"} md:p-8 lg:p-10 ${mediaOrder.details}`}
+                        className={`flex min-w-0 flex-col justify-center p-5 pt-2 ${!hasMedia ? "md:col-span-12" : mediaOrder.vertical ? "md:col-span-12" : "md:col-span-7"} md:p-8 lg:p-10 ${mediaOrder.details}`}
                         data-project-content="details"
                       >
                         {renderProjectDetails(project, index)}
@@ -1911,6 +1965,8 @@ export function ProjectsShowcaseBlock({
                       section.projects.length % 2 === 1);
                   const mediaPosition = getProjectMediaPosition(project);
                   const mediaOrder = getProjectMediaOrder(mediaPosition);
+                  const isVideo = isProjectVideoMode(project);
+                  const hasMedia = (project.media?.length ?? 0) > 0 || isVideo;
                   if (isHeroSpan) {
                     return (
                       <SortableProjectCardWrapper
@@ -1921,14 +1977,16 @@ export function ProjectsShowcaseBlock({
                         className={`grid grid-cols-1 items-center gap-7 p-6 md:col-span-2 lg:grid-cols-12 lg:p-8 ${cardDec.className}`}
                         style={cardDec.style}
                       >
+                        {hasMedia && (
+                          <div
+                            className={`${mediaOrder.vertical ? "lg:col-span-12" : "lg:col-span-6"} ${mediaOrder.media}`}
+                            data-project-content="media"
+                          >
+                            {renderAdaptiveMedia(project, index)}
+                          </div>
+                        )}
                         <div
-                          className={`${mediaOrder.vertical ? "lg:col-span-12" : "lg:col-span-6"} ${mediaOrder.media}`}
-                          data-project-content="media"
-                        >
-                          {renderAdaptiveMedia(project, index)}
-                        </div>
-                        <div
-                          className={`${mediaOrder.vertical ? "lg:col-span-12" : "lg:col-span-6"} ${mediaOrder.details}`}
+                          className={`${!hasMedia ? "lg:col-span-12 w-full" : mediaOrder.vertical ? "lg:col-span-12" : "lg:col-span-6"} ${mediaOrder.details}`}
                           data-project-content="details"
                         >
                           {renderProjectDetails(project, index)}
@@ -1943,17 +2001,19 @@ export function ProjectsShowcaseBlock({
                       id={project.id}
                       editable={editable}
                       mediaPosition={mediaPosition}
-                      className={`grid grid-cols-1 justify-between gap-5 p-6 ${mediaOrder.vertical ? "md:grid-cols-1" : "md:grid-cols-2"} ${cardDec.className}`}
+                      className={`grid grid-cols-1 justify-between gap-5 p-6 ${!hasMedia || mediaOrder.vertical ? "md:grid-cols-1" : "md:grid-cols-2"} ${cardDec.className}`}
                       style={cardDec.style}
                     >
+                      {hasMedia && (
+                        <div
+                          className={mediaOrder.media}
+                          data-project-content="media"
+                        >
+                          {renderAdaptiveMedia(project, index)}
+                        </div>
+                      )}
                       <div
-                        className={mediaOrder.media}
-                        data-project-content="media"
-                      >
-                        {renderAdaptiveMedia(project, index)}
-                      </div>
-                      <div
-                        className={mediaOrder.details}
+                        className={`${!hasMedia ? "w-full" : mediaOrder.details}`}
                         data-project-content="details"
                       >
                         {renderProjectDetails(project, index)}
@@ -1971,13 +2031,15 @@ export function ProjectsShowcaseBlock({
                 {section.projects.map((project, index) => {
                   const mediaPosition = getProjectMediaPosition(project);
                   const mediaOrder = getProjectMediaOrder(mediaPosition);
+                  const isVideo = isProjectVideoMode(project);
+                  const hasMedia = (project.media?.length ?? 0) > 0 || isVideo;
                   return (
                     <SortableProjectCardWrapper
                       key={project.id}
                       id={project.id}
                       editable={editable}
                       mediaPosition={mediaPosition}
-                      className={`grid grid-cols-1 justify-between gap-5 p-5 md:p-6 ${mediaOrder.vertical ? "md:grid-cols-1" : "md:grid-cols-2"} ${
+                      className={`grid grid-cols-1 justify-between gap-5 p-5 md:p-6 ${!hasMedia || mediaOrder.vertical ? "md:grid-cols-1" : "md:grid-cols-2"} ${
                         index % 4 === 0
                           ? "lg:col-span-7 lg:row-span-2"
                           : index % 4 === 1 || index % 4 === 2
@@ -1988,14 +2050,16 @@ export function ProjectsShowcaseBlock({
                       }`}
                       style={cardDec.style}
                     >
+                      {hasMedia && (
+                        <div
+                          className={mediaOrder.media}
+                          data-project-content="media"
+                        >
+                          {renderAdaptiveMedia(project, index)}
+                        </div>
+                      )}
                       <div
-                        className={mediaOrder.media}
-                        data-project-content="media"
-                      >
-                        {renderAdaptiveMedia(project, index)}
-                      </div>
-                      <div
-                        className={mediaOrder.details}
+                        className={`${!hasMedia ? "w-full" : mediaOrder.details}`}
                         data-project-content="details"
                       >
                         {renderProjectDetails(project, index)}
@@ -2021,6 +2085,8 @@ export function ProjectsShowcaseBlock({
                   defaultMediaPosition,
                 );
                 const mediaOrder = getProjectMediaOrder(mediaPosition);
+                const isVideo = isProjectVideoMode(project);
+                const hasMedia = (project.media?.length ?? 0) > 0 || isVideo;
                 return (
                   <SortableProjectCardWrapper
                     key={project.id}
@@ -2030,14 +2096,16 @@ export function ProjectsShowcaseBlock({
                     className={`grid grid-cols-1 items-center gap-7 p-6 lg:grid-cols-12 lg:p-8 ${cardDec.className}`}
                     style={cardDec.style}
                   >
+                    {hasMedia && (
+                      <div
+                        className={`${mediaOrder.vertical ? "lg:col-span-12" : "lg:col-span-6"} ${mediaOrder.media}`}
+                        data-project-content="media"
+                      >
+                        {renderAdaptiveMedia(project, index)}
+                      </div>
+                    )}
                     <div
-                      className={`${mediaOrder.vertical ? "lg:col-span-12" : "lg:col-span-6"} ${mediaOrder.media}`}
-                      data-project-content="media"
-                    >
-                      {renderAdaptiveMedia(project, index)}
-                    </div>
-                    <div
-                      className={`${mediaOrder.vertical ? "lg:col-span-12" : "lg:col-span-6"} ${mediaOrder.details}`}
+                      className={`${!hasMedia ? "lg:col-span-12" : mediaOrder.vertical ? "lg:col-span-12" : "lg:col-span-6"} ${mediaOrder.details}`}
                       data-project-content="details"
                     >
                       {renderProjectDetails(project, index)}
