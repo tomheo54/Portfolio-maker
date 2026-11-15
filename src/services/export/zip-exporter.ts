@@ -2200,17 +2200,43 @@ function renderSkillsHtml(
     <div class="skills-header-row">
       <h2 class="section-heading" style="margin-bottom:0;">${escapeHtml(skills.title)}</h2>
     </div>
-    <div class="skills-grid">
+    <div class="skills-grid" style="${
+      skills.cardColumns === 1 || skills.cardWidth === "100%" || skills.cardWidth === "full"
+        ? "grid-template-columns: 1fr;"
+        : skills.cardColumns === 2
+        ? "grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));"
+        : ""
+    }">
       ${skills.categories
         .map(
-          (cat, categoryIndex) => `<div class="${
+          (cat, categoryIndex) => {
+            const cardW = cat.width || skills.cardWidth;
+            const cardH = cat.height || skills.cardHeight;
+            let customCss = "";
+            if (cardW && cardW !== "auto") {
+              const resolvedW = cardW === "full" || cardW === "100%" ? "100%" :
+                cardW === "3/4" || cardW === "75%" ? "75%" :
+                cardW === "2/3" || cardW === "66%" ? "66.666%" :
+                cardW === "1/2" || cardW === "50%" ? "50%" :
+                cardW === "1/3" || cardW === "33%" ? "33.333%" : cardW;
+              customCss += `width:${resolvedW};max-width:100%;`;
+            }
+            if (cardH && cardH !== "auto") {
+              customCss += `min-height:${cardH};`;
+            }
+            if (skills.cardAlign === "center") {
+              customCss += "margin-left:auto;margin-right:auto;justify-self:center;";
+            } else if (skills.cardAlign === "right") {
+              customCss += "margin-left:auto;justify-self:end;";
+            }
+            return `<div class="${
             isCanvaEditorial
               ? "skill-col reveal-on-scroll"
               : "surface-block reveal-on-scroll"
           }" style="${
             isCanvaEditorial
-              ? `transition-delay:${categoryIndex * 100}ms;`
-              : `margin-bottom:0;transition-delay:${categoryIndex * 100}ms;`
+              ? `transition-delay:${categoryIndex * 100}ms;${customCss}`
+              : `margin-bottom:0;transition-delay:${categoryIndex * 100}ms;${customCss}`
           }">
         <h3>${escapeHtml(cat.name)}</h3>
         ${
@@ -2251,7 +2277,8 @@ function renderSkillsHtml(
             .join("")}
         </div>`
         }
-      </div>`,
+      </div>`;
+          }
         )
         .join("")}
     </div>

@@ -30,6 +30,46 @@ export function SkillsBlock({
   const showBars =
     section.variant === 'progress-bars' || section.variant === 'canva-visual-grid';
 
+  const resolveCardWidth = (catWidth?: string) => {
+    const w = catWidth || section.cardWidth;
+    if (!w || w === 'auto') return undefined;
+    if (w === 'full' || w === '100%') return '100%';
+    if (w === '3/4' || w === '75%') return '75%';
+    if (w === '2/3' || w === '66%') return '66.666%';
+    if (w === '1/2' || w === '50%') return '50%';
+    if (w === '1/3' || w === '33%') return '33.333%';
+    return w;
+  };
+
+  const resolveCardHeight = (catHeight?: string) => {
+    const h = catHeight || section.cardHeight;
+    if (!h || h === 'auto') return undefined;
+    return h;
+  };
+
+  let gridColsClass = 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+  if (section.cardColumns === 1 || section.cardWidth === 'full' || section.cardWidth === '100%') {
+    gridColsClass = 'grid-cols-1';
+  } else if (section.cardColumns === 2) {
+    gridColsClass = 'grid-cols-1 md:grid-cols-2';
+  } else if (section.cardColumns === 4) {
+    gridColsClass = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
+  } else if (section.cardColumns === 3) {
+    gridColsClass = 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+  } else if (section.categories.length === 1 && (section.cardWidth || section.cardHeight)) {
+    gridColsClass = 'grid-cols-1';
+  }
+
+  const justifySelf =
+    section.cardAlign === 'center' ? 'center' :
+    section.cardAlign === 'right' ? 'end' :
+    section.cardWidth && section.cardWidth !== 'auto' ? 'start' : undefined;
+
+  const cardMargin =
+    section.cardAlign === 'center' ? '0 auto' :
+    section.cardAlign === 'right' ? '0 0 0 auto' :
+    undefined;
+
   const renderIconBadges = (
     skills: SkillsSection['categories'][number]['skills']
   ) => (
@@ -86,14 +126,21 @@ export function SkillsBlock({
           </div>
 
           {/* Unboxed editorial columns directly on paper */}
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {section.categories.map((cat, idx) => (
+          <div className={`grid ${gridColsClass} gap-8`}>
+            {section.categories.map((cat, idx) => {
+              const cardW = resolveCardWidth(cat.width);
+              const cardH = resolveCardHeight(cat.height);
+              return (
               <div
                 key={idx}
                 className="surface-block reveal-on-scroll space-y-4 border-t pt-4"
                 style={{
                   borderColor: 'var(--primary, #735340)',
                   transitionDelay: `${idx * 100}ms`,
+                  ...(cardW ? { width: cardW, maxWidth: '100%' } : {}),
+                  ...(cardH ? { minHeight: cardH } : {}),
+                  ...(justifySelf ? { justifySelf } : {}),
+                  ...(cardMargin ? { margin: cardMargin } : {}),
                 }}
               >
                 <h3
@@ -152,7 +199,8 @@ export function SkillsBlock({
                   </div>
                 )}
               </div>
-            ))}
+            );
+          })}
           </div>
 
           <div
@@ -184,14 +232,21 @@ export function SkillsBlock({
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {section.categories.map((cat, idx) => (
+      <div className={`grid ${gridColsClass} gap-6`}>
+        {section.categories.map((cat, idx) => {
+          const cardW = resolveCardWidth(cat.width);
+          const cardH = resolveCardHeight(cat.height);
+          return (
           <div
             key={idx}
             className={`surface-block reveal-on-scroll p-6 ${cardDec.className}`}
             style={{
               ...cardDec.style,
               transitionDelay: `${idx * 100}ms`,
+              ...(cardW ? { width: cardW, maxWidth: '100%' } : {}),
+              ...(cardH ? { minHeight: cardH } : {}),
+              ...(justifySelf ? { justifySelf } : {}),
+              ...(cardMargin ? { margin: cardMargin } : {}),
             }}
           >
             <div className="mb-4 flex items-center gap-2.5">
@@ -263,7 +318,8 @@ export function SkillsBlock({
               </div>
             )}
           </div>
-        ))}
+        );
+      })}
       </div>
     </section>
   );

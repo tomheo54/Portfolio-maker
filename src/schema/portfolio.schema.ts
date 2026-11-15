@@ -358,9 +358,15 @@ export const SkillsSectionSchema = z.object({
     "canva-visual-grid",
   ]),
   title: z.string(),
+  cardWidth: z.string().optional(),
+  cardHeight: z.string().optional(),
+  cardColumns: z.number().int().min(1).max(4).optional(),
+  cardAlign: z.enum(["left", "center", "right"]).optional(),
   categories: z.array(
     z.object({
       name: z.string(),
+      width: z.string().optional(),
+      height: z.string().optional(),
       skills: z.array(
         z.object({
           name: z.string(),

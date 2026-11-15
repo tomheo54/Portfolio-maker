@@ -1421,6 +1421,217 @@ export function SectionInspector({
                 />
               </div>
 
+              {/* Kích thước thẻ (Width & Height) cho Skills */}
+              <div className="space-y-3 rounded-xl border border-stone-200 bg-stone-50 p-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-stone-800">
+                    Kích thước thẻ kỹ năng (Width &amp; Height)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updateSection(idx, {
+                        ...section,
+                        cardWidth: undefined,
+                        cardHeight: undefined,
+                        cardColumns: undefined,
+                        cardAlign: undefined,
+                      })
+                    }
+                    className="text-[10px] text-amber-700 hover:text-amber-800 font-semibold"
+                  >
+                    Đặt lại mặc định
+                  </button>
+                </div>
+
+                {/* Độ rộng thẻ (Width) */}
+                <div>
+                  <div className="flex items-center justify-between text-[11px] font-semibold text-stone-700">
+                    <span>Độ rộng thẻ (Width)</span>
+                    <span className="text-[10px] text-stone-500 font-mono">
+                      {section.cardWidth || "Mặc định (Auto / 3 cột)"}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 grid grid-cols-5 gap-1 text-[10px]">
+                    {[
+                      { id: "100%", label: "100%" },
+                      { id: "75%", label: "75%" },
+                      { id: "50%", label: "50%" },
+                      { id: "33%", label: "33%" },
+                      { id: "auto", label: "Tự động" },
+                    ].map((btn) => (
+                      <button
+                        key={btn.id}
+                        type="button"
+                        onClick={() =>
+                          updateSection(idx, {
+                            ...section,
+                            cardWidth: btn.id === "auto" ? undefined : btn.id,
+                            ...(btn.id === "100%" ? { cardColumns: 1 } : {}),
+                          })
+                        }
+                        className={`rounded border px-1.5 py-1 text-center font-medium transition ${
+                          (btn.id === "auto" && !section.cardWidth) || section.cardWidth === btn.id
+                            ? "border-amber-600 bg-amber-100 font-bold text-amber-900"
+                            : "border-stone-200 bg-white text-stone-600 hover:bg-stone-100"
+                        }`}
+                      >
+                        {btn.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Thanh trượt Width */}
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-[10px] text-stone-500 shrink-0">Trượt (px):</span>
+                    <input
+                      type="range"
+                      min="260"
+                      max="1100"
+                      step="20"
+                      value={
+                        section.cardWidth && section.cardWidth.endsWith("px")
+                          ? parseInt(section.cardWidth, 10)
+                          : 380
+                      }
+                      onChange={(e) =>
+                        updateSection(idx, {
+                          ...section,
+                          cardWidth: `${e.target.value}px`,
+                        })
+                      }
+                      className="min-w-0 flex-1 accent-amber-600"
+                    />
+                    <input
+                      type="text"
+                      placeholder="VD: 550px / 60%"
+                      value={section.cardWidth || ""}
+                      onChange={(e) =>
+                        updateSection(idx, {
+                          ...section,
+                          cardWidth: e.target.value || undefined,
+                        })
+                      }
+                      className="w-24 rounded border border-stone-200 bg-white px-2 py-0.5 text-center text-[10px] font-mono"
+                    />
+                  </div>
+                </div>
+
+                {/* Chiều cao thẻ (Height) */}
+                <div>
+                  <div className="flex items-center justify-between text-[11px] font-semibold text-stone-700">
+                    <span>Chiều cao thẻ (Height / Min-Height)</span>
+                    <span className="text-[10px] text-stone-500 font-mono">
+                      {section.cardHeight || "Tự động (Auto)"}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 grid grid-cols-4 gap-1 text-[10px]">
+                    {[
+                      { id: "auto", label: "Tự động" },
+                      { id: "220px", label: "220px" },
+                      { id: "300px", label: "300px" },
+                      { id: "400px", label: "400px" },
+                    ].map((btn) => (
+                      <button
+                        key={btn.id}
+                        type="button"
+                        onClick={() =>
+                          updateSection(idx, {
+                            ...section,
+                            cardHeight: btn.id === "auto" ? undefined : btn.id,
+                          })
+                        }
+                        className={`rounded border px-1.5 py-1 text-center font-medium transition ${
+                          (btn.id === "auto" && !section.cardHeight) || section.cardHeight === btn.id
+                            ? "border-amber-600 bg-amber-100 font-bold text-amber-900"
+                            : "border-stone-200 bg-white text-stone-600 hover:bg-stone-100"
+                        }`}
+                      >
+                        {btn.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Thanh trượt Height */}
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-[10px] text-stone-500 shrink-0">Trượt (px):</span>
+                    <input
+                      type="range"
+                      min="160"
+                      max="650"
+                      step="10"
+                      value={
+                        section.cardHeight && section.cardHeight.endsWith("px")
+                          ? parseInt(section.cardHeight, 10)
+                          : 280
+                      }
+                      onChange={(e) =>
+                        updateSection(idx, {
+                          ...section,
+                          cardHeight: `${e.target.value}px`,
+                        })
+                      }
+                      className="min-w-0 flex-1 accent-amber-600"
+                    />
+                    <input
+                      type="text"
+                      placeholder="VD: 320px"
+                      value={section.cardHeight || ""}
+                      onChange={(e) =>
+                        updateSection(idx, {
+                          ...section,
+                          cardHeight: e.target.value || undefined,
+                        })
+                      }
+                      className="w-20 rounded border border-stone-200 bg-white px-2 py-0.5 text-center text-[10px] font-mono"
+                    />
+                  </div>
+                </div>
+
+                {/* Căn lề thẻ & Số cột */}
+                <div className="grid grid-cols-2 gap-2 pt-1 border-t border-stone-200/60">
+                  <div>
+                    <label className="block text-[10px] font-semibold text-stone-600">
+                      Căn vị trí thẻ
+                    </label>
+                    <select
+                      value={section.cardAlign || "left"}
+                      onChange={(e) =>
+                        updateSection(idx, {
+                          ...section,
+                          cardAlign: e.target.value as "left" | "center" | "right",
+                        })
+                      }
+                      className="mt-1 w-full rounded border border-stone-200 bg-white px-2 py-1 text-[11px]"
+                    >
+                      <option value="left">Căn trái (Mặc định)</option>
+                      <option value="center">Căn giữa trang</option>
+                      <option value="right">Căn phải</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-semibold text-stone-600">
+                      Số cột hiển thị
+                    </label>
+                    <select
+                      value={section.cardColumns || 3}
+                      onChange={(e) =>
+                        updateSection(idx, {
+                          ...section,
+                          cardColumns: Number(e.target.value) as 1 | 2 | 3 | 4,
+                        })
+                      }
+                      className="mt-1 w-full rounded border border-stone-200 bg-white px-2 py-1 text-[11px]"
+                    >
+                      <option value={1}>1 cột (Toàn dòng)</option>
+                      <option value={2}>2 cột (Nửa dòng)</option>
+                      <option value={3}>3 cột (Mặc định)</option>
+                      <option value={4}>4 cột</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
               {/* Drag-and-Drop Categories Reordering */}
               <div>
                 <label className="block text-[11px] font-semibold text-stone-700">
@@ -1458,6 +1669,36 @@ export function SectionInspector({
                             }}
                             className="w-full rounded border border-stone-200 px-2 py-0.5 text-xs font-bold"
                           />
+                          <div className="flex items-center gap-2">
+                            <label className="flex items-center gap-1 text-[9px] text-stone-500 font-medium">
+                              Rộng:
+                              <input
+                                type="text"
+                                placeholder={section.cardWidth || "Mặc định"}
+                                value={cat.width || ""}
+                                onChange={(e) => {
+                                  const next = [...section.categories];
+                                  next[cIdx] = { ...cat, width: e.target.value || undefined };
+                                  updateSection(idx, { ...section, categories: next });
+                                }}
+                                className="w-16 rounded border border-stone-200 bg-white px-1 py-0.5 text-[9px] font-mono"
+                              />
+                            </label>
+                            <label className="flex items-center gap-1 text-[9px] text-stone-500 font-medium">
+                              Cao:
+                              <input
+                                type="text"
+                                placeholder={section.cardHeight || "Tự động"}
+                                value={cat.height || ""}
+                                onChange={(e) => {
+                                  const next = [...section.categories];
+                                  next[cIdx] = { ...cat, height: e.target.value || undefined };
+                                  updateSection(idx, { ...section, categories: next });
+                                }}
+                                className="w-16 rounded border border-stone-200 bg-white px-1 py-0.5 text-[9px] font-mono"
+                              />
+                            </label>
+                          </div>
                           <p className="text-[10px] text-stone-500 truncate">
                             {cat.skills.map((s) => s.name).join(", ")}
                           </p>
