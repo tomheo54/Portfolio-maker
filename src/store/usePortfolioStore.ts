@@ -761,33 +761,54 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
     docxImagesPool = {},
   }) =>
     set((state) => {
-      const slugBase = summary.fullName
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/đ/g, 'd')
-        .replace(/Đ/g, 'D')
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, '');
-      const nextSlug = slugBase ? `${slugBase}portfolio` : INITIAL_DOC.slug;
+      const currentDoc = state.document;
+      const heroSec = currentDoc.sections.find((s): s is HeroSection => s.type === 'hero');
 
-      // Always map from INITIAL_DOC.sections so section order, variants, decorations,
-      // ctaButtons, and Canva cover headline ("Digital Portfolio") stay 100% locked
-      const nextSections = INITIAL_DOC.sections.map((refSec) => {
+      const trimmedName = summary.fullName?.trim();
+      const slugBase = trimmedName
+        ? trimmedName
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D')
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, '')
+        : '';
+      const nextSlug = trimmedName && trimmedName !== 'Nguyễn Văn A' && slugBase
+        ? `${slugBase}portfolio`
+        : currentDoc.slug || INITIAL_DOC.slug;
+
+      // Base off current state.document.sections so section order, variants, decorations,
+      // mediaPosition, layoutInverted, ctaButtons, custom typography & colors are 100% PRESERVED!
+      const baseSections = currentDoc.sections && currentDoc.sections.length > 0
+        ? currentDoc.sections
+        : INITIAL_DOC.sections;
+
+      const nextSections = baseSections.map((refSec) => {
         if (refSec.type === 'hero') {
           return {
             ...refSec,
+            // Keep user's current variant and layout
             variant: refSec.variant,
-            headline: 'Digital Portfolio',
-            fullName: summary.fullName,
-            roleTitle: summary.roleTitle,
-            shortBio: summary.shortBio,
-            quickTags: summary.quickTags,
-            ctaButtons: refSec.ctaButtons,
-            decorations: refSec.decorations,
-            avatar: studentAvatarUrl
+            // Keep user's current headline (do NOT force 'Digital Portfolio')
+            headline: refSec.headline,
+            // Only update text if summary actually has a non-empty string that is not dummy
+            fullName: trimmedName && trimmedName !== 'Nguyễn Văn A'
+              ? trimmedName
+              : (refSec.fullName || trimmedName || ''),
+            roleTitle: summary.roleTitle?.trim() && summary.roleTitle.trim() !== 'AI Content Creator & Digital Marketer'
+              ? summary.roleTitle.trim()
+              : (refSec.roleTitle || summary.roleTitle?.trim() || ''),
+            shortBio: summary.shortBio?.trim()
+              ? summary.shortBio.trim()
+              : refSec.shortBio,
+            quickTags: summary.quickTags && summary.quickTags.length > 0
+              ? summary.quickTags
+              : refSec.quickTags,
+            avatar: studentAvatarUrl?.trim()
               ? {
                   ...refSec.avatar,
-                  url: studentAvatarUrl,
+                  url: studentAvatarUrl.trim(),
                   sourceType: 'user-uploaded' as const,
                 }
               : refSec.avatar,
@@ -796,57 +817,79 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
         if (refSec.type === 'about') {
           return {
             ...refSec,
-            variant: refSec.variant,
-            biography: summary.biography,
-            highlights: summary.highlights,
-            contactInfo: studentEmail
-              ? { ...refSec.contactInfo, email: studentEmail }
+            // Keep all layout properties intact: variant, mediaPosition, layoutInverted, cardFrame, cardOrder, cardPositions, cardTitles, etc.!
+            biography: summary.biography?.trim()
+              ? summary.biography.trim()
+              : refSec.biography,
+            highlights: summary.highlights && summary.highlights.length > 0
+              ? summary.highlights
+              : refSec.highlights,
+            contactInfo: studentEmail?.trim()
+              ? { ...refSec.contactInfo, email: studentEmail.trim() }
               : refSec.contactInfo,
           };
         }
         if (refSec.type === 'skills') {
           return {
             ...refSec,
-            variant: refSec.variant,
-            categories: summary.skills,
+            // Keep variant and layout intact!
+            categories: summary.skills && summary.skills.length > 0
+              ? summary.skills
+              : refSec.categories,
           };
         }
         if (refSec.type === 'projects') {
           return {
             ...refSec,
-            variant: refSec.variant,
-            projects: summary.projects,
+            // Keep variant and layout intact!
+            projects: summary.projects && summary.projects.length > 0
+              ? summary.projects
+              : refSec.projects,
           };
         }
+        // All other sections (experience, education, contact, etc.) stay untouched!
         return refSec;
       });
 
       const projectsSecIdx = nextSections.findIndex((s) => s.type === 'projects');
 
-      const studentTheme: ThemeConfig =
-        summary.suggestedTheme ||
-        resolveThemeFromContext([
-          summary.roleTitle,
-          ...summary.quickTags,
-          ...summary.projects.map((p) => p.category),
-          ...summary.projects.map((p) => p.title),
-        ]);
+      const nextFullName = trimmedName && trimmedName !== 'Nguyễn Văn A'
+        ? trimmedName
+        : (currentDoc.profileOwner?.fullName || heroSec?.fullName || trimmedName || '');
+      const nextRoleTitle = summary.roleTitle?.trim() && summary.roleTitle.trim() !== 'AI Content Creator & Digital Marketer'
+        ? summary.roleTitle.trim()
+        : (currentDoc.profileOwner?.roleTitle || heroSec?.roleTitle || summary.roleTitle?.trim() || '');
+      const nextEmail = studentEmail?.trim() || currentDoc.profileOwner?.email;
+      const nextAvatarUrl = studentAvatarUrl?.trim() || currentDoc.profileOwner?.avatar?.url;
 
       return {
         ...pushHistory(state, {
-          ...INITIAL_DOC,
-          id: state.document.id,
+          ...currentDoc,
           slug: nextSlug,
-          templateId: 'canva-editorial',
-          theme: studentTheme,
+          // PRESERVE user's current templateId and theme! DO NOT overwrite layout or colors!
+          templateId: currentDoc.templateId || 'canva-editorial',
+          theme: currentDoc.theme,
           imageGenerationConfig: {
             mode: imageMode,
             visualStyle,
           },
           seo: {
-            ...INITIAL_DOC.seo,
-            title: `${summary.fullName} | Digital Portfolio`,
-            description: summary.shortBio,
+            ...currentDoc.seo,
+            title: nextFullName ? `${nextFullName} | Digital Portfolio` : currentDoc.seo?.title || INITIAL_DOC.seo?.title,
+            description: summary.shortBio?.trim() || currentDoc.seo?.description || INITIAL_DOC.seo?.description,
+          },
+          profileOwner: {
+            ...currentDoc.profileOwner,
+            fullName: nextFullName,
+            roleTitle: nextRoleTitle,
+            email: nextEmail,
+            avatar: nextAvatarUrl
+              ? {
+                  ...(currentDoc.profileOwner?.avatar || {}),
+                  url: nextAvatarUrl,
+                  sourceType: 'user-uploaded' as const,
+                }
+              : currentDoc.profileOwner?.avatar,
           },
           sections: nextSections,
         }),

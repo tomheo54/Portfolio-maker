@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   Upload,
@@ -20,7 +20,13 @@ import {
   RefreshCw,
   AlertCircle,
 } from 'lucide-react';
-import type { ImageMode, ProjectMediaItem, VisualStyle } from '@/schema/portfolio.schema';
+import type {
+  HeroSection,
+  AboutSection,
+  ImageMode,
+  ProjectMediaItem,
+  VisualStyle,
+} from '@/schema/portfolio.schema';
 import type {
   DetectedAssignment,
   RawDocxExtractionResult,
@@ -87,7 +93,14 @@ const VISUAL_STYLE_OPTIONS: Array<{ value: VisualStyle; label: string }> = [
 ];
 
 export function DocxImportWizard({ open, onClose }: DocxImportWizardProps) {
-  const { applyDocxSummaryToPortfolio } = usePortfolioStore();
+  const { applyDocxSummaryToPortfolio, document } = usePortfolioStore();
+
+  const heroSec = document?.sections?.find((s): s is HeroSection => s.type === 'hero');
+  const aboutSec = document?.sections?.find((s): s is AboutSection => s.type === 'about');
+  const currentFullName = document?.profileOwner?.fullName || heroSec?.fullName || '';
+  const currentRoleTitle = document?.profileOwner?.roleTitle || heroSec?.roleTitle || '';
+  const currentEmail = document?.profileOwner?.email || aboutSec?.contactInfo?.email || '';
+  const currentAvatar = document?.profileOwner?.avatar?.url || heroSec?.avatar?.url || '';
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [intakeMode, setIntakeMode] = useState<DocxIntakeMode>('single');
@@ -100,12 +113,21 @@ export function DocxImportWizard({ open, onClose }: DocxImportWizardProps) {
   const [selectedAssignmentKeys, setSelectedAssignmentKeys] = useState<string[]>([]);
   const [assignmentFilter, setAssignmentFilter] = useState('');
 
-  const [fullName, setFullName] = useState('Nguyễn Văn A');
-  const [roleTitle, setRoleTitle] = useState('AI Content Creator & Digital Marketer');
-  const [email, setEmail] = useState('nguyenvana@example.com');
-  const [avatarUrl, setAvatarUrl] = useState('');
+  const [fullName, setFullName] = useState(currentFullName);
+  const [roleTitle, setRoleTitle] = useState(currentRoleTitle);
+  const [email, setEmail] = useState(currentEmail);
+  const [avatarUrl, setAvatarUrl] = useState(currentAvatar);
   const [avatarFileName, setAvatarFileName] = useState<string | null>(null);
   const [avatarPreviewError, setAvatarPreviewError] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setFullName(currentFullName);
+      setRoleTitle(currentRoleTitle);
+      setEmail(currentEmail);
+      setAvatarUrl(currentAvatar);
+    }
+  }, [open, currentFullName, currentRoleTitle, currentEmail, currentAvatar]);
 
   const [imageMode, setImageMode] = useState<ImageMode>('hybrid-auto');
   const [visualStyle, setVisualStyle] = useState<VisualStyle>('canva-pastel-graphic');
@@ -666,9 +688,10 @@ export function DocxImportWizard({ open, onClose }: DocxImportWizardProps) {
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="VD: Nguyễn Văn A"
+                    placeholder={currentFullName || "Để trống để giữ nguyên, không thay đổi"}
                     className="mt-1 w-full rounded-xl border border-stone-200 px-3.5 py-2 text-sm outline-none focus:border-amber-500"
                   />
+                  <p className="mt-1 text-[11px] text-stone-500">Để trống nếu muốn giữ nguyên tên hiện tại</p>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-stone-700">
@@ -678,9 +701,10 @@ export function DocxImportWizard({ open, onClose }: DocxImportWizardProps) {
                     type="text"
                     value={roleTitle}
                     onChange={(e) => setRoleTitle(e.target.value)}
-                    placeholder="VD: Content Marketing & AI Specialist"
+                    placeholder={currentRoleTitle || "Để trống để giữ nguyên, không thay đổi"}
                     className="mt-1 w-full rounded-xl border border-stone-200 px-3.5 py-2 text-sm outline-none focus:border-amber-500"
                   />
+                  <p className="mt-1 text-[11px] text-stone-500">Để trống nếu muốn giữ nguyên ngành học</p>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-stone-700">
@@ -690,8 +714,10 @@ export function DocxImportWizard({ open, onClose }: DocxImportWizardProps) {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    placeholder={currentEmail || "Để trống để giữ nguyên email hiện tại"}
                     className="mt-1 w-full rounded-xl border border-stone-200 px-3.5 py-2 text-sm outline-none focus:border-amber-500"
                   />
+                  <p className="mt-1 text-[11px] text-stone-500">Để trống nếu không muốn thay đổi email</p>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-stone-700">
@@ -758,7 +784,7 @@ export function DocxImportWizard({ open, onClose }: DocxImportWizardProps) {
                         placeholder={
                           avatarUrl.startsWith('data:')
                             ? 'Đang dùng ảnh tải từ máy (hoặc dán URL để thay thế)'
-                            : 'Để trống để giữ ảnh mặc định hoặc dán URL'
+                            : 'Để trống để giữ nguyên ảnh hiện tại hoặc dán URL mới'
                         }
                         className="w-full rounded-xl border border-stone-200 px-3 py-1.5 text-xs outline-none focus:border-amber-500"
                       />
@@ -769,8 +795,7 @@ export function DocxImportWizard({ open, onClose }: DocxImportWizardProps) {
 
               <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-[#735340]/25 bg-[#FFF3E6] px-4 py-2.5 text-xs text-[#3E2723]">
                 <span>
-                  🎨 <strong>Chuẩn bố cục Canva gốc:</strong> Giữ cố định thiết kế{' '}
-                  <em>Canva Editorial</em> &amp; tiêu đề bìa <strong>Digital Portfolio</strong>; chỉ thay nội dung học viên, ảnh đại diện &amp; bài tập.
+                  🎨 <strong>Giữ nguyên bố cục:</strong> Giữ nguyên 100% bố cục, màu sắc và các mục bạn để trống; chỉ đưa bài tập và thông tin cần cập nhật vào trang.
                 </span>
                 <div className="flex items-center gap-1" aria-hidden="true">
                   <span className="h-3.5 w-3.5 rounded-full border border-black/15 bg-[#FFF3E6]" />
