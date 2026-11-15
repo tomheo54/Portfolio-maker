@@ -348,7 +348,7 @@
         },
         {
           "id": "proj-docx-3-1794695457672",
-          "title": "Tổng quan về trí tuệ nhân tạo ",
+          "title": "Viết Prompt hiệu quả cho các tác vụ học tập ",
           "category": "AI Prompt Engineering",
           "sourceDocxFileName": "Bài 3.docx",
           "docxUrl": "/api/docx-files?id=1533a56b-d6a1-4baf-9be0-a6fce6c77273&name=B%C3%A0i%203.docx",
@@ -388,6 +388,8 @@
           "tags": [],
           "layoutInverted": false,
           "mediaPosition": "right",
+          "chapterTitle": "Chương 3: Tổng quan về trí tuệ nhân tạo ",
+          "exerciseNumber": "Mục  3.4",
           "takeawayBulletShape": "star"
         },
         {
@@ -395,6 +397,7 @@
           "title": "Sử dụng công cụ hợp tác trực tuyến cho dự án nhóm",
           "category": "AI Prompt Engineering",
           "sourceDocxFileName": "Bài 4.docx",
+          "docxUrl": "/api/docx-files?id=37b311b3-32f6-41df-a204-52d1a80b0d40&name=B%C3%A0i%204.docx",
           "assignmentBrief": "Thực hành quy trình tổ chức, điều hành và ghi nhận một cuộc họp nhóm trực tuyến chuyên nghiệp về chủ đề: \"Ứng dụng AI trong học tập của sinh viên: lợi ích, rủi ro và nguyên tắc sử dụng\".",
           "summary": "Thống nhất 3 nguyên tắc cốt lõi khi dùng AI trong nhóm: Chỉ dùng để tham khảo hỗ trợ – Bắt buộc kiểm chứng thông tin từ giáo trình – Khai báo minh bạch khi sử dụng.   Điểm nhấn: Quy trình vận hành cực kỳ kỷ luật, có đầy đủ ảnh minh chứng đầu – cuối cuộc họp cùng những đề xuất cải thiện thực tế cho từng vị trí (như dùng đồng hồ đếm ngược 1 phút/lượt nói, gửi slide trước khi họp).  ",
           "keyTakeaways": [
