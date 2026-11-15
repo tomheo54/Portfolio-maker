@@ -2755,22 +2755,13 @@ export function SectionInspector({
                         />
                       </div>
 
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between gap-2">
-                          <div>
-                            <label className="block text-[10px] font-semibold text-stone-700">
-                              Kết quả &amp; điểm nhấn
-                            </label>
-                            <p className="text-[9px] text-stone-500">
-                              {currentProject.takeawayBulletShape === "none"
-                                ? "Hiển thị văn bản liền mạch (không có dấu đầu dòng)."
-                                : "Nhập vào 1 ô, mỗi ý bắt đầu bằng dấu gạch ngang (-) ở đầu dòng."}
-                            </p>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <label className="text-[10px] font-medium text-stone-600">
-                              Hình dáng:
-                            </label>
+                      <div className="space-y-1.5">
+                        <div className="flex flex-wrap items-center justify-between gap-1.5">
+                          <label className="text-[10px] font-semibold text-stone-700">
+                            Kết quả &amp; điểm nhấn
+                          </label>
+                          <div className="flex items-center gap-1 shrink-0">
+                            <span className="text-[9px] text-stone-500">Kiểu:</span>
                             <select
                               aria-label="Hình dáng gạch đầu dòng"
                               value={currentProject.takeawayBulletShape ?? "circle"}
@@ -2786,18 +2777,23 @@ export function SectionInspector({
                                     | "none",
                                 })
                               }
-                              className="rounded border border-stone-200 bg-white px-2 py-0.5 text-[10px] text-stone-700"
+                              className="rounded border border-stone-200 bg-white px-1.5 py-0.5 text-[10px] text-stone-700 outline-none focus:border-amber-500"
                             >
-                              <option value="circle">● Tròn (Mặc định)</option>
+                              <option value="circle">● Tròn</option>
                               <option value="square">■ Vuông</option>
                               <option value="hyphen">- Dấu gạch</option>
                               <option value="star">★ Ngôi sao</option>
                               <option value="check">✔ Dấu tích</option>
                               <option value="diamond">◆ Kim cương</option>
-                              <option value="none">None (Không có / Văn bản liền)</option>
+                              <option value="none">None (Liền dòng)</option>
                             </select>
                           </div>
                         </div>
+                        <p className="text-[9px] leading-snug text-stone-500">
+                          {currentProject.takeawayBulletShape === "none"
+                            ? "Hiển thị văn bản liền mạch (không có dấu đầu dòng)."
+                            : "Nhập vào 1 ô, mỗi ý bắt đầu bằng dấu gạch ngang (-) ở đầu dòng."}
+                        </p>
 
                         <textarea
                           rows={4}
