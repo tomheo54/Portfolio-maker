@@ -1026,6 +1026,22 @@ export function SectionInspector({
                   <option value="top">Ảnh ở trên, văn bản ở dưới</option>
                   <option value="bottom">Ảnh ở dưới, văn bản ở trên</option>
                 </select>
+
+                <label className="mt-2 flex items-center gap-2 text-[11px] font-medium text-stone-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    aria-label="Hiển thị ảnh ở phần giới thiệu"
+                    checked={section.showAvatar !== false}
+                    onChange={(e) =>
+                      updateSection(idx, {
+                        ...section,
+                        showAvatar: e.target.checked,
+                      })
+                    }
+                    className="rounded border-stone-300"
+                  />
+                  Hiển thị ảnh ở phần giới thiệu
+                </label>
               </div>
 
               <div className="space-y-2 rounded-xl border border-stone-200 bg-stone-50 p-2.5">

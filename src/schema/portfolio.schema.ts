@@ -299,6 +299,7 @@ export const AboutSectionSchema = z.object({
   }),
   layoutInverted: z.boolean().optional(),
   mediaPosition: z.enum(["left", "right", "top", "bottom"]).optional(),
+  showAvatar: z.boolean().optional(),
   cardOrder: z
     .array(z.string())
     .default(["contact", "education", "learningGoals"])

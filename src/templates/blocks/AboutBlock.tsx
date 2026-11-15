@@ -488,6 +488,8 @@ export function AboutBlock({
 
   // Resolved Profile Values
   const effectiveAvatarUrl = profileOwner?.avatarUrl || avatarUrl;
+  const showAboutAvatar =
+    section.showAvatar !== false && Boolean(effectiveAvatarUrl?.trim());
   const effectiveAvatarName =
     profileOwner?.fullName || avatarAlt || section.title || "Student Portrait";
   const effectiveFrameStyle =
@@ -1311,7 +1313,7 @@ export function AboutBlock({
         }}
       >
         {/* Studio Direct Canvas Toolbar */}
-        {editable && (
+        {editable && showAboutAvatar && (
           <div className="flex items-center justify-between rounded-xl border border-dashed border-amber-300 bg-amber-50/80 px-4 py-2 text-xs">
             <div className="flex items-center gap-2 text-amber-900 font-semibold">
               <LayoutTemplate className="h-4 w-4 text-amber-600" />
@@ -1348,76 +1350,82 @@ export function AboutBlock({
           data-testid="about-intro-layout"
           data-layout={activeLayout}
           className={`grid grid-cols-1 items-center gap-10 ${
-            activeLayout === "spotlight"
-              ? "mx-auto max-w-4xl text-center"
-              : isTop || isBottom
-                ? "grid-cols-1"
-                : "lg:grid-cols-12"
+            !showAboutAvatar
+              ? "grid-cols-1 w-full"
+              : activeLayout === "spotlight"
+                ? "mx-auto max-w-4xl text-center"
+                : isTop || isBottom
+                  ? "grid-cols-1"
+                  : "lg:grid-cols-12"
           }`}
         >
           {/* Framed Portrait Photo */}
-          <div
-            className={`flex justify-center ${
-              activeLayout === "spotlight"
-                ? "order-1"
-                : isTop
-                  ? "col-span-12 order-1 w-full"
-                  : isBottom
-                    ? "col-span-12 order-2 w-full"
-                    : activeLayout === "editorial-poster"
-                      ? isInverted
-                        ? "lg:col-span-4 lg:order-1"
-                        : "lg:col-span-4 lg:order-2"
-                      : activeLayout === "profile-dashboard"
+          {showAboutAvatar && (
+            <div
+              className={`flex justify-center ${
+                activeLayout === "spotlight"
+                  ? "order-1"
+                  : isTop
+                    ? "col-span-12 order-1 w-full"
+                    : isBottom
+                      ? "col-span-12 order-2 w-full"
+                      : activeLayout === "editorial-poster"
                         ? isInverted
-                          ? "lg:col-span-4 lg:row-span-2 lg:order-1"
-                          : "lg:col-span-4 lg:row-span-2 lg:order-2"
-                        : isInverted
-                          ? "lg:col-span-5 lg:order-1"
-                          : "lg:col-span-5 lg:order-2"
-            } ${
-              activeLayout === "profile-dashboard"
-                ? "surface-block rounded-3xl border border-[var(--primary)]/20 bg-white/70 p-4 shadow-lg"
-                : ""
-            }`}
-          >
-            <AvatarFrame
-              avatar={{
-                url: effectiveAvatarUrl,
-                frameStyle: effectiveFrameStyle,
-                aspectRatio: effectiveAspectRatio,
-              }}
-              alt={effectiveAvatarName}
-              fullName={profileOwner?.fullName || avatarAlt}
-              primaryColor={theme.primaryColor}
-              secondaryColor={theme.secondaryColor}
-              surfaceColor={`var(--section-surface-color, ${theme.surfaceColor})`}
-              enableTilt={theme.effects?.enableTilt}
-              enableGlow={theme.effects?.enableGlow}
-              className="w-full max-w-[320px] sm:max-w-[350px]"
-            />
-          </div>
+                          ? "lg:col-span-4 lg:order-1"
+                          : "lg:col-span-4 lg:order-2"
+                        : activeLayout === "profile-dashboard"
+                          ? isInverted
+                            ? "lg:col-span-4 lg:row-span-2 lg:order-1"
+                            : "lg:col-span-4 lg:row-span-2 lg:order-2"
+                          : isInverted
+                            ? "lg:col-span-5 lg:order-1"
+                            : "lg:col-span-5 lg:order-2"
+              } ${
+                activeLayout === "profile-dashboard"
+                  ? "surface-block rounded-3xl border border-[var(--primary)]/20 bg-white/70 p-4 shadow-lg"
+                  : ""
+              }`}
+            >
+              <AvatarFrame
+                avatar={{
+                  url: effectiveAvatarUrl,
+                  frameStyle: effectiveFrameStyle,
+                  aspectRatio: effectiveAspectRatio,
+                }}
+                alt={effectiveAvatarName}
+                fullName={profileOwner?.fullName || avatarAlt}
+                primaryColor={theme.primaryColor}
+                secondaryColor={theme.secondaryColor}
+                surfaceColor={`var(--section-surface-color, ${theme.surfaceColor})`}
+                enableTilt={theme.effects?.enableTilt}
+                enableGlow={theme.effects?.enableGlow}
+                className="w-full max-w-[320px] sm:max-w-[350px]"
+              />
+            </div>
+          )}
 
           {/* Bio Column */}
           <div
             className={`space-y-5 ${
-              activeLayout === "spotlight"
-                ? "order-2 text-center"
-                : isTop
-                  ? "col-span-12 order-2 w-full"
-                  : isBottom
-                    ? "col-span-12 order-1 w-full"
-                    : activeLayout === "editorial-poster"
-                      ? isInverted
-                        ? "lg:col-span-8 lg:order-2"
-                        : "lg:col-span-8 lg:order-1"
-                      : activeLayout === "profile-dashboard"
+              !showAboutAvatar
+                ? "col-span-12 w-full"
+                : activeLayout === "spotlight"
+                  ? "order-2 text-center"
+                  : isTop
+                    ? "col-span-12 order-2 w-full"
+                    : isBottom
+                      ? "col-span-12 order-1 w-full"
+                      : activeLayout === "editorial-poster"
                         ? isInverted
                           ? "lg:col-span-8 lg:order-2"
                           : "lg:col-span-8 lg:order-1"
-                        : isInverted
-                          ? "lg:col-span-7 lg:order-2"
-                          : "lg:col-span-7 lg:order-1"
+                        : activeLayout === "profile-dashboard"
+                          ? isInverted
+                            ? "lg:col-span-8 lg:order-2"
+                            : "lg:col-span-8 lg:order-1"
+                          : isInverted
+                            ? "lg:col-span-7 lg:order-2"
+                            : "lg:col-span-7 lg:order-1"
             } ${
               activeLayout === "editorial-poster"
                 ? isInverted

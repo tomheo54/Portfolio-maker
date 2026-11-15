@@ -2126,25 +2126,34 @@ function renderAboutHtml(
             ${aboutHighlightsHtml}
           </div>`;
 
-    const avatarColHtml = `<div style="display:flex;justify-content:center;">
+    const hasAboutAvatar =
+      about.showAvatar !== false && Boolean(heroAvatarUrl?.trim());
+
+    const avatarColHtml = hasAboutAvatar
+      ? `<div style="display:flex;justify-content:center;">
             <div style="aspect-ratio:3/4;border-radius:28px;border:3px solid var(--primary);overflow:hidden;background:var(--surface);width:100%;max-width:320px;box-shadow:0 12px 24px -8px rgba(0,0,0,0.12);">
-              ${heroAvatarUrl ? `<img src="${escapeHtml(heroAvatarUrl)}" alt="${escapeHtml(heroFullName || "Portrait")}" style="width:100%;height:100%;object-fit:cover;display:block;" />` : ""}
+              <img src="${escapeHtml(heroAvatarUrl!)}" alt="${escapeHtml(heroFullName || "Portrait")}" style="width:100%;height:100%;object-fit:cover;display:block;" />
             </div>
-          </div>`;
+          </div>`
+      : "";
 
-    const gridStyle = isImageTop || isImageBottom
-      ? "grid-template-columns: 1fr; gap: 24px;"
-      : isImageLeft
-        ? "grid-template-columns: 0.7fr 1.5fr;"
-        : "";
-
-    const gridContentHtml = isImageTop
-      ? `${avatarColHtml}${bioColHtml}`
-      : isImageBottom
-        ? `${bioColHtml}${avatarColHtml}`
+    const gridStyle = !hasAboutAvatar
+      ? "grid-template-columns: 1fr; width: 100%;"
+      : isImageTop || isImageBottom
+        ? "grid-template-columns: 1fr; gap: 24px;"
         : isImageLeft
-          ? `${avatarColHtml}${bioColHtml}`
-          : `${bioColHtml}${avatarColHtml}`;
+          ? "grid-template-columns: 0.7fr 1.5fr;"
+          : "";
+
+    const gridContentHtml = !hasAboutAvatar
+      ? bioColHtml
+      : isImageTop
+        ? `${avatarColHtml}${bioColHtml}`
+        : isImageBottom
+          ? `${bioColHtml}${avatarColHtml}`
+          : isImageLeft
+            ? `${avatarColHtml}${bioColHtml}`
+            : `${bioColHtml}${avatarColHtml}`;
 
     return `<section id="about" class="about-wrap reveal-on-scroll" data-about-layout="${escapeHtml(about.variant)}">
       <div style="position:relative; z-index:2;">
@@ -2166,18 +2175,21 @@ function renderAboutHtml(
     .map((paragraph) => paragraph.trim())
     .filter(Boolean);
 
+  const hasAboutAvatar =
+    about.showAvatar !== false && Boolean(heroAvatarUrl?.trim());
+
   return `<section id="about" class="about-wrap reveal-on-scroll" data-about-layout="${escapeHtml(about.variant)}">
     <div class="surface-block">
-      <div class="${heroAvatarUrl ? "about-hero-grid" : ""}">
-        <div>
+      <div class="${hasAboutAvatar ? "about-hero-grid" : ""}">
+        <div style="${!hasAboutAvatar ? "width:100%;" : ""}">
           <h2 class="section-heading" style="margin-top:0;">${escapeHtml(about.title)}</h2>
           ${bioParagraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}
           ${aboutHighlightsHtml}
         </div>
         ${
-          heroAvatarUrl
+          hasAboutAvatar
             ? `<div style="display:flex;justify-content:center;align-items:center;">
-                <img src="${escapeHtml(heroAvatarUrl)}" alt="${escapeHtml(heroFullName || "Portrait")}" style="width:100%;max-width:320px;aspect-ratio:3/4;object-fit:cover;border-radius:24px;" />
+                <img src="${escapeHtml(heroAvatarUrl!)}" alt="${escapeHtml(heroFullName || "Portrait")}" style="width:100%;max-width:320px;aspect-ratio:3/4;object-fit:cover;border-radius:24px;" />
               </div>`
             : ""
         }
