@@ -477,11 +477,11 @@ export default function StudioPage() {
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-stone-100 text-stone-900">
       {/* Studio Topbar */}
-      <header className="flex min-h-14 shrink-0 flex-wrap items-center justify-between gap-2 border-b border-stone-200 bg-white px-3 py-2 sm:px-4 lg:h-14 lg:flex-nowrap lg:py-0">
-        <div className="flex items-center gap-2 sm:gap-3">
+      <header className="relative z-30 flex min-h-14 shrink-0 flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-stone-200 bg-white px-3 py-2 sm:px-4 xl:h-14 xl:flex-nowrap xl:py-0">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           <Link
             href="/"
-            className="flex items-center gap-2 font-editorial text-base font-bold text-stone-900"
+            className="flex items-center gap-1.5 font-editorial text-sm font-bold text-stone-900 shrink-0 sm:text-base sm:gap-2"
           >
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-stone-900 text-xs text-white">
               PF
@@ -492,24 +492,24 @@ export default function StudioPage() {
           <button
             type="button"
             onClick={() => setWizardOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-full bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-amber-700 sm:px-3.5"
+            className="inline-flex items-center gap-1.5 rounded-full bg-amber-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-amber-700 whitespace-nowrap shrink-0 sm:px-3.5"
           >
             <FileUp className="h-3.5 w-3.5 shrink-0" />
-            <span>📄 Nhập file .docx bài tập</span>
+            <span>Nhập file DOCX</span>
           </button>
 
           <button
             type="button"
             onClick={() => setArchiveImportOpen(true)}
-            className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50"
+            className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50 whitespace-nowrap shrink-0"
           >
             <FileUp className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Mở ZIP đã xuất</span>
+            <span className="hidden sm:inline">Mở ZIP</span>
           </button>
           <button
             type="button"
             onClick={() => setDraftLibraryOpen(true)}
-            className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50"
+            className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50 whitespace-nowrap shrink-0"
           >
             <FolderOpen className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Bản nháp</span>
@@ -517,15 +517,15 @@ export default function StudioPage() {
 
           <Link
             href="/batch"
-            className="hidden rounded-full border border-stone-200 px-3 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50 xl:inline-flex"
+            className="hidden rounded-full border border-stone-200 px-3 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50 whitespace-nowrap shrink-0 2xl:inline-flex"
           >
             Sản xuất hàng loạt
           </Link>
         </div>
 
         {/* Center Controls: Mobile Panel Toggles, Template Switcher, Viewports, Undo/Redo */}
-        <div className="order-3 flex w-full flex-wrap items-center justify-between gap-2 border-t border-stone-100 pt-2 md:order-2 md:w-auto md:border-t-0 md:pt-0">
-          <div className="flex items-center gap-1.5">
+        <div className="order-3 flex w-full flex-nowrap items-center justify-center gap-2 border-t border-stone-100 pt-2 xl:order-2 xl:w-auto xl:border-t-0 xl:pt-0 shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0">
             <button
               type="button"
               data-testid="toggle-outline-panel"
@@ -536,7 +536,7 @@ export default function StudioPage() {
                   prev === 'outline' ? 'none' : 'outline'
                 )
               }
-              className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold transition lg:hidden ${
+              className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold transition lg:hidden whitespace-nowrap shrink-0 ${
                 mobilePanel === 'outline'
                   ? 'border-amber-600 bg-amber-50 text-amber-900'
                   : 'border-stone-200 bg-white text-stone-700 hover:bg-stone-50'
@@ -556,7 +556,7 @@ export default function StudioPage() {
                   prev === 'inspector' ? 'none' : 'inspector'
                 )
               }
-              className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold transition md:hidden ${
+              className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold transition md:hidden whitespace-nowrap shrink-0 ${
                 mobilePanel === 'inspector'
                   ? 'border-amber-600 bg-amber-50 text-amber-900'
                   : 'border-stone-200 bg-white text-stone-700 hover:bg-stone-50'
@@ -570,7 +570,7 @@ export default function StudioPage() {
               aria-label="Chọn bộ Template"
               value={document.templateId}
               onChange={(e) => setTemplateId(e.target.value as TemplateId)}
-              className="rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1.5 text-xs font-semibold outline-none sm:px-3"
+              className="max-w-[160px] sm:max-w-[210px] truncate rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1.5 text-xs font-semibold outline-none shrink-0"
             >
               {TEMPLATE_OPTIONS.map((t) => (
                 <option key={t.id} value={t.id}>
@@ -580,8 +580,8 @@ export default function StudioPage() {
             </select>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <div className="flex items-center rounded-full border border-stone-200 bg-stone-50 p-0.5">
+          <div className="flex items-center gap-1.5 shrink-0">
+            <div className="flex items-center rounded-full border border-stone-200 bg-stone-50 p-0.5 shrink-0">
               <button
                 type="button"
                 onClick={() => setViewportMode('desktop')}
@@ -620,7 +620,7 @@ export default function StudioPage() {
               </button>
             </div>
 
-            <div className="flex items-center gap-0.5 sm:gap-1">
+            <div className="flex items-center gap-0.5 shrink-0">
               <button
                 type="button"
                 disabled={history.length === 0}
@@ -655,9 +655,9 @@ export default function StudioPage() {
         </div>
 
         {/* Right Actions */}
-        <div className="order-2 flex items-center gap-1.5 sm:gap-2 md:order-3">
+        <div className="order-2 flex items-center gap-1.5 sm:gap-2 xl:order-3 shrink-0">
           {autoSaveStatus !== "idle" && (
-            <span className="hidden text-[10px] text-stone-500 sm:inline" aria-live="polite">
+            <span className="hidden text-[10px] text-stone-500 whitespace-nowrap lg:inline" aria-live="polite">
               {autoSaveStatus === "pending" ? "Chờ tự lưu…" : autoSaveStatus === "saving" ? "Đang tự lưu…" : autoSaveStatus === "error" ? "Tự lưu lỗi" : "Đã tự lưu"}
             </span>
           )}
@@ -665,7 +665,7 @@ export default function StudioPage() {
             type="button"
             disabled={exportingZip}
             onClick={handleDownloadZip}
-            className="inline-flex items-center gap-1.5 rounded-full border border-stone-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50 disabled:opacity-60 sm:px-3"
+            className="inline-flex items-center gap-1.5 rounded-full border border-stone-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50 disabled:opacity-60 whitespace-nowrap shrink-0 sm:px-3"
             aria-label="Xuất ZIP"
           >
             {exportingZip ? (
@@ -679,7 +679,7 @@ export default function StudioPage() {
           <button
             type="button"
             onClick={handleCopyShareLink}
-            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-semibold transition sm:px-3 ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-semibold transition whitespace-nowrap shrink-0 sm:px-3 ${
               copiedLink
                 ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
                 : 'border-stone-300 bg-white text-stone-700 hover:bg-stone-50'
@@ -703,7 +703,7 @@ export default function StudioPage() {
           <Link
             href={`/${document.slug}`}
             target="_blank"
-            className="hidden items-center gap-1 rounded-full border border-stone-300 bg-white px-3 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50 sm:inline-flex"
+            className="hidden items-center gap-1 rounded-full border border-stone-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50 whitespace-nowrap shrink-0 lg:inline-flex"
           >
             <span>Xem trang</span>
             <ExternalLink className="h-3 w-3" />
@@ -713,7 +713,7 @@ export default function StudioPage() {
             type="button"
             disabled={isSaving}
             onClick={handlePublish}
-            className="inline-flex items-center gap-1.5 rounded-full bg-stone-900 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-stone-800 disabled:opacity-60 sm:px-4"
+            className="inline-flex items-center gap-1.5 rounded-full bg-stone-900 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-stone-800 disabled:opacity-60 whitespace-nowrap shrink-0 sm:px-4"
           >
             {isSaving ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
