@@ -402,7 +402,10 @@ export function ProjectsShowcaseBlock({
     frameVariant ?? profile.frameVariant;
 
   const defaults = getArchetypeDefaultVariants(archetypeId);
-  const activeProjectsVariant = section.variant || defaults.projects;
+  const activeProjectsVariant =
+    !section.variant || (section.variant === "canva-slide-showcase" && archetypeId !== "canva-editorial")
+      ? defaults.projects
+      : section.variant;
 
   const isCanvaEditorial = activeProjectsVariant === "canva-slide-showcase" || (archetypeId === "canva-editorial" && !section.variant);
   const isStaggered = activeProjectsVariant === "staggered-cards";

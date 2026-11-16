@@ -1,169 +1,71 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Pencil } from 'lucide-react';
+import React, { useRef, useEffect } from 'react';
 
 export interface InlineEditableTextProps {
   value: string;
-  onSave?: (newValue: string) => void;
   editable?: boolean;
-  multiline?: boolean;
-  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'div';
-  className?: string;
-  inputClassName?: string;
-  placeholder?: string;
   ariaLabel?: string;
-  maxLength?: number;
-  rows?: number;
+  className?: string;
+  placeholder?: string;
+  multiline?: boolean;
+  as?: React.ElementType;
+  style?: React.CSSProperties;
+  onSave: (value: string) => void;
 }
 
 export function InlineEditableText({
   value,
-  onSave,
   editable = true,
+  ariaLabel,
+  className = '',
+  placeholder = 'Nhấp để chỉnh sửa...',
   multiline = false,
   as: Component = 'span',
-  className = '',
-  inputClassName = '',
-  placeholder = 'Nhấp để nhập nội dung...',
-  ariaLabel,
-  maxLength,
-  rows = 3,
+  style,
+  onSave,
 }: InlineEditableTextProps) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [draft, setDraft] = useState(value);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const ref = useRef<HTMLElement>(null);
 
+  // Sync content with value prop when not actively focused
   useEffect(() => {
-    setDraft(value);
+    if (ref.current && document.activeElement !== ref.current) {
+      ref.current.textContent = value || '';
+    }
   }, [value]);
 
-  useEffect(() => {
-    if (isEditing) {
-      if (multiline && textareaRef.current) {
-        textareaRef.current.focus();
-        textareaRef.current.select();
-      } else if (!multiline && inputRef.current) {
-        inputRef.current.focus();
-        inputRef.current.select();
-      }
-    }
-  }, [isEditing, multiline]);
-
-  // Zero-overhead display mode when editing is disabled
   if (!editable) {
-    return <Component className={className}>{value || placeholder}</Component>;
-  }
-
-  const handleCommit = () => {
-    setIsEditing(false);
-    if (draft !== value && onSave) {
-      onSave(draft);
-    }
-  };
-
-  const handleCancel = () => {
-    setDraft(value);
-    setIsEditing(false);
-  };
-
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    if (e.key === 'Escape') {
-      e.stopPropagation();
-      handleCancel();
-    } else if (e.key === 'Enter') {
-      if (!multiline) {
-        e.preventDefault();
-        e.stopPropagation();
-        handleCommit();
-      } else if (e.ctrlKey || e.metaKey) {
-        // For multiline, Ctrl+Enter or Cmd+Enter submits
-        e.preventDefault();
-        e.stopPropagation();
-        handleCommit();
-      }
-    }
-  };
-
-  if (isEditing) {
-    if (multiline) {
-      return (
-        <div className="relative inline-block w-full">
-          <textarea
-            ref={textareaRef}
-            data-testid="inline-editable-textarea"
-            rows={rows}
-            maxLength={maxLength}
-            value={draft}
-            aria-label={ariaLabel ?? placeholder}
-            onChange={(e) => setDraft(e.target.value)}
-            onBlur={handleCommit}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            className={`w-full rounded-lg border-2 border-amber-500 bg-white/95 p-2 text-stone-900 shadow-lg outline-none ring-2 ring-amber-400/40 backdrop-blur-sm transition ${className} ${inputClassName}`}
-          />
-          <div className="mt-1 flex items-center justify-between text-[10px] text-stone-400">
-            <span>Enter = dòng mới • Ctrl+Enter = lưu • Esc = hủy</span>
-            <button
-              type="button"
-              onMouseDown={(e) => {
-                e.preventDefault();
-                handleCommit();
-              }}
-              className="rounded bg-amber-600 px-2 py-0.5 text-xs font-semibold text-white hover:bg-amber-700"
-            >
-              Lưu
-            </button>
-          </div>
-        </div>
-      );
-    }
-
     return (
-      <span className="relative inline-flex items-center">
-        <input
-          ref={inputRef}
-          type="text"
-          data-testid="inline-editable-input"
-          maxLength={maxLength}
-          value={draft}
-          aria-label={ariaLabel ?? placeholder}
-          onChange={(e) => setDraft(e.target.value)}
-          onBlur={handleCommit}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          className={`rounded-md border-2 border-amber-500 bg-white/95 px-2 py-0.5 text-stone-900 shadow-md outline-none ring-2 ring-amber-400/40 backdrop-blur-sm transition ${className} ${inputClassName}`}
-        />
-      </span>
+      <Component className={className} style={style}>
+        {value || placeholder}
+      </Component>
     );
   }
 
-  const isEmpty = !value || value.trim().length === 0;
-
   return (
     <Component
-      data-testid="inline-editable-trigger"
-      onClick={() => setIsEditing(true)}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          setIsEditing(true);
+      ref={ref}
+      contentEditable
+      suppressContentEditableWarning
+      role="textbox"
+      aria-label={ariaLabel || 'Chỉnh sửa trực tiếp'}
+      style={style}
+      onBlur={(event: React.FocusEvent<HTMLElement>) => {
+        const nextValue = event.currentTarget.textContent?.trim() ?? '';
+        if (nextValue !== value) {
+          onSave(nextValue);
         }
       }}
-      title="Nhấp đúp hoặc nhấp để sửa trực tiếp"
-      className={`group/inline relative cursor-pointer rounded transition-all duration-150 hover:bg-amber-50/40 hover:outline hover:outline-1 hover:outline-dashed hover:outline-amber-400 hover:ring-2 hover:ring-amber-300/30 ${
-        isEmpty ? 'italic text-stone-400' : ''
-      } ${className}`}
+      onKeyDown={(event: React.KeyboardEvent<HTMLElement>) => {
+        if (!multiline && event.key === 'Enter') {
+          event.preventDefault();
+          event.currentTarget.blur();
+        }
+      }}
+      className={`${className} cursor-text transition-all rounded px-0.5 hover:bg-amber-100/60 hover:outline-dashed hover:outline-1 hover:outline-amber-400 focus:bg-white focus:outline-2 focus:outline-amber-500 focus:ring-2 focus:ring-amber-200/60`}
+      title="Nhấp vào để chỉnh sửa trực tiếp"
     >
-      <span>{isEmpty ? placeholder : value}</span>
-      <span className="ml-1.5 inline-flex align-middle opacity-0 transition-opacity duration-150 group-hover/inline:opacity-70">
-        <Pencil className="h-3 w-3 text-amber-600" />
-      </span>
+      {value || placeholder}
     </Component>
   );
 }

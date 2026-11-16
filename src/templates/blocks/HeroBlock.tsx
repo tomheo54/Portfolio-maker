@@ -38,6 +38,7 @@ import {
   CanvaFourPointStar,
   CanvaPortfolioDisplayTitle,
 } from "./CanvaOrnaments";
+import { InlineEditableText } from "@/components/studio/InlineEditableText";
 
 export interface HeroBlockProps {
   section: HeroSection;
@@ -59,8 +60,25 @@ export function HeroBlock({
   const swapHeroLayout = usePortfolioStore((s) => s.swapHeroLayout);
   const updateSection = usePortfolioStore((s) => s.updateSection);
 
+  const updateHero = (patch: Partial<HeroSection>) => {
+    if (sectionIndex === undefined) return;
+    updateSection(sectionIndex, { ...section, ...patch });
+  };
+
+  const updateCustomText = (key: string, value: string) => {
+    updateHero({
+      customTexts: {
+        ...section.customTexts,
+        [key]: value,
+      },
+    });
+  };
+
   const defaultVariants = getArchetypeDefaultVariants(archetypeId);
-  const activeHeroVariant = section.variant || defaultVariants.hero;
+  const activeHeroVariant =
+    !section.variant || (section.variant === "canva-cover" && archetypeId !== "canva-editorial")
+      ? defaultVariants.hero
+      : section.variant;
 
   const isCanvaEditorial = activeHeroVariant === "canva-cover" || (archetypeId === "canva-editorial" && !section.variant);
   const isTerminal = (activeHeroVariant === "split-left" || !section.variant) && archetypeId === "tech-developer";
@@ -529,11 +547,7 @@ export function HeroBlock({
         )}
 
         {/* Layout Branches */}
-        {!showHeroAvatar ? (
-          <div className="mx-auto max-w-4xl py-8">
-            {renderCopyBlock(true)}
-          </div>
-        ) : isMedicalRuby ? (
+        {isMedicalRuby ? (
           <div className="space-y-6">
             <div
               className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-bold tracking-widest uppercase shadow-sm"
@@ -544,25 +558,51 @@ export function HeroBlock({
               }}
             >
               <Award className="h-4 w-4 text-amber-300" />
-              <span>HỒ SƠ NĂNG LỰC DƯỢC HỌC • CHUẨN GMP/GSP • CLINICAL PHARMACY</span>
+              <InlineEditableText
+                value={section.customTexts?.hero_med_badge || "HỒ SƠ NĂNG LỰC DƯỢC HỌC • CHUẨN GMP/GSP • CLINICAL PHARMACY"}
+                editable={editable}
+                ariaLabel="Huy hiệu hồ sơ dược"
+                onSave={(val) => updateCustomText("hero_med_badge", val)}
+              />
             </div>
 
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
-              <div className={`space-y-6 lg:col-span-7 ${isInverted ? "lg:order-2" : ""}`}>
+              <div className={`space-y-6 ${showHeroAvatar ? "lg:col-span-7" : "lg:col-span-12"} ${isInverted ? "lg:order-2" : ""}`}>
                 <div>
                   <span className="text-xs font-bold uppercase tracking-[0.22em] text-amber-700">
-                    DƯỢC SĨ ĐẠI HỌC • NGHIÊN CỨU &amp; BÀO CHẾ
+                    <InlineEditableText
+                      value={section.customTexts?.hero_med_eyebrow || "DƯỢC SĨ ĐẠI HỌC • NGHIÊN CỨU & BÀO CHẾ"}
+                      editable={editable}
+                      ariaLabel="Tiêu đề phụ dược sĩ"
+                      onSave={(val) => updateCustomText("hero_med_eyebrow", val)}
+                    />
                   </span>
                   <h1 className="mt-2 font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#2B1810] leading-tight">
-                    {section.fullName}
+                    <InlineEditableText
+                      value={section.fullName}
+                      editable={editable}
+                      ariaLabel="Họ và tên dược sĩ"
+                      onSave={(val) => updateHero({ fullName: val })}
+                    />
                   </h1>
                   <p className="mt-2 text-lg font-medium text-[#7B1113] italic">
-                    {section.roleTitle}
+                    <InlineEditableText
+                      value={section.roleTitle}
+                      editable={editable}
+                      ariaLabel="Chức danh dược sĩ"
+                      onSave={(val) => updateHero({ roleTitle: val })}
+                    />
                   </p>
                 </div>
 
                 <p className="max-w-xl text-base leading-relaxed text-[#2B1810]/85">
-                  {section.shortBio}
+                  <InlineEditableText
+                    value={section.shortBio}
+                    editable={editable}
+                    multiline
+                    ariaLabel="Giới thiệu dược sĩ"
+                    onSave={(val) => updateHero({ shortBio: val })}
+                  />
                 </p>
 
                 {/* 2-Column Syllabus / Index Card */}
@@ -578,24 +618,59 @@ export function HeroBlock({
                     style={{ borderColor: "rgba(123, 17, 19, 0.18)" }}
                   >
                     <span className="text-xs font-bold uppercase tracking-wider text-[#7B1113] flex items-center gap-1.5">
-                      <BookOpen className="h-4 w-4 text-amber-600" /> MỤC LỤC HỒ SƠ CHUYÊN MÔN DƯỢC
+                      <BookOpen className="h-4 w-4 text-amber-600" />
+                      <InlineEditableText
+                        value={section.customTexts?.hero_med_syllabus_title || "MỤC LỤC HỒ SƠ CHUYÊN MÔN DƯỢC"}
+                        editable={editable}
+                        ariaLabel="Tiêu đề mục lục hồ sơ"
+                        onSave={(val) => updateCustomText("hero_med_syllabus_title", val)}
+                      />
                     </span>
                     <span className="text-[10px] font-bold text-amber-800 bg-amber-100/80 px-2.5 py-0.5 rounded-full border border-amber-300">
-                      SYLLABUS 2024
+                      <InlineEditableText
+                        value={section.customTexts?.hero_med_syllabus_badge || "SYLLABUS 2024"}
+                        editable={editable}
+                        ariaLabel="Nhãn syllabus"
+                        onSave={(val) => updateCustomText("hero_med_syllabus_badge", val)}
+                      />
                     </span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-[#2B1810]">
                     <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-50/50 border border-amber-200/60">
-                      <span className="font-extrabold text-[#7B1113]">01.</span> Lý lịch Dược sĩ &amp; Y đức
+                      <span className="font-extrabold text-[#7B1113]">01.</span>
+                      <InlineEditableText
+                        value={section.customTexts?.hero_med_item_1 || "Lý lịch Dược sĩ & Y đức"}
+                        editable={editable}
+                        ariaLabel="Mục syllabus 01"
+                        onSave={(val) => updateCustomText("hero_med_item_1", val)}
+                      />
                     </div>
                     <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-50/50 border border-amber-200/60">
-                      <span className="font-extrabold text-[#7B1113]">02.</span> Chuyên môn Lâm sàng &amp; Bào chế
+                      <span className="font-extrabold text-[#7B1113]">02.</span>
+                      <InlineEditableText
+                        value={section.customTexts?.hero_med_item_2 || "Chuyên môn Lâm sàng & Bào chế"}
+                        editable={editable}
+                        ariaLabel="Mục syllabus 02"
+                        onSave={(val) => updateCustomText("hero_med_item_2", val)}
+                      />
                     </div>
                     <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-50/50 border border-amber-200/60">
-                      <span className="font-extrabold text-[#7B1113]">03.</span> Đề tài &amp; Dự án trọng điểm
+                      <span className="font-extrabold text-[#7B1113]">03.</span>
+                      <InlineEditableText
+                        value={section.customTexts?.hero_med_item_3 || "Đề tài & Dự án trọng điểm"}
+                        editable={editable}
+                        ariaLabel="Mục syllabus 03"
+                        onSave={(val) => updateCustomText("hero_med_item_3", val)}
+                      />
                     </div>
                     <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-50/50 border border-amber-200/60">
-                      <span className="font-extrabold text-[#7B1113]">04.</span> Chứng chỉ &amp; Tiêu chuẩn GMP
+                      <span className="font-extrabold text-[#7B1113]">04.</span>
+                      <InlineEditableText
+                        value={section.customTexts?.hero_med_item_4 || "Chứng chỉ & Tiêu chuẩn GMP"}
+                        editable={editable}
+                        ariaLabel="Mục syllabus 04"
+                        onSave={(val) => updateCustomText("hero_med_item_4", val)}
+                      />
                     </div>
                   </div>
                 </div>
@@ -604,32 +679,39 @@ export function HeroBlock({
                 {renderCtaButtons(false)}
               </div>
 
-              <div className={`flex justify-center lg:col-span-5 ${isInverted ? "lg:order-1" : ""}`}>
-                <div className="relative group">
-                  <div
-                    className="absolute -inset-1.5 rounded-[164px_164px_28px_28px] opacity-75 blur-sm"
-                    style={{ background: "linear-gradient(135deg, #C29B38, #7B1113)" }}
-                  />
-                  <div
-                    className="relative overflow-hidden p-2 bg-white"
-                    style={{
-                      borderRadius: "160px 160px 24px 24px",
-                      border: "4px solid #7B1113",
-                      boxShadow: "0 0 0 2px #C29B38, 0 16px 36px -10px rgba(123, 17, 19, 0.35)",
-                    }}
-                  >
-                    <img
-                      src={section.avatar.url}
-                      alt={section.fullName}
-                      className="w-72 h-96 sm:w-80 sm:h-[440px] object-cover transition-transform duration-500 group-hover:scale-105"
-                      style={{ borderRadius: "152px 152px 18px 18px" }}
+              {showHeroAvatar && (
+                <div className={`flex justify-center lg:col-span-5 ${isInverted ? "lg:order-1" : ""}`}>
+                  <div className="relative group">
+                    <div
+                      className="absolute -inset-1.5 rounded-[164px_164px_28px_28px] opacity-75 blur-sm"
+                      style={{ background: "linear-gradient(135deg, #C29B38, #7B1113)" }}
                     />
-                  </div>
-                  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-amber-300 bg-[#7B1113] px-4 py-1.5 text-center text-[10px] font-bold tracking-wider text-white uppercase shadow-lg whitespace-nowrap">
-                    TIÊU CHUẨN GMP/GSP • BỘ Y TẾ
+                    <div
+                      className="relative overflow-hidden p-2 bg-white"
+                      style={{
+                        borderRadius: "160px 160px 24px 24px",
+                        border: "4px solid #7B1113",
+                        boxShadow: "0 0 0 2px #C29B38, 0 16px 36px -10px rgba(123, 17, 19, 0.35)",
+                      }}
+                    >
+                      <img
+                        src={section.avatar.url}
+                        alt={section.fullName}
+                        className="w-72 h-96 sm:w-80 sm:h-[440px] object-cover transition-transform duration-500 group-hover:scale-105"
+                        style={{ borderRadius: "152px 152px 18px 18px" }}
+                      />
+                    </div>
+                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-amber-300 bg-[#7B1113] px-4 py-1.5 text-center text-[10px] font-bold tracking-wider text-white uppercase shadow-lg whitespace-nowrap">
+                      <InlineEditableText
+                        value={section.customTexts?.hero_med_avatar_badge || "TIÊU CHUẨN GMP/GSP • BỘ Y TẾ"}
+                        editable={editable}
+                        ariaLabel="Nhãn ảnh đại diện dược sĩ"
+                        onSave={(val) => updateCustomText("hero_med_avatar_badge", val)}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         ) : isClinicalNavy ? (
@@ -637,52 +719,127 @@ export function HeroBlock({
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#1A1264]/20 bg-slate-100/90 px-4 py-2.5 text-xs font-mono text-[#0C0838]">
               <span className="font-bold flex items-center gap-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                [DOSSIER ARCHIVE: 2024-MED-CLINICAL]
+                <InlineEditableText
+                  value={section.customTexts?.hero_clin_badge || "[DOSSIER ARCHIVE: 2024-MED-CLINICAL]"}
+                  editable={editable}
+                  ariaLabel="Mã lưu trữ bệnh án"
+                  onSave={(val) => updateCustomText("hero_clin_badge", val)}
+                />
               </span>
-              <span className="opacity-75">BỆNH VIỆN BẠCH MAI • TRƯỜNG ĐH Y HÀ NỘI</span>
+              <span className="opacity-75">
+                <InlineEditableText
+                  value={section.customTexts?.hero_clin_sub || "BỆNH VIỆN BẠCH MAI • TRƯỜNG ĐH Y HÀ NỘI"}
+                  editable={editable}
+                  ariaLabel="Bệnh viện và trường Y"
+                  onSave={(val) => updateCustomText("hero_clin_sub", val)}
+                />
+              </span>
               <span className="rounded bg-[#1A1264] px-2.5 py-0.5 text-[10px] text-white font-bold tracking-wider">
-                STATUS: ACTIVE RESIDENT
+                <InlineEditableText
+                  value={section.customTexts?.hero_clin_status || "STATUS: ACTIVE RESIDENT"}
+                  editable={editable}
+                  ariaLabel="Trạng thái bác sĩ"
+                  onSave={(val) => updateCustomText("hero_clin_status", val)}
+                />
               </span>
             </div>
 
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
-              <div className={`space-y-6 lg:col-span-7 ${isInverted ? "lg:order-2" : ""}`}>
+              <div className={`space-y-6 ${showHeroAvatar ? "lg:col-span-7" : "lg:col-span-12"} ${isInverted ? "lg:order-2" : ""}`}>
                 <div>
                   <span className="font-mono text-xs font-bold uppercase tracking-widest text-indigo-700">
-                    [CLINICAL CASE DOSSIER // RESIDENT PROFILE]
+                    <InlineEditableText
+                      value={section.customTexts?.hero_clin_eyebrow || "[CLINICAL CASE DOSSIER // RESIDENT PROFILE]"}
+                      editable={editable}
+                      ariaLabel="Tiêu đề hồ sơ lâm sàng"
+                      onSave={(val) => updateCustomText("hero_clin_eyebrow", val)}
+                    />
                   </span>
                   <h1 className="mt-2 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0C0838]">
-                    {section.fullName}
+                    <InlineEditableText
+                      value={section.fullName}
+                      editable={editable}
+                      ariaLabel="Họ và tên bác sĩ"
+                      onSave={(val) => updateHero({ fullName: val })}
+                    />
                   </h1>
                   <p className="mt-2 text-base font-semibold text-[#1A1264]">
-                    {section.roleTitle}
+                    <InlineEditableText
+                      value={section.roleTitle}
+                      editable={editable}
+                      ariaLabel="Chức danh bác sĩ"
+                      onSave={(val) => updateHero({ roleTitle: val })}
+                    />
                   </p>
                 </div>
 
                 <p className="max-w-xl text-base leading-relaxed text-[#0C0838]/85">
-                  {section.shortBio}
+                  <InlineEditableText
+                    value={section.shortBio}
+                    editable={editable}
+                    multiline
+                    ariaLabel="Giới thiệu bác sĩ"
+                    onSave={(val) => updateHero({ shortBio: val })}
+                  />
                 </p>
 
                 {/* Clinical Diagnostic Index */}
                 <div className="rounded-xl border border-indigo-900/20 bg-white p-4 shadow-sm font-mono text-xs">
                   <div className="flex items-center justify-between border-b border-indigo-900/10 pb-2 mb-3">
                     <span className="font-bold text-[#1A1264] flex items-center gap-1.5">
-                      <Activity className="h-4 w-4 text-indigo-600" /> DANH MỤC CA BỆNH &amp; CHUYÊN MÔN
+                      <Activity className="h-4 w-4 text-indigo-600" />
+                      <InlineEditableText
+                        value={section.customTexts?.hero_clin_diag_title || "DANH MỤC CA BỆNH & CHUYÊN MÔN"}
+                        editable={editable}
+                        ariaLabel="Tiêu đề danh mục ca bệnh"
+                        onSave={(val) => updateCustomText("hero_clin_diag_title", val)}
+                      />
                     </span>
-                    <span className="text-[10px] text-slate-500">ICD-10 CLINICAL ARCHIVE</span>
+                    <span className="text-[10px] text-slate-500">
+                      <InlineEditableText
+                        value={section.customTexts?.hero_clin_diag_tag || "ICD-10 CLINICAL ARCHIVE"}
+                        editable={editable}
+                        ariaLabel="Mã ICD-10"
+                        onSave={(val) => updateCustomText("hero_clin_diag_tag", val)}
+                      />
+                    </span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700">
                     <div className="p-2 rounded bg-slate-50 border border-slate-200">
-                      <strong className="text-[#1A1264]">[CASE 01]</strong> Cấp cứu &amp; Can thiệp hồi sức
+                      <strong className="text-[#1A1264]">[CASE 01]</strong>{" "}
+                      <InlineEditableText
+                        value={section.customTexts?.hero_clin_case_1 || "Cấp cứu & Can thiệp hồi sức"}
+                        editable={editable}
+                        ariaLabel="Ca lâm sàng 01"
+                        onSave={(val) => updateCustomText("hero_clin_case_1", val)}
+                      />
                     </div>
                     <div className="p-2 rounded bg-slate-50 border border-slate-200">
-                      <strong className="text-[#1A1264]">[CASE 02]</strong> Phác đồ điều trị nội khoa
+                      <strong className="text-[#1A1264]">[CASE 02]</strong>{" "}
+                      <InlineEditableText
+                        value={section.customTexts?.hero_clin_case_2 || "Phác đồ điều trị nội khoa"}
+                        editable={editable}
+                        ariaLabel="Ca lâm sàng 02"
+                        onSave={(val) => updateCustomText("hero_clin_case_2", val)}
+                      />
                     </div>
                     <div className="p-2 rounded bg-slate-50 border border-slate-200">
-                      <strong className="text-[#1A1264]">[CASE 03]</strong> Chẩn đoán cận lâm sàng
+                      <strong className="text-[#1A1264]">[CASE 03]</strong>{" "}
+                      <InlineEditableText
+                        value={section.customTexts?.hero_clin_case_3 || "Chẩn đoán cận lâm sàng"}
+                        editable={editable}
+                        ariaLabel="Ca lâm sàng 03"
+                        onSave={(val) => updateCustomText("hero_clin_case_3", val)}
+                      />
                     </div>
                     <div className="p-2 rounded bg-slate-50 border border-slate-200">
-                      <strong className="text-[#1A1264]">[CASE 04]</strong> Y học chứng cứ &amp; Báo cáo
+                      <strong className="text-[#1A1264]">[CASE 04]</strong>{" "}
+                      <InlineEditableText
+                        value={section.customTexts?.hero_clin_case_4 || "Y học chứng cứ & Báo cáo"}
+                        editable={editable}
+                        ariaLabel="Ca lâm sàng 04"
+                        onSave={(val) => updateCustomText("hero_clin_case_4", val)}
+                      />
                     </div>
                   </div>
                 </div>
@@ -691,60 +848,138 @@ export function HeroBlock({
                 {renderCtaButtons(false)}
               </div>
 
-              <div className={`flex justify-center lg:col-span-5 ${isInverted ? "lg:order-1" : ""}`}>
-                <div className="relative group rounded-2xl border-2 border-[#1A1264] bg-white p-3 shadow-xl">
-                  <div className="absolute top-1 left-3 font-mono text-[9px] font-bold text-slate-500">
-                    [CASE_IMAGE // HIGH_RES]
-                  </div>
-                  <img
-                    src={section.avatar.url}
-                    alt={section.fullName}
-                    className="w-72 h-96 sm:w-80 sm:h-[440px] rounded-xl object-cover"
-                  />
-                  <div className="mt-2 flex items-center justify-between font-mono text-[10px] text-[#1A1264]">
-                    <span>RECORD: VERIFIED</span>
-                    <span>HOSPITAL ID: #9821</span>
+              {showHeroAvatar && (
+                <div className={`flex justify-center lg:col-span-5 ${isInverted ? "lg:order-1" : ""}`}>
+                  <div className="relative group rounded-2xl border-2 border-[#1A1264] bg-white p-3 shadow-xl">
+                    <div className="absolute top-1 left-3 font-mono text-[9px] font-bold text-slate-500">
+                      <InlineEditableText
+                        value={section.customTexts?.hero_clin_img_tag || "[CASE_IMAGE // HIGH_RES]"}
+                        editable={editable}
+                        ariaLabel="Tag ảnh ca bệnh"
+                        onSave={(val) => updateCustomText("hero_clin_img_tag", val)}
+                      />
+                    </div>
+                    <img
+                      src={section.avatar.url}
+                      alt={section.fullName}
+                      className="w-72 h-96 sm:w-80 sm:h-[440px] rounded-xl object-cover"
+                    />
+                    <div className="mt-2 flex items-center justify-between font-mono text-[10px] text-[#1A1264]">
+                      <span>
+                        <InlineEditableText
+                          value={section.customTexts?.hero_clin_rec_tag || "RECORD: VERIFIED"}
+                          editable={editable}
+                          ariaLabel="Tag xác minh hồ sơ"
+                          onSave={(val) => updateCustomText("hero_clin_rec_tag", val)}
+                        />
+                      </span>
+                      <span>
+                        <InlineEditableText
+                          value={section.customTexts?.hero_clin_id_tag || "HOSPITAL ID: #9821"}
+                          editable={editable}
+                          ariaLabel="Mã số bệnh viện"
+                          onSave={(val) => updateCustomText("hero_clin_id_tag", val)}
+                        />
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         ) : isContentCreator ? (
           <div className="space-y-6">
             <div className="flex items-center justify-between border-b-2 border-[#722F37] pb-2 text-xs font-black uppercase tracking-widest text-[#722F37]">
-              <span>CREATIVE DIRECTORY • ISSUE NO. 01</span>
-              <span>MEDIA &amp; VIRAL STORYTELLING</span>
-              <span>EST. 2024</span>
+              <span>
+                <InlineEditableText
+                  value={section.customTexts?.hero_creator_header1 || "CREATIVE DIRECTORY • ISSUE NO. 01"}
+                  editable={editable}
+                  ariaLabel="Tiêu đề ấn phẩm creator"
+                  onSave={(val) => updateCustomText("hero_creator_header1", val)}
+                />
+              </span>
+              <span>
+                <InlineEditableText
+                  value={section.customTexts?.hero_creator_header2 || "MEDIA & VIRAL STORYTELLING"}
+                  editable={editable}
+                  ariaLabel="Lĩnh vực sáng tạo"
+                  onSave={(val) => updateCustomText("hero_creator_header2", val)}
+                />
+              </span>
+              <span>
+                <InlineEditableText
+                  value={section.customTexts?.hero_creator_header3 || "EST. 2024"}
+                  editable={editable}
+                  ariaLabel="Năm thành lập"
+                  onSave={(val) => updateCustomText("hero_creator_header3", val)}
+                />
+              </span>
             </div>
 
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
-              <div className={`space-y-6 lg:col-span-7 ${isInverted ? "lg:order-2" : ""}`}>
+              <div className={`space-y-6 ${showHeroAvatar ? "lg:col-span-7" : "lg:col-span-12"} ${isInverted ? "lg:order-2" : ""}`}>
                 <div>
                   <h1 className="font-editorial text-5xl sm:text-6xl font-black uppercase tracking-tight text-[#2D1418] leading-[0.95]">
-                    {section.fullName}
+                    <InlineEditableText
+                      value={section.fullName}
+                      editable={editable}
+                      ariaLabel="Họ tên creator"
+                      onSave={(val) => updateHero({ fullName: val })}
+                    />
                   </h1>
                   <p className="mt-3 text-lg font-bold text-[#722F37] uppercase tracking-wider">
-                    {section.roleTitle}
+                    <InlineEditableText
+                      value={section.roleTitle}
+                      editable={editable}
+                      ariaLabel="Chức danh creator"
+                      onSave={(val) => updateHero({ roleTitle: val })}
+                    />
                   </p>
                 </div>
 
                 <p className="max-w-xl text-base leading-relaxed text-[#2D1418]/90 font-medium">
-                  {section.shortBio}
+                  <InlineEditableText
+                    value={section.shortBio}
+                    editable={editable}
+                    multiline
+                    ariaLabel="Giới thiệu creator"
+                    onSave={(val) => updateHero({ shortBio: val })}
+                  />
                 </p>
 
                 {/* Floating Viral Sticker Badges */}
                 <div className="flex flex-wrap gap-2.5 pt-1">
                   <span className="rotate-[-2deg] rounded-full border-2 border-black bg-amber-300 px-3.5 py-1 text-xs font-black text-black shadow-[2px_2px_0px_#000]">
-                    🔥 VIRAL CAMPAIGN
+                    <InlineEditableText
+                      value={section.customTexts?.hero_creator_sticker1 || "🔥 VIRAL CAMPAIGN"}
+                      editable={editable}
+                      ariaLabel="Sticker 1"
+                      onSave={(val) => updateCustomText("hero_creator_sticker1", val)}
+                    />
                   </span>
                   <span className="rotate-[1.5deg] rounded-full border-2 border-black bg-rose-300 px-3.5 py-1 text-xs font-black text-black shadow-[2px_2px_0px_#000]">
-                    🎬 TIKTOK CREATOR
+                    <InlineEditableText
+                      value={section.customTexts?.hero_creator_sticker2 || "🎬 TIKTOK CREATOR"}
+                      editable={editable}
+                      ariaLabel="Sticker 2"
+                      onSave={(val) => updateCustomText("hero_creator_sticker2", val)}
+                    />
                   </span>
                   <span className="rotate-[-1deg] rounded-full border-2 border-black bg-sky-300 px-3.5 py-1 text-xs font-black text-black shadow-[2px_2px_0px_#000]">
-                    ✨ 500K+ REACH
+                    <InlineEditableText
+                      value={section.customTexts?.hero_creator_sticker3 || "✨ 500K+ REACH"}
+                      editable={editable}
+                      ariaLabel="Sticker 3"
+                      onSave={(val) => updateCustomText("hero_creator_sticker3", val)}
+                    />
                   </span>
                   <span className="rotate-[2deg] rounded-full border-2 border-black bg-emerald-300 px-3.5 py-1 text-xs font-black text-black shadow-[2px_2px_0px_#000]">
-                    📸 VISUAL STORYTELLER
+                    <InlineEditableText
+                      value={section.customTexts?.hero_creator_sticker4 || "📸 VISUAL STORYTELLER"}
+                      editable={editable}
+                      ariaLabel="Sticker 4"
+                      onSave={(val) => updateCustomText("hero_creator_sticker4", val)}
+                    />
                   </span>
                 </div>
 
@@ -759,70 +994,138 @@ export function HeroBlock({
                 {renderCtaButtons(false)}
               </div>
 
-              <div className={`flex justify-center lg:col-span-5 ${isInverted ? "lg:order-1" : ""}`}>
-                <div className="relative rotate-[2deg] rounded-3xl border-4 border-black bg-white p-4 shadow-[8px_8px_0px_#000] transition-transform hover:rotate-0">
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-24 h-7 bg-amber-300/90 border border-black/40 rotate-[-2deg] shadow-sm" />
-                  <img
-                    src={section.avatar.url}
-                    alt={section.fullName}
-                    className="w-72 h-96 sm:w-80 sm:h-[430px] rounded-2xl object-cover"
-                  />
-                  <p className="mt-3 text-center font-editorial text-sm font-bold text-stone-800 italic">
-                    Campaign On Set 2024 ⚡
-                  </p>
+              {showHeroAvatar && (
+                <div className={`flex justify-center lg:col-span-5 ${isInverted ? "lg:order-1" : ""}`}>
+                  <div className="relative rotate-[2deg] rounded-3xl border-4 border-black bg-white p-4 shadow-[8px_8px_0px_#000] transition-transform hover:rotate-0">
+                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-24 h-7 bg-amber-300/90 border border-black/40 rotate-[-2deg] shadow-sm" />
+                    <img
+                      src={section.avatar.url}
+                      alt={section.fullName}
+                      className="w-72 h-96 sm:w-80 sm:h-[430px] rounded-2xl object-cover"
+                    />
+                    <p className="mt-3 text-center font-editorial text-sm font-bold text-stone-800 italic">
+                      <InlineEditableText
+                        value={section.customTexts?.hero_creator_caption || "Campaign On Set 2024 ⚡"}
+                        editable={editable}
+                        ariaLabel="Chú thích ảnh creator"
+                        onSave={(val) => updateCustomText("hero_creator_caption", val)}
+                      />
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         ) : isAcademicMonograph ? (
           <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 pb-3" style={{ borderColor: "#9B302D" }}>
               <span className="text-xs font-bold uppercase tracking-widest text-[#9B302D]">
-                ĐẠI HỌC QUỐC GIA HÀ NỘI • TRƯỜNG ĐẠI HỌC GIÁO DỤC
+                <InlineEditableText
+                  value={section.customTexts?.hero_acad_header1 || "ĐẠI HỌC QUỐC GIA HÀ NỘI • TRƯỜNG ĐẠI HỌC GIÁO DỤC"}
+                  editable={editable}
+                  ariaLabel="Đơn vị đào tạo học thuật"
+                  onSave={(val) => updateCustomText("hero_acad_header1", val)}
+                />
               </span>
               <span
                 className="rounded border px-3 py-0.5 text-[11px] font-bold text-[#9B302D] bg-[#EDEAE2]"
                 style={{ borderColor: "#9B302D" }}
               >
-                ACADEMIC MONOGRAPH VOL. 2024
+                <InlineEditableText
+                  value={section.customTexts?.hero_acad_header2 || "ACADEMIC MONOGRAPH VOL. 2024"}
+                  editable={editable}
+                  ariaLabel="Mã tập san monograph"
+                  onSave={(val) => updateCustomText("hero_acad_header2", val)}
+                />
               </span>
             </div>
 
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
-              <div className={`space-y-6 lg:col-span-7 ${isInverted ? "lg:order-2" : ""}`}>
+              <div className={`space-y-6 ${showHeroAvatar ? "lg:col-span-7" : "lg:col-span-12"} ${isInverted ? "lg:order-2" : ""}`}>
                 <div>
                   <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#9B302D]">
-                    HỒ SƠ HỌC THUẬT &amp; NGHIÊN CỨU SƯ PHẠM
+                    <InlineEditableText
+                      value={section.customTexts?.hero_acad_eyebrow || "HỒ SƠ HỌC THUẬT & NGHIÊN CỨU SƯ PHẠM"}
+                      editable={editable}
+                      ariaLabel="Tiêu đề hồ sơ học thuật"
+                      onSave={(val) => updateCustomText("hero_acad_eyebrow", val)}
+                    />
                   </span>
                   <h1 className="mt-2 font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#282828] leading-tight">
-                    {section.fullName}
+                    <InlineEditableText
+                      value={section.fullName}
+                      editable={editable}
+                      ariaLabel="Họ tên nghiên cứu sinh"
+                      onSave={(val) => updateHero({ fullName: val })}
+                    />
                   </h1>
                   <p className="mt-2 text-lg font-medium text-[#9B302D] italic">
-                    {section.roleTitle}
+                    <InlineEditableText
+                      value={section.roleTitle}
+                      editable={editable}
+                      ariaLabel="Chức danh nghiên cứu sinh"
+                      onSave={(val) => updateHero({ roleTitle: val })}
+                    />
                   </p>
                 </div>
 
                 <p className="max-w-xl text-base leading-relaxed text-[#282828]/85">
-                  {section.shortBio}
+                  <InlineEditableText
+                    value={section.shortBio}
+                    editable={editable}
+                    multiline
+                    ariaLabel="Giới thiệu nghiên cứu sinh"
+                    onSave={(val) => updateHero({ shortBio: val })}
+                  />
                 </p>
 
                 {/* Research Framework Index */}
                 <div className="rounded-xl border p-4 bg-white/80 shadow-sm" style={{ borderColor: "rgba(155, 48, 45, 0.3)" }}>
                   <h4 className="text-xs font-bold uppercase tracking-wider text-[#9B302D] mb-2 flex items-center gap-1.5">
-                    <BookOpen className="h-4 w-4" /> KHUNG NGHIÊN CỨU &amp; HỌC THUẬT SƯ PHẠM
+                    <BookOpen className="h-4 w-4" />
+                    <InlineEditableText
+                      value={section.customTexts?.hero_acad_framework_title || "KHUNG NGHIÊN CỨU & HỌC THUẬT SƯ PHẠM"}
+                      editable={editable}
+                      ariaLabel="Tiêu đề khung nghiên cứu"
+                      onSave={(val) => updateCustomText("hero_acad_framework_title", val)}
+                    />
                   </h4>
                   <div className="space-y-1.5 text-xs text-[#282828]">
                     <div className="flex items-center gap-2">
-                      <strong className="text-[#9B302D]">I.</strong> Lý lịch khoa học &amp; Triết lý giáo dục
+                      <strong className="text-[#9B302D]">I.</strong>{" "}
+                      <InlineEditableText
+                        value={section.customTexts?.hero_acad_item_1 || "Lý lịch khoa học & Triết lý giáo dục"}
+                        editable={editable}
+                        ariaLabel="Khung nghiên cứu I"
+                        onSave={(val) => updateCustomText("hero_acad_item_1", val)}
+                      />
                     </div>
                     <div className="flex items-center gap-2">
-                      <strong className="text-[#9B302D]">II.</strong> Năng lực sư phạm &amp; Dạy học tích cực
+                      <strong className="text-[#9B302D]">II.</strong>{" "}
+                      <InlineEditableText
+                        value={section.customTexts?.hero_acad_item_2 || "Năng lực sư phạm & Dạy học tích cực"}
+                        editable={editable}
+                        ariaLabel="Khung nghiên cứu II"
+                        onSave={(val) => updateCustomText("hero_acad_item_2", val)}
+                      />
                     </div>
                     <div className="flex items-center gap-2">
-                      <strong className="text-[#9B302D]">III.</strong> Các công trình nghiên cứu &amp; Đề tài thực nghiệm
+                      <strong className="text-[#9B302D]">III.</strong>{" "}
+                      <InlineEditableText
+                        value={section.customTexts?.hero_acad_item_3 || "Các công trình nghiên cứu & Đề tài thực nghiệm"}
+                        editable={editable}
+                        ariaLabel="Khung nghiên cứu III"
+                        onSave={(val) => updateCustomText("hero_acad_item_3", val)}
+                      />
                     </div>
                     <div className="flex items-center gap-2">
-                      <strong className="text-[#9B302D]">IV.</strong> Xuất bản tạp chí &amp; Báo cáo sư phạm
+                      <strong className="text-[#9B302D]">IV.</strong>{" "}
+                      <InlineEditableText
+                        value={section.customTexts?.hero_acad_item_4 || "Xuất bản tạp chí & Báo cáo sư phạm"}
+                        editable={editable}
+                        ariaLabel="Khung nghiên cứu IV"
+                        onSave={(val) => updateCustomText("hero_acad_item_4", val)}
+                      />
                     </div>
                   </div>
                 </div>
@@ -831,68 +1134,140 @@ export function HeroBlock({
                 {renderCtaButtons(false)}
               </div>
 
-              <div className={`flex justify-center lg:col-span-5 ${isInverted ? "lg:order-1" : ""}`}>
-                <div className="relative group">
-                  <div
-                    className="relative overflow-hidden p-2.5 bg-white shadow-xl"
-                    style={{
-                      borderRadius: "160px 160px 24px 24px",
-                      border: "3px solid #9B302D",
-                    }}
-                  >
-                    <img
-                      src={section.avatar.url}
-                      alt={section.fullName}
-                      className="w-72 h-96 sm:w-80 sm:h-[440px] object-cover"
-                      style={{ borderRadius: "152px 152px 18px 18px" }}
-                    />
-                  </div>
-                  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-[#9B302D] bg-[#9B302D] px-4 py-1 text-center text-[10px] font-bold text-white uppercase shadow-md whitespace-nowrap">
-                    VNU-UEd RESEARCH FELLOW
+              {showHeroAvatar && (
+                <div className={`flex justify-center lg:col-span-5 ${isInverted ? "lg:order-1" : ""}`}>
+                  <div className="relative group">
+                    <div
+                      className="relative overflow-hidden p-2.5 bg-white shadow-xl"
+                      style={{
+                        borderRadius: "160px 160px 24px 24px",
+                        border: "3px solid #9B302D",
+                      }}
+                    >
+                      <img
+                        src={section.avatar.url}
+                        alt={section.fullName}
+                        className="w-72 h-96 sm:w-80 sm:h-[440px] object-cover"
+                        style={{ borderRadius: "152px 152px 18px 18px" }}
+                      />
+                    </div>
+                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-[#9B302D] bg-[#9B302D] px-4 py-1 text-center text-[10px] font-bold text-white uppercase shadow-md whitespace-nowrap">
+                      <InlineEditableText
+                        value={section.customTexts?.hero_acad_badge || "VNU-UEd RESEARCH FELLOW"}
+                        editable={editable}
+                        ariaLabel="Huy hiệu nghiên cứu sinh"
+                        onSave={(val) => updateCustomText("hero_acad_badge", val)}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         ) : isPedagogicalJournal ? (
           <div className="space-y-6">
             <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: "rgba(155, 84, 100, 0.3)" }}>
               <span className="text-xs font-bold tracking-widest uppercase text-[#9B5464]">
-                NHẬT KÝ SƯ PHẠM &amp; THỰC TẬP GIẢNG DẠY
+                <InlineEditableText
+                  value={section.customTexts?.hero_ped_header1 || "NHẬT KÝ SƯ PHẠM & THỰC TẬP GIẢNG DẠY"}
+                  editable={editable}
+                  ariaLabel="Tiêu đề nhật ký sư phạm"
+                  onSave={(val) => updateCustomText("hero_ped_header1", val)}
+                />
               </span>
               <span className="rounded-full bg-[#9B5464]/10 px-3 py-1 text-[11px] font-bold text-[#9B5464]">
-                GIÁO VIÊN TƯƠNG LAI • KHOA SƯ PHẠM UEd
+                <InlineEditableText
+                  value={section.customTexts?.hero_ped_header2 || "GIÁO VIÊN TƯƠNG LAI • KHOA SƯ PHẠM UEd"}
+                  editable={editable}
+                  ariaLabel="Phân khoa sư phạm"
+                  onSave={(val) => updateCustomText("hero_ped_header2", val)}
+                />
               </span>
             </div>
 
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
-              <div className={`space-y-6 lg:col-span-7 ${isInverted ? "lg:order-2" : ""}`}>
+              <div className={`space-y-6 ${showHeroAvatar ? "lg:col-span-7" : "lg:col-span-12"} ${isInverted ? "lg:order-2" : ""}`}>
                 <div>
                   <span className="text-xs font-bold uppercase tracking-wider text-[#9B5464]">
-                    NHẬT KÝ NGƯỜI GIÁO VIÊN TRẺ
+                    <InlineEditableText
+                      value={section.customTexts?.hero_ped_eyebrow || "NHẬT KÝ NGƯỜI GIÁO VIÊN TRẺ"}
+                      editable={editable}
+                      ariaLabel="Tiêu đề phụ giáo viên"
+                      onSave={(val) => updateCustomText("hero_ped_eyebrow", val)}
+                    />
                   </span>
                   <h1 className="mt-2 font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#3A2329] leading-tight">
-                    {section.fullName}
+                    <InlineEditableText
+                      value={section.fullName}
+                      editable={editable}
+                      ariaLabel="Họ tên giáo viên"
+                      onSave={(val) => updateHero({ fullName: val })}
+                    />
                   </h1>
                   <p className="mt-2 text-base font-medium text-[#9B5464] italic">
-                    {section.roleTitle}
+                    <InlineEditableText
+                      value={section.roleTitle}
+                      editable={editable}
+                      ariaLabel="Chức danh giáo viên"
+                      onSave={(val) => updateHero({ roleTitle: val })}
+                    />
                   </p>
                 </div>
 
                 <p className="max-w-xl text-base leading-relaxed text-[#3A2329]/85">
-                  {section.shortBio}
+                  <InlineEditableText
+                    value={section.shortBio}
+                    editable={editable}
+                    multiline
+                    ariaLabel="Giới thiệu giáo viên"
+                    onSave={(val) => updateHero({ shortBio: val })}
+                  />
                 </p>
 
                 {/* Pedagogical Journal Index */}
                 <div className="rounded-2xl border p-4 bg-white/80 shadow-sm" style={{ borderColor: "rgba(155, 84, 100, 0.25)" }}>
                   <h4 className="text-xs font-bold text-[#9B5464] mb-2 uppercase tracking-wide flex items-center gap-1.5">
-                    <Bookmark className="h-4 w-4" /> TIẾN TRÌNH THỰC TẬP &amp; KẾ HOẠCH BÀI DẠY
+                    <Bookmark className="h-4 w-4" />
+                    <InlineEditableText
+                      value={section.customTexts?.hero_ped_plan_title || "TIẾN TRÌNH THỰC TẬP & KẾ HOẠCH BÀI DẠY"}
+                      editable={editable}
+                      ariaLabel="Tiêu đề tiến trình thực tập"
+                      onSave={(val) => updateCustomText("hero_ped_plan_title", val)}
+                    />
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#3A2329]">
-                    <div className="p-2 rounded-lg bg-[#F9F6F2] border border-[#9B5464]/15">🌸 Bài 1: Chân dung người giáo viên</div>
-                    <div className="p-2 rounded-lg bg-[#F9F6F2] border border-[#9B5464]/15">🌸 Bài 2: Kế hoạch bài dạy (Giáo án)</div>
-                    <div className="p-2 rounded-lg bg-[#F9F6F2] border border-[#9B5464]/15">🌸 Bài 3: Hoạt động trải nghiệm sáng tạo</div>
-                    <div className="p-2 rounded-lg bg-[#F9F6F2] border border-[#9B5464]/15">🌸 Bài 4: Phản tư &amp; Nhận xét học sinh</div>
+                    <div className="p-2 rounded-lg bg-[#F9F6F2] border border-[#9B5464]/15">
+                      <InlineEditableText
+                        value={section.customTexts?.hero_ped_item_1 || "🌸 Bài 1: Chân dung người giáo viên"}
+                        editable={editable}
+                        ariaLabel="Tiến trình bài 1"
+                        onSave={(val) => updateCustomText("hero_ped_item_1", val)}
+                      />
+                    </div>
+                    <div className="p-2 rounded-lg bg-[#F9F6F2] border border-[#9B5464]/15">
+                      <InlineEditableText
+                        value={section.customTexts?.hero_ped_item_2 || "🌸 Bài 2: Kế hoạch bài dạy (Giáo án)"}
+                        editable={editable}
+                        ariaLabel="Tiến trình bài 2"
+                        onSave={(val) => updateCustomText("hero_ped_item_2", val)}
+                      />
+                    </div>
+                    <div className="p-2 rounded-lg bg-[#F9F6F2] border border-[#9B5464]/15">
+                      <InlineEditableText
+                        value={section.customTexts?.hero_ped_item_3 || "🌸 Bài 3: Hoạt động trải nghiệm sáng tạo"}
+                        editable={editable}
+                        ariaLabel="Tiến trình bài 3"
+                        onSave={(val) => updateCustomText("hero_ped_item_3", val)}
+                      />
+                    </div>
+                    <div className="p-2 rounded-lg bg-[#F9F6F2] border border-[#9B5464]/15">
+                      <InlineEditableText
+                        value={section.customTexts?.hero_ped_item_4 || "🌸 Bài 4: Phản tư & Nhận xét học sinh"}
+                        editable={editable}
+                        ariaLabel="Tiến trình bài 4"
+                        onSave={(val) => updateCustomText("hero_ped_item_4", val)}
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -900,19 +1275,30 @@ export function HeroBlock({
                 {renderCtaButtons(false)}
               </div>
 
-              <div className={`flex justify-center lg:col-span-5 ${isInverted ? "lg:order-1" : ""}`}>
-                <div className="relative rounded-3xl border-2 border-[#9B5464]/40 bg-white p-3 shadow-lg">
-                  <div className="absolute -top-3 right-4 rounded-md bg-[#9B5464] px-2.5 py-0.5 text-[10px] font-bold text-white shadow-sm">
-                    SƯ PHẠM 2024
+              {showHeroAvatar && (
+                <div className={`flex justify-center lg:col-span-5 ${isInverted ? "lg:order-1" : ""}`}>
+                  <div className="relative rounded-3xl border-2 border-[#9B5464]/40 bg-white p-3 shadow-lg">
+                    <div className="absolute -top-3 right-4 rounded-md bg-[#9B5464] px-2.5 py-0.5 text-[10px] font-bold text-white shadow-sm">
+                      <InlineEditableText
+                        value={section.customTexts?.hero_ped_badge || "SƯ PHẠM 2024"}
+                        editable={editable}
+                        ariaLabel="Huy hiệu niên khóa sư phạm"
+                        onSave={(val) => updateCustomText("hero_ped_badge", val)}
+                      />
+                    </div>
+                    <img
+                      src={section.avatar.url}
+                      alt={section.fullName}
+                      className="w-72 h-96 sm:w-80 sm:h-[440px] rounded-2xl object-cover"
+                    />
                   </div>
-                  <img
-                    src={section.avatar.url}
-                    alt={section.fullName}
-                    className="w-72 h-96 sm:w-80 sm:h-[440px] rounded-2xl object-cover"
-                  />
                 </div>
-              </div>
+              )}
             </div>
+          </div>
+        ) : !showHeroAvatar ? (
+          <div className="mx-auto max-w-4xl py-8">
+            {renderCopyBlock(true)}
           </div>
         ) : isCentered ? (
           <div className="mx-auto max-w-3xl space-y-6 text-center">

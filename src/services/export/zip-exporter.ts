@@ -13,8 +13,10 @@ import type {
   ProjectItem,
   ProjectsSection,
   SkillsSection,
+  TemplateId,
   VisualDecoration,
 } from "@/schema/portfolio.schema";
+import { getArchetypeDefaultVariants } from "@/templates/archetypes/archetypeStyles";
 import {
   PORTFOLIO_SOURCE_FORMAT,
   PORTFOLIO_SOURCE_MANIFEST_FILENAME,
@@ -1943,29 +1945,32 @@ function renderHeroHtml(
     )
     .join("");
 
-  const isMedicalRuby =
-    templateId === "medical-ruby" || hero.variant === "medical-arch";
-  const isClinicalNavy =
-    templateId === "clinical-navy" || hero.variant === "clinical-dossier";
-  const isContentCreator =
-    templateId === "content-creator" || hero.variant === "creator-cover";
-  const isEducationalTerracotta =
-    templateId === "educational-terracotta" ||
-    hero.variant === "academic-monograph";
-  const isPedagogicalJournal =
-    templateId === "pedagogical-mauve" ||
-    templateId === "pedagogical-rose" ||
-    hero.variant === "pedagogical-journal";
+  const defaultVariants = getArchetypeDefaultVariants(templateId as TemplateId);
+  const activeHeroVariant =
+    !hero.variant || (hero.variant === "canva-cover" && templateId !== "canva-editorial")
+      ? defaultVariants.hero
+      : hero.variant;
+
+  const isMedicalRuby = activeHeroVariant === "medical-arch";
+  const isClinicalNavy = activeHeroVariant === "clinical-dossier";
+  const isContentCreator = activeHeroVariant === "creator-cover";
+  const isEducationalTerracotta = activeHeroVariant === "academic-monograph";
+  const isPedagogicalJournal = activeHeroVariant === "pedagogical-journal";
+
+  const t = (key: string, fallback: string) => {
+    const val = hero.customTexts?.[key];
+    return val !== undefined && val !== "" ? escapeHtml(val) : fallback;
+  };
 
   if (isMedicalRuby) {
     return `<section id="hero" class="reveal-on-scroll">
       <div class="medical-ruby-hero">
         <div class="medical-ribbon">
-          <span>🏆 HỒ SƠ NĂNG LỰC DƯỢC HỌC • CHUẨN GMP/GSP • CLINICAL PHARMACY</span>
+          <span>🏆 ${t("hero_med_badge", "HỒ SƠ NĂNG LỰC DƯỢC HỌC • CHUẨN GMP/GSP • CLINICAL PHARMACY")}</span>
         </div>
         <div class="hero-grid" style="align-items:center;">
           <div>
-            <p class="hero-eyebrow" style="color:var(--secondary);font-weight:700;letter-spacing:0.2em;text-transform:uppercase;">DƯỢC SĨ ĐẠI HỌC • NGHIÊN CỨU &amp; BÀO CHẾ</p>
+            <p class="hero-eyebrow" style="color:var(--secondary);font-weight:700;letter-spacing:0.2em;text-transform:uppercase;">${t("hero_med_eyebrow", "DƯỢC SĨ ĐẠI HỌC • NGHIÊN CỨU &amp; BÀO CHẾ")}</p>
             <h1 class="font-editorial" style="font-size: clamp(32px, 5vw, 56px); font-weight: 700; line-height: 1.15; margin: 12px 0; color: var(--text);">${escapeHtml(
               hero.fullName,
             )}</h1>
@@ -1978,14 +1983,14 @@ function renderHeroHtml(
 
             <div class="medical-syllabus-box">
               <div class="medical-syllabus-header">
-                <span style="font-weight:700;color:var(--primary);text-transform:uppercase;font-size:12px;letter-spacing:0.05em;">📖 MỤC LỤC HỒ SƠ CHUYÊN MÔN DƯỢC</span>
-                <span class="medical-pill">SYLLABUS 2024</span>
+                <span style="font-weight:700;color:var(--primary);text-transform:uppercase;font-size:12px;letter-spacing:0.05em;">📖 ${t("hero_med_syllabus_title", "MỤC LỤC HỒ SƠ CHUYÊN MÔN DƯỢC")}</span>
+                <span class="medical-pill">${t("hero_med_syllabus_badge", "SYLLABUS 2024")}</span>
               </div>
               <div class="medical-syllabus-grid">
-                <div class="medical-syllabus-item"><strong>01.</strong> Lý lịch Dược sĩ &amp; Y đức</div>
-                <div class="medical-syllabus-item"><strong>02.</strong> Chuyên môn Lâm sàng &amp; Bào chế</div>
-                <div class="medical-syllabus-item"><strong>03.</strong> Đề tài &amp; Dự án trọng điểm</div>
-                <div class="medical-syllabus-item"><strong>04.</strong> Chứng chỉ &amp; Tiêu chuẩn GMP</div>
+                <div class="medical-syllabus-item"><strong>01.</strong> ${t("hero_med_item_1", "Lý lịch Dược sĩ &amp; Y đức")}</div>
+                <div class="medical-syllabus-item"><strong>02.</strong> ${t("hero_med_item_2", "Chuyên môn Lâm sàng &amp; Bào chế")}</div>
+                <div class="medical-syllabus-item"><strong>03.</strong> ${t("hero_med_item_3", "Đề tài &amp; Dự án trọng điểm")}</div>
+                <div class="medical-syllabus-item"><strong>04.</strong> ${t("hero_med_item_4", "Chứng chỉ &amp; Tiêu chuẩn GMP")}</div>
               </div>
             </div>
 
@@ -2013,7 +2018,7 @@ function renderHeroHtml(
               )}" alt="${escapeHtml(
                 hero.fullName,
               )}" style="width:100%;max-width:320px;height:420px;object-fit:cover;border-radius:156px 156px 20px 20px;" />
-              <div class="medical-frame-badge">TIÊU CHUẨN GMP/GSP • BỘ Y TẾ</div>
+              <div class="medical-frame-badge">${t("hero_med_avatar_badge", "TIÊU CHUẨN GMP/GSP • BỘ Y TẾ")}</div>
             </div>`
                 : ""
             }
@@ -2027,13 +2032,13 @@ function renderHeroHtml(
     return `<section id="hero" class="reveal-on-scroll">
       <div class="clinical-navy-hero">
         <div class="clinical-status-bar">
-          <span style="font-weight:700;"><span class="clinical-dot"></span> [DOSSIER ARCHIVE: 2024-MED-CLINICAL]</span>
-          <span style="opacity:0.8;">BỆNH VIỆN BẠCH MAI • TRƯỜNG ĐH Y HÀ NỘI</span>
-          <span class="clinical-badge-pill">STATUS: ACTIVE RESIDENT</span>
+          <span style="font-weight:700;"><span class="clinical-dot"></span> ${t("hero_clin_badge", "[DOSSIER ARCHIVE: 2024-MED-CLINICAL]")}</span>
+          <span style="opacity:0.8;">${t("hero_clin_sub", "BỆNH VIỆN BẠCH MAI • TRƯỜNG ĐH Y HÀ NỘI")}</span>
+          <span class="clinical-badge-pill">${t("hero_clin_status", "STATUS: ACTIVE RESIDENT")}</span>
         </div>
         <div class="hero-grid" style="align-items:center;">
           <div>
-            <p style="font-family:monospace;font-size:12px;font-weight:700;color:var(--primary);letter-spacing:0.15em;text-transform:uppercase;">[CLINICAL CASE DOSSIER // RESIDENT PROFILE]</p>
+            <p style="font-family:monospace;font-size:12px;font-weight:700;color:var(--primary);letter-spacing:0.15em;text-transform:uppercase;">${t("hero_clin_eyebrow", "[CLINICAL CASE DOSSIER // RESIDENT PROFILE]")}</p>
             <h1 style="font-size: clamp(32px, 5vw, 56px); font-weight: 800; line-height: 1.15; margin: 12px 0; color: var(--text);">${escapeHtml(
               hero.fullName,
             )}</h1>
@@ -2046,14 +2051,14 @@ function renderHeroHtml(
 
             <div class="clinical-diagnostic-index">
               <div class="clinical-diagnostic-header">
-                <span>🩺 DANH MỤC CA BỆNH &amp; CHUYÊN MÔN</span>
-                <span style="font-size:10px;opacity:0.7;">ICD-10 CLINICAL ARCHIVE</span>
+                <span>🩺 ${t("hero_clin_diag_title", "DANH MỤC CA BỆNH &amp; CHUYÊN MÔN")}</span>
+                <span style="font-size:10px;opacity:0.7;">${t("hero_clin_diag_tag", "ICD-10 CLINICAL ARCHIVE")}</span>
               </div>
               <div class="clinical-diagnostic-grid">
-                <div class="clinical-diag-item"><strong style="color:var(--primary);">[CASE 01]</strong> Cấp cứu &amp; Can thiệp hồi sức</div>
-                <div class="clinical-diag-item"><strong style="color:var(--primary);">[CASE 02]</strong> Phác đồ điều trị nội khoa</div>
-                <div class="clinical-diag-item"><strong style="color:var(--primary);">[CASE 03]</strong> Chẩn đoán cận lâm sàng</div>
-                <div class="clinical-diag-item"><strong style="color:var(--primary);">[CASE 04]</strong> Y học chứng cứ &amp; Báo cáo</div>
+                <div class="clinical-diag-item"><strong style="color:var(--primary);">[CASE 01]</strong> ${t("hero_clin_case_1", "Cấp cứu &amp; Can thiệp hồi sức")}</div>
+                <div class="clinical-diag-item"><strong style="color:var(--primary);">[CASE 02]</strong> ${t("hero_clin_case_2", "Phác đồ điều trị nội khoa")}</div>
+                <div class="clinical-diag-item"><strong style="color:var(--primary);">[CASE 03]</strong> ${t("hero_clin_case_3", "Chẩn đoán cận lâm sàng")}</div>
+                <div class="clinical-diag-item"><strong style="color:var(--primary);">[CASE 04]</strong> ${t("hero_clin_case_4", "Y học chứng cứ &amp; Báo cáo")}</div>
               </div>
             </div>
 
@@ -2076,15 +2081,15 @@ function renderHeroHtml(
               showAvatar
                 ? `
             <div class="clinical-avatar-frame">
-              <div style="font-family:monospace;font-size:9px;font-weight:700;color:var(--primary);margin-bottom:6px;">[CASE_IMAGE // HIGH_RES]</div>
+              <div style="font-family:monospace;font-size:9px;font-weight:700;color:var(--primary);margin-bottom:6px;">${t("hero_clin_img_tag", "[CASE_IMAGE // HIGH_RES]")}</div>
               <img src="${escapeHtml(
                 resolveSrc(hero.avatar.url),
               )}" alt="${escapeHtml(
                 hero.fullName,
               )}" style="width:100%;max-width:320px;height:420px;object-fit:cover;border-radius:12px;" />
               <div style="display:flex;justify-content:space-between;margin-top:8px;font-family:monospace;font-size:10px;color:var(--primary);">
-                <span>RECORD: VERIFIED</span>
-                <span>HOSPITAL ID: #9821</span>
+                <span>${t("hero_clin_rec_tag", "RECORD: VERIFIED")}</span>
+                <span>${t("hero_clin_id_tag", "HOSPITAL ID: #9821")}</span>
               </div>
             </div>`
                 : ""
@@ -2099,9 +2104,9 @@ function renderHeroHtml(
     return `<section id="hero" class="reveal-on-scroll">
       <div class="creator-hero">
         <div class="creator-masthead">
-          <span>CREATIVE DIRECTORY • ISSUE NO. 01</span>
-          <span>MEDIA &amp; VIRAL STORYTELLING</span>
-          <span>EST. 2024</span>
+          <span>${t("hero_creator_header1", "CREATIVE DIRECTORY • ISSUE NO. 01")}</span>
+          <span>${t("hero_creator_header2", "MEDIA &amp; VIRAL STORYTELLING")}</span>
+          <span>${t("hero_creator_header3", "EST. 2024")}</span>
         </div>
         <div class="hero-grid" style="align-items:center;">
           <div>
@@ -2116,10 +2121,10 @@ function renderHeroHtml(
             )}</p>
 
             <div class="creator-stickers">
-              <span class="creator-sticker-pill sticker-yellow">🔥 VIRAL CAMPAIGN</span>
-              <span class="creator-sticker-pill sticker-pink">🎬 TIKTOK CREATOR</span>
-              <span class="creator-sticker-pill sticker-blue">✨ 500K+ REACH</span>
-              <span class="creator-sticker-pill sticker-green">📸 VISUAL STORYTELLER</span>
+              <span class="creator-sticker-pill sticker-yellow">${t("hero_creator_sticker1", "🔥 VIRAL CAMPAIGN")}</span>
+              <span class="creator-sticker-pill sticker-pink">${t("hero_creator_sticker2", "🎬 TIKTOK CREATOR")}</span>
+              <span class="creator-sticker-pill sticker-blue">${t("hero_creator_sticker3", "✨ 500K+ REACH")}</span>
+              <span class="creator-sticker-pill sticker-green">${t("hero_creator_sticker4", "📸 VISUAL STORYTELLER")}</span>
             </div>
 
             <div style="margin-top:20px;display:flex;gap:16px;font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;">
@@ -2151,7 +2156,7 @@ function renderHeroHtml(
               )}" alt="${escapeHtml(
                 hero.fullName,
               )}" style="width:100%;max-width:320px;height:400px;object-fit:cover;border-radius:16px;" />
-              <p style="margin-top:12px;text-align:center;font-family:var(--font-heading);font-size:14px;font-weight:700;font-style:italic;">Campaign On Set 2024 ⚡</p>
+              <p style="margin-top:12px;text-align:center;font-family:var(--font-heading);font-size:14px;font-weight:700;font-style:italic;">${t("hero_creator_caption", "Campaign On Set 2024 ⚡")}</p>
             </div>`
                 : ""
             }
@@ -2165,12 +2170,12 @@ function renderHeroHtml(
     return `<section id="hero" class="reveal-on-scroll">
       <div class="academic-monograph-hero">
         <div class="academic-ribbon">
-          <span style="font-weight:700;letter-spacing:0.15em;">ĐẠI HỌC QUỐC GIA HÀ NỘI • TRƯỜNG ĐẠI HỌC GIÁO DỤC</span>
-          <span class="academic-vol-tag">MONOGRAPH VOL. 2024</span>
+          <span style="font-weight:700;letter-spacing:0.15em;">${t("hero_acad_header1", "ĐẠI HỌC QUỐC GIA HÀ NỘI • TRƯỜNG ĐẠI HỌC GIÁO DỤC")}</span>
+          <span class="academic-vol-tag">${t("hero_acad_header2", "MONOGRAPH VOL. 2024")}</span>
         </div>
         <div class="hero-grid" style="align-items:center;">
           <div>
-            <p style="font-size:12px;font-weight:700;color:var(--primary);letter-spacing:0.2em;text-transform:uppercase;">HỒ SƠ HỌC THUẬT &amp; NGHIÊN CỨU SƯ PHẠM</p>
+            <p style="font-size:12px;font-weight:700;color:var(--primary);letter-spacing:0.2em;text-transform:uppercase;">${t("hero_acad_eyebrow", "HỒ SƠ HỌC THUẬT &amp; NGHIÊN CỨU SƯ PHẠM")}</p>
             <h1 class="font-editorial" style="font-size: clamp(32px, 5vw, 56px); font-weight: 700; line-height: 1.15; margin: 12px 0; color: var(--text);">${escapeHtml(
               hero.fullName,
             )}</h1>
@@ -2182,12 +2187,12 @@ function renderHeroHtml(
             )}</p>
 
             <div class="academic-framework-box">
-              <div style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;margin-bottom:10px;letter-spacing:0.05em;">📖 KHUNG NGHIÊN CỨU &amp; HỌC THUẬT SƯ PHẠM</div>
+              <div style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;margin-bottom:10px;letter-spacing:0.05em;">📖 ${t("hero_acad_framework_title", "KHUNG NGHIÊN CỨU &amp; HỌC THUẬT SƯ PHẠM")}</div>
               <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--text);">
-                <div><strong style="color:var(--primary);">I.</strong> Lý lịch khoa học &amp; Triết lý giáo dục</div>
-                <div><strong style="color:var(--primary);">II.</strong> Năng lực sư phạm &amp; Dạy học tích cực</div>
-                <div><strong style="color:var(--primary);">III.</strong> Các công trình nghiên cứu &amp; Đề tài thực nghiệm</div>
-                <div><strong style="color:var(--primary);">IV.</strong> Xuất bản tạp chí &amp; Báo cáo sư phạm</div>
+                <div><strong style="color:var(--primary);">I.</strong> ${t("hero_acad_item_1", "Lý lịch khoa học &amp; Triết lý giáo dục")}</div>
+                <div><strong style="color:var(--primary);">II.</strong> ${t("hero_acad_item_2", "Năng lực sư phạm &amp; Dạy học tích cực")}</div>
+                <div><strong style="color:var(--primary);">III.</strong> ${t("hero_acad_item_3", "Các công trình nghiên cứu &amp; Đề tài thực nghiệm")}</div>
+                <div><strong style="color:var(--primary);">IV.</strong> ${t("hero_acad_item_4", "Xuất bản tạp chí &amp; Báo cáo sư phạm")}</div>
               </div>
             </div>
 
@@ -2215,7 +2220,7 @@ function renderHeroHtml(
               )}" alt="${escapeHtml(
                 hero.fullName,
               )}" style="width:100%;max-width:320px;height:420px;object-fit:cover;border-radius:156px 156px 20px 20px;" />
-              <div class="academic-frame-badge">VNU-UEd RESEARCH FELLOW</div>
+              <div class="academic-frame-badge">${t("hero_acad_badge", "VNU-UEd RESEARCH FELLOW")}</div>
             </div>`
                 : ""
             }
@@ -2229,12 +2234,12 @@ function renderHeroHtml(
     return `<section id="hero" class="reveal-on-scroll">
       <div class="pedagogical-journal-hero">
         <div class="pedagogical-ribbon">
-          <span style="font-weight:700;letter-spacing:0.15em;text-transform:uppercase;">NHẬT KÝ SƯ PHẠM &amp; THỰC TẬP GIẢNG DẠY</span>
-          <span class="pedagogical-tag">GIÁO VIÊN TƯƠNG LAI • UEd</span>
+          <span style="font-weight:700;letter-spacing:0.15em;text-transform:uppercase;">${t("hero_ped_header1", "NHẬT KÝ SƯ PHẠM &amp; THỰC TẬP GIẢNG DẠY")}</span>
+          <span class="pedagogical-tag">${t("hero_ped_header2", "GIÁO VIÊN TƯƠNG LAI • UEd")}</span>
         </div>
         <div class="hero-grid" style="align-items:center;">
           <div>
-            <p style="font-size:12px;font-weight:700;color:var(--primary);letter-spacing:0.15em;text-transform:uppercase;">NHẬT KÝ NGƯỜI GIÁO VIÊN TRẺ</p>
+            <p style="font-size:12px;font-weight:700;color:var(--primary);letter-spacing:0.15em;text-transform:uppercase;">${t("hero_ped_eyebrow", "NHẬT KÝ NGƯỜI GIÁO VIÊN TRẺ")}</p>
             <h1 class="font-editorial" style="font-size: clamp(32px, 5vw, 56px); font-weight: 700; line-height: 1.15; margin: 12px 0; color: var(--text);">${escapeHtml(
               hero.fullName,
             )}</h1>
@@ -2246,12 +2251,12 @@ function renderHeroHtml(
             )}</p>
 
             <div class="pedagogical-index-box">
-              <div style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;margin-bottom:10px;">🌸 TIẾN TRÌNH THỰC TẬP &amp; KẾ HOẠCH BÀI DẠY</div>
+              <div style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;margin-bottom:10px;">🌸 ${t("hero_ped_plan_title", "TIẾN TRÌNH THỰC TẬP &amp; KẾ HOẠCH BÀI DẠY")}</div>
               <div class="pedagogical-index-grid">
-                <div class="pedagogical-item">🌸 Bài 1: Chân dung người giáo viên</div>
-                <div class="pedagogical-item">🌸 Bài 2: Kế hoạch bài dạy (Giáo án)</div>
-                <div class="pedagogical-item">🌸 Bài 3: Hoạt động trải nghiệm sáng tạo</div>
-                <div class="pedagogical-item">🌸 Bài 4: Phản tư &amp; Nhận xét học sinh</div>
+                <div class="pedagogical-item">${t("hero_ped_item_1", "🌸 Bài 1: Chân dung người giáo viên")}</div>
+                <div class="pedagogical-item">${t("hero_ped_item_2", "🌸 Bài 2: Kế hoạch bài dạy (Giáo án)")}</div>
+                <div class="pedagogical-item">${t("hero_ped_item_3", "🌸 Bài 3: Hoạt động trải nghiệm sáng tạo")}</div>
+                <div class="pedagogical-item">${t("hero_ped_item_4", "🌸 Bài 4: Phản tư &amp; Nhận xét học sinh")}</div>
               </div>
             </div>
 
@@ -2521,18 +2526,22 @@ function renderAboutHtml(
         .join("")}
     </div>`;
 
-  const isMedicalRuby =
-    templateId === "medical-ruby" || about.variant === "medical-license";
-  const isClinicalNavy =
-    templateId === "clinical-navy" || about.variant === "clinical-dossier";
-  const isContentCreator =
-    templateId === "content-creator" || about.variant === "creator-profile";
-  const isEducationalTerracotta =
-    templateId === "educational-terracotta" || about.variant === "academic-cv";
-  const isPedagogicalJournal =
-    templateId === "pedagogical-mauve" ||
-    templateId === "pedagogical-rose" ||
-    about.variant === "pedagogical-journal";
+  const defaultVariants = getArchetypeDefaultVariants(templateId as TemplateId);
+  const activeAboutVariant =
+    !about.variant || (about.variant === "story-card" && templateId !== "canva-editorial")
+      ? defaultVariants.about
+      : about.variant;
+
+  const isMedicalRuby = activeAboutVariant === "medical-license";
+  const isClinicalNavy = activeAboutVariant === "clinical-dossier";
+  const isContentCreator = activeAboutVariant === "creator-profile";
+  const isEducationalTerracotta = activeAboutVariant === "academic-cv";
+  const isPedagogicalJournal = activeAboutVariant === "pedagogical-journal";
+
+  const t = (key: string, fallback: string) => {
+    const val = about.customTexts?.[key];
+    return val !== undefined && val !== "" ? escapeHtml(val) : fallback;
+  };
 
   if (isMedicalRuby) {
     return `<section id="about" class="about-wrap reveal-on-scroll" data-about-layout="medical-license">
@@ -2540,28 +2549,28 @@ function renderAboutHtml(
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
           <div style="border: 2px solid rgba(123, 17, 19, 0.35); border-radius: 24px; padding: 24px; background: var(--surface); box-shadow: 0 10px 30px -10px rgba(123, 17, 19, 0.15);">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(123, 17, 19, 0.18); padding-bottom: 12px; margin-bottom: 14px;">
-              <span class="medical-ribbon" style="margin-bottom:0; font-size:10px; padding:4px 12px;">🏆 HỒ SƠ HÀNH NGHỀ DƯỢC • CHUẨN GMP/GSP</span>
-              <span class="medical-pill" style="font-family:monospace;">#VN-PHARM-8892</span>
+              <span class="medical-ribbon" style="margin-bottom:0; font-size:10px; padding:4px 12px;">🏆 ${t("med_badge", "HỒ SƠ HÀNH NGHỀ DƯỢC • CHUẨN GMP/GSP")}</span>
+              <span class="medical-pill" style="font-family:monospace;">${t("med_license", "#VN-PHARM-8892")}</span>
             </div>
-            <h3 class="font-editorial" style="font-size:22px; font-weight:700; color:#2B1810; margin:0 0 10px;">Dược sĩ Chuyên khoa &amp; Nghiên cứu Phát triển (R&amp;D)</h3>
+            <h3 class="font-editorial" style="font-size:22px; font-weight:700; color:#2B1810; margin:0 0 10px;">${t("med_title", "Dược sĩ Chuyên khoa &amp; Nghiên cứu Phát triển (R&amp;D)")}</h3>
             <p style="font-size:14px; line-height:1.7; color:#2B1810; opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Dược sĩ phụ trách kiểm soát chất lượng, nghiên cứu tối ưu hóa công thức bào chế theo tiêu chuẩn GMP-WHO và Dược điển Việt Nam V.")}</p>
             <div class="medical-syllabus-grid" style="grid-template-columns: repeat(3, 1fr); gap: 10px;">
               <div class="medical-syllabus-item">
-                <strong style="color:var(--primary); display:block; margin-bottom:4px;">🔬 Bào chế &amp; Độc học</strong>
-                <span style="font-size:11px; opacity:0.85;">Nano sinh học, viên nén phóng thích biến đổi</span>
+                <strong style="color:var(--primary); display:block; margin-bottom:4px;">${t("med_feat1_title", "🔬 Bào chế &amp; Độc học")}</strong>
+                <span style="font-size:11px; opacity:0.85;">${t("med_feat1_desc", "Nano sinh học, viên nén phóng thích biến đổi")}</span>
               </div>
               <div class="medical-syllabus-item">
-                <strong style="color:var(--primary); display:block; margin-bottom:4px;">📋 Tiêu chuẩn GMP-WHO</strong>
-                <span style="font-size:11px; opacity:0.85;">Thẩm định quy trình sản xuất, GLP phòng LAB</span>
+                <strong style="color:var(--primary); display:block; margin-bottom:4px;">${t("med_feat2_title", "📋 Tiêu chuẩn GMP-WHO")}</strong>
+                <span style="font-size:11px; opacity:0.85;">${t("med_feat2_desc", "Thẩm định quy trình sản xuất, GLP phòng LAB")}</span>
               </div>
               <div class="medical-syllabus-item">
-                <strong style="color:var(--primary); display:block; margin-bottom:4px;">💊 Dược lâm sàng</strong>
-                <span style="font-size:11px; opacity:0.85;">Tương tác thuốc &amp; Cảnh giác dược an toàn</span>
+                <strong style="color:var(--primary); display:block; margin-bottom:4px;">${t("med_feat3_title", "💊 Dược lâm sàng")}</strong>
+                <span style="font-size:11px; opacity:0.85;">${t("med_feat3_desc", "Tương tác thuốc &amp; Cảnh giác dược an toàn")}</span>
               </div>
             </div>
             <div style="margin-top:16px; padding-top:10px; border-top:1px solid rgba(123, 17, 19, 0.15); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
-              <span>⚖️ CAM KẾT Y ĐỨC &amp; AN TOÀN SỬ DỤNG THUỐC</span>
-              <span>BỘ Y TẾ VIỆT NAM VERIFIED</span>
+              <span>${t("med_footer_left", "⚖️ CAM KẾT Y ĐỨC &amp; AN TOÀN SỬ DỤNG THUỐC")}</span>
+              <span>${t("med_footer_right", "BỘ Y TẾ VIỆT NAM VERIFIED")}</span>
             </div>
           </div>
 
@@ -2590,29 +2599,29 @@ function renderAboutHtml(
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
           <div style="border: 2px solid var(--primary); border-radius: 16px; padding: 24px; background: var(--surface); box-shadow: 0 10px 28px -8px rgba(26,18,100,0.25);">
             <div class="clinical-status-bar" style="margin-bottom:14px; padding:6px 12px;">
-              <span style="font-weight:700;"><span class="clinical-dot"></span> [PHYSICIAN CLINICAL DOSSIER // MD. REGISTRATION]</span>
-              <span class="clinical-badge-pill">MD-HN-2024</span>
+              <span style="font-weight:700;"><span class="clinical-dot"></span> ${t("clin_badge", "[PHYSICIAN CLINICAL DOSSIER // MD. REGISTRATION]")}</span>
+              <span class="clinical-badge-pill">${t("clin_tag", "MD-HN-2024")}</span>
             </div>
-            <h3 style="font-family:sans-serif; font-size:22px; font-weight:700; color:var(--text); margin:0 0 6px;">Bác sĩ Nội trú / Điều trị Lâm sàng</h3>
-            <p style="font-size:12px; font-weight:600; color:var(--primary); margin:0 0 12px;">BỆNH VIỆN BẠCH MAI • BỘ MÔN NỘI - ĐH Y HÀ NỘI</p>
+            <h3 style="font-family:sans-serif; font-size:22px; font-weight:700; color:var(--text); margin:0 0 6px;">${t("clin_title", "Bác sĩ Nội trú / Điều trị Lâm sàng")}</h3>
+            <p style="font-size:12px; font-weight:600; color:var(--primary); margin:0 0 12px;">${t("clin_sub", "BỆNH VIỆN BẠCH MAI • BỘ MÔN NỘI - ĐH Y HÀ NỘI")}</p>
             <p style="font-family:sans-serif; font-size:14px; line-height:1.7; color:var(--text); opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Bác sĩ lâm sàng trực tiếp điều trị tại khoa Cấp cứu & Can thiệp hồi sức tim mạch, ứng dụng y học chứng cứ trong chẩn đoán và theo dõi phác đồ.")}</p>
             <div class="clinical-diagnostic-grid" style="grid-template-columns: repeat(3, 1fr); gap: 8px;">
               <div class="clinical-diag-item">
-                <strong style="color:var(--primary); display:block; margin-bottom:2px;">🩺 Cấp cứu Hồi sức</strong>
-                <span style="font-family:sans-serif; font-size:11px; opacity:0.85;">ACLS nâng cao, can thiệp sốc</span>
+                <strong style="color:var(--primary); display:block; margin-bottom:2px;">${t("clin_feat1_title", "🩺 Cấp cứu Hồi sức")}</strong>
+                <span style="font-family:sans-serif; font-size:11px; opacity:0.85;">${t("clin_feat1_desc", "ACLS nâng cao, can thiệp sốc")}</span>
               </div>
               <div class="clinical-diag-item">
-                <strong style="color:var(--primary); display:block; margin-bottom:2px;">📊 Y học chứng cứ</strong>
-                <span style="font-family:sans-serif; font-size:11px; opacity:0.85;">Guideline AHA/ESC cập nhật</span>
+                <strong style="color:var(--primary); display:block; margin-bottom:2px;">${t("clin_feat2_title", "📊 Y học chứng cứ")}</strong>
+                <span style="font-family:sans-serif; font-size:11px; opacity:0.85;">${t("clin_feat2_desc", "Guideline AHA/ESC cập nhật")}</span>
               </div>
               <div class="clinical-diag-item">
-                <strong style="color:var(--primary); display:block; margin-bottom:2px;">🧬 Cận lâm sàng</strong>
-                <span style="font-family:sans-serif; font-size:11px; opacity:0.85;">Chẩn đoán hình ảnh CT/MRI</span>
+                <strong style="color:var(--primary); display:block; margin-bottom:2px;">${t("clin_feat3_title", "🧬 Cận lâm sàng")}</strong>
+                <span style="font-family:sans-serif; font-size:11px; opacity:0.85;">${t("clin_feat3_desc", "Chẩn đoán hình ảnh CT/MRI")}</span>
               </div>
             </div>
             <div style="margin-top:16px; padding-top:10px; border-top:1px solid rgba(26,18,100,0.15); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
-              <span>STATUS: PRACTICING PHYSICIAN</span>
-              <span>HIPPOCRATIC OATH VERIFIED</span>
+              <span>${t("clin_footer_left", "STATUS: PRACTICING PHYSICIAN")}</span>
+              <span>${t("clin_footer_right", "HIPPOCRATIC OATH VERIFIED")}</span>
             </div>
           </div>
 
@@ -2640,39 +2649,40 @@ function renderAboutHtml(
       <div style="position:relative; z-index:2; margin-bottom: 24px;">
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px; margin-bottom:20px;">
           <div style="border:2px solid #000; border-radius:18px; padding:14px; background:#FDE047; box-shadow:3px 3px 0px #000;">
-            <span style="font-size:10px; font-weight:900; text-transform:uppercase;">TIKTOK REACH</span>
-            <div style="font-size:24px; font-weight:900;">250K+</div>
-            <span style="font-size:11px; font-weight:700; opacity:0.8;">3.2M Lượt Thích</span>
+            <span style="font-size:10px; font-weight:900; text-transform:uppercase;">${t("creator_stat1_title", "TIKTOK REACH")}</span>
+            <div style="font-size:24px; font-weight:900;">${t("creator_stat1_val", "250K+")}</div>
+            <span style="font-size:11px; font-weight:700; opacity:0.8;">${t("creator_stat1_sub", "3.2M Lượt Thích")}</span>
           </div>
           <div style="border:2px solid #000; border-radius:18px; padding:14px; background:#F472B6; box-shadow:3px 3px 0px #000;">
-            <span style="font-size:10px; font-weight:900; text-transform:uppercase;">INSTAGRAM / REELS</span>
-            <div style="font-size:24px; font-weight:900;">85K+</div>
-            <span style="font-size:11px; font-weight:700; opacity:0.8;">15.2% Avg. Reach</span>
+            <span style="font-size:10px; font-weight:900; text-transform:uppercase;">${t("creator_stat2_title", "INSTAGRAM / REELS")}</span>
+            <div style="font-size:24px; font-weight:900;">${t("creator_stat2_val", "85K+")}</div>
+            <span style="font-size:11px; font-weight:700; opacity:0.8;">${t("creator_stat2_sub", "15.2% Avg. Reach")}</span>
           </div>
           <div style="border:2px solid #000; border-radius:18px; padding:14px; background:#38BDF8; box-shadow:3px 3px 0px #000;">
-            <span style="font-size:10px; font-weight:900; text-transform:uppercase;">YOUTUBE SHORTS</span>
-            <div style="font-size:24px; font-weight:900;">120K+</div>
-            <span style="font-size:11px; font-weight:700; opacity:0.8;">Views / Tháng</span>
+            <span style="font-size:10px; font-weight:900; text-transform:uppercase;">${t("creator_stat3_title", "YOUTUBE SHORTS")}</span>
+            <div style="font-size:24px; font-weight:900;">${t("creator_stat3_val", "120K+")}</div>
+            <span style="font-size:11px; font-weight:700; opacity:0.8;">${t("creator_stat3_sub", "Views / Tháng")}</span>
           </div>
           <div style="border:2px solid #000; border-radius:18px; padding:14px; background:#4ADE80; box-shadow:3px 3px 0px #000;">
-            <span style="font-size:10px; font-weight:900; text-transform:uppercase;">ENGAGEMENT RATE</span>
-            <div style="font-size:24px; font-weight:900;">8.4%</div>
-            <span style="font-size:11px; font-weight:700; opacity:0.8;">Top Creator GenZ</span>
+            <span style="font-size:10px; font-weight:900; text-transform:uppercase;">${t("creator_stat4_title", "ENGAGEMENT RATE")}</span>
+            <div style="font-size:24px; font-weight:900;">${t("creator_stat4_val", "8.4%")}</div>
+            <span style="font-size:11px; font-weight:700; opacity:0.8;">${t("creator_stat4_sub", "Top Creator GenZ")}</span>
           </div>
         </div>
 
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
           <div style="border:3px solid #000; border-radius:24px; padding:24px; background:#fff; box-shadow:6px 6px 0px #000;">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:14px;">
-              <span style="font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary);">CREATOR MEDIA DECK • ISSUE NO. 01</span>
-              <span style="border:1px solid #000; background:#FDE047; padding:2px 10px; border-radius:999px; font-size:10px; font-weight:900;">OPEN FOR BOOKING ⚡</span>
+              <span style="font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary);">${t("creator_deck_title", "CREATOR MEDIA DECK • ISSUE NO. 01")}</span>
+              <span style="border:1px solid #000; background:#FDE047; padding:2px 10px; border-radius:999px; font-size:10px; font-weight:900;">${t("creator_deck_status", "OPEN FOR BOOKING ⚡")}</span>
             </div>
-            <h3 class="font-editorial" style="font-size:24px; font-weight:900; margin:0 0 12px;">Visual Storytelling &amp; Viral Content Creation</h3>
+            <h3 class="font-editorial" style="font-size:24px; font-weight:900; margin:0 0 12px;">${t("creator_heading", "Visual Storytelling &amp; Viral Content Creation")}</h3>
             <p style="font-size:14px; line-height:1.7; font-weight:500; opacity:0.9; margin:0 0 16px;">${escapeHtml(about.biography || "Sáng tạo nội dung đa nền tảng kết hợp hình ảnh đậm tính thẩm mỹ, storytelling chân thực và thông điệp lan tỏa tích cực đến cộng đồng người trẻ.")}</p>
             <div style="display:flex; flex-wrap:wrap; gap:8px;">
-              <span style="border:2px solid #000; border-radius:8px; padding:4px 10px; font-size:11px; font-weight:900; background:#f5f5f5;">🎬 Brand Integration</span>
-              <span style="border:2px solid #000; border-radius:8px; padding:4px 10px; font-size:11px; font-weight:900; background:#f5f5f5;">📱 UGC &amp; Review</span>
-              <span style="border:2px solid #000; border-radius:8px; padding:4px 10px; font-size:11px; font-weight:900; background:#f5f5f5;">🎙️ Podcast Host</span>
+              <span style="border:2px solid #000; border-radius:8px; padding:4px 10px; font-size:11px; font-weight:900; background:#f5f5f5;">${t("creator_tag_1", "🎬 Brand Integration")}</span>
+              <span style="border:2px solid #000; border-radius:8px; padding:4px 10px; font-size:11px; font-weight:900; background:#f5f5f5;">${t("creator_tag_2", "📱 UGC &amp; Review")}</span>
+              <span style="border:2px solid #000; border-radius:8px; padding:4px 10px; font-size:11px; font-weight:900; background:#f5f5f5;">${t("creator_tag_3", "🎙️ Podcast Host")}</span>
+              <span style="border:2px solid #000; border-radius:8px; padding:4px 10px; font-size:11px; font-weight:900; background:#f5f5f5;">${t("creator_tag_4", "📸 Concept Shoot")}</span>
             </div>
           </div>
 
@@ -2685,9 +2695,9 @@ function renderAboutHtml(
             </div>
             <div style="border:3px solid #000; border-radius:20px; padding:18px; background:#F8FAFC; box-shadow:4px 4px 0px #000;">
               <h4 style="font-size:11px; font-weight:900; text-transform:uppercase; margin:0 0 8px;">PRODUCTION GEAR // SPECS</h4>
-              <p style="font-size:11px; margin:0 0 4px; opacity:0.85;">• Camera: Sony Cinema FX30 &amp; G-Master Lenses</p>
-              <p style="font-size:11px; margin:0 0 4px; opacity:0.85;">• Audio: DJI Wireless Mic 2 Studio Setup</p>
-              <p style="font-size:11px; margin:0; opacity:0.85;">• Color Grading: DaVinci Resolve Studio 18</p>
+              <p style="font-size:11px; margin:0 0 4px; opacity:0.85;">${t("creator_spec_1", "• Camera: Sony Cinema FX30 &amp; G-Master Lenses")}</p>
+              <p style="font-size:11px; margin:0 0 4px; opacity:0.85;">${t("creator_spec_2", "• Audio: DJI Wireless Mic 2 Studio Setup")}</p>
+              <p style="font-size:11px; margin:0; opacity:0.85;">${t("creator_spec_3", "• Color Grading: DaVinci Resolve Studio 18")}</p>
             </div>
           </div>
         </div>
@@ -2701,27 +2711,27 @@ function renderAboutHtml(
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
           <div style="border: 2px solid rgba(155, 48, 45, 0.35); border-radius: 20px; padding: 24px; background: var(--surface);">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(155, 48, 45, 0.2); padding-bottom: 12px; margin-bottom: 14px;">
-              <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary);">HỒ SƠ HỌC THUẬT &amp; LÝ LỊCH KHOA HỌC • ĐHQGHN</span>
-              <span class="academic-vol-tag" style="background:var(--primary); color:#fff;">VNU-UEd-CV</span>
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary);">${t("acad_badge", "HỒ SƠ HỌC THUẬT &amp; LÝ LỊCH KHOA HỌC • ĐHQGHN")}</span>
+              <span class="academic-vol-tag" style="background:var(--primary); color:#fff;">${t("acad_tag", "VNU-UEd-CV")}</span>
             </div>
-            <h3 class="font-editorial" style="font-size:22px; font-weight:700; margin:0 0 10px;">Nghiên cứu sinh &amp; Giảng viên Sư phạm Tương lai</h3>
+            <h3 class="font-editorial" style="font-size:22px; font-weight:700; margin:0 0 10px;">${t("acad_title", "Nghiên cứu sinh &amp; Giảng viên Sư phạm Tương lai")}</h3>
             <p style="font-size:14px; line-height:1.7; opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Nghiên cứu chuyên sâu về đổi mới phương pháp giảng dạy, ứng dụng chuyển đổi số và phát triển năng lực tự học cho học sinh trong chương trình GDPT 2018.")}</p>
             <div style="border:1px solid rgba(155,48,45,0.25); border-radius:12px; padding:12px; background:rgba(237,234,226,0.3); font-size:12px; font-style:italic;">
-              <strong style="color:var(--primary); font-style:normal; display:block; margin-bottom:2px;">📜 Triết lý nghiên cứu giáo dục:</strong>
-              &ldquo;Lấy người học làm trung tâm của mọi chuyển hóa, công nghệ làm đòn bẩy kích hoạt tư duy và sự thấu cảm làm nền tảng của y đức sư phạm.&rdquo;
+              <strong style="color:var(--primary); font-style:normal; display:block; margin-bottom:2px;">${t("acad_philo_title", "📜 Triết lý nghiên cứu giáo dục:")}</strong>
+              ${t("acad_philo_text", "“Lấy người học làm trung tâm của mọi chuyển hóa, công nghệ làm đòn bẩy kích hoạt tư duy và sự thấu cảm làm nền tảng của y đức sư phạm.”")}
             </div>
             <div style="margin-top:16px; padding-top:10px; border-top:1px solid rgba(155, 48, 45, 0.15); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
-              <span>TRƯỜNG ĐẠI HỌC GIÁO DỤC • ĐHQGHN</span>
-              <span>ACADEMIC VERIFIED</span>
+              <span>${t("acad_footer_left", "TRƯỜNG ĐẠI HỌC GIÁO DỤC • ĐHQGHN")}</span>
+              <span>${t("acad_footer_right", "ACADEMIC VERIFIED")}</span>
             </div>
           </div>
 
           <div style="display:flex; flex-direction:column; gap:16px;">
             <div style="border: 1px solid rgba(155, 48, 45, 0.25); border-radius: 16px; padding: 18px; background: var(--surface);">
               <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">📖 CÔNG BỐ KHOA HỌC &amp; ĐỀ TÀI</h4>
-              <p style="font-size:12px; margin:0 0 6px;">• <strong>01 Đề tài NCKH ĐHQGHN:</strong> Giải Nhất 2024</p>
-              <p style="font-size:12px; margin:0 0 6px;">• <strong>03 Bài báo khoa học:</strong> Kỷ yếu Hội thảo Quốc gia</p>
-              <p style="font-size:12px; margin:0;">• <strong>Học bổng:</strong> Tài năng Sư phạm VNU</p>
+              <p style="font-size:12px; margin:0 0 6px;">${t("acad_pub_1", "• <strong>01 Đề tài NCKH ĐHQGHN:</strong> Giải Nhất 2024")}</p>
+              <p style="font-size:12px; margin:0 0 6px;">${t("acad_pub_2", "• <strong>03 Bài báo khoa học:</strong> Kỷ yếu Hội thảo Quốc gia")}</p>
+              <p style="font-size:12px; margin:0;">${t("acad_pub_3", "• <strong>Học bổng:</strong> Tài năng Sư phạm VNU")}</p>
             </div>
             <div style="border: 1px solid rgba(155, 48, 45, 0.25); border-radius: 16px; padding: 18px; background: var(--surface);">
               <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">✉️ LIÊN HỆ KHOA HỌC &amp; VĂN PHÒNG</h4>
@@ -2741,28 +2751,28 @@ function renderAboutHtml(
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
           <div style="border: 2px solid rgba(155, 84, 100, 0.3); border-radius: 24px; padding: 24px; background: var(--surface);">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(155, 84, 100, 0.2); padding-bottom: 12px; margin-bottom: 14px;">
-              <span class="pedagogical-tag">🌸 CHÂN DUNG NGƯỜI GIÁO VIÊN TRẺ • SƯ PHẠM UEd</span>
-              <span style="font-size:11px; opacity:0.75;">KHÓA K18 • THỰC TẬP</span>
+              <span class="pedagogical-tag">${t("ped_badge", "🌸 CHÂN DUNG NGƯỜI GIÁO VIÊN TRẺ • SƯ PHẠM UEd")}</span>
+              <span style="font-size:11px; opacity:0.75;">${t("ped_tag", "KHÓA K18 • THỰC TẬP")}</span>
             </div>
-            <h3 class="font-editorial" style="font-size:22px; font-weight:700; margin:0 0 10px;">Tâm Niệm Nghề Giáo &amp; Triết Lý Giảng Dạy</h3>
+            <h3 class="font-editorial" style="font-size:22px; font-weight:700; margin:0 0 10px;">${t("ped_title", "Tâm Niệm Nghề Giáo &amp; Triết Lý Giảng Dạy")}</h3>
             <p style="font-size:14px; line-height:1.7; opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Mỗi học sinh là một nốt nhạc độc bản trong dàn hợp xướng cuộc đời. Người giáo viên không chỉ truyền đạt tri thức mà còn là người thắp lên ngọn lửa đam mê và sự tự tin cho các em.")}</p>
             <div class="pedagogical-index-grid" style="grid-template-columns: repeat(3, 1fr); gap: 8px;">
               <div class="pedagogical-item">
-                <strong style="color:var(--primary); display:block; margin-bottom:2px;">🎼 Giáo án tương tác</strong>
-                <span style="font-size:11px; opacity:0.85;">Dạy học liên môn &amp; CNTT</span>
+                <strong style="color:var(--primary); display:block; margin-bottom:2px;">${t("ped_card1_title", "🎼 Giáo án tương tác")}</strong>
+                <span style="font-size:11px; opacity:0.85;">${t("ped_card1_desc", "Dạy học liên môn &amp; CNTT")}</span>
               </div>
               <div class="pedagogical-item">
-                <strong style="color:var(--primary); display:block; margin-bottom:2px;">💡 Trải nghiệm sáng tạo</strong>
-                <span style="font-size:11px; opacity:0.85;">Ngoại khóa &amp; CLB học đường</span>
+                <strong style="color:var(--primary); display:block; margin-bottom:2px;">${t("ped_card2_title", "💡 Trải nghiệm sáng tạo")}</strong>
+                <span style="font-size:11px; opacity:0.85;">${t("ped_card2_desc", "Ngoại khóa &amp; CLB học đường")}</span>
               </div>
               <div class="pedagogical-item">
-                <strong style="color:var(--primary); display:block; margin-bottom:2px;">❤️ Thấu cảm học trò</strong>
-                <span style="font-size:11px; opacity:0.85;">Lớp học hạnh phúc</span>
+                <strong style="color:var(--primary); display:block; margin-bottom:2px;">${t("ped_card3_title", "❤️ Thấu cảm học trò")}</strong>
+                <span style="font-size:11px; opacity:0.85;">${t("ped_card3_desc", "Lớp học hạnh phúc")}</span>
               </div>
             </div>
             <div style="margin-top:16px; padding-top:10px; border-top:1px solid rgba(155, 84, 100, 0.15); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
-              <span>TRƯỜNG ĐH SƯ PHẠM NGHỆ THUẬT TW</span>
-              <span>TỐT NGHIỆP XUẤT SẮC 🌸</span>
+              <span>${t("ped_footer_left", "TRƯỜNG ĐH SƯ PHẠM NGHỆ THUẬT TW")}</span>
+              <span>${t("ped_footer_right", "TỐT NGHIỆP XUẤT SẮC 🌸")}</span>
             </div>
           </div>
 
@@ -3073,18 +3083,18 @@ function renderProjectsHtml(
   isMusicEditorial = false,
   templateId = "canva-editorial",
 ): string {
-  const isMedicalRuby =
-    templateId === "medical-ruby" || projects.variant === "medical-spread";
-  const isClinicalNavy =
-    templateId === "clinical-navy" || projects.variant === "clinical-dossier";
-  const isContentCreator =
-    templateId === "content-creator" || projects.variant === "creator-filmstrip";
-  const isEducationalTerracotta =
-    templateId === "educational-terracotta" ||
-    projects.variant === "academic-monograph";
-  const isPedagogicalRose = templateId === "pedagogical-rose";
-  const isPedagogical =
-    templateId === "pedagogical-mauve" || projects.variant === "lesson-plan";
+  const defaultVariants = getArchetypeDefaultVariants(templateId as TemplateId);
+  const activeProjectsVariant =
+    !projects.variant || (projects.variant === "canva-slide-showcase" && templateId !== "canva-editorial")
+      ? defaultVariants.projects
+      : projects.variant;
+
+  const isMedicalRuby = activeProjectsVariant === "medical-spread";
+  const isClinicalNavy = activeProjectsVariant === "clinical-dossier";
+  const isContentCreator = activeProjectsVariant === "creator-filmstrip";
+  const isEducationalTerracotta = activeProjectsVariant === "academic-monograph";
+  const isPedagogical = activeProjectsVariant === "lesson-plan";
+  const isPedagogicalRose = templateId === "pedagogical-rose" && activeProjectsVariant === "lesson-plan";
   const isMedicalFamily =
     isMedicalRuby ||
     isClinicalNavy ||

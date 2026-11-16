@@ -201,6 +201,7 @@ export const SectionAppearanceSchema = z.object({
   headingFont: z.string().optional(),
   bodyFont: z.string().optional(),
   tags: z.array(z.string()).optional(),
+  customTexts: z.record(z.string(), z.string()).optional(),
 });
 
 /**

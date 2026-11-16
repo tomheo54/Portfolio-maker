@@ -242,7 +242,76 @@ function main() {
       return sec;
     }),
   };
-  renderStandaloneHtml(customRubyDoc, new Map());
+  const customRubyHtml = renderStandaloneHtml(customRubyDoc, new Map());
+  if (customRubyHtml.includes("medical-ruby-hero")) {
+    throw new Error("Custom variant override failed: medical-ruby-hero was rendered when variant='bento-intro'");
+  }
+  if (customRubyHtml.includes('data-about-layout="medical-license"')) {
+    throw new Error("Custom variant override failed: medical-license about was rendered when variant='two-column-bio'");
+  }
+  if (!customRubyHtml.includes('data-about-layout="two-column-bio"')) {
+    throw new Error("Custom variant override failed: two-column-bio about layout missing in output");
+  }
+
+  // Test showAvatar: false preserves archetype structure
+  const noAvatarRubyDoc: PortfolioDocument = {
+    ...baseDoc,
+    templateId: "medical-ruby",
+    sections: baseDoc.sections.map((sec) => {
+      if (sec.type === "hero") return { ...sec, showAvatar: false };
+      return sec;
+    }),
+  };
+  const noAvatarRubyHtml = renderStandaloneHtml(noAvatarRubyDoc, new Map());
+  if (!noAvatarRubyHtml.includes("medical-ruby-hero")) {
+    throw new Error("medical-ruby should keep medical-ruby-hero layout even when showAvatar is false");
+  }
+  if (!noAvatarRubyHtml.includes("medical-syllabus-box")) {
+    throw new Error("medical-ruby should keep syllabus box even when showAvatar is false");
+  }
+
+  // Test customized clinical-navy overrides
+  const customClinicalDoc: PortfolioDocument = {
+    ...baseDoc,
+    templateId: "clinical-navy",
+    sections: baseDoc.sections.map((sec) => {
+      if (sec.type === "hero") return { ...sec, variant: "minimal-center" };
+      if (sec.type === "about") return { ...sec, variant: "grid" };
+      if (sec.type === "projects") return { ...sec, variant: "grid" };
+      return sec;
+    }),
+  };
+  const customClinicalHtml = renderStandaloneHtml(customClinicalDoc, new Map());
+  if (customClinicalHtml.includes("clinical-navy-hero")) {
+    throw new Error("Custom variant override failed: clinical-navy-hero rendered when variant='minimal-center'");
+  }
+  if (customClinicalHtml.includes('data-about-layout="clinical-dossier"')) {
+    throw new Error("Custom variant override failed: clinical-dossier about rendered when variant='grid'");
+  }
+  if (!customClinicalHtml.includes('data-about-layout="grid"')) {
+    throw new Error("Custom variant override failed: grid about layout missing in output");
+  }
+
+  // Test customized content-creator overrides
+  const customCreatorDoc: PortfolioDocument = {
+    ...baseDoc,
+    templateId: "content-creator",
+    sections: baseDoc.sections.map((sec) => {
+      if (sec.type === "hero") return { ...sec, variant: "split-left" };
+      if (sec.type === "about") return { ...sec, variant: "tabs" };
+      return sec;
+    }),
+  };
+  const customCreatorHtml = renderStandaloneHtml(customCreatorDoc, new Map());
+  if (customCreatorHtml.includes("creator-hero")) {
+    throw new Error("Custom variant override failed: creator-hero rendered when variant='split-left'");
+  }
+  if (customCreatorHtml.includes('data-about-layout="creator-profile"')) {
+    throw new Error("Custom variant override failed: creator-profile about rendered when variant='tabs'");
+  }
+  if (!customCreatorHtml.includes('data-about-layout="tabs"')) {
+    throw new Error("Custom variant override failed: tabs about layout missing in output");
+  }
 
   // Test empty projects array
   const emptyProjectsDoc: PortfolioDocument = {
@@ -272,6 +341,47 @@ function main() {
     }),
   };
   renderStandaloneHtml(emptyAboutDoc, new Map());
+
+  // === 6. Checking In-place customTexts Overrides ===
+  const customTextsDoc: PortfolioDocument = {
+    ...baseDoc,
+    templateId: "medical-ruby",
+    sections: baseDoc.sections.map((sec) => {
+      if (sec.type === "hero") {
+        return {
+          ...sec,
+          customTexts: {
+            hero_med_badge: "CHỨNG CHỈ DƯỢC SĨ QUỐC TẾ 2026",
+            hero_med_syllabus_title: "CHƯƠNG TRÌNH HÀNH NGHỀ CAO CẤP",
+          },
+        };
+      }
+      if (sec.type === "about") {
+        return {
+          ...sec,
+          customTexts: {
+            med_badge: "GIẤY PHÉP HÀNH NGHỀ BỘ Y TẾ 2026",
+            med_license: "LICENSE: #VN-VIP-9999",
+          },
+        };
+      }
+      return sec;
+    }),
+  };
+  const customTextsHtml = renderStandaloneHtml(customTextsDoc, new Map());
+  if (!customTextsHtml.includes("CHỨNG CHỈ DƯỢC SĨ QUỐC TẾ 2026")) {
+    throw new Error("Hero customTexts override for hero_med_badge failed");
+  }
+  if (!customTextsHtml.includes("CHƯƠNG TRÌNH HÀNH NGHỀ CAO CẤP")) {
+    throw new Error("Hero customTexts override for hero_med_syllabus_title failed");
+  }
+  if (!customTextsHtml.includes("GIẤY PHÉP HÀNH NGHỀ BỘ Y TẾ 2026")) {
+    throw new Error("About customTexts override for med_badge failed");
+  }
+  if (!customTextsHtml.includes("LICENSE: #VN-VIP-9999")) {
+    throw new Error("About customTexts override for med_license failed");
+  }
+  console.log("Verified in-place customTexts synchronization into static HTML export!");
 
   console.log("All edge case scenarios verified safely!");
   console.log("All HTML export tests passed with 100% visual and archetype fidelity!");
