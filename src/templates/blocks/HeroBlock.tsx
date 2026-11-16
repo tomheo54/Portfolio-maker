@@ -592,7 +592,7 @@ export function HeroBlock({
         {isMedicalRuby ? (
           <div className="space-y-6">
             <div
-              className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-bold tracking-widest uppercase shadow-sm"
+              className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-bold tracking-wider uppercase shadow-sm"
               style={{
                 backgroundColor: theme.primaryColor,
                 borderColor: `${theme.secondaryColor}80`,
@@ -805,7 +805,7 @@ export function HeroBlock({
         ) : isClinicalNavy ? (
           <div className="space-y-6">
             <div
-              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-slate-50/90 px-4 py-2.5 text-xs font-mono"
+              className="flex max-w-full flex-wrap items-center justify-between gap-2.5 rounded-xl border bg-slate-50/90 px-3.5 py-2 text-xs font-mono"
               style={{
                 borderColor: `${theme.primaryColor}30`,
                 color: theme.textColor,
@@ -1214,7 +1214,7 @@ export function HeroBlock({
         ) : isAcademicMonograph ? (
           <div className="space-y-6">
             <div
-              className="flex flex-wrap items-center justify-between gap-3 border-b-2 pb-3"
+              className="flex max-w-full flex-wrap items-center justify-between gap-2.5 border-b-2 pb-3"
               style={{ borderColor: `${theme.primaryColor}40` }}
             >
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: theme.primaryColor }}>
@@ -1361,7 +1361,7 @@ export function HeroBlock({
                       <img
                         src={section.avatar.url}
                         alt={section.fullName}
-                        className="w-72 h-96 sm:w-80 sm:h-[440px] object-cover"
+                        className="w-64 h-80 sm:w-80 sm:h-[440px] max-w-full object-cover"
                         style={{ borderRadius: "152px 152px 18px 18px" }}
                       />
                     </div>

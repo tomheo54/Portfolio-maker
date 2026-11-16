@@ -89,12 +89,18 @@ function getSafeDocxHref(url: string | undefined): string | null {
 function DocxFileLink({
   url,
   label,
+  theme,
 }: {
   url: string | undefined;
   label?: string;
+  theme?: ThemeConfig;
 }) {
   const href = getSafeDocxHref(url);
   if (!href) return null;
+
+  const borderColor = theme?.primaryColor ? `${theme.primaryColor}50` : "var(--primary, #735340)";
+  const textColor = theme?.primaryColor || "var(--primary, #735340)";
+  const bgColor = theme?.surfaceColor ? theme.surfaceColor : "var(--surface, #FFF8F0)";
 
   return (
     <a
@@ -103,16 +109,58 @@ function DocxFileLink({
       rel="noopener noreferrer"
       aria-label={label || "Mở file DOCX đính kèm"}
       onClick={(event) => event.stopPropagation()}
-      className="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold transition hover:opacity-80"
+      className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold transition hover:opacity-85 shadow-xs whitespace-nowrap"
       style={{
-        borderColor: "var(--primary, #735340)",
-        color: "var(--primary, #735340)",
-        backgroundColor: "var(--surface, #FFF8F0)",
+        borderColor,
+        color: textColor,
+        backgroundColor: bgColor,
       }}
     >
-      <FileText className="h-3 w-3" />
-      {label || "Mở file DOCX"}
+      <FileText className="h-3 w-3 shrink-0" />
+      <span>{label || "Mở file DOCX"}</span>
     </a>
+  );
+}
+
+function renderProjectFilesBar(project: ProjectItem, theme: ThemeConfig) {
+  const hasDocx = Boolean(getSafeDocxHref(project.docxUrl));
+  const hasFileName = Boolean(project.sourceDocxFileName?.trim());
+  const hasLinks = Boolean(project.links && project.links.length > 0);
+
+  if (!hasDocx && !hasFileName && !hasLinks) return null;
+
+  return (
+    <div className="flex flex-wrap items-center gap-1.5" data-testid="project-files-bar">
+      {hasFileName && (
+        <span
+          className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium max-w-[200px] sm:max-w-xs truncate"
+          style={{
+            borderColor: `${theme.primaryColor}30`,
+            color: theme.textColor,
+            backgroundColor: `${theme.primaryColor}0d`,
+          }}
+          title={project.sourceDocxFileName}
+        >
+          <FileText className="h-3 w-3 shrink-0" style={{ color: theme.primaryColor }} />
+          <span className="truncate">{project.sourceDocxFileName}</span>
+        </span>
+      )}
+      {hasDocx && (
+        <DocxFileLink
+          url={project.docxUrl}
+          label={project.docxLinkLabel}
+          theme={theme}
+        />
+      )}
+      {project.links?.map((link, lIdx) => (
+        <DocxFileLink
+          key={`extra-link-${lIdx}`}
+          url={link.url}
+          label={link.label}
+          theme={theme}
+        />
+      ))}
+    </div>
   );
 }
 
@@ -228,8 +276,8 @@ function getProjectMediaPosition(
 function getProjectMediaOrder(position: ProjectMediaPosition) {
   const mediaFirst = position === "left" || position === "top";
   return {
-    media: mediaFirst ? "order-1" : "order-2",
-    details: mediaFirst ? "order-2" : "order-1",
+    media: mediaFirst ? "lg:order-1" : "lg:order-2",
+    details: mediaFirst ? "lg:order-2" : "lg:order-1",
     vertical: position === "top" || position === "bottom",
   };
 }
@@ -1773,13 +1821,13 @@ export function ProjectsShowcaseBlock({
                       id={project.id}
                       editable={editable}
                       mediaPosition={mediaPosition}
-                      className="rounded-3xl border-2 p-6 sm:p-8 transition-all hover:shadow-xl bg-white/90"
+                      className="rounded-3xl border-2 p-4 sm:p-6 lg:p-8 transition-all hover:shadow-xl bg-white/90"
                       style={{
                         borderColor: `${theme.primaryColor}50`,
                         boxShadow: `0 10px 30px -10px ${theme.primaryColor}25`,
                       }}
                     >
-                      <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
+                      <div className="grid grid-cols-1 items-center gap-6 lg:gap-8 lg:grid-cols-12">
                         {hasMedia && (
                           <div
                             className={`lg:col-span-5 ${mediaOrder.media}`}
@@ -1795,15 +1843,6 @@ export function ProjectsShowcaseBlock({
                               >
                                 {renderAdaptiveMedia(project, index)}
                               </div>
-                              <span
-                                className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 rounded-full border px-3 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white shadow whitespace-nowrap"
-                                style={{
-                                  backgroundColor: theme.primaryColor,
-                                  borderColor: theme.secondaryColor,
-                                }}
-                              >
-                                CHUẨN GMP / GSP
-                              </span>
                             </div>
                           </div>
                         )}
@@ -1812,7 +1851,7 @@ export function ProjectsShowcaseBlock({
                           data-project-content="details"
                         >
                           <div
-                            className="flex items-center justify-between border-b pb-2"
+                            className="flex flex-wrap items-center justify-between gap-2 border-b pb-2"
                             style={{ borderColor: `${theme.primaryColor}20` }}
                           >
                             <span
@@ -1822,11 +1861,14 @@ export function ProjectsShowcaseBlock({
                                 color: theme.primaryColor,
                               }}
                             >
-                              <Award className="h-3.5 w-3.5" style={{ color: theme.secondaryColor }} /> CASE DƯỢC HỌC {idxStr}
+                              <Award className="h-3.5 w-3.5" style={{ color: theme.secondaryColor }} /> DỰ ÁN {idxStr}
                             </span>
-                            <span className="text-xs font-semibold text-stone-500 font-mono">
-                              {project.category}
-                            </span>
+                            <div className="flex flex-wrap items-center gap-2">
+                              {renderProjectFilesBar(project, theme)}
+                              <span className="text-xs font-semibold text-stone-500 font-mono">
+                                {project.category}
+                              </span>
+                            </div>
                           </div>
                           <h3 className="font-editorial text-2xl sm:text-3xl font-bold" style={{ color: theme.textColor }}>
                             {project.title}
@@ -1946,7 +1988,7 @@ export function ProjectsShowcaseBlock({
                       key={project.id}
                       id={project.id}
                       editable={editable}
-                      className="rounded-2xl border-2 bg-white p-6 shadow-md transition-all hover:shadow-xl flex flex-col justify-between space-y-5"
+                      className="rounded-2xl border-2 bg-white p-4 sm:p-6 shadow-md transition-all hover:shadow-xl flex flex-col justify-between space-y-5"
                       style={{
                         borderColor: `${theme.primaryColor}35`,
                         boxShadow: `0 10px 25px -5px ${theme.primaryColor}15`,
@@ -1954,22 +1996,25 @@ export function ProjectsShowcaseBlock({
                     >
                       <div className="space-y-4">
                         <div
-                          className="flex items-center justify-between border-b pb-2 font-mono text-xs"
+                          className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 font-mono text-xs"
                           style={{ borderColor: `${theme.primaryColor}20` }}
                         >
                           <span className="font-bold flex items-center gap-1.5" style={{ color: theme.primaryColor }}>
                             <Activity className="h-3.5 w-3.5" style={{ color: theme.primaryColor }} /> [CASE {idxStr}]
                           </span>
-                          <span
-                            className="rounded px-2 py-0.5 text-[10px] font-bold border"
-                            style={{
-                              backgroundColor: `${theme.primaryColor}10`,
-                              color: theme.primaryColor,
-                              borderColor: `${theme.primaryColor}30`,
-                            }}
-                          >
-                            ICD-10 CLASSIFIED
-                          </span>
+                          <div className="flex flex-wrap items-center gap-2">
+                            {renderProjectFilesBar(project, theme)}
+                            <span
+                              className="rounded px-2 py-0.5 text-[10px] font-bold border"
+                              style={{
+                                backgroundColor: `${theme.primaryColor}10`,
+                                color: theme.primaryColor,
+                                borderColor: `${theme.primaryColor}30`,
+                              }}
+                            >
+                              CLASSIFIED
+                            </span>
+                          </div>
                         </div>
                         <h3 className="text-xl font-extrabold leading-snug" style={{ color: theme.textColor }}>
                           {project.title}
@@ -2204,22 +2249,35 @@ export function ProjectsShowcaseBlock({
                       key={project.id}
                       id={project.id}
                       editable={editable}
-                      className="rounded-2xl border-2 p-6 sm:p-8 bg-white/90 shadow-sm transition-all hover:shadow-lg"
+                      className="rounded-2xl border-2 p-4 sm:p-6 lg:p-8 bg-white/90 shadow-sm transition-all hover:shadow-lg"
                       style={{
                         borderColor: `${theme.primaryColor}45`,
                         boxShadow: `0 10px 25px -5px ${theme.primaryColor}15`,
                       }}
                     >
                       <div
-                        className="flex flex-wrap items-center justify-between border-b pb-3 mb-5"
+                        className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 mb-4 sm:mb-5"
                         style={{ borderColor: `${theme.primaryColor}35` }}
                       >
                         <span
                           className="text-xs font-bold uppercase tracking-widest flex items-center gap-1.5"
                           style={{ color: theme.primaryColor }}
                         >
-                          <BookOpen className="h-4 w-4" style={{ color: theme.primaryColor }} /> CÔNG TRÌNH NGHIÊN CỨU SỐ {idxStr}
+                          <BookOpen className="h-4 w-4 shrink-0" style={{ color: theme.primaryColor }} /> CÔNG TRÌNH NGHIÊN CỨU SỐ {idxStr}
                         </span>
+                        {renderProjectFilesBar(project, theme)}
+                      </div>
+
+                      {/* Mobile Title Banner */}
+                      <div className="lg:hidden space-y-2 mb-3">
+                        <h3 className="font-editorial text-xl sm:text-2xl font-bold" style={{ color: theme.textColor }}>
+                          <InlineEditableText
+                            value={project.title}
+                            editable={editable}
+                            ariaLabel="Tên công trình"
+                            onSave={(val) => updateProject(project.id, { title: val })}
+                          />
+                        </h3>
                       </div>
 
                       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 items-start">
@@ -2234,7 +2292,7 @@ export function ProjectsShowcaseBlock({
                           </div>
                         )}
                         <div className={`space-y-4 ${hasMedia ? "lg:col-span-7" : "lg:col-span-12"}`}>
-                          <h3 className="font-editorial text-2xl font-bold" style={{ color: theme.textColor }}>
+                          <h3 className="hidden lg:block font-editorial text-2xl font-bold" style={{ color: theme.textColor }}>
                             <InlineEditableText
                               value={project.title}
                               editable={editable}
@@ -2363,7 +2421,7 @@ export function ProjectsShowcaseBlock({
                       key={project.id}
                       id={project.id}
                       editable={editable}
-                      className="rounded-3xl border-2 bg-white p-6 shadow-sm transition-all hover:shadow-md flex flex-col justify-between space-y-5"
+                      className="rounded-3xl border-2 bg-white p-4 sm:p-6 shadow-sm transition-all hover:shadow-md flex flex-col justify-between space-y-5"
                       style={{
                         borderColor: `${theme.primaryColor}40`,
                         boxShadow: `0 8px 24px -6px ${theme.primaryColor}18`,
@@ -2371,7 +2429,7 @@ export function ProjectsShowcaseBlock({
                     >
                       <div className="space-y-4">
                         <div
-                          className="flex items-center justify-between border-b pb-2"
+                          className="flex flex-wrap items-center justify-between gap-2 border-b pb-2"
                           style={{ borderColor: `${theme.primaryColor}20` }}
                         >
                           <span
@@ -2383,9 +2441,12 @@ export function ProjectsShowcaseBlock({
                           >
                             🌸 KẾ HOẠCH BÀI DẠY {idxStr}
                           </span>
-                          <span className="text-xs text-stone-500 font-medium">
-                            TIẾT DẠY THỰC TẬP
-                          </span>
+                          <div className="flex flex-wrap items-center gap-2">
+                            {renderProjectFilesBar(project, theme)}
+                            <span className="text-xs text-stone-500 font-medium">
+                              TIẾT DẠY THỰC TẬP
+                            </span>
+                          </div>
                         </div>
 
                         <h3 className="font-editorial text-2xl font-bold" style={{ color: theme.textColor }}>
