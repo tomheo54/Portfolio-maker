@@ -90,7 +90,6 @@ function DocxFileLink({
   url,
   label,
   theme,
-  editable = false,
 }: {
   url: string | undefined;
   label?: string;
@@ -103,28 +102,6 @@ function DocxFileLink({
   const borderColor = theme?.primaryColor ? `${theme.primaryColor}50` : "var(--primary, #735340)";
   const textColor = theme?.primaryColor || "var(--primary, #735340)";
   const bgColor = theme?.surfaceColor ? theme.surfaceColor : "var(--surface, #FFF8F0)";
-
-  if (editable) {
-    return (
-      <span
-        aria-label={label || "File DOCX đính kèm"}
-        onClick={(event) => {
-          event.preventDefault();
-          event.stopPropagation();
-        }}
-        className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold shadow-xs whitespace-nowrap cursor-default"
-        style={{
-          borderColor,
-          color: textColor,
-          backgroundColor: bgColor,
-        }}
-        title="Liên kết file đính kèm (chỉ mở ra link ở chế độ xem trang / preview)"
-      >
-        <FileText className="h-3 w-3 shrink-0" />
-        <span>{label || "Mở file DOCX"}</span>
-      </span>
-    );
-  }
 
   return (
     <a
