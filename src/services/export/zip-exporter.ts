@@ -2414,7 +2414,15 @@ function renderProjectsHtml(
   const isMedicalRuby = templateId === "medical-ruby";
   const isClinicalNavy = templateId === "clinical-navy";
   const isEducationalTerracotta = templateId === "educational-terracotta";
-  const isMedicalFamily = isMedicalRuby || isClinicalNavy || isEducationalTerracotta;
+  const isPedagogicalRose = templateId === "pedagogical-rose";
+  const isPedagogical = templateId === "pedagogical-mauve";
+  const isMedicalFamily =
+    isMedicalRuby ||
+    isClinicalNavy ||
+    isEducationalTerracotta ||
+    isPedagogicalRose ||
+    isPedagogical ||
+    projects.variant === "canva-slide-showcase";
 
   const displayTitle = isMedicalRuby ? "Highlight Projects" : "project";
 
