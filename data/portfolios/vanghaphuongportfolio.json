@@ -181,7 +181,7 @@
           "title": "Thao tác cơ bản với tệp tin và thư mục ",
           "category": "Content Marketing",
           "sourceDocxFileName": "B1 - Phương.docx",
-          "docxUrl": "https://docs.google.com/document/d/1_o8ytiUI6ji34CAqFicAqNJQV000pieKE-vvCKKA3IM/edit?usp=drive_link",
+          "docxUrl": "https://docs.google.com/document/d/16wxvP7P0pvvyZDRPvpLX50ETcLZ49z_0/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
           "assignmentBrief": "Nắm vững các thao tác quản lý dữ liệu trên giao diện File Explorer (Windows) để tối ưu hóa cấu trúc lưu trữ học liệu cá nhân.",
           "summary": "Thực hành chuỗi 12 thao tác chuẩn bằng phím tắt (Windows+E, F2, Ctrl+C/X/V, Delete, Shift+Delete, Restore) để khởi tạo thư mục ThucHanh_Phuong/TaiLieu, tạo tệp, sao chép, di chuyển, xóa và khôi phục dữ liệu.",
           "keyTakeaways": [
@@ -332,7 +332,7 @@
           "title": "Tìm kiếm và đánh giá thông tin học thuật ",
           "category": "Giáo dục & Sáng tạo",
           "sourceDocxFileName": "B2 - Hà Phương.docx",
-          "docxUrl": "https://docs.google.com/document/d/1eE6wcvVFNAOzC60SJKytBqVvF7IUgQJ3/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
+          "docxUrl": "https://docs.google.com/document/d/1uIKFqJOrTedIUYX5RImmqfvhLowp2xT0/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
           "assignmentBrief": "Mục tiêu của bài báo cáo là nghiên cứu sự chuyển dịch từ phương pháp dạy học nhạc lý hàn lâm sang mô hình dạy học tích hợp công nghệ thông minh, đánh giá vai trò của công nghệ Nhận dạng ký hiệu âm nhạc quang học (OMR), hệ thống luyện nghe thích ứng và AI hỗ trợ hòa âm - phối khí tự động trong đào tạo Sư phạm Âm nhạc. Nghiên cứu tập trung giải quyết 3 câu hỏi cốt lõi về khả năng nâng cao kỹ năng đọc bản nhạc, tác động đến năng lực sáng tác và phối khí, đồng thời xác định các nguyên tắc kiểm soát rủi ro theo khung TPACK và chỉ ra khoảng trống nghiên cứu tại Việt Nam",
           "summary": "Tác giả đã thu thập và phân tích tổng cộng 13 tài liệu học thuật từ 5 loại nguồn khác nhau, bao gồm 6 bài báo khoa học bình duyệt Q1 Scopus/SSCI, các sách chuyên khảo uy tín từ Oxford University Press và MIT Press, tài liệu nguồn mở, kỷ yếu hội thảo quốc tế ISMIR cùng các văn bản chính sách của NAfME và Chương trình GDPT 2018 môn Âm nhạc. Mọi tài liệu được đánh giá hệ thống theo 5 tiêu chí gồm Tác giả, Cơ quan xuất bản, Phương pháp nghiên cứu, Trích dẫn và Tính cập nhật để xếp hạng độ tin cậy. Nghiên cứu tiến hành tổng hợp các bằng chứng thực nghiệm quốc tế và đối chiếu với thực tiễn giảng dạy phân môn Đọc nhạc, Lý thuyết âm nhạc tại Việt Nam.",
           "keyTakeaways": [
@@ -362,7 +362,7 @@
           "title": "Viết Prompt hiệu quả cho các tác vụ học tập",
           "category": "Giáo dục & Sáng tạo",
           "sourceDocxFileName": "B3 - Hà Phương.docx",
-          "docxUrl": "https://docs.google.com/document/d/1kI8H9UWj6BGMSO858D4UQhWLve0MX44B/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
+          "docxUrl": "https://docs.google.com/document/d/170bBfc7lFGMv0nAWPaEFu8ZtQJ-UrAER/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
           "assignmentBrief": "Bài báo cáo thực hành nhằm thiết kế, thử nghiệm và tối ưu hóa các câu lệnh (prompt engineering) phục vụ 3 tác vụ học tập trọng tâm trong ngành Sư phạm Âm nhạc: tóm tắt bài đọc học thuật về Phương pháp Suzuki (Mother-Tongue Approach), giải thích và phân biệt nhạc cụ gõ định âm với vô định âm trong trường học, và xây dựng bộ câu hỏi ôn tập / tình huống sư phạm về kỹ năng tập hát đuổi (Canon) cùng hát hai bè cơ bản cho học sinh phổ thông.",
           "summary": "Sinh viên xây dựng và thực nghiệm 3 phiên bản prompt ở các cấp độ gồm Cơ bản (đơn giản, ngắn gọn), Chi tiết (có cấu trúc, ràng buộc dung lượng và đối tượng) và Nâng cao (kết hợp Role Prompting, Chuỗi suy luận Chain-of-Thought, cấu trúc sư phạm chuyên sâu và cơ chế Self-Verification). Bài báo cáo tiến hành so sánh đối chiếu kết quả đầu ra của AI qua từng cấp độ prompt, phân tích nguyên nhân tạo nên sự vượt trội của prompt chất lượng cao, đồng thời đúc kết 6 nguyên tắc và mẹo thiết kế prompt hiệu quả cho sinh viên ngành Sư phạm Âm nhạc.2",
           "keyTakeaways": [
@@ -448,7 +448,7 @@
           "title": "Sử dụng công cụ hợp tác trực tuyến cho dự án nhóm ",
           "category": "AI Prompt Engineering",
           "sourceDocxFileName": "B4 - Hà Phương.docx",
-          "docxUrl": "https://docs.google.com/document/d/1Nm9EStKgeJejbU95X5wxvCEzyERn4vOn/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
+          "docxUrl": "https://docs.google.com/document/d/1MNiATsu_uCkH0aFHflQEFXcYpHgZ55D8/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
           "assignmentBrief": "Báo cáo cá nhân của sinh viên Vàng Hà Phương nhằm tổng kết quá trình vận dụng các công cụ hợp tác trực tuyến trong dự án nhóm \"Ứng dụng AI trong soạn giáo án môn Âm nhạc\" thuộc học phần Công nghệ số & Trí tuệ nhân tạo. Báo cáo đánh giá việc thiết lập hệ thống công cụ, quản lý 100% nhiệm vụ cá nhân đúng hạn, duy trì nhật ký cập nhật tiến độ và tương tác nhóm, tổ chức lưu trữ tài nguyên số đa cấp cũng như giải quyết các thách thức chuyên môn phát sinh.",
           "summary": "Sinh viên đã tham gia thiết lập và vận hành 4 nhóm công cụ hợp tác trực tuyến độc lập bao gồm Trello/Zalo quản lý tác vụ, Google Docs/ChatGPT soạn thảo, Google Drive/Zalo Cloud lưu trữ, và Google Meet/Zalo giao tiếp. Sinh viên hoàn thành 5/5 nhiệm vụ cá nhân đúng deadline (nghiên cứu prompt, soạn 3 quan điểm & 4 luận điểm phản đối, nộp tệp chuyên đề, trình bày/tranh luận trên Google Meet, rà soát giáo án); thực hiện 4 lần cập nhật tiến độ/tuần và 12 lượt tương tác thảo luận; xây dựng kiến trúc thư mục Google Drive 3 cấp phân nhánh với quy chuẩn đặt tên tệp thống nhất và ma trận phân quyền truy cập chặt chẽ. Sinh viên cũng đề xuất giải pháp vượt qua 3 thách thức về độ sâu sư phạm của AI, rủi ro sai lệch nhạc lý và đồng bộ lịch trình làm việc nhóm.",
           "keyTakeaways": [
@@ -513,7 +513,7 @@
           "title": "Sử dụng AI tạo sinh để hỗ trợ sáng tạo nội dung ",
           "category": "Giáo dục & Sáng tạo",
           "sourceDocxFileName": "B5 - Hà Phương.docx",
-          "docxUrl": "https://docs.google.com/document/d/1S36eMggmbIf98suhf_dNhDkRzQ-JAhCvVUZxNeZihug/edit?usp=drive_link",
+          "docxUrl": "https://docs.google.com/document/d/1nxqFexbODboNReVn0fgWHujW47fufKq8/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
           "assignmentBrief": "Dự án hướng tới việc ứng dụng phương pháp Sư phạm Di sản Hiện đại kết hợp các công cụ AI tạo sinh (GenAI) để xây dựng ấn phẩm số \"Cẩm nang Di sản & Infographic Sư phạm: Giải mã Hệ thống Ngũ cung & Nhạc khí Dân tộc Việt Nam cho Học sinh Phổ thông\". Mục tiêu sư phạm là trực quan hóa 4 nội dung cốt lõi gồm thang âm ngũ cung (Hò - Xự - Xang - Xê - Cống), nguyên lý âm học Đàn Bầu, hệ thống phân loại Bát âm và hoạt động thực hành sáng tác giai điệu ngũ cung 4 ô nhịp trên lớp học.4",
           "summary": "Sinh viên vận dụng quy trình \"Human-in-the-loop\" kết hợp 3 công cụ AI gồm ChatGPT (hệ thống hóa kiến thức nhạc lý), Midjourney v6 (tạo hình ảnh khái niệm Đàn Bầu và sóng âm ngũ cung 3D tối giản) và Canva AI (dàn trang Infographic). Sinh viên trực tiếp can thiệp hiệu đính: sửa các sai sót văn hóa của AI (chuyển thuật ngữ Cung-Thương-Giốc-Chủy-Vũ sang Hò-Xự-Xang-Xê-Cống; bản địa hóa danh mục Bát âm với Đàn Đá, Đàn T'rưng, Trống Đồng); sử dụng Photoshop xóa các sợi dây đàn thừa do Midjourney vẽ sai để bảo đảm Đàn Bầu chỉ có 1 dây; tinh chỉnh thủ công bảng màu Slate trung tính và phông chữ học thuật trên Canva. Sinh viên cũng phân tích sâu các vấn đề đạo đức, bản quyền và tính chân xác văn hóa trong sư phạm di sản.4",
           "keyTakeaways": [
@@ -564,7 +564,7 @@
           "title": "Sử dụng AI có trách nhiệm trong học tập và nghiên cứu ",
           "category": "AI Prompt Engineering",
           "sourceDocxFileName": "B6 - Hà Phương.docx",
-          "docxUrl": "https://docs.google.com/document/d/1Jvg4MFkW_AylK2_hj8uyzLdQ6EL_AR0n/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
+          "docxUrl": "https://docs.google.com/document/d/1eaKJGkAh_3ONl9oRNTAS0Roseh2g--vV/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
           "assignmentBrief": "Mục tiêu bài báo cáo là phát triển kỹ năng ứng dụng AI có trách nhiệm và đạo đức trong học tập, nghiên cứu và dạy học âm nhạc. Bài nghiên cứu tiến hành đối chiếu khung chính sách sử dụng AI giữa Trường Đại học Sư phạm Hà Nội 2 (HPU2) và Nhạc viện Melbourne (MCM, Úc); đồng thời thực hiện nhiệm vụ thực hành thiết kế chuyên đề dạy học tích hợp Liên môn Âm nhạc - Ngữ văn lớp 11 dựa trên trích đoạn Chèo cổ \"Thị Màu lên chùa\" (vở Quan Âm Thị Kính) tuân thủ liêm chính học thuật và chuẩn trích dẫn APA 7th Edition.",
           "summary": "Nghiên cứu lập ma trận đối chiếu chính sách HPU2 và MCM về triết lý, phân loại theo môn học, minh bạch trích dẫn/lưu vết và bảo vệ bản quyền văn hóa bản địa. Sinh viên thực hiện quy trình tương tác AI 2 vòng: Vòng 1 khởi tạo giáo án với ChatGPT-4o; tiến hành đánh giá phản biện phát hiện 4 sai lầm nghiêm trọng của AI (gán nhầm Vọng cổ, Lý con sáo, Guitar phím lõm Nam Bộ vào Chèo Bắc Bộ; hiểu sai Thị Màu ai oán; ép hát thẳng nốt triệt tiêu luyến láy); Vòng 2 đặt Prompt tinh chỉnh hệ thống làn điệu (Đường trường thu không, Sa lệch chênh, Con gà rừng), nhạc cụ Chèo và hoạt động \"Nói lối - Trống đế\". Sinh viên tích hợp mô hình C(L)A(S)P của Keith Swanwick để hoàn thiện Ma trận Chuyên đề 45 phút chuẩn Công văn 5512/BGDĐT, xây dựng Bộ nguyên tắc cá nhân CANTATA (7 nguyên tắc) và thiết kế bản thảo Infographic \"The Stage of Integrity\".5",
           "keyTakeaways": [
