@@ -1946,10 +1946,7 @@ function renderHeroHtml(
     .join("");
 
   const defaultVariants = getArchetypeDefaultVariants(templateId as TemplateId);
-  const activeHeroVariant =
-    !hero.variant || (hero.variant === "canva-cover" && templateId !== "canva-editorial")
-      ? defaultVariants.hero
-      : hero.variant;
+  const activeHeroVariant = hero.variant || defaultVariants.hero;
 
   const isMedicalRuby = activeHeroVariant === "medical-arch";
   const isClinicalNavy = activeHeroVariant === "clinical-dossier";
@@ -2527,10 +2524,7 @@ function renderAboutHtml(
     </div>`;
 
   const defaultVariants = getArchetypeDefaultVariants(templateId as TemplateId);
-  const activeAboutVariant =
-    !about.variant || (about.variant === "story-card" && templateId !== "canva-editorial")
-      ? defaultVariants.about
-      : about.variant;
+  const activeAboutVariant = about.variant || defaultVariants.about;
 
   const isMedicalRuby = activeAboutVariant === "medical-license";
   const isClinicalNavy = activeAboutVariant === "clinical-dossier";
@@ -3084,10 +3078,7 @@ function renderProjectsHtml(
   templateId = "canva-editorial",
 ): string {
   const defaultVariants = getArchetypeDefaultVariants(templateId as TemplateId);
-  const activeProjectsVariant =
-    !projects.variant || (projects.variant === "canva-slide-showcase" && templateId !== "canva-editorial")
-      ? defaultVariants.projects
-      : projects.variant;
+  const activeProjectsVariant = projects.variant || defaultVariants.projects;
 
   const isMedicalRuby = activeProjectsVariant === "medical-spread";
   const isClinicalNavy = activeProjectsVariant === "clinical-dossier";

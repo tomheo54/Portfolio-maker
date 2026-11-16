@@ -27,6 +27,7 @@ import {
 import type { ProjectItem, ThemeConfig } from "@/schema/portfolio.schema";
 import { getThemeTokens } from "@/templates/archetypes/archetypeStyles";
 import { parseVideoEmbedUrl, isVideoUrl } from "@/utils/video";
+import { InlineEditableText } from "@/components/studio/InlineEditableText";
 
 function getEffectiveVideoUrl(project: ProjectItem): string | undefined {
   if (project.videoUrl && project.videoUrl.trim()) return project.videoUrl.trim();
@@ -51,6 +52,8 @@ export interface AssignmentDetailModalProps {
   onNavigateProject?: (project: ProjectItem, index: number) => void;
   navigationLoop?: boolean;
   presentation?: "modal" | "page";
+  editable?: boolean;
+  onUpdateProject?: (partial: Partial<ProjectItem>) => void;
 }
 
 export function AssignmentDetailModal({
@@ -63,6 +66,8 @@ export function AssignmentDetailModal({
   onNavigateProject,
   navigationLoop = true,
   presentation = "modal",
+  editable = false,
+  onUpdateProject,
 }: AssignmentDetailModalProps) {
   const [activeImageIdx, setActiveImageIdx] = useState(initialImageIndex);
   const [lightboxZoomed, setLightboxZoomed] = useState(false);
@@ -676,7 +681,12 @@ export function AssignmentDetailModal({
                     border: chapterLayout === "minimal" ? `1px solid ${theme.primaryColor}55` : undefined,
                   }}
                 >
-                  {chapterText}
+                  <InlineEditableText
+                    value={chapterText}
+                    editable={editable}
+                    ariaLabel="Tên chương"
+                    onSave={(val) => onUpdateProject?.({ chapterTitle: val })}
+                  />
                 </span>
               )}
               {project.showExercise !== false && (
@@ -691,7 +701,12 @@ export function AssignmentDetailModal({
                     backgroundColor: exerciseLayout === "badge" ? `${theme.primaryColor}10` : "transparent",
                   }}
                 >
-                  {exerciseText}
+                  <InlineEditableText
+                    value={exerciseText}
+                    editable={editable}
+                    ariaLabel="Số bài tập"
+                    onSave={(val) => onUpdateProject?.({ exerciseNumber: val })}
+                  />
                 </span>
               )}
               {totalProjects > 1 && (
@@ -768,7 +783,12 @@ export function AssignmentDetailModal({
               className="mt-1.5 font-editorial text-xl font-bold leading-snug sm:text-2xl"
               style={{ fontFamily: theme.headingFont }}
             >
-              {project.title}
+              <InlineEditableText
+                value={project.title}
+                editable={editable}
+                ariaLabel="Tên bài tập"
+                onSave={(val) => onUpdateProject?.({ title: val })}
+              />
             </h3>
           </div>
 
@@ -1093,7 +1113,13 @@ export function AssignmentDetailModal({
                         <Target className="h-4 w-4 shrink-0" /> Đề bài / Mục tiêu bài tập (INF2501) - Yêu cầu đề bài (Assignment Brief)
                       </div>
                       <p className="mt-2 text-sm leading-relaxed">
-                        {project.assignmentBrief || project.summary}
+                        <InlineEditableText
+                          value={project.assignmentBrief || project.summary}
+                          multiline
+                          editable={editable}
+                          ariaLabel="Yêu cầu đề bài"
+                          onSave={(val) => onUpdateProject?.({ assignmentBrief: val })}
+                        />
                       </p>
                     </div>
 
@@ -1112,7 +1138,13 @@ export function AssignmentDetailModal({
                         <Lightbulb className="h-4 w-4 shrink-0" /> Quá trình thực hiện
                       </h3>
                       <p className="mt-2 text-sm leading-relaxed opacity-90">
-                        {project.summary}
+                        <InlineEditableText
+                          value={project.summary}
+                          multiline
+                          editable={editable}
+                          ariaLabel="Quá trình thực hiện"
+                          onSave={(val) => onUpdateProject?.({ summary: val })}
+                        />
                       </p>
                     </div>
                   </div>
@@ -1132,7 +1164,13 @@ export function AssignmentDetailModal({
                         <Target className="h-4 w-4 shrink-0" /> Đề bài / Mục tiêu bài tập (INF2501) - Yêu cầu đề bài (Assignment Brief)
                       </div>
                       <p className="mt-2 text-sm leading-relaxed">
-                        {project.assignmentBrief || project.summary}
+                        <InlineEditableText
+                          value={project.assignmentBrief || project.summary}
+                          multiline
+                          editable={editable}
+                          ariaLabel="Yêu cầu đề bài"
+                          onSave={(val) => onUpdateProject?.({ assignmentBrief: val })}
+                        />
                       </p>
                     </div>
                   )
@@ -1151,7 +1189,13 @@ export function AssignmentDetailModal({
                       <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" /> Khó khăn & Giải pháp
                     </div>
                     <p className="mt-2 text-sm leading-relaxed opacity-90">
-                      {project.obstaclesAndSolutions}
+                      <InlineEditableText
+                        value={project.obstaclesAndSolutions}
+                        multiline
+                        editable={editable}
+                        ariaLabel="Khó khăn & Giải pháp"
+                        onSave={(val) => onUpdateProject?.({ obstaclesAndSolutions: val })}
+                      />
                     </p>
                   </div>
                 )}
@@ -1181,7 +1225,18 @@ export function AssignmentDetailModal({
                             }
                           >
                             {renderBulletIcon(project.takeawayBulletShape)}
-                            <span>{item}</span>
+                            <span>
+                              <InlineEditableText
+                                value={item}
+                                editable={editable}
+                                ariaLabel={`Bài học rút ra ${idx + 1}`}
+                                onSave={(val) => {
+                                  const next = [...project.keyTakeaways];
+                                  next[idx] = val;
+                                  onUpdateProject?.({ keyTakeaways: next });
+                                }}
+                              />
+                            </span>
                           </li>
                         ))}
                     </ul>
@@ -1222,7 +1277,13 @@ export function AssignmentDetailModal({
                       <Target className="h-4 w-4" /> Đề bài / Mục tiêu bài tập (INF2501) - Yêu cầu đề bài (Assignment Brief)
                     </div>
                     <p className="mt-1.5 text-sm leading-relaxed">
-                      {project.assignmentBrief || project.summary}
+                      <InlineEditableText
+                        value={project.assignmentBrief || project.summary}
+                        multiline
+                        editable={editable}
+                        ariaLabel="Yêu cầu đề bài"
+                        onSave={(val) => onUpdateProject?.({ assignmentBrief: val })}
+                      />
                     </p>
                   </div>
                 )}
@@ -1243,7 +1304,13 @@ export function AssignmentDetailModal({
                     <Lightbulb className="h-4 w-4" /> Quá trình thực hiện
                   </h3>
                   <p className="mt-1.5 text-sm leading-relaxed opacity-90">
-                    {project.summary}
+                    <InlineEditableText
+                      value={project.summary}
+                      multiline
+                      editable={editable}
+                      ariaLabel="Quá trình thực hiện"
+                      onSave={(val) => onUpdateProject?.({ summary: val })}
+                    />
                   </p>
                 </div>
 
@@ -1260,7 +1327,13 @@ export function AssignmentDetailModal({
                       <AlertTriangle className="h-4 w-4 text-amber-600" /> Khó khăn & Giải pháp
                     </div>
                     <p className="mt-1.5 text-xs leading-relaxed opacity-90">
-                      {project.obstaclesAndSolutions}
+                      <InlineEditableText
+                        value={project.obstaclesAndSolutions}
+                        multiline
+                        editable={editable}
+                        ariaLabel="Khó khăn & Giải pháp"
+                        onSave={(val) => onUpdateProject?.({ obstaclesAndSolutions: val })}
+                      />
                     </p>
                   </div>
                 )}
@@ -1290,7 +1363,18 @@ export function AssignmentDetailModal({
                             }
                           >
                             {renderBulletIcon(project.takeawayBulletShape)}
-                            <span>{item}</span>
+                            <span>
+                              <InlineEditableText
+                                value={item}
+                                editable={editable}
+                                ariaLabel={`Bài học rút ra ${idx + 1}`}
+                                onSave={(val) => {
+                                  const next = [...project.keyTakeaways];
+                                  next[idx] = val;
+                                  onUpdateProject?.({ keyTakeaways: next });
+                                }}
+                              />
+                            </span>
                           </li>
                         ))}
                     </ul>

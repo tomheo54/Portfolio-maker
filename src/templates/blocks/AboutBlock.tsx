@@ -639,10 +639,7 @@ export function AboutBlock({
       ? configuredCardOrder
       : ["contact", "education", "learningGoals"];
   const defaultVariants = getArchetypeDefaultVariants(archetypeId);
-  const activeLayout =
-    !section.variant || (section.variant === "story-card" && archetypeId !== "canva-editorial")
-      ? defaultVariants.about
-      : section.variant;
+  const activeLayout = section.variant || defaultVariants.about;
   const isFreeLayout = Boolean(section.cardPositions);
 
   const sensors = useSensors(

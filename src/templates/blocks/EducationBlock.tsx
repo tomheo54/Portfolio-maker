@@ -8,18 +8,34 @@ import {
   getCardDecoration,
   getThemeTokens,
 } from '@/templates/archetypes/archetypeStyles';
+import { InlineEditableText } from '@/components/studio/InlineEditableText';
+import { usePortfolioStore } from '@/store/usePortfolioStore';
 
 export interface EducationBlockProps {
   section: EducationSection;
   theme: ThemeConfig;
   archetypeId?: TemplateId;
+  editable?: boolean;
+  sectionIndex?: number;
 }
 
 export function EducationBlock({
   section,
   theme,
   archetypeId = 'canva-editorial',
+  editable = false,
+  sectionIndex,
 }: EducationBlockProps) {
+  const updateSection = usePortfolioStore((s) => s.updateSection);
+  const updateTitle = (val: string) => {
+    if (sectionIndex === undefined) return;
+    updateSection(sectionIndex, { ...section, title: val });
+  };
+  const updateItemField = (idx: number, field: string, val: string) => {
+    if (sectionIndex === undefined) return;
+    const nextItems = section.items.map((it, i) => (i === idx ? { ...it, [field]: val } : it));
+    updateSection(sectionIndex, { ...section, items: nextItems });
+  };
   const isCanvaEditorial = archetypeId === 'canva-editorial';
   const cardDec = getCardDecoration(archetypeId, theme);
   const tokens = getThemeTokens(theme);
@@ -47,7 +63,12 @@ export function EducationBlock({
             className="font-editorial text-4xl font-extrabold tracking-tight sm:text-5xl"
             style={{ color: 'var(--text, #3E2723)' }}
           >
-            {section.title}
+            <InlineEditableText
+              value={section.title}
+              editable={editable}
+              ariaLabel="Tiêu đề Học vấn & Đào tạo"
+              onSave={updateTitle}
+            />
           </h2>
 
           <div
@@ -91,7 +112,12 @@ export function EducationBlock({
                     className="text-lg font-bold"
                     style={{ color: 'var(--text, #3E2723)' }}
                   >
-                    {item.school}
+                    <InlineEditableText
+                      value={item.school}
+                      editable={editable}
+                      ariaLabel="Trường / Cơ sở đào tạo"
+                      onSave={(val) => updateItemField(idx, 'school', val)}
+                    />
                   </h3>
                   {item.period && (
                     <span
@@ -101,7 +127,12 @@ export function EducationBlock({
                         color: 'var(--secondary, #5D4037)',
                       }}
                     >
-                      {item.period}
+                      <InlineEditableText
+                        value={item.period}
+                        editable={editable}
+                        ariaLabel="Thời gian học"
+                        onSave={(val) => updateItemField(idx, 'period', val)}
+                      />
                     </span>
                   )}
                 </div>
@@ -109,14 +140,25 @@ export function EducationBlock({
                   className="text-sm font-semibold"
                   style={{ color: 'var(--secondary, #5D4037)' }}
                 >
-                  {item.degree}
+                  <InlineEditableText
+                    value={item.degree}
+                    editable={editable}
+                    ariaLabel="Chuyên ngành / Văn bằng"
+                    onSave={(val) => updateItemField(idx, 'degree', val)}
+                  />
                 </p>
                 {item.gpaOrHonors && (
                   <p
                     className="text-xs font-semibold"
                     style={{ color: 'var(--primary, #735340)' }}
                   >
-                    ✦ {item.gpaOrHonors}
+                    ✦{" "}
+                    <InlineEditableText
+                      value={item.gpaOrHonors}
+                      editable={editable}
+                      ariaLabel="Xếp loại / GPA"
+                      onSave={(val) => updateItemField(idx, 'gpaOrHonors', val)}
+                    />
                   </p>
                 )}
                 {item.details && (
@@ -124,7 +166,13 @@ export function EducationBlock({
                     className="text-sm leading-relaxed"
                     style={{ color: 'var(--text, #3E2723)', opacity: 0.88 }}
                   >
-                    {item.details}
+                    <InlineEditableText
+                      value={item.details}
+                      multiline
+                      editable={editable}
+                      ariaLabel="Mô tả học vấn"
+                      onSave={(val) => updateItemField(idx, 'details', val)}
+                    />
                   </p>
                 )}
               </div>
@@ -155,7 +203,14 @@ export function EducationBlock({
         >
           {formatSectionEyebrow(archetypeId, '03', 'Academic Background')}
         </span>
-        <h2 className="mt-1 font-editorial text-3xl font-bold">{section.title}</h2>
+        <h2 className="mt-1 font-editorial text-3xl font-bold">
+          <InlineEditableText
+            value={section.title}
+            editable={editable}
+            ariaLabel="Tiêu đề Học vấn & Đào tạo"
+            onSave={updateTitle}
+          />
+        </h2>
       </div>
 
       <div
@@ -199,7 +254,14 @@ export function EducationBlock({
               </div>
               <div className="min-w-0 flex-1 space-y-1">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h3 className="text-base font-bold leading-snug sm:text-lg">{item.school}</h3>
+                  <h3 className="text-base font-bold leading-snug sm:text-lg">
+                    <InlineEditableText
+                      value={item.school}
+                      editable={editable}
+                      ariaLabel="Trường / Cơ sở đào tạo"
+                      onSave={(val) => updateItemField(idx, 'school', val)}
+                    />
+                  </h3>
                   {item.period && (
                     <span
                       className="rounded-full px-2.5 py-0.5 text-xs font-semibold"
@@ -208,11 +270,23 @@ export function EducationBlock({
                         color: theme.primaryColor,
                       }}
                     >
-                      {item.period}
+                      <InlineEditableText
+                        value={item.period}
+                        editable={editable}
+                        ariaLabel="Thời gian học"
+                        onSave={(val) => updateItemField(idx, 'period', val)}
+                      />
                     </span>
                   )}
                 </div>
-                <p className="text-sm font-medium leading-relaxed opacity-80">{item.degree}</p>
+                <p className="text-sm font-medium leading-relaxed opacity-80">
+                  <InlineEditableText
+                    value={item.degree}
+                    editable={editable}
+                    ariaLabel="Chuyên ngành / Văn bằng"
+                    onSave={(val) => updateItemField(idx, 'degree', val)}
+                  />
+                </p>
               </div>
             </div>
 
@@ -224,12 +298,25 @@ export function EducationBlock({
                   color: tokens.isDarkSurface ? theme.primaryColor : theme.secondaryColor,
                 }}
               >
-                {item.gpaOrHonors}
+                <InlineEditableText
+                  value={item.gpaOrHonors}
+                  editable={editable}
+                  ariaLabel="Xếp loại / GPA"
+                  onSave={(val) => updateItemField(idx, 'gpaOrHonors', val)}
+                />
               </div>
             )}
 
             {item.details && (
-              <p className="mt-4 max-w-4xl text-sm leading-7 opacity-80">{item.details}</p>
+              <p className="mt-4 max-w-4xl text-sm leading-7 opacity-80">
+                <InlineEditableText
+                  value={item.details}
+                  multiline
+                  editable={editable}
+                  ariaLabel="Mô tả học vấn"
+                  onSave={(val) => updateItemField(idx, 'details', val)}
+                />
+              </p>
             )}
           </div>
         ))}

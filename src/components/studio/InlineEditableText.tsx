@@ -50,6 +50,11 @@ export function InlineEditableText({
       role="textbox"
       aria-label={ariaLabel || 'Chỉnh sửa trực tiếp'}
       style={style}
+      onClick={(event: React.MouseEvent) => {
+        if (editable) {
+          event.stopPropagation();
+        }
+      }}
       onBlur={(event: React.FocusEvent<HTMLElement>) => {
         const nextValue = event.currentTarget.textContent?.trim() ?? '';
         if (nextValue !== value) {

@@ -8,18 +8,44 @@ import {
   getCardDecoration,
   getThemeTokens,
 } from '@/templates/archetypes/archetypeStyles';
+import { InlineEditableText } from '@/components/studio/InlineEditableText';
+import { usePortfolioStore } from '@/store/usePortfolioStore';
 
 export interface ExperienceBlockProps {
   section: ExperienceSection;
   theme: ThemeConfig;
   archetypeId?: TemplateId;
+  editable?: boolean;
+  sectionIndex?: number;
 }
 
 export function ExperienceBlock({
   section,
   theme,
   archetypeId = 'canva-editorial',
+  editable = false,
+  sectionIndex,
 }: ExperienceBlockProps) {
+  const updateSection = usePortfolioStore((s) => s.updateSection);
+  const updateTitle = (val: string) => {
+    if (sectionIndex === undefined) return;
+    updateSection(sectionIndex, { ...section, title: val });
+  };
+  const updateItemField = (itemId: string, field: string, val: string) => {
+    if (sectionIndex === undefined) return;
+    const nextItems = section.items.map((it) => (it.id === itemId ? { ...it, [field]: val } : it));
+    updateSection(sectionIndex, { ...section, items: nextItems });
+  };
+  const updateAchievement = (itemId: string, achIndex: number, val: string) => {
+    if (sectionIndex === undefined) return;
+    const nextItems = section.items.map((it) => {
+      if (it.id !== itemId) return it;
+      const nextAch = [...it.achievements];
+      nextAch[achIndex] = val;
+      return { ...it, achievements: nextAch };
+    });
+    updateSection(sectionIndex, { ...section, items: nextItems });
+  };
   const isCanvaEditorial = archetypeId === 'canva-editorial';
   const cardDec = getCardDecoration(archetypeId, theme);
   const tokens = getThemeTokens(theme);
@@ -44,7 +70,14 @@ export function ExperienceBlock({
         >
           {formatSectionEyebrow(archetypeId, '03', 'Experience Timeline')}
         </span>
-        <h2 className="mt-1 font-editorial text-3xl font-bold">{section.title}</h2>
+        <h2 className="mt-1 font-editorial text-3xl font-bold">
+          <InlineEditableText
+            value={section.title}
+            editable={editable}
+            ariaLabel="Tiêu đề Kinh nghiệm"
+            onSave={updateTitle}
+          />
+        </h2>
       </div>
 
       <div
@@ -97,8 +130,22 @@ export function ExperienceBlock({
                   <Briefcase className="h-4 w-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold">{item.role}</h3>
-                  <p className="text-xs font-medium opacity-70">{item.organization}</p>
+                  <h3 className="text-base font-bold">
+                    <InlineEditableText
+                      value={item.role}
+                      editable={editable}
+                      ariaLabel="Vị trí / Chức danh"
+                      onSave={(val) => updateItemField(item.id, 'role', val)}
+                    />
+                  </h3>
+                  <p className="text-xs font-medium opacity-70">
+                    <InlineEditableText
+                      value={item.organization}
+                      editable={editable}
+                      ariaLabel="Công ty / Tổ chức"
+                      onSave={(val) => updateItemField(item.id, 'organization', val)}
+                    />
+                  </p>
                 </div>
               </div>
               <span
@@ -110,11 +157,24 @@ export function ExperienceBlock({
                   color: theme.primaryColor,
                 }}
               >
-                {item.period}
+                <InlineEditableText
+                  value={item.period}
+                  editable={editable}
+                  ariaLabel="Thời gian làm việc"
+                  onSave={(val) => updateItemField(item.id, 'period', val)}
+                />
               </span>
             </div>
 
-            <p className="mt-4 text-sm leading-relaxed opacity-85">{item.description}</p>
+            <p className="mt-4 text-sm leading-relaxed opacity-85">
+              <InlineEditableText
+                value={item.description}
+                multiline
+                editable={editable}
+                ariaLabel="Mô tả công việc"
+                onSave={(val) => updateItemField(item.id, 'description', val)}
+              />
+            </p>
 
             {item.achievements.length > 0 && (
               <ul
@@ -127,7 +187,14 @@ export function ExperienceBlock({
                       className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
                       style={{ backgroundColor: theme.primaryColor }}
                     />
-                    <span>{ach}</span>
+                    <span>
+                      <InlineEditableText
+                        value={ach}
+                        editable={editable}
+                        ariaLabel={`Thành tựu ${idx + 1}`}
+                        onSave={(val) => updateAchievement(item.id, idx, val)}
+                      />
+                    </span>
                   </li>
                 ))}
               </ul>

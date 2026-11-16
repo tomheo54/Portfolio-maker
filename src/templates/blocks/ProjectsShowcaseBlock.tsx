@@ -405,10 +405,7 @@ export function ProjectsShowcaseBlock({
     frameVariant ?? profile.frameVariant;
 
   const defaults = getArchetypeDefaultVariants(archetypeId);
-  const activeProjectsVariant =
-    !section.variant || (section.variant === "canva-slide-showcase" && archetypeId !== "canva-editorial")
-      ? defaults.projects
-      : section.variant;
+  const activeProjectsVariant = section.variant || defaults.projects;
 
   const isCanvaEditorial = activeProjectsVariant === "canva-slide-showcase" || (archetypeId === "canva-editorial" && !section.variant);
   const isStaggered = activeProjectsVariant === "staggered-cards";
@@ -945,11 +942,7 @@ export function ProjectsShowcaseBlock({
     );
   };
 
-  if (
-    isCanvaEditorial &&
-    section.variant === "canva-slide-showcase" &&
-    !editable
-  ) {
+  if (activeProjectsVariant === "canva-slide-showcase") {
     return (
       <section
         id="projects"
@@ -1187,7 +1180,13 @@ export function ProjectsShowcaseBlock({
                                 opacity: 0.92,
                               }}
                             >
-                              {project.assignmentBrief}
+                              <InlineEditableText
+                                value={project.assignmentBrief}
+                                multiline
+                                editable={editable}
+                                ariaLabel="Yêu cầu đề bài"
+                                onSave={(val) => updateProject(project.id, { assignmentBrief: val })}
+                              />
                             </p>
                           )}
                           {project.keyTakeaways.some((item) => item.trim()) && (
@@ -1214,7 +1213,18 @@ export function ProjectsShowcaseBlock({
                                         className="shrink-0"
                                       />
                                     )}
-                                    <span>{takeaway}</span>
+                                    <span>
+                                      <InlineEditableText
+                                        value={takeaway}
+                                        editable={editable}
+                                        ariaLabel="Điểm nhấn kết quả"
+                                        onSave={(val) => {
+                                          const next = [...project.keyTakeaways];
+                                          next[tIdx] = val;
+                                          updateProject(project.id, { keyTakeaways: next });
+                                        }}
+                                      />
+                                    </span>
                                   </li>
                                 ))}
                             </ul>
@@ -1236,7 +1246,13 @@ export function ProjectsShowcaseBlock({
                             opacity: 0.92,
                           }}
                         >
-                          {project.summary}
+                          <InlineEditableText
+                            value={project.summary}
+                            multiline
+                            editable={editable}
+                            ariaLabel="Quy trình & Kết quả"
+                            onSave={(val) => updateProject(project.id, { summary: val })}
+                          />
                         </p>
                       </div>
                       {project.metrics.length > 0 && (
@@ -1334,6 +1350,13 @@ export function ProjectsShowcaseBlock({
             setModalImgIdx(0);
           }}
           navigationLoop={section.navigationLoop ?? true}
+          editable={editable}
+          onUpdateProject={(partial) => {
+            if (modalProject) {
+              updateProject(modalProject.id, partial);
+              setModalProject((prev) => (prev ? { ...prev, ...partial } : null));
+            }
+          }}
         />
       </section>
     );
@@ -1474,7 +1497,15 @@ export function ProjectsShowcaseBlock({
               >
                 <Target className="h-3.5 w-3.5" /> {isRubric3Tier ? "Mục tiêu trọng tâm" : "Đề bài / Mục tiêu"}
               </div>
-              <p className="opacity-90">{project.assignmentBrief}</p>
+              <p className="opacity-90">
+                <InlineEditableText
+                  value={project.assignmentBrief}
+                  multiline
+                  editable={editable}
+                  ariaLabel="Đề bài / Mục tiêu"
+                  onSave={(val) => updateProject(project.id, { assignmentBrief: val })}
+                />
+              </p>
             </div>
           )}
 
@@ -1503,7 +1534,13 @@ export function ProjectsShowcaseBlock({
               <Lightbulb className="h-3.5 w-3.5" /> {isRubric3Tier ? "Quy trình thực hiện" : "Giải pháp & Thực hiện"}
             </div>
             <p className="text-sm leading-relaxed opacity-85">
-              {project.summary}
+              <InlineEditableText
+                value={project.summary}
+                multiline
+                editable={editable}
+                ariaLabel="Giải pháp & Thực hiện"
+                onSave={(val) => updateProject(project.id, { summary: val })}
+              />
             </p>
           </div>
 
@@ -1537,7 +1574,18 @@ export function ProjectsShowcaseBlock({
                           className="shrink-0"
                         />
                       )}
-                      <span>{takeaway}</span>
+                      <span>
+                        <InlineEditableText
+                          value={takeaway}
+                          editable={editable}
+                          ariaLabel="Điểm nhấn kết quả"
+                          onSave={(val) => {
+                            const next = [...project.keyTakeaways];
+                            next[idx] = val;
+                            updateProject(project.id, { keyTakeaways: next });
+                          }}
+                        />
+                      </span>
                     </li>
                   ))}
               </ul>
@@ -2860,6 +2908,13 @@ export function ProjectsShowcaseBlock({
           setModalImgIdx(0);
         }}
         navigationLoop={section.navigationLoop ?? true}
+        editable={editable}
+        onUpdateProject={(partial) => {
+          if (modalProject) {
+            updateProject(modalProject.id, partial);
+            setModalProject((prev) => (prev ? { ...prev, ...partial } : null));
+          }
+        }}
       />
     </section>
   );

@@ -75,10 +75,7 @@ export function HeroBlock({
   };
 
   const defaultVariants = getArchetypeDefaultVariants(archetypeId);
-  const activeHeroVariant =
-    !section.variant || (section.variant === "canva-cover" && archetypeId !== "canva-editorial")
-      ? defaultVariants.hero
-      : section.variant;
+  const activeHeroVariant = section.variant || defaultVariants.hero;
 
   const isCanvaEditorial = activeHeroVariant === "canva-cover" || (archetypeId === "canva-editorial" && !section.variant);
   const isTerminal = (activeHeroVariant === "split-left" || !section.variant) && archetypeId === "tech-developer";

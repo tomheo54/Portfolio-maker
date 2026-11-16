@@ -103,7 +103,8 @@ export function SkillsBlock({
     undefined;
 
   const renderIconBadges = (
-    skills: SkillsSection['categories'][number]['skills']
+    skills: SkillsSection['categories'][number]['skills'],
+    catIdx: number
   ) => (
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
       {skills.map((skill, idx) => (
@@ -125,7 +126,14 @@ export function SkillsBlock({
               <Layers className="h-3.5 w-3.5" aria-hidden="true" />
             )}
           </span>
-          <span className="min-w-0 break-words">{skill.name}</span>
+          <span className="min-w-0 break-words">
+            <InlineEditableText
+              value={skill.name}
+              editable={editable}
+              ariaLabel={`Tên kỹ năng ${idx + 1}`}
+              onSave={(val) => updateSkillName(catIdx, idx, val)}
+            />
+          </span>
         </div>
       ))}
     </div>
@@ -193,7 +201,7 @@ export function SkillsBlock({
                 </h3>
 
                 {section.variant === 'icon-badges' ? (
-                  renderIconBadges(cat.skills)
+                  renderIconBadges(cat.skills, idx)
                 ) : showBars ? (
                   <div className="space-y-3">
                     {cat.skills.map((skill, sIdx) => {
@@ -331,7 +339,7 @@ export function SkillsBlock({
             </div>
 
             {section.variant === 'icon-badges' ? (
-              renderIconBadges(cat.skills)
+              renderIconBadges(cat.skills, idx)
             ) : showBars ? (
               <div className="space-y-3.5">
                 {cat.skills.map((skill, sIdx) => {
