@@ -179,7 +179,12 @@ export function HeroBlock({
                   className="font-editorial text-sm font-bold tracking-wide sm:text-base"
                   style={{ color: "var(--text, #3E2723)" }}
                 >
-                  {section.fullName}
+                  <InlineEditableText
+                    value={section.fullName}
+                    editable={editable}
+                    ariaLabel="Họ và tên"
+                    onSave={(val) => updateHero({ fullName: val })}
+                  />
                 </h1>
                 {section.roleTitle && (
                   <span
@@ -188,7 +193,13 @@ export function HeroBlock({
                     }`}
                     style={{ color: "var(--primary, #735340)" }}
                   >
-                    • {section.roleTitle}
+                    •{" "}
+                    <InlineEditableText
+                      value={section.roleTitle}
+                      editable={editable}
+                      ariaLabel="Chức danh"
+                      onSave={(val) => updateHero({ roleTitle: val })}
+                    />
                   </span>
                 )}
               </div>
@@ -234,7 +245,12 @@ export function HeroBlock({
       <div className="space-y-3">
         {shouldShowSeparatePortfolioLabel && (
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--primary)]">
-            {portfolioDisplayLabel}
+            <InlineEditableText
+              value={portfolioDisplayLabel}
+              editable={editable}
+              ariaLabel="Nhãn portfolio"
+              onSave={(val) => updateHero({ headline: val })}
+            />
           </p>
         )}
         <div
@@ -261,15 +277,17 @@ export function HeroBlock({
       >
         <IconComponent className="h-3.5 w-3.5" />
         <span>
-          {isTerminal
-            ? `$ whoami • ${
-                showPortfolioLabel && headlineIsPortfolio
-                  ? portfolioDisplayLabel
-                  : section.headline
-              }`
-            : showPortfolioLabel && headlineIsPortfolio
-              ? portfolioDisplayLabel
-              : section.headline}
+          {isTerminal ? "$ whoami • " : null}
+          <InlineEditableText
+            value={
+              showPortfolioLabel && headlineIsPortfolio
+                ? portfolioDisplayLabel
+                : section.headline
+            }
+            editable={editable}
+            ariaLabel="Headline Hero"
+            onSave={(val) => updateHero({ headline: val })}
+          />
         </span>
         </div>
       </div>
@@ -309,7 +327,20 @@ export function HeroBlock({
                   }
           }
         >
-          <span>{btn.label}</span>
+          <InlineEditableText
+            value={btn.label}
+            editable={editable}
+            ariaLabel={`Nút CTA ${idx + 1}`}
+            onSave={(val) => {
+              if (sectionIndex === undefined) return;
+              updateSection(sectionIndex, {
+                ...section,
+                ctaButtons: section.ctaButtons.map((b, i) =>
+                  i === idx ? { ...b, label: val } : b,
+                ),
+              });
+            }}
+          />
           <ArrowDownRight className="h-4 w-4" />
         </a>
       ))}
@@ -347,30 +378,20 @@ export function HeroBlock({
             }
           >
             {isTerminal ? "[" : isMinimal ? null : "✦ "}
-            <span
-              contentEditable={editable}
-              suppressContentEditableWarning
-              role={editable ? "textbox" : undefined}
-              aria-label={editable ? `Sửa tag Hero ${idx + 1}` : undefined}
-              onBlur={(event) => {
-                if (!editable || sectionIndex === undefined) return;
-                const nextTag = event.currentTarget.textContent?.trim() ?? "";
-                if (nextTag === tag) return;
+            <InlineEditableText
+              value={tag}
+              editable={editable}
+              ariaLabel={`Tag Hero ${idx + 1}`}
+              onSave={(val) => {
+                if (sectionIndex === undefined) return;
                 updateSection(sectionIndex, {
                   ...section,
-                  quickTags: section.quickTags.map((currentTag, tagIndex) =>
-                    tagIndex === idx ? nextTag : currentTag,
+                  quickTags: section.quickTags.map((t, i) =>
+                    i === idx ? val : t,
                   ),
                 });
               }}
-              className={
-                editable
-                  ? "rounded-sm outline-none focus:ring-2 focus:ring-amber-400"
-                  : ""
-              }
-            >
-              {tag}
-            </span>
+            />
             {editable && (
               <button
                 type="button"
@@ -435,7 +456,12 @@ export function HeroBlock({
               : undefined
           }
         >
-          {section.fullName}
+          <InlineEditableText
+            value={section.fullName}
+            editable={editable}
+            ariaLabel="Họ và tên"
+            onSave={(val) => updateHero({ fullName: val })}
+          />
         </h1>
         <p
           className={`mt-3 text-base font-semibold sm:text-xl ${
@@ -445,7 +471,13 @@ export function HeroBlock({
             color: tokens.isDarkBg ? theme.primaryColor : theme.secondaryColor,
           }}
         >
-          {isTerminal ? `> ${section.roleTitle}` : section.roleTitle}
+          {isTerminal ? "> " : null}
+          <InlineEditableText
+            value={section.roleTitle}
+            editable={editable}
+            ariaLabel="Chức danh"
+            onSave={(val) => updateHero({ roleTitle: val })}
+          />
         </p>
       </div>
 
@@ -454,7 +486,13 @@ export function HeroBlock({
           centered ? "mx-auto" : ""
         }`}
       >
-        {section.shortBio}
+        <InlineEditableText
+          value={section.shortBio}
+          editable={editable}
+          multiline
+          ariaLabel="Mô tả bản thân"
+          onSave={(val) => updateHero({ shortBio: val })}
+        />
       </p>
 
       {renderQuickTags(centered)}
@@ -1316,13 +1354,29 @@ export function HeroBlock({
             </div>
             <div className="flex justify-center">{renderEyebrow()}</div>
             <h1 className="font-editorial text-4xl font-bold tracking-tight sm:text-6xl">
-              {section.fullName}
+              <InlineEditableText
+                value={section.fullName}
+                editable={editable}
+                ariaLabel="Họ và tên"
+                onSave={(val) => updateHero({ fullName: val })}
+              />
             </h1>
             <p className="text-base font-medium opacity-80 sm:text-lg">
-              {section.roleTitle}
+              <InlineEditableText
+                value={section.roleTitle}
+                editable={editable}
+                ariaLabel="Chức danh"
+                onSave={(val) => updateHero({ roleTitle: val })}
+              />
             </p>
             <p className="mx-auto max-w-2xl text-sm leading-relaxed opacity-80 sm:text-base">
-              {section.shortBio}
+              <InlineEditableText
+                value={section.shortBio}
+                editable={editable}
+                multiline
+                ariaLabel="Mô tả bản thân"
+                onSave={(val) => updateHero({ shortBio: val })}
+              />
             </p>
             {renderQuickTags(true)}
             {renderCtaButtons(true)}
@@ -1339,17 +1393,33 @@ export function HeroBlock({
                 {renderEyebrow()}
                 <div>
                   <h1 className="font-editorial text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl">
-                    {section.fullName}
+                    <InlineEditableText
+                      value={section.fullName}
+                      editable={editable}
+                      ariaLabel="Họ và tên"
+                      onSave={(val) => updateHero({ fullName: val })}
+                    />
                   </h1>
                   <p
                     className="mt-3 text-base font-semibold sm:text-lg"
                     style={{ color: theme.primaryColor }}
                   >
-                    {section.roleTitle}
+                    <InlineEditableText
+                      value={section.roleTitle}
+                      editable={editable}
+                      ariaLabel="Chức danh"
+                      onSave={(val) => updateHero({ roleTitle: val })}
+                    />
                   </p>
                 </div>
                 <p className="max-w-xl text-sm leading-relaxed opacity-85 sm:text-base">
-                  {section.shortBio}
+                  <InlineEditableText
+                    value={section.shortBio}
+                    editable={editable}
+                    multiline
+                    ariaLabel="Mô tả bản thân"
+                    onSave={(val) => updateHero({ shortBio: val })}
+                  />
                 </p>
               </div>
               <div

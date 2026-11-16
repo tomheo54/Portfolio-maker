@@ -21,6 +21,8 @@ import {
   CanvaThankYouVinylBurst,
 } from "./CanvaOrnaments";
 import { DEFAULT_CONCLUSION_CONFIG } from "./conclusion-defaults";
+import { usePortfolioStore } from "@/store/usePortfolioStore";
+import { InlineEditableText } from "@/components/studio/InlineEditableText";
 
 const CONCLUSION_CARD_SPAN_CLASSES = [
   "",
@@ -321,6 +323,11 @@ export function ContactBlock({
   profileOwner,
 }: ContactBlockProps) {
   const [sent, setSent] = useState(false);
+  const updateSection = usePortfolioStore((s) => s.updateSection);
+  const updateContact = (partial: Partial<ContactSection>) => {
+    if (sectionIndex === undefined) return;
+    updateSection(sectionIndex, { ...section, ...partial });
+  };
   const tokens = getThemeTokens(theme);
   const isCanvaEditorial = archetypeId === "canva-editorial";
   const isTerminal = archetypeId === "tech-developer";
@@ -436,11 +443,24 @@ export function ContactBlock({
               }}
             >
               <p className="text-xs font-bold uppercase tracking-[0.2em] opacity-80">
-                {section.title || "Tổng kết & Định hướng"}
+                <InlineEditableText
+                  value={section.title || "Tổng kết & Định hướng"}
+                  editable={editable}
+                  ariaLabel="Tiêu đề khối Tổng kết"
+                  onSave={(val) => updateContact({ title: val })}
+                />
               </p>
               <p className="mt-3 text-sm leading-relaxed opacity-95 sm:text-base">
-                {section.subtitle ||
-                  "Dưới đây là liên kết nhanh đến từng bài tập và báo cáo chi tiết trong hồ sơ năng lực."}
+                <InlineEditableText
+                  value={
+                    section.subtitle ||
+                    "Dưới đây là liên kết nhanh đến từng bài tập và báo cáo chi tiết trong hồ sơ năng lực."
+                  }
+                  editable={editable}
+                  multiline
+                  ariaLabel="Mô tả khối Tổng kết"
+                  onSave={(val) => updateContact({ subtitle: val })}
+                />
               </p>
 
               {/* TỔNG HỢP CÁC ĐƯỜNG LIÊN KẾT DẪN TỚI CÁC BÀI TẬP */}
@@ -810,13 +830,29 @@ export function ContactBlock({
               className="text-xs font-bold uppercase tracking-[0.24em]"
               style={{ color: theme.primaryColor }}
             >
-              {section.thankYouMessage}
+              <InlineEditableText
+                value={section.thankYouMessage || "THANK YOU"}
+                editable={editable}
+                ariaLabel="Thông điệp cảm ơn"
+                onSave={(val) => updateContact({ thankYouMessage: val })}
+              />
             </p>
             <h2 className="mt-4 font-editorial text-4xl font-medium leading-tight tracking-tight sm:text-6xl">
-              {section.title}
+              <InlineEditableText
+                value={section.title}
+                editable={editable}
+                ariaLabel="Tiêu đề liên hệ"
+                onSave={(val) => updateContact({ title: val })}
+              />
             </h2>
             <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed opacity-75 sm:text-base">
-              {section.subtitle}
+              <InlineEditableText
+                value={section.subtitle}
+                editable={editable}
+                multiline
+                ariaLabel="Phụ đề liên hệ"
+                onSave={(val) => updateContact({ subtitle: val })}
+              />
             </p>
             {ownerEmail && (
               <a
@@ -847,14 +883,30 @@ export function ContactBlock({
               <div className="flex items-center gap-3">
                 <ContactStar className="h-5 w-5 shrink-0 text-amber-300" />
                 <span className="text-xs font-bold uppercase tracking-[0.2em] text-amber-200">
-                  {section.thankYouMessage}
+                  <InlineEditableText
+                    value={section.thankYouMessage || "THANK YOU"}
+                    editable={editable}
+                    ariaLabel="Thông điệp cảm ơn"
+                    onSave={(val) => updateContact({ thankYouMessage: val })}
+                  />
                 </span>
               </div>
               <h2 className="font-editorial text-3xl font-medium leading-tight sm:text-4xl">
-                {section.title}
+                <InlineEditableText
+                  value={section.title}
+                  editable={editable}
+                  ariaLabel="Tiêu đề liên hệ"
+                  onSave={(val) => updateContact({ title: val })}
+                />
               </h2>
               <p className="max-w-md text-sm leading-relaxed opacity-75">
-                {section.subtitle}
+                <InlineEditableText
+                  value={section.subtitle}
+                  editable={editable}
+                  multiline
+                  ariaLabel="Phụ đề liên hệ"
+                  onSave={(val) => updateContact({ subtitle: val })}
+                />
               </p>
               {ownerEmail && (
                 <a
@@ -912,13 +964,29 @@ export function ContactBlock({
                   className="text-xs font-bold uppercase tracking-[0.22em]"
                   style={{ color: theme.primaryColor }}
                 >
-                  {section.thankYouMessage}
+                  <InlineEditableText
+                    value={section.thankYouMessage || "THANK YOU"}
+                    editable={editable}
+                    ariaLabel="Thông điệp cảm ơn"
+                    onSave={(val) => updateContact({ thankYouMessage: val })}
+                  />
                 </p>
                 <h2 className="mt-5 font-editorial text-4xl font-medium leading-tight sm:text-5xl">
-                  {section.title}
+                  <InlineEditableText
+                    value={section.title}
+                    editable={editable}
+                    ariaLabel="Tiêu đề liên hệ"
+                    onSave={(val) => updateContact({ title: val })}
+                  />
                 </h2>
                 <p className="mt-4 text-sm leading-relaxed opacity-75 sm:text-base">
-                  {section.subtitle}
+                  <InlineEditableText
+                    value={section.subtitle}
+                    editable={editable}
+                    multiline
+                    ariaLabel="Phụ đề liên hệ"
+                    onSave={(val) => updateContact({ subtitle: val })}
+                  />
                 </p>
                 {ownerEmail && (
                   <a
@@ -1009,15 +1077,33 @@ export function ContactBlock({
               ) : (
                 <Sparkles className="h-3.5 w-3.5" />
               )}
-              <span>{section.thankYouMessage}</span>
+              <span>
+                <InlineEditableText
+                  value={section.thankYouMessage || "THANK YOU"}
+                  editable={editable}
+                  ariaLabel="Thông điệp cảm ơn"
+                  onSave={(val) => updateContact({ thankYouMessage: val })}
+                />
+              </span>
             </div>
             <h2 className="mt-5 font-editorial text-4xl font-medium leading-tight tracking-tight sm:text-6xl lg:text-7xl">
-              {section.title}
+              <InlineEditableText
+                value={section.title}
+                editable={editable}
+                ariaLabel="Tiêu đề liên hệ"
+                onSave={(val) => updateContact({ title: val })}
+              />
             </h2>
             <p
               className={`mx-auto mt-4 max-w-2xl text-sm leading-relaxed sm:text-base ${usesDarkOrColoredContainer ? "text-white/85" : "opacity-75"}`}
             >
-              {section.subtitle}
+              <InlineEditableText
+                value={section.subtitle}
+                editable={editable}
+                multiline
+                ariaLabel="Phụ đề liên hệ"
+                onSave={(val) => updateContact({ subtitle: val })}
+              />
             </p>
             {ownerEmail && (
               <a

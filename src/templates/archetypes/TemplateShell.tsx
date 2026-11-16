@@ -551,6 +551,8 @@ export function TemplateShell({
                     section={section}
                     theme={sectionTheme}
                     archetypeId={resolvedArchetypeId}
+                    editable={editable}
+                    sectionIndex={idx}
                   />
                 );
               case "experience":

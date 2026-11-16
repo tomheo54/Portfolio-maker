@@ -1,4 +1,4 @@
-import { TemplateIdSchema, type TemplateId, PortfolioDocumentSchema, type PortfolioDocument } from "../schema/portfolio.schema";
+import { TemplateIdSchema, type TemplateId, PortfolioDocumentSchema, type PortfolioDocument, type PortfolioSection } from "../schema/portfolio.schema";
 import { THEME_PRESETS, getCanvaCreativeThemePresets, getDefaultPresetForTemplate, getThemePresetsByTemplateId } from "../schema/theme.schema";
 import { ARCHETYPE_PROFILES, formatSectionEyebrow, getCardDecoration, getRadiusClass } from "../templates/archetypes/archetypeStyles";
 import { resolveDocPalette, renderStandaloneHtml } from "../services/export/zip-exporter";
@@ -346,23 +346,25 @@ function main() {
   const customTextsDoc: PortfolioDocument = {
     ...baseDoc,
     templateId: "medical-ruby",
-    sections: baseDoc.sections.map((sec) => {
+    sections: baseDoc.sections.map((sec): PortfolioSection => {
       if (sec.type === "hero") {
+        const heroCustom: Record<string, string> = {
+          hero_med_badge: "CHỨNG CHỈ DƯỢC SĨ QUỐC TẾ 2026",
+          hero_med_syllabus_title: "CHƯƠNG TRÌNH HÀNH NGHỀ CAO CẤP",
+        };
         return {
           ...sec,
-          customTexts: {
-            hero_med_badge: "CHỨNG CHỈ DƯỢC SĨ QUỐC TẾ 2026",
-            hero_med_syllabus_title: "CHƯƠNG TRÌNH HÀNH NGHỀ CAO CẤP",
-          },
+          customTexts: heroCustom,
         };
       }
       if (sec.type === "about") {
+        const aboutCustom: Record<string, string> = {
+          med_badge: "GIẤY PHÉP HÀNH NGHỀ BỘ Y TẾ 2026",
+          med_license: "LICENSE: #VN-VIP-9999",
+        };
         return {
           ...sec,
-          customTexts: {
-            med_badge: "GIẤY PHÉP HÀNH NGHỀ BỘ Y TẾ 2026",
-            med_license: "LICENSE: #VN-VIP-9999",
-          },
+          customTexts: aboutCustom,
         };
       }
       return sec;

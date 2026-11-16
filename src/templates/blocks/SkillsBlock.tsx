@@ -9,18 +9,50 @@ import {
   getThemeTokens,
 } from '@/templates/archetypes/archetypeStyles';
 import { CanvaFourPointStar } from './CanvaOrnaments';
+import { InlineEditableText } from '@/components/studio/InlineEditableText';
+import { usePortfolioStore } from '@/store/usePortfolioStore';
 
 export interface SkillsBlockProps {
   section: SkillsSection;
   theme: ThemeConfig;
   archetypeId?: TemplateId;
+  editable?: boolean;
+  sectionIndex?: number;
 }
 
 export function SkillsBlock({
   section,
   theme,
   archetypeId = 'canva-editorial',
+  editable = false,
+  sectionIndex,
 }: SkillsBlockProps) {
+  const updateSection = usePortfolioStore((s) => s.updateSection);
+
+  const updateTitle = (newTitle: string) => {
+    if (sectionIndex === undefined) return;
+    updateSection(sectionIndex, { ...section, title: newTitle });
+  };
+
+  const updateCategoryName = (catIndex: number, newName: string) => {
+    if (sectionIndex === undefined) return;
+    const nextCategories = section.categories.map((c, i) =>
+      i === catIndex ? { ...c, name: newName } : c
+    );
+    updateSection(sectionIndex, { ...section, categories: nextCategories });
+  };
+
+  const updateSkillName = (catIndex: number, skillIndex: number, newName: string) => {
+    if (sectionIndex === undefined) return;
+    const nextCategories = section.categories.map((c, i) => {
+      if (i !== catIndex) return c;
+      return {
+        ...c,
+        skills: c.skills.map((s, si) => (si === skillIndex ? { ...s, name: newName } : s)),
+      };
+    });
+    updateSection(sectionIndex, { ...section, categories: nextCategories });
+  };
   const isCanvaEditorial = archetypeId === 'canva-editorial';
   const cardDec = getCardDecoration(archetypeId, theme);
   const tokens = getThemeTokens(theme);
@@ -114,7 +146,12 @@ export function SkillsBlock({
                 className="font-editorial text-4xl font-extrabold tracking-tight sm:text-5xl"
                 style={{ color: 'var(--text, #3E2723)' }}
               >
-                {section.title}
+                <InlineEditableText
+                  value={section.title}
+                  editable={editable}
+                  ariaLabel="Tiêu đề Kỹ năng & Công cụ"
+                  onSave={updateTitle}
+                />
               </h2>
             </div>
 
@@ -147,7 +184,12 @@ export function SkillsBlock({
                   className="font-editorial text-lg font-bold"
                   style={{ color: 'var(--text, #3E2723)' }}
                 >
-                  {cat.name}
+                  <InlineEditableText
+                    value={cat.name}
+                    editable={editable}
+                    ariaLabel={`Nhóm kỹ năng ${idx + 1}`}
+                    onSave={(val) => updateCategoryName(idx, val)}
+                  />
                 </h3>
 
                 {section.variant === 'icon-badges' ? (
@@ -162,7 +204,14 @@ export function SkillsBlock({
                             className="mb-1 flex items-center justify-between text-xs font-medium"
                             style={{ color: 'var(--text, #3E2723)' }}
                           >
-                            <span>{skill.name}</span>
+                            <span>
+                              <InlineEditableText
+                                value={skill.name}
+                                editable={editable}
+                                ariaLabel={`Tên kỹ năng ${sIdx + 1}`}
+                                onSave={(val) => updateSkillName(idx, sIdx, val)}
+                              />
+                            </span>
                             <span style={{ color: 'var(--primary, #735340)' }}>{pct}%</span>
                           </div>
                           <div
@@ -193,7 +242,12 @@ export function SkillsBlock({
                           backgroundColor: `var(--section-surface-color, ${theme.surfaceColor})`,
                         }}
                       >
-                        {skill.name}
+                        <InlineEditableText
+                          value={skill.name}
+                          editable={editable}
+                          ariaLabel={`Tên kỹ năng ${sIdx + 1}`}
+                          onSave={(val) => updateSkillName(idx, sIdx, val)}
+                        />
                       </span>
                     ))}
                   </div>
@@ -228,7 +282,12 @@ export function SkillsBlock({
           {formatSectionEyebrow(archetypeId, '02', 'Capabilities & Tools')}
         </span>
         <h2 className="mt-1 font-editorial text-3xl font-bold">
-          {section.title}
+          <InlineEditableText
+            value={section.title}
+            editable={editable}
+            ariaLabel="Tiêu đề Kỹ năng & Công cụ"
+            onSave={updateTitle}
+          />
         </h2>
       </div>
 
@@ -262,7 +321,12 @@ export function SkillsBlock({
                 <Layers className="h-4 w-4" />
               </div>
               <h3 className={`text-base font-bold ${isTerminal ? 'font-mono text-sm' : ''}`}>
-                {cat.name}
+                <InlineEditableText
+                  value={cat.name}
+                  editable={editable}
+                  ariaLabel={`Nhóm kỹ năng ${idx + 1}`}
+                  onSave={(val) => updateCategoryName(idx, val)}
+                />
               </h3>
             </div>
 
@@ -275,7 +339,14 @@ export function SkillsBlock({
                   return (
                     <div key={sIdx} className="hover-lift rounded-lg px-1 py-1">
                       <div className="mb-1 flex items-center justify-between text-xs font-medium">
-                        <span>{skill.name}</span>
+                        <span>
+                          <InlineEditableText
+                            value={skill.name}
+                            editable={editable}
+                            ariaLabel={`Tên kỹ năng ${sIdx + 1}`}
+                            onSave={(val) => updateSkillName(idx, sIdx, val)}
+                          />
+                        </span>
                         <span className={`opacity-65 ${isTerminal ? 'font-mono' : ''}`}>
                           {pct}%
                         </span>
@@ -312,7 +383,12 @@ export function SkillsBlock({
                       borderColor: tokens.borderSubtle,
                     }}
                   >
-                    {skill.name}
+                    <InlineEditableText
+                      value={skill.name}
+                      editable={editable}
+                      ariaLabel={`Tên kỹ năng ${sIdx + 1}`}
+                      onSave={(val) => updateSkillName(idx, sIdx, val)}
+                    />
                   </span>
                 ))}
               </div>

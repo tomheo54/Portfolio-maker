@@ -62,6 +62,7 @@ import {
 import { AssignmentDetailModal } from "./AssignmentDetailModal";
 import { CanvaFourPointStar, CanvaVinylSketchSvg } from "./CanvaOrnaments";
 import { parseVideoEmbedUrl, isVideoUrl } from "@/utils/video";
+import { InlineEditableText } from "@/components/studio/InlineEditableText";
 
 export function getEffectiveProjectVideoUrl(project: ProjectItem): string | undefined {
   if (project.videoUrl && project.videoUrl.trim()) return project.videoUrl.trim();
@@ -365,6 +366,8 @@ export function ProjectsShowcaseBlock({
   const reorderProjects = usePortfolioStore((s) => s.reorderProjects);
   const reorderProjectMedia = usePortfolioStore((s) => s.reorderProjectMedia);
   const swapProjectLayout = usePortfolioStore((s) => s.swapProjectLayout);
+  const updateProject = usePortfolioStore((s) => s.updateProject);
+  const updateSection = usePortfolioStore((s) => s.updateSection);
 
   const [activeCarouselSlide, setActiveCarouselSlide] = useState(0);
 
@@ -1129,7 +1132,12 @@ export function ProjectsShowcaseBlock({
                       className="mt-2 font-editorial text-2xl font-bold uppercase leading-snug tracking-tight sm:text-3xl lg:text-4xl"
                       style={{ color: "var(--text, #3E2723)" }}
                     >
-                      {project.title}
+                      <InlineEditableText
+                        value={project.title}
+                        editable={editable}
+                        ariaLabel="Tên bài tập"
+                        onSave={(val) => updateProject(project.id, { title: val })}
+                      />
                     </h3>
                   </div>
                 </div>
@@ -1431,7 +1439,12 @@ export function ProjectsShowcaseBlock({
           </div>
 
           <h3 className="font-editorial text-2xl font-bold leading-snug sm:text-[26px]">
-            {project.title}
+            <InlineEditableText
+              value={project.title}
+              editable={editable}
+              ariaLabel="Tên bài tập"
+              onSave={(val) => updateProject(project.id, { title: val })}
+            />
           </h3>
 
           {/* Layer 1: Assignment Brief */}
@@ -1661,11 +1674,27 @@ export function ProjectsShowcaseBlock({
             )}
           </span>
           <h2 className="mt-1 font-editorial text-3xl font-bold sm:text-4xl">
-            {section.title}
+            <InlineEditableText
+              value={section.title}
+              editable={editable}
+              ariaLabel="Tiêu đề khối Dự án & Bài tập"
+              onSave={(val) => {
+                if (sectionIndex === undefined) return;
+                updateSection(sectionIndex, { ...section, title: val });
+              }}
+            />
           </h2>
           {section.subtitle && (
             <p className="mt-2 max-w-2xl text-sm leading-relaxed opacity-75">
-              {section.subtitle}
+              <InlineEditableText
+                value={section.subtitle}
+                editable={editable}
+                ariaLabel="Phụ đề khối Dự án & Bài tập"
+                onSave={(val) => {
+                  if (sectionIndex === undefined) return;
+                  updateSection(sectionIndex, { ...section, subtitle: val });
+                }}
+              />
             </p>
           )}
         </div>

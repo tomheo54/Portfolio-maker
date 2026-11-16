@@ -2575,18 +2575,18 @@ function renderAboutHtml(
           </div>
 
           <div style="display:flex; flex-direction:column; gap:16px;">
-            <div style="border: 1px solid rgba(123, 17, 19, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
-              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary); margin:0 0 10px;">🎓 HỌC VẤN &amp; ĐÀO TẠO CHUYÊN MÔN</h4>
+            ${about.customTexts?.hide_med_edu !== "true" ? `<div style="border: 1px solid rgba(123, 17, 19, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
+              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary); margin:0 0 10px;">🎓 ${t("med_edu_title", "HỌC VẤN &amp; ĐÀO TẠO CHUYÊN MÔN")}</h4>
               <p style="font-weight:700; font-size:15px; margin:0 0 4px; color:#2B1810;">${escapeHtml(eduSchool)}</p>
               <p style="font-weight:600; font-size:13px; margin:0 0 4px; color:var(--primary);">${escapeHtml(eduDegree)}</p>
               <p style="font-size:11px; opacity:0.75; margin:0;">${escapeHtml(about.educationPeriod || "Khoá K18 • Hệ Chính quy Dược khoa")}</p>
-            </div>
-            <div style="border: 1px solid rgba(123, 17, 19, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
-              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary); margin:0 0 10px;">✉️ THÔNG TIN LIÊN HỆ &amp; HỢP TÁC</h4>
+            </div>` : ""}
+            ${about.customTexts?.hide_med_contact !== "true" ? `<div style="border: 1px solid rgba(123, 17, 19, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
+              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary); margin:0 0 10px;">✉️ ${t("med_contact_title", "THÔNG TIN LIÊN HỆ &amp; HỢP TÁC")}</h4>
               ${contactInfo.email ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Email:</strong> <a href="mailto:${escapeHtml(contactInfo.email)}" style="color:var(--primary);">${escapeHtml(contactInfo.email)}</a></p>` : ""}
               ${contactInfo.phone ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Hotline:</strong> ${escapeHtml(contactInfo.phone)}</p>` : ""}
               ${contactInfo.location ? `<p style="font-size:12px; margin:0;"><strong>Địa bàn:</strong> ${escapeHtml(contactInfo.location)}</p>` : ""}
-            </div>
+            </div>` : ""}
           </div>
         </div>
       </div>
@@ -2626,18 +2626,18 @@ function renderAboutHtml(
           </div>
 
           <div style="display:flex; flex-direction:column; gap:16px;">
-            <div style="border: 1px solid rgba(26,18,100,0.2); border-radius: 12px; padding: 18px; background: var(--surface);">
-              <div class="clinical-diagnostic-header" style="font-size:11px; margin-bottom:8px;">[HOSPITAL AFFILIATIONS &amp; DEGREE]</div>
+            ${about.customTexts?.hide_clin_edu !== "true" ? `<div style="border: 1px solid rgba(26,18,100,0.2); border-radius: 12px; padding: 18px; background: var(--surface);">
+              <div class="clinical-diagnostic-header" style="font-size:11px; margin-bottom:8px;">${t("clin_edu_title", "[HOSPITAL AFFILIATIONS &amp; DEGREE]")}</div>
               <p style="font-family:sans-serif; font-weight:700; font-size:14px; margin:0 0 4px; color:var(--text);">${escapeHtml(eduSchool)}</p>
               <p style="font-family:sans-serif; font-weight:600; font-size:13px; margin:0 0 4px; color:var(--primary);">${escapeHtml(eduDegree)}</p>
               <p style="font-size:11px; opacity:0.75; margin:0;">${escapeHtml(about.educationPeriod || "Bác sĩ Nội trú Khóa K47")}</p>
-            </div>
-            <div style="border: 1px solid rgba(26,18,100,0.2); border-radius: 12px; padding: 18px; background: var(--surface);">
-              <div class="clinical-diagnostic-header" style="font-size:11px; margin-bottom:8px;">[CLINICAL CONTACT &amp; PAGER]</div>
+            </div>` : ""}
+            ${about.customTexts?.hide_clin_contact !== "true" ? `<div style="border: 1px solid rgba(26,18,100,0.2); border-radius: 12px; padding: 18px; background: var(--surface);">
+              <div class="clinical-diagnostic-header" style="font-size:11px; margin-bottom:8px;">${t("clin_contact_title", "[CLINICAL CONTACT &amp; PAGER]")}</div>
               ${contactInfo.email ? `<p style="font-family:sans-serif; font-size:12px; margin:0 0 6px;"><strong>Email BV:</strong> <a href="mailto:${escapeHtml(contactInfo.email)}" style="color:var(--primary);">${escapeHtml(contactInfo.email)}</a></p>` : ""}
               ${contactInfo.phone ? `<p style="font-family:sans-serif; font-size:12px; margin:0 0 6px;"><strong>Pager / Hotline:</strong> ${escapeHtml(contactInfo.phone)}</p>` : ""}
               ${contactInfo.location ? `<p style="font-family:sans-serif; font-size:12px; margin:0;"><strong>Khoa / Phòng:</strong> ${escapeHtml(contactInfo.location)}</p>` : ""}
-            </div>
+            </div>` : ""}
           </div>
         </div>
       </div>
@@ -2648,26 +2648,26 @@ function renderAboutHtml(
     return `<section id="about" class="about-wrap reveal-on-scroll" data-about-layout="creator-profile">
       <div style="position:relative; z-index:2; margin-bottom: 24px;">
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px; margin-bottom:20px;">
-          <div style="border:2px solid #000; border-radius:18px; padding:14px; background:#FDE047; box-shadow:3px 3px 0px #000;">
+          ${about.customTexts?.hide_creator_stat_1 !== "true" ? `<div style="border:2px solid #000; border-radius:18px; padding:14px; background:#FDE047; box-shadow:3px 3px 0px #000;">
             <span style="font-size:10px; font-weight:900; text-transform:uppercase;">${t("creator_stat1_title", "TIKTOK REACH")}</span>
             <div style="font-size:24px; font-weight:900;">${t("creator_stat1_val", "250K+")}</div>
             <span style="font-size:11px; font-weight:700; opacity:0.8;">${t("creator_stat1_sub", "3.2M Lượt Thích")}</span>
-          </div>
-          <div style="border:2px solid #000; border-radius:18px; padding:14px; background:#F472B6; box-shadow:3px 3px 0px #000;">
+          </div>` : ""}
+          ${about.customTexts?.hide_creator_stat_2 !== "true" ? `<div style="border:2px solid #000; border-radius:18px; padding:14px; background:#F472B6; box-shadow:3px 3px 0px #000;">
             <span style="font-size:10px; font-weight:900; text-transform:uppercase;">${t("creator_stat2_title", "INSTAGRAM / REELS")}</span>
             <div style="font-size:24px; font-weight:900;">${t("creator_stat2_val", "85K+")}</div>
             <span style="font-size:11px; font-weight:700; opacity:0.8;">${t("creator_stat2_sub", "15.2% Avg. Reach")}</span>
-          </div>
-          <div style="border:2px solid #000; border-radius:18px; padding:14px; background:#38BDF8; box-shadow:3px 3px 0px #000;">
+          </div>` : ""}
+          ${about.customTexts?.hide_creator_stat_3 !== "true" ? `<div style="border:2px solid #000; border-radius:18px; padding:14px; background:#38BDF8; box-shadow:3px 3px 0px #000;">
             <span style="font-size:10px; font-weight:900; text-transform:uppercase;">${t("creator_stat3_title", "YOUTUBE SHORTS")}</span>
             <div style="font-size:24px; font-weight:900;">${t("creator_stat3_val", "120K+")}</div>
             <span style="font-size:11px; font-weight:700; opacity:0.8;">${t("creator_stat3_sub", "Views / Tháng")}</span>
-          </div>
-          <div style="border:2px solid #000; border-radius:18px; padding:14px; background:#4ADE80; box-shadow:3px 3px 0px #000;">
+          </div>` : ""}
+          ${about.customTexts?.hide_creator_stat_4 !== "true" ? `<div style="border:2px solid #000; border-radius:18px; padding:14px; background:#4ADE80; box-shadow:3px 3px 0px #000;">
             <span style="font-size:10px; font-weight:900; text-transform:uppercase;">${t("creator_stat4_title", "ENGAGEMENT RATE")}</span>
             <div style="font-size:24px; font-weight:900;">${t("creator_stat4_val", "8.4%")}</div>
             <span style="font-size:11px; font-weight:700; opacity:0.8;">${t("creator_stat4_sub", "Top Creator GenZ")}</span>
-          </div>
+          </div>` : ""}
         </div>
 
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
@@ -2687,18 +2687,18 @@ function renderAboutHtml(
           </div>
 
           <div style="display:flex; flex-direction:column; gap:16px;">
-            <div style="border:3px solid #000; border-radius:20px; padding:18px; background:#fff; box-shadow:4px 4px 0px #000;">
-              <h4 style="font-size:11px; font-weight:900; text-transform:uppercase; color:var(--primary); margin:0 0 10px;">HỢP TÁC THƯƠNG HIỆU &amp; BOOKING</h4>
+            ${about.customTexts?.hide_creator_booking !== "true" ? `<div style="border:3px solid #000; border-radius:20px; padding:18px; background:#fff; box-shadow:4px 4px 0px #000;">
+              <h4 style="font-size:11px; font-weight:900; text-transform:uppercase; color:var(--primary); margin:0 0 10px;">${t("creator_booking_title", "HỢP TÁC THƯƠNG HIỆU &amp; BOOKING")}</h4>
               ${contactInfo.email ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Email:</strong> <a href="mailto:${escapeHtml(contactInfo.email)}" style="color:var(--primary);">${escapeHtml(contactInfo.email)}</a></p>` : ""}
               ${contactInfo.phone ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Agency Booking:</strong> ${escapeHtml(contactInfo.phone)}</p>` : ""}
               ${contactInfo.location ? `<p style="font-size:12px; margin:0;"><strong>Studio Base:</strong> ${escapeHtml(contactInfo.location)}</p>` : ""}
-            </div>
-            <div style="border:3px solid #000; border-radius:20px; padding:18px; background:#F8FAFC; box-shadow:4px 4px 0px #000;">
-              <h4 style="font-size:11px; font-weight:900; text-transform:uppercase; margin:0 0 8px;">PRODUCTION GEAR // SPECS</h4>
+            </div>` : ""}
+            ${about.customTexts?.hide_creator_specs !== "true" ? `<div style="border:3px solid #000; border-radius:20px; padding:18px; background:#F8FAFC; box-shadow:4px 4px 0px #000;">
+              <h4 style="font-size:11px; font-weight:900; text-transform:uppercase; margin:0 0 8px;">${t("creator_specs_title", "PRODUCTION GEAR // SPECS")}</h4>
               <p style="font-size:11px; margin:0 0 4px; opacity:0.85;">${t("creator_spec_1", "• Camera: Sony Cinema FX30 &amp; G-Master Lenses")}</p>
               <p style="font-size:11px; margin:0 0 4px; opacity:0.85;">${t("creator_spec_2", "• Audio: DJI Wireless Mic 2 Studio Setup")}</p>
               <p style="font-size:11px; margin:0; opacity:0.85;">${t("creator_spec_3", "• Color Grading: DaVinci Resolve Studio 18")}</p>
-            </div>
+            </div>` : ""}
           </div>
         </div>
       </div>
@@ -2727,18 +2727,18 @@ function renderAboutHtml(
           </div>
 
           <div style="display:flex; flex-direction:column; gap:16px;">
-            <div style="border: 1px solid rgba(155, 48, 45, 0.25); border-radius: 16px; padding: 18px; background: var(--surface);">
-              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">📖 CÔNG BỐ KHOA HỌC &amp; ĐỀ TÀI</h4>
+            ${about.customTexts?.hide_acad_pubs !== "true" ? `<div style="border: 1px solid rgba(155, 48, 45, 0.25); border-radius: 16px; padding: 18px; background: var(--surface);">
+              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">📖 ${t("acad_pub_title", "CÔNG BỐ KHOA HỌC &amp; ĐỀ TÀI")}</h4>
               <p style="font-size:12px; margin:0 0 6px;">${t("acad_pub_1", "• <strong>01 Đề tài NCKH ĐHQGHN:</strong> Giải Nhất 2024")}</p>
               <p style="font-size:12px; margin:0 0 6px;">${t("acad_pub_2", "• <strong>03 Bài báo khoa học:</strong> Kỷ yếu Hội thảo Quốc gia")}</p>
               <p style="font-size:12px; margin:0;">${t("acad_pub_3", "• <strong>Học bổng:</strong> Tài năng Sư phạm VNU")}</p>
-            </div>
-            <div style="border: 1px solid rgba(155, 48, 45, 0.25); border-radius: 16px; padding: 18px; background: var(--surface);">
-              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">✉️ LIÊN HỆ KHOA HỌC &amp; VĂN PHÒNG</h4>
+            </div>` : ""}
+            ${about.customTexts?.hide_acad_contact !== "true" ? `<div style="border: 1px solid rgba(155, 48, 45, 0.25); border-radius: 16px; padding: 18px; background: var(--surface);">
+              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">✉️ ${t("acad_contact_title", "LIÊN HỆ KHOA HỌC &amp; VĂN PHÒNG")}</h4>
               ${contactInfo.email ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Email:</strong> <a href="mailto:${escapeHtml(contactInfo.email)}" style="color:var(--primary);">${escapeHtml(contactInfo.email)}</a></p>` : ""}
               ${contactInfo.phone ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Điện thoại:</strong> ${escapeHtml(contactInfo.phone)}</p>` : ""}
               ${contactInfo.location ? `<p style="font-size:12px; margin:0;"><strong>Văn phòng:</strong> ${escapeHtml(contactInfo.location)}</p>` : ""}
-            </div>
+            </div>` : ""}
           </div>
         </div>
       </div>
@@ -2777,18 +2777,18 @@ function renderAboutHtml(
           </div>
 
           <div style="display:flex; flex-direction:column; gap:16px;">
-            <div style="border: 1px solid rgba(155, 84, 100, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
-              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">🎓 ĐƠN VỊ THỰC TẬP &amp; HỌC VẤN</h4>
+            ${about.customTexts?.hide_ped_edu !== "true" ? `<div style="border: 1px solid rgba(155, 84, 100, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
+              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">🎓 ${t("ped_edu_title", "ĐƠN VỊ THỰC TẬP &amp; HỌC VẤN")}</h4>
               <p style="font-weight:700; font-size:14px; margin:0 0 4px;">${escapeHtml(eduSchool)}</p>
               <p style="font-weight:600; font-size:13px; margin:0 0 4px; color:var(--primary);">${escapeHtml(eduDegree)}</p>
               <p style="font-size:11px; opacity:0.75; margin:0;">${escapeHtml(about.educationPeriod || "Khoá K18 • Thực tập Sư phạm")}</p>
-            </div>
-            <div style="border: 1px solid rgba(155, 84, 100, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
-              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">✉️ LIÊN HỆ GIÁO VIÊN</h4>
+            </div>` : ""}
+            ${about.customTexts?.hide_ped_contact !== "true" ? `<div style="border: 1px solid rgba(155, 84, 100, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
+              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">✉️ ${t("ped_contact_title", "LIÊN HỆ GIÁO VIÊN")}</h4>
               ${contactInfo.email ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Email:</strong> <a href="mailto:${escapeHtml(contactInfo.email)}" style="color:var(--primary);">${escapeHtml(contactInfo.email)}</a></p>` : ""}
               ${contactInfo.phone ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Hotline:</strong> ${escapeHtml(contactInfo.phone)}</p>` : ""}
               ${contactInfo.location ? `<p style="font-size:12px; margin:0;"><strong>Địa chỉ:</strong> ${escapeHtml(contactInfo.location)}</p>` : ""}
-            </div>
+            </div>` : ""}
           </div>
         </div>
       </div>
