@@ -108,7 +108,7 @@
       "type": "about",
       "variant": "tabs",
       "title": "About me • Giới thiệu bản thân",
-      "biography": "Xin chào! Mình là Vàng Hà Phương (Sinh viên Ngành Sư phạm Âm nhạc • ĐH Sư phạm Nghệ thuật Trung ương). Portfolio này được tổng hợp trực tiếp từ hồ sơ bài tập thực chiến gồm 6 dự án thuộc các mảng Content Marketing, Giáo dục & Sáng tạo, AI Prompt Engineering. Mỗi bài tập đều được chuẩn hóa theo tư duy Đề bài - Giải pháp - Kết quả nhằm thể hiện năng lực triển khai thực tế.",
+      "biography": "Xin chào! Mình là Vàng Hà Phương (Sinh viên Ngành Sư phạm Âm nhạc • ĐH Sư phạm Nghệ thuật Trung ương). Portfolio này được tổng hợp trực tiếp từ hồ sơ bài tập thực chiến gồm 6 dự án thuộc các mảng Giáo dục & Sáng tạo, AI Prompt Engineering. Mỗi bài tập đều được chuẩn hóa theo tư duy Đề bài - Giải pháp - Kết quả nhằm thể hiện năng lực triển khai thực tế.",
       "highlights": [],
       "contactInfo": {
         "email": "haphuongvang@gmail.com",
@@ -137,7 +137,8 @@
       "type": "skills",
       "variant": "icon-badges",
       "title": "Tools & Kỹ Năng Nổi Bật",
-      "cardHeight": "220px",
+      "cardWidth": "1100px",
+      "cardHeight": "160px",
       "categories": [
         {
           "name": "Công cụ & Nền tảng",
@@ -149,10 +150,6 @@
             {
               "name": "AI Prompt Engineering (ChatGPT / Gemini)",
               "level": 94
-            },
-            {
-              "name": "Content Strategy & Copywriting",
-              "level": 90
             }
           ]
         }
