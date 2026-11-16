@@ -1387,35 +1387,41 @@ export function AboutBlock({
                     />
                   </h4>
                   <div className="space-y-2 text-xs text-stone-700">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold" style={{ color: theme.primaryColor }}>Email:</span>
-                      <InlineEditableText
-                        value={section.contactInfo.email || "nguyenvana@example.com"}
-                        editable={editable}
-                        ariaLabel="Email liên hệ"
-                        onSave={(val) => updateContactInfo("email", val)}
-                        className="text-stone-800 font-medium"
-                      />
+                    <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
+                      <span className="font-semibold shrink-0" style={{ color: theme.primaryColor }}>Email:</span>
+                      <span className="min-w-0 break-all">
+                        <InlineEditableText
+                          value={section.contactInfo.email || "nguyenvana@example.com"}
+                          editable={editable}
+                          ariaLabel="Email liên hệ"
+                          onSave={(val) => updateContactInfo("email", val)}
+                          className="text-stone-800 font-medium"
+                        />
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold" style={{ color: theme.primaryColor }}>Hotline:</span>
-                      <InlineEditableText
-                        value={section.contactInfo.phone || "0912 345 678"}
-                        editable={editable}
-                        ariaLabel="Số điện thoại"
-                        onSave={(val) => updateContactInfo("phone", val)}
-                        className="text-stone-800 font-medium"
-                      />
+                    <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
+                      <span className="font-semibold shrink-0" style={{ color: theme.primaryColor }}>Hotline:</span>
+                      <span className="min-w-0 break-all font-mono">
+                        <InlineEditableText
+                          value={section.contactInfo.phone || "0912 345 678"}
+                          editable={editable}
+                          ariaLabel="Số điện thoại"
+                          onSave={(val) => updateContactInfo("phone", val)}
+                          className="text-stone-800 font-medium"
+                        />
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold" style={{ color: theme.primaryColor }}>Địa bàn:</span>
-                      <InlineEditableText
-                        value={section.contactInfo.location || "Việt Nam"}
-                        editable={editable}
-                        ariaLabel="Địa bàn"
-                        onSave={(val) => updateContactInfo("location", val)}
-                        className="text-stone-800 font-medium"
-                      />
+                    <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
+                      <span className="font-semibold shrink-0" style={{ color: theme.primaryColor }}>Địa bàn:</span>
+                      <span className="min-w-0 break-words">
+                        <InlineEditableText
+                          value={section.contactInfo.location || "Việt Nam"}
+                          editable={editable}
+                          ariaLabel="Địa bàn"
+                          onSave={(val) => updateContactInfo("location", val)}
+                          className="text-stone-800 font-medium"
+                        />
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -1440,10 +1446,10 @@ export function AboutBlock({
 
     if (layout === "clinical-dossier") {
       return (
-        <div data-testid="about-layout-content" data-layout="clinical-dossier" className="space-y-6 font-mono">
+        <div data-testid="about-layout-content" data-layout="clinical-dossier" className="space-y-6 font-mono min-w-0">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             <div
-              className="lg:col-span-7 rounded-2xl border-2 p-6 bg-white shadow-md flex flex-col justify-between"
+              className="lg:col-span-7 rounded-2xl border-2 p-4 sm:p-6 lg:p-8 bg-white shadow-md flex flex-col justify-between min-w-0"
               style={{
                 borderColor: theme.primaryColor,
                 boxShadow: `0 10px 25px -5px ${theme.primaryColor}20`,
@@ -1451,20 +1457,22 @@ export function AboutBlock({
             >
               <div className="space-y-4">
                 <div
-                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 text-xs"
+                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 text-xs min-w-0"
                   style={{ borderColor: `${theme.primaryColor}25` }}
                 >
-                  <span className="font-bold flex items-center gap-2" style={{ color: theme.primaryColor }}>
-                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <InlineEditableText
-                      value={section.customTexts?.clin_badge || "[PHYSICIAN CLINICAL DOSSIER // MD. REGISTRATION]"}
-                      editable={editable}
-                      ariaLabel="Mã số hồ sơ lâm sàng"
-                      onSave={(val) => updateCustomText("clin_badge", val)}
-                    />
+                  <span className="font-bold flex items-center gap-2 min-w-0 max-w-full break-words" style={{ color: theme.primaryColor }}>
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                    <span className="min-w-0 break-words text-[11px] sm:text-xs">
+                      <InlineEditableText
+                        value={section.customTexts?.clin_badge || "[PHYSICIAN CLINICAL DOSSIER // MD. REGISTRATION]"}
+                        editable={editable}
+                        ariaLabel="Mã số hồ sơ lâm sàng"
+                        onSave={(val) => updateCustomText("clin_badge", val)}
+                      />
+                    </span>
                   </span>
                   <span
-                    className="rounded px-2 py-0.5 text-[10px] text-white font-bold"
+                    className="rounded px-2 py-0.5 text-[10px] text-white font-bold shrink-0"
                     style={{ backgroundColor: theme.primaryColor }}
                   >
                     <InlineEditableText
@@ -1476,7 +1484,7 @@ export function AboutBlock({
                   </span>
                 </div>
                 <div>
-                  <h3 className="font-sans text-2xl font-bold" style={{ color: theme.textColor }}>
+                  <h3 className="font-sans text-2xl font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
                     <InlineEditableText
                       value={section.customTexts?.clin_title || "Bác sĩ Nội trú / Điều trị Lâm sàng"}
                       editable={editable}
@@ -1485,7 +1493,7 @@ export function AboutBlock({
                     />
                   </h3>
                   <p
-                    className="mt-1 text-xs font-semibold font-mono"
+                    className="mt-1 text-xs font-semibold font-mono min-w-0 break-words"
                     style={{ color: theme.primaryColor }}
                   >
                     <InlineEditableText
@@ -1495,7 +1503,7 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("clin_sub", val)}
                     />
                   </p>
-                  <p className="mt-3 font-sans text-sm leading-relaxed" style={{ color: `${theme.textColor}df` }}>
+                  <p className="mt-3 font-sans text-sm leading-relaxed min-w-0 break-words" style={{ color: `${theme.textColor}df` }}>
                     <InlineEditableText
                       value={
                         section.biography ||
@@ -1510,7 +1518,7 @@ export function AboutBlock({
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 text-[11px] font-sans">
                   <div
-                    className="p-2.5 rounded-lg border"
+                    className="p-2.5 rounded-lg border min-w-0 break-words"
                     style={{
                       borderColor: `${theme.primaryColor}20`,
                       backgroundColor: `${theme.primaryColor}08`,
@@ -1524,7 +1532,7 @@ export function AboutBlock({
                         onSave={(val) => updateCustomText("clin_feat1_title", val)}
                       />
                     </strong>
-                    <span className="text-slate-600">
+                    <span className="text-slate-600 min-w-0 break-words">
                       <InlineEditableText
                         value={section.customTexts?.clin_feat1_desc || "ACLS nâng cao, can thiệp sốc tuần hoàn"}
                         editable={editable}
@@ -1534,7 +1542,7 @@ export function AboutBlock({
                     </span>
                   </div>
                   <div
-                    className="p-2.5 rounded-lg border"
+                    className="p-2.5 rounded-lg border min-w-0 break-words"
                     style={{
                       borderColor: `${theme.primaryColor}20`,
                       backgroundColor: `${theme.primaryColor}08`,
@@ -1548,7 +1556,7 @@ export function AboutBlock({
                         onSave={(val) => updateCustomText("clin_feat2_title", val)}
                       />
                     </strong>
-                    <span className="text-slate-600">
+                    <span className="text-slate-600 min-w-0 break-words">
                       <InlineEditableText
                         value={section.customTexts?.clin_feat2_desc || "Phác đồ Bộ Y tế & Guideline AHA/ESC"}
                         editable={editable}
@@ -1558,7 +1566,7 @@ export function AboutBlock({
                     </span>
                   </div>
                   <div
-                    className="p-2.5 rounded-lg border"
+                    className="p-2.5 rounded-lg border min-w-0 break-words"
                     style={{
                       borderColor: `${theme.primaryColor}20`,
                       backgroundColor: `${theme.primaryColor}08`,
@@ -1572,7 +1580,7 @@ export function AboutBlock({
                         onSave={(val) => updateCustomText("clin_feat3_title", val)}
                       />
                     </strong>
-                    <span className="text-slate-600">
+                    <span className="text-slate-600 min-w-0 break-words">
                       <InlineEditableText
                         value={section.customTexts?.clin_feat3_desc || "Chẩn đoán hình ảnh CT/MRI & Xét nghiệm"}
                         editable={editable}
@@ -1584,10 +1592,10 @@ export function AboutBlock({
                 </div>
               </div>
               <div
-                className="mt-5 pt-3 border-t flex items-center justify-between text-[11px] font-bold"
+                className="mt-5 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-[11px] font-bold min-w-0"
                 style={{ borderColor: `${theme.primaryColor}25`, color: theme.primaryColor }}
               >
-                <span>
+                <span className="min-w-0 break-words max-w-full">
                   <InlineEditableText
                     value={section.customTexts?.clin_footer_left || "STATUS: PRACTICING PHYSICIAN"}
                     editable={editable}
@@ -1595,7 +1603,7 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("clin_footer_left", val)}
                   />
                 </span>
-                <span>
+                <span className="min-w-0 break-words shrink-0">
                   <InlineEditableText
                     value={section.customTexts?.clin_footer_right || "HIPPOCRATIC OATH VERIFIED"}
                     editable={editable}
@@ -1606,7 +1614,7 @@ export function AboutBlock({
               </div>
             </div>
 
-            <div className="lg:col-span-5 space-y-4">
+            <div className="lg:col-span-5 space-y-4 min-w-0">
               {section.customTexts?.hide_clin_edu !== "true" ? (
                 <div
                   className="relative group rounded-xl border bg-white p-5 shadow-xs"
@@ -1624,10 +1632,10 @@ export function AboutBlock({
                     </button>
                   )}
                   <div
-                    className="flex items-center justify-between border-b pb-2 mb-3 text-xs font-bold"
+                    className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 mb-3 text-xs font-bold min-w-0"
                     style={{ borderColor: `${theme.primaryColor}18`, color: theme.primaryColor }}
                   >
-                    <span>
+                    <span className="min-w-0 break-words">
                       <InlineEditableText
                         value={section.customTexts?.clin_edu_title || "[HOSPITAL AFFILIATIONS & DEGREE]"}
                         editable={editable}
@@ -1635,7 +1643,7 @@ export function AboutBlock({
                         onSave={(val) => updateCustomText("clin_edu_title", val)}
                       />
                     </span>
-                    <span className="text-[10px] text-slate-400">
+                    <span className="text-[10px] text-slate-400 shrink-0">
                       <InlineEditableText
                         value={section.customTexts?.clin_edu_tag || "ICD-10"}
                         editable={editable}
@@ -1644,8 +1652,8 @@ export function AboutBlock({
                       />
                     </span>
                   </div>
-                  <div className="space-y-1.5 text-xs text-slate-700 font-sans">
-                    <p className="font-bold" style={{ color: theme.textColor }}>
+                  <div className="space-y-1.5 text-xs text-slate-700 font-sans min-w-0 break-words">
+                    <p className="font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
                       <InlineEditableText
                         value={eduSchool}
                         editable={editable}
@@ -1653,7 +1661,7 @@ export function AboutBlock({
                         onSave={(val) => updateEducationInfo("educationSchool", val)}
                       />
                     </p>
-                    <p className="font-medium" style={{ color: theme.primaryColor }}>
+                    <p className="font-medium min-w-0 break-words" style={{ color: theme.primaryColor }}>
                       <InlineEditableText
                         value={eduDegree}
                         editable={editable}
@@ -1661,7 +1669,7 @@ export function AboutBlock({
                         onSave={(val) => updateEducationInfo("educationDegree", val)}
                       />
                     </p>
-                    <p className="text-slate-500 font-mono text-[11px]">
+                    <p className="text-slate-500 font-mono text-[11px] min-w-0 break-words">
                       <InlineEditableText
                         value={section.educationPeriod || "Bác sĩ Nội trú Khóa K47"}
                         editable={editable}
@@ -1687,7 +1695,7 @@ export function AboutBlock({
 
               {section.customTexts?.hide_clin_contact !== "true" ? (
                 <div
-                  className="relative group rounded-xl border bg-white p-5 shadow-xs"
+                  className="relative group rounded-xl border bg-white p-5 shadow-xs min-w-0"
                   style={{ borderColor: `${theme.primaryColor}30` }}
                 >
                   {editable && (
@@ -1702,10 +1710,10 @@ export function AboutBlock({
                     </button>
                   )}
                   <div
-                    className="flex items-center justify-between border-b pb-2 mb-3 text-xs font-bold"
+                    className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 mb-3 text-xs font-bold min-w-0"
                     style={{ borderColor: `${theme.primaryColor}18`, color: theme.primaryColor }}
                   >
-                    <span>
+                    <span className="min-w-0 break-words">
                       <InlineEditableText
                         value={section.customTexts?.clin_contact_title || "[CLINICAL CONTACT & PAGER]"}
                         editable={editable}
@@ -1713,7 +1721,7 @@ export function AboutBlock({
                         onSave={(val) => updateCustomText("clin_contact_title", val)}
                       />
                     </span>
-                    <span className="text-[10px] text-emerald-600 font-bold">
+                    <span className="text-[10px] text-emerald-600 font-bold shrink-0">
                       <InlineEditableText
                         value={section.customTexts?.clin_contact_tag || "ON CALL"}
                         editable={editable}
@@ -1723,34 +1731,39 @@ export function AboutBlock({
                     </span>
                   </div>
                   <div className="space-y-2 text-xs text-slate-700 font-sans">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
                       <strong className="shrink-0" style={{ color: theme.primaryColor }}>Email BV:</strong>
-                      <InlineEditableText
-                        value={section.contactInfo.email || "bs.thutrang@hospital.vn"}
-                        editable={editable}
-                        ariaLabel="Email bệnh viện"
-                        onSave={(val) => updateContactInfo("email", val)}
-                        className="underline"
-                      />
+                      <span className="min-w-0 break-all">
+                        <InlineEditableText
+                          value={section.contactInfo.email || "bs.thutrang@hospital.vn"}
+                          editable={editable}
+                          ariaLabel="Email bệnh viện"
+                          onSave={(val) => updateContactInfo("email", val)}
+                          className="underline"
+                        />
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
                       <strong className="shrink-0" style={{ color: theme.primaryColor }}>Pager / Hotline:</strong>
-                      <InlineEditableText
-                        value={section.contactInfo.phone || "0988 115 115"}
-                        editable={editable}
-                        ariaLabel="Số Pager / Hotline"
-                        onSave={(val) => updateContactInfo("phone", val)}
-                        className="font-mono"
-                      />
+                      <span className="min-w-0 break-all font-mono">
+                        <InlineEditableText
+                          value={section.contactInfo.phone || "0988 115 115"}
+                          editable={editable}
+                          ariaLabel="Số Pager / Hotline"
+                          onSave={(val) => updateContactInfo("phone", val)}
+                        />
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
                       <strong className="shrink-0" style={{ color: theme.primaryColor }}>Khoa / Phòng:</strong>
-                      <InlineEditableText
-                        value={section.contactInfo.location || "Khoa Hồi sức Tích cực & Cấp cứu"}
-                        editable={editable}
-                        ariaLabel="Khoa phòng công tác"
-                        onSave={(val) => updateContactInfo("location", val)}
-                      />
+                      <span className="min-w-0 break-words">
+                        <InlineEditableText
+                          value={section.contactInfo.location || "Khoa Hồi sức Tích cực & Cấp cứu"}
+                          editable={editable}
+                          ariaLabel="Khoa phòng công tác"
+                          onSave={(val) => updateContactInfo("location", val)}
+                        />
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -2001,20 +2014,20 @@ export function AboutBlock({
             )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch min-w-0">
             <div
-              className="lg:col-span-7 rounded-3xl border-3 bg-white p-6 sm:p-8"
+              className="lg:col-span-7 rounded-3xl border-3 bg-white p-4 sm:p-6 lg:p-8 min-w-0"
               style={{
                 borderColor: `${theme.textColor}cc`,
                 boxShadow: `6px 6px 0px ${theme.textColor}dd`,
               }}
             >
               <div
-                className="flex items-center justify-between border-b-2 pb-3 mb-4"
+                className="flex flex-wrap items-center justify-between gap-2 border-b-2 pb-3 mb-4 min-w-0"
                 style={{ borderColor: `${theme.primaryColor}30` }}
               >
                 <span
-                  className="font-editorial text-sm font-black uppercase tracking-wider"
+                  className="font-editorial text-sm font-black uppercase tracking-wider min-w-0 break-words"
                   style={{ color: theme.primaryColor }}
                 >
                   <InlineEditableText
@@ -2025,7 +2038,7 @@ export function AboutBlock({
                   />
                 </span>
                 <span
-                  className="rounded-full border px-3 py-0.5 text-xs font-black"
+                  className="rounded-full border px-3 py-0.5 text-xs font-black shrink-0"
                   style={{
                     backgroundColor: `${theme.primaryColor}18`,
                     borderColor: `${theme.primaryColor}60`,
@@ -2278,10 +2291,10 @@ export function AboutBlock({
 
     if (layout === "academic-cv") {
       return (
-        <div data-testid="about-layout-content" data-layout="academic-cv" className="space-y-6">
+        <div data-testid="about-layout-content" data-layout="academic-cv" className="space-y-6 min-w-0">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             <div
-              className="lg:col-span-7 rounded-2xl border-2 p-6 sm:p-8 bg-white/95 shadow-sm flex flex-col justify-between"
+              className="lg:col-span-7 rounded-2xl border-2 p-4 sm:p-6 lg:p-8 bg-white/95 shadow-sm flex flex-col justify-between min-w-0"
               style={{
                 borderColor: `${theme.primaryColor}55`,
                 boxShadow: `0 10px 25px -5px ${theme.primaryColor}20`,
@@ -2289,11 +2302,11 @@ export function AboutBlock({
             >
               <div className="space-y-4">
                 <div
-                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3"
+                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 min-w-0"
                   style={{ borderColor: `${theme.primaryColor}30` }}
                 >
                   <span
-                    className="text-xs font-bold uppercase tracking-wider"
+                    className="text-xs font-bold uppercase tracking-wider min-w-0 max-w-full break-words"
                     style={{ color: theme.primaryColor }}
                   >
                     <InlineEditableText
@@ -2304,7 +2317,7 @@ export function AboutBlock({
                     />
                   </span>
                   <span
-                    className="rounded px-2.5 py-0.5 text-[10px] font-bold text-white"
+                    className="rounded px-2.5 py-0.5 text-[10px] font-bold text-white shrink-0"
                     style={{ backgroundColor: theme.primaryColor }}
                   >
                     <InlineEditableText
@@ -2316,7 +2329,7 @@ export function AboutBlock({
                   </span>
                 </div>
                 <div>
-                  <h3 className="font-editorial text-2xl font-bold" style={{ color: theme.textColor }}>
+                  <h3 className="font-editorial text-2xl font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
                     <InlineEditableText
                       value={section.customTexts?.acad_title || "Nghiên cứu sinh & Giảng viên Sư phạm Tương lai"}
                       editable={editable}
@@ -2324,7 +2337,7 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("acad_title", val)}
                     />
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed opacity-85" style={{ color: theme.textColor }}>
+                  <p className="mt-2 text-sm leading-relaxed opacity-85 min-w-0 break-words" style={{ color: theme.textColor }}>
                     <InlineEditableText
                       value={
                         section.biography ||
@@ -2338,7 +2351,7 @@ export function AboutBlock({
                   </p>
                 </div>
                 <div
-                  className="rounded-xl border p-3.5 text-xs"
+                  className="rounded-xl border p-3.5 text-xs min-w-0 break-words"
                   style={{
                     borderColor: `${theme.primaryColor}30`,
                     backgroundColor: `${theme.primaryColor}0d`,
@@ -2353,7 +2366,7 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("acad_philo_title", val)}
                     />
                   </strong>
-                  <p className="italic leading-relaxed">
+                  <p className="italic leading-relaxed min-w-0 break-words">
                     <InlineEditableText
                       value={
                         section.customTexts?.acad_philo_text ||
@@ -2368,10 +2381,10 @@ export function AboutBlock({
                 </div>
               </div>
               <div
-                className="mt-4 pt-3 border-t flex items-center justify-between text-xs font-bold"
+                className="mt-4 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs font-bold min-w-0"
                 style={{ borderColor: `${theme.primaryColor}25`, color: theme.primaryColor }}
               >
-                <span>
+                <span className="min-w-0 break-words max-w-full">
                   <InlineEditableText
                     value={section.customTexts?.acad_footer_left || (eduSchool ? eduSchool.toUpperCase() : "TRƯỜNG ĐẠI HỌC")}
                     editable={editable}
@@ -2379,7 +2392,7 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("acad_footer_left", val)}
                   />
                 </span>
-                <span>
+                <span className="min-w-0 break-words shrink-0">
                   <InlineEditableText
                     value={section.customTexts?.acad_footer_right || "ACADEMIC VERIFIED"}
                     editable={editable}
@@ -2390,7 +2403,7 @@ export function AboutBlock({
               </div>
             </div>
 
-            <div className="lg:col-span-5 space-y-4">
+            <div className="lg:col-span-5 space-y-4 min-w-0">
               {section.customTexts?.hide_acad_pubs !== "true" ? (
                 <div
                   className="relative group rounded-xl border p-5 bg-white/90 shadow-xs"
@@ -2489,33 +2502,39 @@ export function AboutBlock({
                     />
                   </h4>
                   <div className="space-y-2 text-xs" style={{ color: theme.textColor }}>
-                    <div className="flex items-center gap-1.5">
-                      <span style={{ color: theme.primaryColor }}>Email:</span>
-                      <InlineEditableText
-                        value={section.contactInfo.email || "gv.nghiencuu@vnu.edu.vn"}
-                        editable={editable}
-                        ariaLabel="Email học thuật"
-                        onSave={(val) => updateContactInfo("email", val)}
-                        className="font-medium underline"
-                      />
+                    <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
+                      <span className="shrink-0" style={{ color: theme.primaryColor }}>Email:</span>
+                      <span className="min-w-0 break-all">
+                        <InlineEditableText
+                          value={section.contactInfo.email || "gv.nghiencuu@vnu.edu.vn"}
+                          editable={editable}
+                          ariaLabel="Email học thuật"
+                          onSave={(val) => updateContactInfo("email", val)}
+                          className="font-medium underline"
+                        />
+                      </span>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <span style={{ color: theme.primaryColor }}>Điện thoại:</span>
-                      <InlineEditableText
-                        value={section.contactInfo.phone || "(024) 3754 7799"}
-                        editable={editable}
-                        ariaLabel="Điện thoại văn phòng"
-                        onSave={(val) => updateContactInfo("phone", val)}
-                      />
+                    <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
+                      <span className="shrink-0" style={{ color: theme.primaryColor }}>Điện thoại:</span>
+                      <span className="min-w-0 break-all font-mono">
+                        <InlineEditableText
+                          value={section.contactInfo.phone || "(024) 3754 7799"}
+                          editable={editable}
+                          ariaLabel="Điện thoại văn phòng"
+                          onSave={(val) => updateContactInfo("phone", val)}
+                        />
+                      </span>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <span style={{ color: theme.primaryColor }}>Văn phòng:</span>
-                      <InlineEditableText
-                        value={section.contactInfo.location || "Phòng 302, Nhà G7, 144 Xuân Thủy, Cầu Giấy, HN"}
-                        editable={editable}
-                        ariaLabel="Địa chỉ văn phòng"
-                        onSave={(val) => updateContactInfo("location", val)}
-                      />
+                    <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
+                      <span className="shrink-0" style={{ color: theme.primaryColor }}>Văn phòng:</span>
+                      <span className="min-w-0 break-words">
+                        <InlineEditableText
+                          value={section.contactInfo.location || "Phòng 302, Nhà G7, 144 Xuân Thủy, Cầu Giấy, HN"}
+                          editable={editable}
+                          ariaLabel="Địa chỉ văn phòng"
+                          onSave={(val) => updateContactInfo("location", val)}
+                        />
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -2540,10 +2559,10 @@ export function AboutBlock({
 
     if (layout === "pedagogical-journal") {
       return (
-        <div data-testid="about-layout-content" data-layout="pedagogical-journal" className="space-y-6">
+        <div data-testid="about-layout-content" data-layout="pedagogical-journal" className="space-y-6 min-w-0">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             <div
-              className="lg:col-span-7 rounded-3xl border-2 p-6 sm:p-8 bg-white/95 shadow-sm flex flex-col justify-between"
+              className="lg:col-span-7 rounded-3xl border-2 p-4 sm:p-6 lg:p-8 bg-white/95 shadow-sm flex flex-col justify-between min-w-0"
               style={{
                 borderColor: `${theme.primaryColor}55`,
                 boxShadow: `0 10px 25px -5px ${theme.primaryColor}20`,
@@ -2551,11 +2570,11 @@ export function AboutBlock({
             >
               <div className="space-y-4">
                 <div
-                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3"
+                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 min-w-0"
                   style={{ borderColor: `${theme.primaryColor}30` }}
                 >
                   <span
-                    className="rounded-full px-3.5 py-1 text-xs font-bold"
+                    className="rounded-2xl sm:rounded-full px-3.5 py-1 text-xs font-bold max-w-full break-words"
                     style={{
                       backgroundColor: `${theme.primaryColor}18`,
                       color: theme.primaryColor,
@@ -2568,7 +2587,7 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("ped_badge", val)}
                     />
                   </span>
-                  <span className="text-xs text-stone-500 font-medium">
+                  <span className="text-xs text-stone-500 font-medium shrink-0">
                     <InlineEditableText
                       value={section.customTexts?.ped_tag || "KHÓA K18 • THỰC TẬP SƯ PHẠM"}
                       editable={editable}
@@ -2578,7 +2597,7 @@ export function AboutBlock({
                   </span>
                 </div>
                 <div>
-                  <h3 className="font-editorial text-2xl font-bold" style={{ color: theme.textColor }}>
+                  <h3 className="font-editorial text-2xl font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
                     <InlineEditableText
                       value={section.customTexts?.ped_title || "Tâm Niệm Nghề Giáo & Triết Lý Giảng Dạy"}
                       editable={editable}
@@ -2586,7 +2605,7 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("ped_title", val)}
                     />
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed opacity-85" style={{ color: theme.textColor }}>
+                  <p className="mt-2 text-sm leading-relaxed opacity-85 min-w-0 break-words" style={{ color: theme.textColor }}>
                     <InlineEditableText
                       value={
                         section.biography ||
@@ -2601,7 +2620,7 @@ export function AboutBlock({
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 text-xs">
                   <div
-                    className="p-3 rounded-2xl border"
+                    className="p-3 rounded-2xl border min-w-0 break-words"
                     style={{
                       backgroundColor: `${theme.primaryColor}0d`,
                       borderColor: `${theme.primaryColor}25`,
@@ -2615,7 +2634,7 @@ export function AboutBlock({
                         onSave={(val) => updateCustomText("ped_card1_title", val)}
                       />
                     </strong>
-                    <span style={{ color: theme.textColor }}>
+                    <span className="min-w-0 break-words" style={{ color: theme.textColor }}>
                       <InlineEditableText
                         value={section.customTexts?.ped_card1_desc || "Dạy học liên môn & ứng dụng CNTT sinh động"}
                         editable={editable}
@@ -2625,7 +2644,7 @@ export function AboutBlock({
                     </span>
                   </div>
                   <div
-                    className="p-3 rounded-2xl border"
+                    className="p-3 rounded-2xl border min-w-0 break-words"
                     style={{
                       backgroundColor: `${theme.primaryColor}0d`,
                       borderColor: `${theme.primaryColor}25`,
@@ -2639,7 +2658,7 @@ export function AboutBlock({
                         onSave={(val) => updateCustomText("ped_card2_title", val)}
                       />
                     </strong>
-                    <span style={{ color: theme.textColor }}>
+                    <span className="min-w-0 break-words" style={{ color: theme.textColor }}>
                       <InlineEditableText
                         value={section.customTexts?.ped_card2_desc || "Tổ chức hoạt động ngoại khóa & CLB học đường"}
                         editable={editable}
@@ -2649,7 +2668,7 @@ export function AboutBlock({
                     </span>
                   </div>
                   <div
-                    className="p-3 rounded-2xl border"
+                    className="p-3 rounded-2xl border min-w-0 break-words"
                     style={{
                       backgroundColor: `${theme.primaryColor}0d`,
                       borderColor: `${theme.primaryColor}25`,
@@ -2663,7 +2682,7 @@ export function AboutBlock({
                         onSave={(val) => updateCustomText("ped_card3_title", val)}
                       />
                     </strong>
-                    <span style={{ color: theme.textColor }}>
+                    <span className="min-w-0 break-words" style={{ color: theme.textColor }}>
                       <InlineEditableText
                         value={section.customTexts?.ped_card3_desc || "Xây dựng môi trường lớp học hạnh phúc"}
                         editable={editable}
@@ -2675,10 +2694,10 @@ export function AboutBlock({
                 </div>
               </div>
               <div
-                className="mt-5 pt-3 border-t flex items-center justify-between text-xs font-semibold"
+                className="mt-5 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs font-semibold min-w-0"
                 style={{ borderColor: `${theme.primaryColor}20`, color: theme.primaryColor }}
               >
-                <span>
+                <span className="min-w-0 break-words max-w-full">
                   <InlineEditableText
                     value={section.customTexts?.ped_footer_left || (eduSchool ? eduSchool.toUpperCase() : "TRƯỜNG ĐẠI HỌC")}
                     editable={editable}
@@ -2686,7 +2705,7 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("ped_footer_left", val)}
                   />
                 </span>
-                <span>
+                <span className="min-w-0 break-words shrink-0">
                   <InlineEditableText
                     value={section.customTexts?.ped_footer_right || "TỐT NGHIỆP XUẤT SẮC 🌸"}
                     editable={editable}
@@ -2697,7 +2716,7 @@ export function AboutBlock({
               </div>
             </div>
 
-            <div className="lg:col-span-5 space-y-4">
+            <div className="lg:col-span-5 space-y-4 min-w-0">
               {section.customTexts?.hide_ped_edu !== "true" ? (
                 <div
                   className="relative group rounded-2xl border p-5 bg-white/90 shadow-xs"
@@ -2796,33 +2815,39 @@ export function AboutBlock({
                     />
                   </h4>
                   <div className="space-y-2 text-xs text-stone-700">
-                    <div className="flex items-center gap-1.5">
-                      <span style={{ color: theme.primaryColor }}>Email:</span>
-                      <InlineEditableText
-                        value={section.contactInfo.email || "gv.amnhac@supham.edu.vn"}
-                        editable={editable}
-                        ariaLabel="Email giáo viên"
-                        onSave={(val) => updateContactInfo("email", val)}
-                        className="font-medium underline"
-                      />
+                    <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
+                      <span className="shrink-0" style={{ color: theme.primaryColor }}>Email:</span>
+                      <span className="min-w-0 break-all">
+                        <InlineEditableText
+                          value={section.contactInfo.email || "gv.amnhac@supham.edu.vn"}
+                          editable={editable}
+                          ariaLabel="Email giáo viên"
+                          onSave={(val) => updateContactInfo("email", val)}
+                          className="font-medium underline"
+                        />
+                      </span>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <span style={{ color: theme.primaryColor }}>Hotline:</span>
-                      <InlineEditableText
-                        value={section.contactInfo.phone || "0966 223 344"}
-                        editable={editable}
-                        ariaLabel="Số điện thoại giáo viên"
-                        onSave={(val) => updateContactInfo("phone", val)}
-                      />
+                    <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
+                      <span className="shrink-0" style={{ color: theme.primaryColor }}>Hotline:</span>
+                      <span className="min-w-0 break-all font-mono">
+                        <InlineEditableText
+                          value={section.contactInfo.phone || "0966 223 344"}
+                          editable={editable}
+                          ariaLabel="Số điện thoại giáo viên"
+                          onSave={(val) => updateContactInfo("phone", val)}
+                        />
+                      </span>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <span style={{ color: theme.primaryColor }}>Địa chỉ:</span>
-                      <InlineEditableText
-                        value={section.contactInfo.location || "Trường THPT Thực nghiệm Sư phạm, Hà Nội"}
-                        editable={editable}
-                        ariaLabel="Địa chỉ công tác"
-                        onSave={(val) => updateContactInfo("location", val)}
-                      />
+                    <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
+                      <span className="shrink-0" style={{ color: theme.primaryColor }}>Địa chỉ:</span>
+                      <span className="min-w-0 break-words">
+                        <InlineEditableText
+                          value={section.contactInfo.location || "Trường THPT Thực nghiệm Sư phạm, Hà Nội"}
+                          editable={editable}
+                          ariaLabel="Địa chỉ công tác"
+                          onSave={(val) => updateContactInfo("location", val)}
+                        />
+                      </span>
                     </div>
                   </div>
                 </div>

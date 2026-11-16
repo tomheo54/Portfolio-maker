@@ -2542,29 +2542,29 @@ function renderAboutHtml(
       <div style="position:relative; z-index:2; margin-bottom: 24px;">
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
           <div style="border: 2px solid color-mix(in srgb, var(--primary) 35%, transparent); border-radius: 24px; padding: 24px; background: var(--surface); box-shadow: 0 10px 30px -10px color-mix(in srgb, var(--primary) 15%, transparent);">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid color-mix(in srgb, var(--primary) 18%, transparent); padding-bottom: 12px; margin-bottom: 14px;">
-              <span class="medical-ribbon" style="margin-bottom:0; font-size:10px; padding:4px 12px;">🏆 ${t("med_badge", "HỒ SƠ HÀNH NGHỀ DƯỢC • CHUẨN GMP/GSP")}</span>
-              <span class="medical-pill" style="font-family:monospace;">${t("med_license", "#VN-PHARM-8892")}</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom: 1px solid color-mix(in srgb, var(--primary) 18%, transparent); padding-bottom: 12px; margin-bottom: 14px;">
+              <span class="medical-ribbon" style="margin-bottom:0; font-size:10px; padding:4px 12px; max-width:100%; word-break:break-word;">🏆 ${t("med_badge", "HỒ SƠ HÀNH NGHỀ DƯỢC • CHUẨN GMP/GSP")}</span>
+              <span class="medical-pill" style="font-family:monospace; flex-shrink:0;">${t("med_license", "#VN-PHARM-8892")}</span>
             </div>
-            <h3 class="font-editorial" style="font-size:22px; font-weight:700; color:var(--text); margin:0 0 10px;">${t("med_title", "Dược sĩ Chuyên khoa &amp; Nghiên cứu Phát triển (R&amp;D)")}</h3>
-            <p style="font-size:14px; line-height:1.7; color:var(--text); opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Dược sĩ phụ trách kiểm soát chất lượng, nghiên cứu tối ưu hóa công thức bào chế theo tiêu chuẩn GMP-WHO và Dược điển Việt Nam V.")}</p>
-            <div class="medical-syllabus-grid" style="grid-template-columns: repeat(3, 1fr); gap: 10px;">
-              <div class="medical-syllabus-item">
+            <h3 class="font-editorial" style="font-size:22px; font-weight:700; color:var(--text); margin:0 0 10px; word-break:break-word;">${t("med_title", "Dược sĩ Chuyên khoa &amp; Nghiên cứu Phát triển (R&amp;D)")}</h3>
+            <p style="font-size:14px; line-height:1.7; color:var(--text); opacity:0.88; margin:0 0 16px; word-break:break-word;">${escapeHtml(about.biography || "Dược sĩ phụ trách kiểm soát chất lượng, nghiên cứu tối ưu hóa công thức bào chế theo tiêu chuẩn GMP-WHO và Dược điển Việt Nam V.")}</p>
+            <div class="medical-syllabus-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
+              <div class="medical-syllabus-item" style="word-break:break-word;">
                 <strong style="color:var(--primary); display:block; margin-bottom:4px;">${t("med_feat1_title", "🔬 Bào chế &amp; Độc học")}</strong>
                 <span style="font-size:11px; opacity:0.85;">${t("med_feat1_desc", "Nano sinh học, viên nén phóng thích biến đổi")}</span>
               </div>
-              <div class="medical-syllabus-item">
+              <div class="medical-syllabus-item" style="word-break:break-word;">
                 <strong style="color:var(--primary); display:block; margin-bottom:4px;">${t("med_feat2_title", "📋 Tiêu chuẩn GMP-WHO")}</strong>
                 <span style="font-size:11px; opacity:0.85;">${t("med_feat2_desc", "Thẩm định quy trình sản xuất, GLP phòng LAB")}</span>
               </div>
-              <div class="medical-syllabus-item">
+              <div class="medical-syllabus-item" style="word-break:break-word;">
                 <strong style="color:var(--primary); display:block; margin-bottom:4px;">${t("med_feat3_title", "💊 Dược lâm sàng")}</strong>
                 <span style="font-size:11px; opacity:0.85;">${t("med_feat3_desc", "Tương tác thuốc &amp; Cảnh giác dược an toàn")}</span>
               </div>
             </div>
-            <div style="margin-top:16px; padding-top:10px; border-top:1px solid color-mix(in srgb, var(--primary) 15%, transparent); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
-              <span>${t("med_footer_left", "⚖️ CAM KẾT Y ĐỨC &amp; AN TOÀN SỬ DỤNG THUỐC")}</span>
-              <span>${t("med_footer_right", "BỘ Y TẾ VIỆT NAM VERIFIED")}</span>
+            <div style="margin-top:16px; padding-top:10px; border-top:1px solid color-mix(in srgb, var(--primary) 15%, transparent); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:11px; font-weight:700; color:var(--primary); word-break:break-word;">
+              <span style="min-width:0; word-break:break-word;">${t("med_footer_left", "⚖️ CAM KẾT Y ĐỨC &amp; AN TOÀN SỬ DỤNG THUỐC")}</span>
+              <span style="min-width:0; word-break:break-word; flex-shrink:0;">${t("med_footer_right", "BỘ Y TẾ VIỆT NAM VERIFIED")}</span>
             </div>
           </div>
 
@@ -2592,30 +2592,30 @@ function renderAboutHtml(
       <div style="position:relative; z-index:2; margin-bottom: 24px;">
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
           <div style="border: 2px solid var(--primary); border-radius: 16px; padding: 24px; background: var(--surface); box-shadow: 0 10px 28px -8px rgba(26,18,100,0.25);">
-            <div class="clinical-status-bar" style="margin-bottom:14px; padding:6px 12px;">
-              <span style="font-weight:700;"><span class="clinical-dot"></span> ${t("clin_badge", "[PHYSICIAN CLINICAL DOSSIER // MD. REGISTRATION]")}</span>
-              <span class="clinical-badge-pill">${t("clin_tag", "MD-HN-2024")}</span>
+            <div class="clinical-status-bar" style="margin-bottom:14px; padding:6px 12px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px;">
+              <span style="font-weight:700; min-width:0; word-break:break-word;"><span class="clinical-dot"></span> ${t("clin_badge", "[PHYSICIAN CLINICAL DOSSIER // MD. REGISTRATION]")}</span>
+              <span class="clinical-badge-pill" style="flex-shrink:0;">${t("clin_tag", "MD-HN-2024")}</span>
             </div>
-            <h3 style="font-family:sans-serif; font-size:22px; font-weight:700; color:var(--text); margin:0 0 6px;">${t("clin_title", "Bác sĩ Nội trú / Điều trị Lâm sàng")}</h3>
-            <p style="font-size:12px; font-weight:600; color:var(--primary); margin:0 0 12px;">${t("clin_sub", "BỆNH VIỆN BẠCH MAI • BỘ MÔN NỘI - ĐH Y HÀ NỘI")}</p>
-            <p style="font-family:sans-serif; font-size:14px; line-height:1.7; color:var(--text); opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Bác sĩ lâm sàng trực tiếp điều trị tại khoa Cấp cứu & Can thiệp hồi sức tim mạch, ứng dụng y học chứng cứ trong chẩn đoán và theo dõi phác đồ.")}</p>
-            <div class="clinical-diagnostic-grid" style="grid-template-columns: repeat(3, 1fr); gap: 8px;">
-              <div class="clinical-diag-item">
+            <h3 style="font-family:sans-serif; font-size:22px; font-weight:700; color:var(--text); margin:0 0 6px; word-break:break-word;">${t("clin_title", "Bác sĩ Nội trú / Điều trị Lâm sàng")}</h3>
+            <p style="font-size:12px; font-weight:600; color:var(--primary); margin:0 0 12px; word-break:break-word;">${t("clin_sub", "BỆNH VIỆN BẠCH MAI • BỘ MÔN NỘI - ĐH Y HÀ NỘI")}</p>
+            <p style="font-family:sans-serif; font-size:14px; line-height:1.7; color:var(--text); opacity:0.88; margin:0 0 16px; word-break:break-word;">${escapeHtml(about.biography || "Bác sĩ lâm sàng trực tiếp điều trị tại khoa Cấp cứu & Can thiệp hồi sức tim mạch, ứng dụng y học chứng cứ trong chẩn đoán và theo dõi phác đồ.")}</p>
+            <div class="clinical-diagnostic-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;">
+              <div class="clinical-diag-item" style="word-break:break-word;">
                 <strong style="color:var(--primary); display:block; margin-bottom:2px;">${t("clin_feat1_title", "🩺 Cấp cứu Hồi sức")}</strong>
                 <span style="font-family:sans-serif; font-size:11px; opacity:0.85;">${t("clin_feat1_desc", "ACLS nâng cao, can thiệp sốc")}</span>
               </div>
-              <div class="clinical-diag-item">
+              <div class="clinical-diag-item" style="word-break:break-word;">
                 <strong style="color:var(--primary); display:block; margin-bottom:2px;">${t("clin_feat2_title", "📊 Y học chứng cứ")}</strong>
                 <span style="font-family:sans-serif; font-size:11px; opacity:0.85;">${t("clin_feat2_desc", "Guideline AHA/ESC cập nhật")}</span>
               </div>
-              <div class="clinical-diag-item">
+              <div class="clinical-diag-item" style="word-break:break-word;">
                 <strong style="color:var(--primary); display:block; margin-bottom:2px;">${t("clin_feat3_title", "🧬 Cận lâm sàng")}</strong>
                 <span style="font-family:sans-serif; font-size:11px; opacity:0.85;">${t("clin_feat3_desc", "Chẩn đoán hình ảnh CT/MRI")}</span>
               </div>
             </div>
-            <div style="margin-top:16px; padding-top:10px; border-top:1px solid rgba(26,18,100,0.15); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
-              <span>${t("clin_footer_left", "STATUS: PRACTICING PHYSICIAN")}</span>
-              <span>${t("clin_footer_right", "HIPPOCRATIC OATH VERIFIED")}</span>
+            <div style="margin-top:16px; padding-top:10px; border-top:1px solid rgba(26,18,100,0.15); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:11px; font-weight:700; color:var(--primary); word-break:break-word;">
+              <span style="min-width:0; word-break:break-word;">${t("clin_footer_left", "STATUS: PRACTICING PHYSICIAN")}</span>
+              <span style="min-width:0; word-break:break-word; flex-shrink:0;">${t("clin_footer_right", "HIPPOCRATIC OATH VERIFIED")}</span>
             </div>
           </div>
 
@@ -2704,19 +2704,19 @@ function renderAboutHtml(
       <div style="position:relative; z-index:2; margin-bottom: 24px;">
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
           <div style="border: 2px solid color-mix(in srgb, var(--primary) 35%, transparent); border-radius: 20px; padding: 24px; background: var(--surface);">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid color-mix(in srgb, var(--primary) 20%, transparent); padding-bottom: 12px; margin-bottom: 14px;">
-              <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary);">${t("acad_badge", "HỒ SƠ HỌC THUẬT &amp; LÝ LỊCH KHOA HỌC")}</span>
-              <span class="academic-vol-tag" style="background:var(--primary); color:#fff;">${t("acad_tag", "HỒ SƠ NCKH")}</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom: 1px solid color-mix(in srgb, var(--primary) 20%, transparent); padding-bottom: 12px; margin-bottom: 14px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary); min-width:0; word-break:break-word;">${t("acad_badge", "HỒ SƠ HỌC THUẬT &amp; LÝ LỊCH KHOA HỌC")}</span>
+              <span class="academic-vol-tag" style="background:var(--primary); color:#fff; flex-shrink:0;">${t("acad_tag", "HỒ SƠ NCKH")}</span>
             </div>
-            <h3 class="font-editorial" style="font-size:22px; font-weight:700; margin:0 0 10px;">${t("acad_title", "Nghiên cứu sinh &amp; Giảng viên Sư phạm Tương lai")}</h3>
-            <p style="font-size:14px; line-height:1.7; opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Nghiên cứu chuyên sâu về đổi mới phương pháp giảng dạy, ứng dụng chuyển đổi số và phát triển năng lực tự học cho học sinh trong chương trình GDPT 2018.")}</p>
-            <div style="border:1px solid color-mix(in srgb, var(--primary) 25%, transparent); border-radius:12px; padding:12px; background:color-mix(in srgb, var(--primary) 8%, transparent); font-size:12px; font-style:italic;">
+            <h3 class="font-editorial" style="font-size:22px; font-weight:700; margin:0 0 10px; word-break:break-word;">${t("acad_title", "Nghiên cứu sinh &amp; Giảng viên Sư phạm Tương lai")}</h3>
+            <p style="font-size:14px; line-height:1.7; opacity:0.88; margin:0 0 16px; word-break:break-word;">${escapeHtml(about.biography || "Nghiên cứu chuyên sâu về đổi mới phương pháp giảng dạy, ứng dụng chuyển đổi số và phát triển năng lực tự học cho học sinh trong chương trình GDPT 2018.")}</p>
+            <div style="border:1px solid color-mix(in srgb, var(--primary) 25%, transparent); border-radius:12px; padding:12px; background:color-mix(in srgb, var(--primary) 8%, transparent); font-size:12px; font-style:italic; word-break:break-word;">
               <strong style="color:var(--primary); font-style:normal; display:block; margin-bottom:2px;">${t("acad_philo_title", "📜 Triết lý nghiên cứu giáo dục:")}</strong>
               ${t("acad_philo_text", "“Lấy người học làm trung tâm của mọi chuyển hóa, công nghệ làm đòn bẩy kích hoạt tư duy và sự thấu cảm làm nền tảng của y đức sư phạm.”")}
             </div>
-            <div style="margin-top:16px; padding-top:10px; border-top:1px solid color-mix(in srgb, var(--primary) 15%, transparent); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
-              <span>${t("acad_footer_left", eduSchool ? escapeHtml(eduSchool.toUpperCase()) : "TRƯỜNG ĐẠI HỌC")}</span>
-              <span>${t("acad_footer_right", "ACADEMIC VERIFIED")}</span>
+            <div style="margin-top:16px; padding-top:10px; border-top:1px solid color-mix(in srgb, var(--primary) 15%, transparent); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:11px; font-weight:700; color:var(--primary); word-break:break-word;">
+              <span style="min-width:0; word-break:break-word;">${t("acad_footer_left", eduSchool ? escapeHtml(eduSchool.toUpperCase()) : "TRƯỜNG ĐẠI HỌC")}</span>
+              <span style="min-width:0; word-break:break-word; flex-shrink:0;">${t("acad_footer_right", "ACADEMIC VERIFIED")}</span>
             </div>
           </div>
 
@@ -2744,29 +2744,29 @@ function renderAboutHtml(
       <div style="position:relative; z-index:2; margin-bottom: 24px;">
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
           <div style="border: 2px solid color-mix(in srgb, var(--primary) 30%, transparent); border-radius: 24px; padding: 24px; background: var(--surface);">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid color-mix(in srgb, var(--primary) 20%, transparent); padding-bottom: 12px; margin-bottom: 14px;">
-              <span class="pedagogical-tag">${t("ped_badge", "🌸 CHÂN DUNG NGƯỜI GIÁO VIÊN TRẺ • NGÀNH SƯ PHẠM")}</span>
-              <span style="font-size:11px; opacity:0.75;">${t("ped_tag", "KHÓA K18 • THỰC TẬP")}</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom: 1px solid color-mix(in srgb, var(--primary) 20%, transparent); padding-bottom: 12px; margin-bottom: 14px;">
+              <span class="pedagogical-tag" style="min-width:0; word-break:break-word; max-width:100%;">${t("ped_badge", "🌸 CHÂN DUNG NGƯỜI GIÁO VIÊN TRẺ • NGÀNH SƯ PHẠM")}</span>
+              <span style="font-size:11px; opacity:0.75; flex-shrink:0;">${t("ped_tag", "KHÓA K18 • THỰC TẬP")}</span>
             </div>
-            <h3 class="font-editorial" style="font-size:22px; font-weight:700; margin:0 0 10px;">${t("ped_title", "Tâm Niệm Nghề Giáo &amp; Triết Lý Giảng Dạy")}</h3>
-            <p style="font-size:14px; line-height:1.7; opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Mỗi học sinh là một nốt nhạc độc bản trong dàn hợp xướng cuộc đời. Người giáo viên không chỉ truyền đạt tri thức mà còn là người thắp lên ngọn lửa đam mê và sự tự tin cho các em.")}</p>
-            <div class="pedagogical-index-grid" style="grid-template-columns: repeat(3, 1fr); gap: 8px;">
-              <div class="pedagogical-item">
+            <h3 class="font-editorial" style="font-size:22px; font-weight:700; margin:0 0 10px; word-break:break-word;">${t("ped_title", "Tâm Niệm Nghề Giáo &amp; Triết Lý Giảng Dạy")}</h3>
+            <p style="font-size:14px; line-height:1.7; opacity:0.88; margin:0 0 16px; word-break:break-word;">${escapeHtml(about.biography || "Mỗi học sinh là một nốt nhạc độc bản trong dàn hợp xướng cuộc đời. Người giáo viên không chỉ truyền đạt tri thức mà còn là người thắp lên ngọn lửa đam mê và sự tự tin cho các em.")}</p>
+            <div class="pedagogical-index-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;">
+              <div class="pedagogical-item" style="word-break:break-word;">
                 <strong style="color:var(--primary); display:block; margin-bottom:2px;">${t("ped_card1_title", "🎼 Giáo án tương tác")}</strong>
                 <span style="font-size:11px; opacity:0.85;">${t("ped_card1_desc", "Dạy học liên môn &amp; CNTT")}</span>
               </div>
-              <div class="pedagogical-item">
+              <div class="pedagogical-item" style="word-break:break-word;">
                 <strong style="color:var(--primary); display:block; margin-bottom:2px;">${t("ped_card2_title", "💡 Trải nghiệm sáng tạo")}</strong>
                 <span style="font-size:11px; opacity:0.85;">${t("ped_card2_desc", "Ngoại khóa &amp; CLB học đường")}</span>
               </div>
-              <div class="pedagogical-item">
+              <div class="pedagogical-item" style="word-break:break-word;">
                 <strong style="color:var(--primary); display:block; margin-bottom:2px;">${t("ped_card3_title", "❤️ Thấu cảm học trò")}</strong>
                 <span style="font-size:11px; opacity:0.85;">${t("ped_card3_desc", "Lớp học hạnh phúc")}</span>
               </div>
             </div>
-            <div style="margin-top:16px; padding-top:10px; border-top:1px solid color-mix(in srgb, var(--primary) 15%, transparent); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
-              <span>${t("ped_footer_left", eduSchool ? escapeHtml(eduSchool.toUpperCase()) : "TRƯỜNG ĐẠI HỌC")}</span>
-              <span>${t("ped_footer_right", "TỐT NGHIỆP XUẤT SẮC 🌸")}</span>
+            <div style="margin-top:16px; padding-top:10px; border-top:1px solid color-mix(in srgb, var(--primary) 15%, transparent); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:11px; font-weight:700; color:var(--primary); word-break:break-word;">
+              <span style="min-width:0; word-break:break-word;">${t("ped_footer_left", eduSchool ? escapeHtml(eduSchool.toUpperCase()) : "TRƯỜNG ĐẠI HỌC")}</span>
+              <span style="min-width:0; word-break:break-word; flex-shrink:0;">${t("ped_footer_right", "TỐT NGHIỆP XUẤT SẮC 🌸")}</span>
             </div>
           </div>
 
