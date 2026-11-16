@@ -1118,10 +1118,10 @@ export function AboutBlock({
   const renderCardLayout = (layout: Exclude<typeof activeLayout, "tabs">) => {
     if (layout === "medical-license") {
       return (
-        <div data-testid="about-layout-content" data-layout="medical-license" className="space-y-6">
+        <div data-testid="about-layout-content" data-layout="medical-license" className="space-y-6 min-w-0">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             <div
-              className="lg:col-span-7 rounded-3xl border-2 p-6 sm:p-8 bg-white/95 shadow-md flex flex-col justify-between"
+              className="lg:col-span-7 rounded-3xl border-2 p-4 sm:p-6 lg:p-8 bg-white/95 shadow-md flex flex-col justify-between min-w-0"
               style={{
                 borderColor: `${theme.primaryColor}55`,
                 boxShadow: `0 10px 30px -10px ${theme.primaryColor}25`,
@@ -1129,26 +1129,28 @@ export function AboutBlock({
             >
               <div className="space-y-4">
                 <div
-                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3"
+                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 min-w-0"
                   style={{ borderColor: `${theme.primaryColor}30` }}
                 >
                   <span
-                    className="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 text-xs font-bold text-white shadow-xs"
+                    className="inline-flex items-center gap-1.5 rounded-2xl sm:rounded-full border px-3.5 py-1 text-xs font-bold text-white shadow-xs max-w-full break-words"
                     style={{
                       backgroundColor: theme.primaryColor,
                       borderColor: `${theme.primaryColor}80`,
                     }}
                   >
-                    <Award className="h-3.5 w-3.5 text-amber-300" />
-                    <InlineEditableText
-                      value={section.customTexts?.med_badge || "HỒ SƠ HÀNH NGHỀ DƯỢC • CHUẨN GMP/GSP"}
-                      editable={editable}
-                      ariaLabel="Huy hiệu hành nghề dược"
-                      onSave={(val) => updateCustomText("med_badge", val)}
-                    />
+                    <Award className="h-3.5 w-3.5 text-amber-300 shrink-0" />
+                    <span className="min-w-0 break-words">
+                      <InlineEditableText
+                        value={section.customTexts?.med_badge || "HỒ SƠ HÀNH NGHỀ DƯỢC • CHUẨN GMP/GSP"}
+                        editable={editable}
+                        ariaLabel="Huy hiệu hành nghề dược"
+                        onSave={(val) => updateCustomText("med_badge", val)}
+                      />
+                    </span>
                   </span>
                   <span
-                    className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-md border"
+                    className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-md border shrink-0 min-w-0 break-words"
                     style={{
                       color: theme.primaryColor,
                       backgroundColor: `${theme.primaryColor}12`,
@@ -1165,7 +1167,7 @@ export function AboutBlock({
                 </div>
 
                 <div>
-                  <h3 className="font-editorial text-2xl font-bold" style={{ color: theme.textColor }}>
+                  <h3 className="font-editorial text-2xl font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
                     <InlineEditableText
                       value={section.customTexts?.med_title || "Dược sĩ Chuyên khoa & Nghiên cứu Phát triển (R&D)"}
                       editable={editable}
@@ -1173,7 +1175,7 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("med_title", val)}
                     />
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed opacity-85" style={{ color: theme.textColor }}>
+                  <p className="mt-2 text-sm leading-relaxed opacity-85 min-w-0 break-words" style={{ color: theme.textColor }}>
                     <InlineEditableText
                       value={
                         section.biography ||
@@ -1189,7 +1191,7 @@ export function AboutBlock({
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
                   <div
-                    className="p-3 rounded-xl border"
+                    className="p-3 rounded-xl border min-w-0 break-words"
                     style={{
                       borderColor: `${theme.primaryColor}30`,
                       backgroundColor: `${theme.primaryColor}0a`,
@@ -1203,7 +1205,7 @@ export function AboutBlock({
                         onSave={(val) => updateCustomText("med_feat1_title", val)}
                       />
                     </span>
-                    <span className="text-stone-700">
+                    <span className="text-stone-700 min-w-0 break-words">
                       <InlineEditableText
                         value={section.customTexts?.med_feat1_desc || "Công nghệ nano sinh học, viên nén giải phóng biến đổi"}
                         editable={editable}
@@ -1213,7 +1215,7 @@ export function AboutBlock({
                     </span>
                   </div>
                   <div
-                    className="p-3 rounded-xl border"
+                    className="p-3 rounded-xl border min-w-0 break-words"
                     style={{
                       borderColor: `${theme.primaryColor}30`,
                       backgroundColor: `${theme.primaryColor}0a`,
@@ -1227,7 +1229,7 @@ export function AboutBlock({
                         onSave={(val) => updateCustomText("med_feat2_title", val)}
                       />
                     </span>
-                    <span className="text-stone-700">
+                    <span className="text-stone-700 min-w-0 break-words">
                       <InlineEditableText
                         value={section.customTexts?.med_feat2_desc || "Thẩm định quy trình sản xuất, HACCP & GLP phòng LAB"}
                         editable={editable}
@@ -1237,7 +1239,7 @@ export function AboutBlock({
                     </span>
                   </div>
                   <div
-                    className="p-3 rounded-xl border"
+                    className="p-3 rounded-xl border min-w-0 break-words"
                     style={{
                       borderColor: `${theme.primaryColor}30`,
                       backgroundColor: `${theme.primaryColor}0a`,
@@ -1251,7 +1253,7 @@ export function AboutBlock({
                         onSave={(val) => updateCustomText("med_feat3_title", val)}
                       />
                     </span>
-                    <span className="text-stone-700">
+                    <span className="text-stone-700 min-w-0 break-words">
                       <InlineEditableText
                         value={section.customTexts?.med_feat3_desc || "Tương tác thuốc & Cảnh giác dược an toàn người bệnh"}
                         editable={editable}
@@ -1264,10 +1266,10 @@ export function AboutBlock({
               </div>
 
               <div
-                className="mt-5 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs font-semibold"
+                className="mt-5 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs font-semibold min-w-0"
                 style={{ borderColor: `${theme.primaryColor}20`, color: theme.primaryColor }}
               >
-                <span>
+                <span className="min-w-0 break-words max-w-full">
                   <InlineEditableText
                     value={section.customTexts?.med_footer_left || "⚖️ CAM KẾT Y ĐỨC & AN TOÀN SỬ DỤNG THUỐC"}
                     editable={editable}
@@ -1275,7 +1277,7 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("med_footer_left", val)}
                   />
                 </span>
-                <span>
+                <span className="min-w-0 break-words shrink-0">
                   <InlineEditableText
                     value={section.customTexts?.med_footer_right || "BỘ Y TẾ VIỆT NAM VERIFIED"}
                     editable={editable}
@@ -1286,7 +1288,7 @@ export function AboutBlock({
               </div>
             </div>
 
-            <div className="lg:col-span-5 space-y-4">
+            <div className="lg:col-span-5 space-y-4 min-w-0">
               {section.customTexts?.hide_med_edu !== "true" ? (
                 <div
                   className="relative group rounded-2xl border p-5 bg-white/90 shadow-xs"
