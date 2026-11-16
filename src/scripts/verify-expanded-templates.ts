@@ -1,6 +1,6 @@
 import { TemplateIdSchema, type TemplateId, PortfolioDocumentSchema, type PortfolioDocument, type PortfolioSection } from "../schema/portfolio.schema";
 import { THEME_PRESETS, getCanvaCreativeThemePresets, getDefaultPresetForTemplate, getThemePresetsByTemplateId } from "../schema/theme.schema";
-import { ARCHETYPE_PROFILES, formatSectionEyebrow, getCardDecoration, getRadiusClass } from "../templates/archetypes/archetypeStyles";
+import { ARCHETYPE_PROFILES, formatSectionEyebrow, getCardDecoration, getRadiusClass, getArchetypeDefaultVariants } from "../templates/archetypes/archetypeStyles";
 import { resolveDocPalette, renderStandaloneHtml } from "../services/export/zip-exporter";
 import fs from "fs";
 import path from "path";
@@ -197,8 +197,8 @@ function main() {
   if (!terracottaHtml.includes("data-about-layout=\"academic-cv\"")) {
     throw new Error("educational-terracotta missing data-about-layout='academic-cv'");
   }
-  if (!terracottaHtml.includes("VNU-UEd-CV")) {
-    throw new Error("educational-terracotta missing monograph code VNU-UEd-CV");
+  if (!terracottaHtml.includes("HỒ SƠ NCKH")) {
+    throw new Error("educational-terracotta missing monograph code HỒ SƠ NCKH");
   }
 
   // Test pedagogical-mauve (Nguyệt Ánh - Pedagogical Journal)

@@ -574,7 +574,14 @@ export function HeroBlock({
         {/* Academic Presentation Slide Banner */}
         {isAcademic && (
           <div className="mb-6 flex items-center justify-between border-b border-stone-200 pb-2 text-xs text-stone-500 font-mono">
-            <span>ĐHQGHN • UEd | TRƯỜNG ĐH SƯ PHẠM NGHỆ THUẬT TW</span>
+            <span>
+              <InlineEditableText
+                value={section.customTexts?.academic_banner || "HỒ SƠ HỌC THUẬT & NGHIÊN CỨU"}
+                editable={editable}
+                ariaLabel="Dòng tiêu đề học thuật"
+                onSave={(val) => updateCustomText("academic_banner", val)}
+              />
+            </span>
             <span className="rounded bg-stone-100 px-2 py-0.5 font-bold text-stone-700">
               Slide 01 • Bìa mở đầu
             </span>
@@ -1366,7 +1373,7 @@ export function HeroBlock({
                       }}
                     >
                       <InlineEditableText
-                        value={section.customTexts?.hero_acad_badge || "VNU-UEd RESEARCH FELLOW"}
+                        value={section.customTexts?.hero_acad_badge || "NGHIÊN CỨU & HỌC THUẬT"}
                         editable={editable}
                         ariaLabel="Huy hiệu nghiên cứu sinh"
                         onSave={(val) => updateCustomText("hero_acad_badge", val)}
@@ -1399,7 +1406,7 @@ export function HeroBlock({
                 }}
               >
                 <InlineEditableText
-                  value={section.customTexts?.hero_ped_header2 || "GIÁO VIÊN TƯƠNG LAI • KHOA SƯ PHẠM UEd"}
+                  value={section.customTexts?.hero_ped_header2 || "GIÁO VIÊN TƯƠNG LAI • NGÀNH SƯ PHẠM"}
                   editable={editable}
                   ariaLabel="Phân khoa sư phạm"
                   onSave={(val) => updateCustomText("hero_ped_header2", val)}

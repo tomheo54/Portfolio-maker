@@ -551,14 +551,14 @@ export function AboutBlock({
     section.highlights.find((h) =>
       /trường|đại học|học viện|education|school/i.test(h.label),
     )?.value ||
-    "Trường ĐH Sư phạm Nghệ thuật TW";
+    "Trường Đại học";
   const eduDegree =
     section.educationDegree ||
     educationInfo?.degree ||
     section.highlights.find((h) =>
       /ngành|khoa|chuyên ngành|degree|major/i.test(h.label),
     )?.value ||
-    "Sư phạm Âm nhạc & Công nghệ Giáo dục";
+    "Chuyên ngành Đào tạo";
   const updateContactInfo = (
     field: "email" | "phone" | "location" | "website",
     value: string,
@@ -2282,7 +2282,7 @@ export function AboutBlock({
                     style={{ color: theme.primaryColor }}
                   >
                     <InlineEditableText
-                      value={section.customTexts?.acad_badge || "HỒ SƠ HỌC THUẬT & LÝ LỊCH KHOA HỌC • ĐHQGHN"}
+                      value={section.customTexts?.acad_badge || "HỒ SƠ HỌC THUẬT & LÝ LỊCH KHOA HỌC"}
                       editable={editable}
                       ariaLabel="Huy hiệu hồ sơ học thuật"
                       onSave={(val) => updateCustomText("acad_badge", val)}
@@ -2293,7 +2293,7 @@ export function AboutBlock({
                     style={{ backgroundColor: theme.primaryColor }}
                   >
                     <InlineEditableText
-                      value={section.customTexts?.acad_tag || "VNU-UEd-CV"}
+                      value={section.customTexts?.acad_tag || "HỒ SƠ NCKH"}
                       editable={editable}
                       ariaLabel="Mã học thuật"
                       onSave={(val) => updateCustomText("acad_tag", val)}
@@ -2358,7 +2358,7 @@ export function AboutBlock({
               >
                 <span>
                   <InlineEditableText
-                    value={section.customTexts?.acad_footer_left || "TRƯỜNG ĐẠI HỌC GIÁO DỤC • ĐHQGHN"}
+                    value={section.customTexts?.acad_footer_left || (eduSchool ? eduSchool.toUpperCase() : "TRƯỜNG ĐẠI HỌC")}
                     editable={editable}
                     ariaLabel="Tên trường học thuật"
                     onSave={(val) => updateCustomText("acad_footer_left", val)}
@@ -2407,7 +2407,7 @@ export function AboutBlock({
                   <div className="space-y-2 text-xs" style={{ color: theme.textColor }}>
                     <p>
                       <InlineEditableText
-                        value={section.customTexts?.acad_pub_1 || "• 01 Đề tài NCKH cấp ĐHQGHN: Đạt giải Nhất năm 2024"}
+                        value={section.customTexts?.acad_pub_1 || "• 01 Đề tài NCKH sinh viên: Đạt giải Xuất sắc"}
                         editable={editable}
                         ariaLabel="Đề tài NCKH 1"
                         onSave={(val) => updateCustomText("acad_pub_1", val)}
@@ -2423,7 +2423,7 @@ export function AboutBlock({
                     </p>
                     <p>
                       <InlineEditableText
-                        value={section.customTexts?.acad_pub_3 || "• Học bổng: Tài năng Khoa học Sư phạm VNU"}
+                        value={section.customTexts?.acad_pub_3 || "• Học bổng: Sinh viên Xuất sắc / Khuyến khích học tập"}
                         editable={editable}
                         ariaLabel="Học bổng tài năng 3"
                         onSave={(val) => updateCustomText("acad_pub_3", val)}
@@ -2547,7 +2547,7 @@ export function AboutBlock({
                     }}
                   >
                     <InlineEditableText
-                      value={section.customTexts?.ped_badge || "🌸 CHÂN DUNG NGƯỜI GIÁO VIÊN TRẺ • SƯ PHẠM UEd"}
+                      value={section.customTexts?.ped_badge || "🌸 CHÂN DUNG NGƯỜI GIÁO VIÊN TRẺ • NGÀNH SƯ PHẠM"}
                       editable={editable}
                       ariaLabel="Huy hiệu chân dung giáo viên"
                       onSave={(val) => updateCustomText("ped_badge", val)}
@@ -2665,7 +2665,7 @@ export function AboutBlock({
               >
                 <span>
                   <InlineEditableText
-                    value={section.customTexts?.ped_footer_left || "TRƯỜNG ĐH SƯ PHẠM NGHỆ THUẬT TW"}
+                    value={section.customTexts?.ped_footer_left || (eduSchool ? eduSchool.toUpperCase() : "TRƯỜNG ĐẠI HỌC")}
                     editable={editable}
                     ariaLabel="Tên trường sư phạm"
                     onSave={(val) => updateCustomText("ped_footer_left", val)}
@@ -2844,7 +2844,7 @@ export function AboutBlock({
       "medical-license": "Dược sĩ Lâm sàng Mộc Anh",
       "clinical-dossier": "Bệnh án Bác sĩ Thu Trang",
       "creator-profile": "Creator & Media Deck",
-      "academic-cv": "Hồ sơ Học thuật ĐHQGHN",
+      "academic-cv": "Hồ sơ Học thuật",
       "pedagogical-journal": "Nhật ký Giáo viên Sư phạm",
     }[layout];
 

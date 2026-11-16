@@ -2217,7 +2217,7 @@ function renderHeroHtml(
               )}" alt="${escapeHtml(
                 hero.fullName,
               )}" style="width:100%;max-width:320px;height:420px;object-fit:cover;border-radius:156px 156px 20px 20px;" />
-              <div class="academic-frame-badge">${t("hero_acad_badge", "VNU-UEd RESEARCH FELLOW")}</div>
+              <div class="academic-frame-badge">${t("hero_acad_badge", "HỌC THUẬT &amp; NGHIÊN CỨU")}</div>
             </div>`
                 : ""
             }
@@ -2232,7 +2232,7 @@ function renderHeroHtml(
       <div class="pedagogical-journal-hero">
         <div class="pedagogical-ribbon">
           <span style="font-weight:700;letter-spacing:0.15em;text-transform:uppercase;">${t("hero_ped_header1", "NHẬT KÝ SƯ PHẠM &amp; THỰC TẬP GIẢNG DẠY")}</span>
-          <span class="pedagogical-tag">${t("hero_ped_header2", "GIÁO VIÊN TƯƠNG LAI • UEd")}</span>
+          <span class="pedagogical-tag">${t("hero_ped_header2", "GIÁO VIÊN TƯƠNG LAI • SƯ PHẠM")}</span>
         </div>
         <div class="hero-grid" style="align-items:center;">
           <div>
@@ -2705,8 +2705,8 @@ function renderAboutHtml(
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
           <div style="border: 2px solid color-mix(in srgb, var(--primary) 35%, transparent); border-radius: 20px; padding: 24px; background: var(--surface);">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid color-mix(in srgb, var(--primary) 20%, transparent); padding-bottom: 12px; margin-bottom: 14px;">
-              <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary);">${t("acad_badge", "HỒ SƠ HỌC THUẬT &amp; LÝ LỊCH KHOA HỌC • ĐHQGHN")}</span>
-              <span class="academic-vol-tag" style="background:var(--primary); color:#fff;">${t("acad_tag", "VNU-UEd-CV")}</span>
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary);">${t("acad_badge", "HỒ SƠ HỌC THUẬT &amp; LÝ LỊCH KHOA HỌC")}</span>
+              <span class="academic-vol-tag" style="background:var(--primary); color:#fff;">${t("acad_tag", "HỒ SƠ NCKH")}</span>
             </div>
             <h3 class="font-editorial" style="font-size:22px; font-weight:700; margin:0 0 10px;">${t("acad_title", "Nghiên cứu sinh &amp; Giảng viên Sư phạm Tương lai")}</h3>
             <p style="font-size:14px; line-height:1.7; opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Nghiên cứu chuyên sâu về đổi mới phương pháp giảng dạy, ứng dụng chuyển đổi số và phát triển năng lực tự học cho học sinh trong chương trình GDPT 2018.")}</p>
@@ -2715,7 +2715,7 @@ function renderAboutHtml(
               ${t("acad_philo_text", "“Lấy người học làm trung tâm của mọi chuyển hóa, công nghệ làm đòn bẩy kích hoạt tư duy và sự thấu cảm làm nền tảng của y đức sư phạm.”")}
             </div>
             <div style="margin-top:16px; padding-top:10px; border-top:1px solid color-mix(in srgb, var(--primary) 15%, transparent); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
-              <span>${t("acad_footer_left", "TRƯỜNG ĐẠI HỌC GIÁO DỤC • ĐHQGHN")}</span>
+              <span>${t("acad_footer_left", eduSchool ? escapeHtml(eduSchool.toUpperCase()) : "TRƯỜNG ĐẠI HỌC")}</span>
               <span>${t("acad_footer_right", "ACADEMIC VERIFIED")}</span>
             </div>
           </div>
@@ -2723,9 +2723,9 @@ function renderAboutHtml(
           <div style="display:flex; flex-direction:column; gap:16px;">
             ${about.customTexts?.hide_acad_pubs !== "true" ? `<div style="border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); border-radius: 16px; padding: 18px; background: var(--surface);">
               <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">📖 ${t("acad_pub_title", "CÔNG BỐ KHOA HỌC &amp; ĐỀ TÀI")}</h4>
-              <p style="font-size:12px; margin:0 0 6px;">${t("acad_pub_1", "• <strong>01 Đề tài NCKH ĐHQGHN:</strong> Giải Nhất 2024")}</p>
+              <p style="font-size:12px; margin:0 0 6px;">${t("acad_pub_1", "• <strong>01 Đề tài NCKH sinh viên:</strong> Giải Xuất sắc")}</p>
               <p style="font-size:12px; margin:0 0 6px;">${t("acad_pub_2", "• <strong>03 Bài báo khoa học:</strong> Kỷ yếu Hội thảo Quốc gia")}</p>
-              <p style="font-size:12px; margin:0;">${t("acad_pub_3", "• <strong>Học bổng:</strong> Tài năng Sư phạm VNU")}</p>
+              <p style="font-size:12px; margin:0;">${t("acad_pub_3", "• <strong>Học bổng:</strong> Sinh viên Xuất sắc / Khuyến khích học tập")}</p>
             </div>` : ""}
             ${about.customTexts?.hide_acad_contact !== "true" ? `<div style="border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); border-radius: 16px; padding: 18px; background: var(--surface);">
               <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">✉️ ${t("acad_contact_title", "LIÊN HỆ KHOA HỌC &amp; VĂN PHÒNG")}</h4>
@@ -2745,7 +2745,7 @@ function renderAboutHtml(
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
           <div style="border: 2px solid color-mix(in srgb, var(--primary) 30%, transparent); border-radius: 24px; padding: 24px; background: var(--surface);">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid color-mix(in srgb, var(--primary) 20%, transparent); padding-bottom: 12px; margin-bottom: 14px;">
-              <span class="pedagogical-tag">${t("ped_badge", "🌸 CHÂN DUNG NGƯỜI GIÁO VIÊN TRẺ • SƯ PHẠM UEd")}</span>
+              <span class="pedagogical-tag">${t("ped_badge", "🌸 CHÂN DUNG NGƯỜI GIÁO VIÊN TRẺ • NGÀNH SƯ PHẠM")}</span>
               <span style="font-size:11px; opacity:0.75;">${t("ped_tag", "KHÓA K18 • THỰC TẬP")}</span>
             </div>
             <h3 class="font-editorial" style="font-size:22px; font-weight:700; margin:0 0 10px;">${t("ped_title", "Tâm Niệm Nghề Giáo &amp; Triết Lý Giảng Dạy")}</h3>
@@ -2765,7 +2765,7 @@ function renderAboutHtml(
               </div>
             </div>
             <div style="margin-top:16px; padding-top:10px; border-top:1px solid color-mix(in srgb, var(--primary) 15%, transparent); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
-              <span>${t("ped_footer_left", "TRƯỜNG ĐH SƯ PHẠM NGHỆ THUẬT TW")}</span>
+              <span>${t("ped_footer_left", eduSchool ? escapeHtml(eduSchool.toUpperCase()) : "TRƯỜNG ĐẠI HỌC")}</span>
               <span>${t("ped_footer_right", "TỐT NGHIỆP XUẤT SẮC 🌸")}</span>
             </div>
           </div>

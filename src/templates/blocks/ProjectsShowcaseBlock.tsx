@@ -1868,8 +1868,33 @@ export function ProjectsShowcaseBlock({
                                 </div>
                                 <ul className="space-y-1 text-emerald-950/85">
                                   {project.keyTakeaways.filter(Boolean).map((t, tIdx) => (
-                                    <li key={tIdx} className="flex items-start gap-1.5">
-                                      <span>•</span> <span>{t}</span>
+                                    <li
+                                      key={tIdx}
+                                      className={
+                                        (project.takeawayBulletShape ?? "none") === "none"
+                                          ? "text-xs leading-relaxed"
+                                          : "flex items-start gap-1.5 text-xs leading-relaxed"
+                                      }
+                                    >
+                                      {(project.takeawayBulletShape ?? "none") !== "none" && (
+                                        <BulletShapeIcon
+                                          shape={project.takeawayBulletShape}
+                                          color={theme.primaryColor}
+                                          className="shrink-0"
+                                        />
+                                      )}
+                                      <span>
+                                        <InlineEditableText
+                                          value={t}
+                                          editable={editable}
+                                          ariaLabel="Kết quả & Ứng dụng"
+                                          onSave={(val) => {
+                                            const next = [...project.keyTakeaways];
+                                            next[tIdx] = val;
+                                            updateProject(project.id, { keyTakeaways: next });
+                                          }}
+                                        />
+                                      </span>
                                     </li>
                                   ))}
                                 </ul>
@@ -1980,7 +2005,34 @@ export function ProjectsShowcaseBlock({
                               <span className="font-bold" style={{ color: theme.primaryColor }}>📋 3. Phác đồ can thiệp &amp; Tiên lượng:</span>
                               <ul className="mt-0.5 font-sans text-xs space-y-1" style={{ color: theme.textColor }}>
                                 {project.keyTakeaways.filter(Boolean).map((t, tIdx) => (
-                                  <li key={tIdx}>• {t}</li>
+                                  <li
+                                    key={tIdx}
+                                    className={
+                                      (project.takeawayBulletShape ?? "none") === "none"
+                                        ? "text-xs leading-relaxed"
+                                        : "flex items-start gap-1.5 text-xs leading-relaxed"
+                                    }
+                                  >
+                                    {(project.takeawayBulletShape ?? "none") !== "none" && (
+                                      <BulletShapeIcon
+                                        shape={project.takeawayBulletShape}
+                                        color={theme.primaryColor}
+                                        className="shrink-0"
+                                      />
+                                    )}
+                                    <span>
+                                      <InlineEditableText
+                                        value={t}
+                                        editable={editable}
+                                        ariaLabel="Phác đồ can thiệp"
+                                        onSave={(val) => {
+                                          const next = [...project.keyTakeaways];
+                                          next[tIdx] = val;
+                                          updateProject(project.id, { keyTakeaways: next });
+                                        }}
+                                      />
+                                    </span>
+                                  </li>
                                 ))}
                               </ul>
                             </div>
@@ -2243,8 +2295,21 @@ export function ProjectsShowcaseBlock({
                                 </strong>
                                 <ul className="space-y-1 opacity-90">
                                   {project.keyTakeaways.filter(Boolean).map((t, tIdx) => (
-                                    <li key={tIdx} className="flex items-start gap-1.5">
-                                      <span>•</span>
+                                    <li
+                                      key={tIdx}
+                                      className={
+                                        (project.takeawayBulletShape ?? "none") === "none"
+                                          ? "text-xs leading-relaxed"
+                                          : "flex items-start gap-1.5 text-xs leading-relaxed"
+                                      }
+                                    >
+                                      {(project.takeawayBulletShape ?? "none") !== "none" && (
+                                        <BulletShapeIcon
+                                          shape={project.takeawayBulletShape}
+                                          color={theme.primaryColor}
+                                          className="shrink-0"
+                                        />
+                                      )}
                                       <span>
                                         <InlineEditableText
                                           value={t}
@@ -2366,7 +2431,34 @@ export function ProjectsShowcaseBlock({
                               <strong style={{ color: theme.primaryColor }}>💡 Đổi mới EdTech &amp; Phản tư: </strong>
                               <ul className="mt-1 space-y-0.5 text-stone-700">
                                 {project.keyTakeaways.filter(Boolean).map((t, tIdx) => (
-                                  <li key={tIdx}>• {t}</li>
+                                  <li
+                                    key={tIdx}
+                                    className={
+                                      (project.takeawayBulletShape ?? "none") === "none"
+                                        ? "text-xs leading-relaxed"
+                                        : "flex items-start gap-1.5 text-xs leading-relaxed"
+                                    }
+                                  >
+                                    {(project.takeawayBulletShape ?? "none") !== "none" && (
+                                      <BulletShapeIcon
+                                        shape={project.takeawayBulletShape}
+                                        color={theme.primaryColor}
+                                        className="shrink-0"
+                                      />
+                                    )}
+                                    <span>
+                                      <InlineEditableText
+                                        value={t}
+                                        editable={editable}
+                                        ariaLabel="Đổi mới EdTech"
+                                        onSave={(val) => {
+                                          const next = [...project.keyTakeaways];
+                                          next[tIdx] = val;
+                                          updateProject(project.id, { keyTakeaways: next });
+                                        }}
+                                      />
+                                    </span>
+                                  </li>
                                 ))}
                               </ul>
                             </div>
@@ -2375,12 +2467,9 @@ export function ProjectsShowcaseBlock({
                       </div>
 
                       <div
-                        className="flex items-center justify-between pt-3 border-t"
+                        className="flex items-center justify-end pt-3 border-t"
                         style={{ borderColor: `${theme.primaryColor}20` }}
                       >
-                        <span className="text-xs font-medium" style={{ color: theme.primaryColor }}>
-                          UEd SƯ PHẠM
-                        </span>
                         <button
                           type="button"
                           onClick={(e) => { e.stopPropagation(); openModal(project, index, 0); }}

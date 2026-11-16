@@ -367,8 +367,7 @@ export function ContactBlock({
   const courseName =
     courseInfo?.courseName ??
     "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo";
-  const institution =
-    courseInfo?.institution ?? "Trường ĐH Sư phạm Nghệ thuật TW";
+  const institution = courseInfo?.institution ?? "";
   const footerCourseText = [courseCode, courseName].filter(Boolean).join(" - ");
 
   const renderCourseFooter = () => (
