@@ -280,7 +280,7 @@ export function TemplateShell({
         theme.effects?.enableSparkles ? "enabled" : "disabled"
       }
       data-reveal-variant={theme.effects?.revealVariant ?? "fade-up"}
-      className={`min-h-screen relative transition-colors ${resolvedWrapperClass}`}
+      className={`min-h-screen relative transition-colors w-full max-w-full overflow-x-clip ${resolvedWrapperClass}`}
     >
       {/* Background Illustration & Visual Effects Layers */}
       <BackgroundIllustrationLayer
@@ -486,7 +486,7 @@ export function TemplateShell({
       </nav>
 
       {/* Sections List */}
-      <main>
+      <main className="w-full max-w-full overflow-x-clip">
         {sections.map((section, idx) => {
           const isActive = editable && activeSectionIndex === idx;
           const sectionTheme = {

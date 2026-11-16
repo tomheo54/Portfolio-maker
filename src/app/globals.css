@@ -9,6 +9,8 @@
     scrollbar-color: var(--scrollbar-thumb, #735340)
       var(--scrollbar-track, #fff3e6);
     scrollbar-width: thin;
+    overflow-x: clip;
+    max-width: 100%;
   }
 
   ::-webkit-scrollbar {
@@ -30,6 +32,8 @@
     font-family: var(--font-body), "Be Vietnam Pro", system-ui, sans-serif;
     color: var(--text, #24201e);
     background-color: var(--bg, #faf5ee);
+    overflow-x: clip;
+    max-width: 100%;
   }
 }
 

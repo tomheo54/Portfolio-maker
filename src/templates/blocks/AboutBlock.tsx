@@ -728,11 +728,11 @@ export function AboutBlock({
         return (
           <div
             data-about-frame={customCardFrame ?? "template"}
-            className={`h-full ${
+            className={`h-full min-w-0 max-w-full ${
               cardFrameClass ??
-              `rounded-2xl border p-5 transition hover:shadow-md ${
+              `rounded-2xl border p-4 sm:p-5 transition hover:shadow-md ${
                 isCreative
-                  ? "border-2 border-black bg-white shadow-[4px_4px_0px_#000]"
+                  ? "border-2 border-black bg-white shadow-[3px_3px_0px_#000] sm:shadow-[4px_4px_0px_#000]"
                   : isMinimal
                     ? "border-[1px] border-[var(--primary)]/20"
                     : isOrganic
@@ -780,7 +780,7 @@ export function AboutBlock({
             <div className="mt-4 space-y-2.5 text-xs">
               {(section.contactInfo.email || editable) && !hiddenContactFields.includes("email") && (
                 editable ? (
-                  <div className="flex items-center gap-2 truncate opacity-85">
+                  <div className="flex items-center gap-2 truncate opacity-85 min-w-0">
                     <Mail
                       className="h-3.5 w-3.5 shrink-0"
                       style={{ color: theme.primaryColor }}
@@ -789,7 +789,7 @@ export function AboutBlock({
                       value={section.contactInfo.email ?? "Thêm email"}
                       editable={editable}
                       ariaLabel="Email trong ô liên hệ"
-                      className="truncate"
+                      className="truncate min-w-0"
                       onSave={(value) => updateContactInfo("email", value)}
                     />
                   </div>
@@ -800,18 +800,18 @@ export function AboutBlock({
                         ? `mailto:${section.contactInfo.email}`
                         : undefined
                     }
-                    className="flex items-center gap-2 truncate opacity-85 hover:underline"
+                    className="flex items-center gap-2 truncate opacity-85 hover:underline min-w-0"
                   >
                     <Mail
                       className="h-3.5 w-3.5 shrink-0"
                       style={{ color: theme.primaryColor }}
                     />
-                    <span className="truncate">{section.contactInfo.email}</span>
+                    <span className="truncate min-w-0">{section.contactInfo.email}</span>
                   </a>
                 )
               )}
               {(section.contactInfo.phone || editable) && !hiddenContactFields.includes("phone") && (
-                <div className="flex items-center gap-2 opacity-85">
+                <div className="flex items-center gap-2 opacity-85 min-w-0">
                   <Phone
                     className="h-3.5 w-3.5 shrink-0"
                     style={{ color: theme.primaryColor }}
@@ -820,12 +820,13 @@ export function AboutBlock({
                     value={section.contactInfo.phone ?? "Thêm số điện thoại"}
                     editable={editable}
                     ariaLabel="Số điện thoại trong ô liên hệ"
+                    className="truncate min-w-0"
                     onSave={(value) => updateContactInfo("phone", value)}
                   />
                 </div>
               )}
               {(section.contactInfo.location || editable) && !hiddenContactFields.includes("location") && (
-                <div className="flex items-center gap-2 opacity-85">
+                <div className="flex items-center gap-2 opacity-85 min-w-0">
                   <MapPin
                     className="h-3.5 w-3.5 shrink-0"
                     style={{ color: theme.primaryColor }}
@@ -834,13 +835,14 @@ export function AboutBlock({
                     value={section.contactInfo.location ?? "Thêm địa điểm"}
                     editable={editable}
                     ariaLabel="Địa điểm trong ô liên hệ"
+                    className="truncate min-w-0"
                     onSave={(value) => updateContactInfo("location", value)}
                   />
                 </div>
               )}
               {(section.contactInfo.website || editable) && !hiddenContactFields.includes("website") && (
                 editable ? (
-                  <div className="flex items-center gap-2 opacity-85">
+                  <div className="flex items-center gap-2 opacity-85 min-w-0">
                     <Globe
                       className="h-3.5 w-3.5 shrink-0"
                       style={{ color: theme.primaryColor }}
@@ -849,6 +851,7 @@ export function AboutBlock({
                       value={section.contactInfo.website ?? "https://..."}
                       editable={editable}
                       ariaLabel="Liên kết website trong ô liên hệ"
+                      className="truncate min-w-0"
                       onSave={(value) => updateContactInfo("website", value)}
                     />
                   </div>
@@ -857,14 +860,14 @@ export function AboutBlock({
                     href={section.contactInfo.website || undefined}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-2 opacity-85 hover:underline"
+                    className="flex items-center gap-2 opacity-85 hover:underline min-w-0"
                   >
                     <Globe
                       className="h-3.5 w-3.5 shrink-0"
                       style={{ color: theme.primaryColor }}
                     />
-                    <span>{section.contactInfo.website}</span>
-                    <ExternalLink className="h-2.5 w-2.5 opacity-60" />
+                    <span className="truncate min-w-0">{section.contactInfo.website}</span>
+                    <ExternalLink className="h-2.5 w-2.5 opacity-60 shrink-0" />
                   </a>
                 )
               )}
@@ -904,11 +907,11 @@ export function AboutBlock({
         return (
           <div
             data-about-frame={customCardFrame ?? "template"}
-            className={`h-full ${
+            className={`h-full min-w-0 max-w-full ${
               cardFrameClass ??
-              `rounded-2xl border p-5 transition hover:shadow-md ${
+              `rounded-2xl border p-4 sm:p-5 transition hover:shadow-md ${
                 isCreative
-                  ? "border-2 border-black bg-white shadow-[4px_4px_0px_#000]"
+                  ? "border-2 border-black bg-white shadow-[3px_3px_0px_#000] sm:shadow-[4px_4px_0px_#000]"
                   : isMinimal
                     ? "border-[1px] border-[var(--primary)]/20"
                     : isOrganic
@@ -1002,11 +1005,11 @@ export function AboutBlock({
         return (
           <div
             data-about-frame={customCardFrame ?? "template"}
-            className={`h-full ${
+            className={`h-full min-w-0 max-w-full ${
               cardFrameClass ??
-              `rounded-2xl border p-5 transition hover:shadow-md ${
+              `rounded-2xl border p-4 sm:p-5 transition hover:shadow-md ${
                 isCreative
-                  ? "border-2 border-black bg-white shadow-[4px_4px_0px_#000]"
+                  ? "border-2 border-black bg-white shadow-[3px_3px_0px_#000] sm:shadow-[4px_4px_0px_#000]"
                   : isMinimal
                     ? "border-[1px] border-[var(--primary)]/20"
                     : isOrganic
@@ -2951,7 +2954,7 @@ export function AboutBlock({
     };
 
     const renderItem = (cardId: string, index: number) => {
-      const itemClassName = `${layout === "timeline" ? "pl-10" : ""} ${getItemClassName(index)}`;
+      const itemClassName = `${layout === "timeline" ? "pl-10" : ""} ${getItemClassName(index)} min-w-0 max-w-full`;
       const content = (
         <>
           {layout === "timeline" && (
@@ -3009,7 +3012,7 @@ export function AboutBlock({
         data-testid="about-layout-content"
         data-layout={layout}
         data-layout-positioning={isFreeLayout ? "free" : "automatic"}
-        className={isFreeLayout ? "about-free-grid" : containerClassName}
+        className={`${isFreeLayout ? "about-free-grid" : containerClassName} w-full min-w-0`}
         style={
           isFreeLayout
             ? {
@@ -3099,13 +3102,13 @@ export function AboutBlock({
   return (
     <section
       id="about"
-      className="reveal-on-scroll mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8"
+      className="reveal-on-scroll mx-auto max-w-6xl px-3 sm:px-6 lg:px-8 w-full min-w-0"
       style={{ color: `var(--section-text-color, ${theme.textColor})` }}
     >
       <div
-        className={`surface-block p-6 sm:p-10 ${cardDec.className} space-y-8 ${
-          isCreative ? "border-4 border-black shadow-[8px_8px_0px_#000]" : ""
-        } ${isOrganic ? "rounded-[3rem] border border-[var(--primary)]/25" : ""}`}
+        className={`surface-block p-4 sm:p-8 lg:p-10 ${cardDec.className} space-y-8 w-full min-w-0 max-w-full overflow-hidden sm:overflow-visible ${
+          isCreative ? "border-4 border-black shadow-[4px_4px_0px_#000] sm:shadow-[8px_8px_0px_#000]" : ""
+        } ${isOrganic ? "rounded-[2rem] sm:rounded-[3rem] border border-[var(--primary)]/25" : ""}`}
         style={{
           ...cardDec.style,
           backgroundColor: `var(--section-surface-color, ${
@@ -3152,26 +3155,26 @@ export function AboutBlock({
         <div
           data-testid="about-intro-layout"
           data-layout={activeLayout}
-          className={`grid grid-cols-1 items-center gap-10 ${
+          className={`w-full min-w-0 ${
             !showAboutAvatar
-              ? "grid-cols-1 w-full"
+              ? ""
               : activeLayout === "spotlight"
-                ? "mx-auto max-w-4xl text-center"
+                ? "grid grid-cols-1 items-center gap-6 sm:gap-10 mx-auto max-w-4xl text-center"
                 : isTop || isBottom
-                  ? "grid-cols-1"
-                  : "lg:grid-cols-12"
+                  ? "grid grid-cols-1 items-center gap-6 sm:gap-10"
+                  : "grid grid-cols-1 items-center gap-6 sm:gap-10 lg:grid-cols-12"
           }`}
         >
           {/* Framed Portrait Photo */}
           {showAboutAvatar && (
             <div
-              className={`flex justify-center ${
+              className={`flex justify-center min-w-0 ${
                 activeLayout === "spotlight"
                   ? "order-1"
                   : isTop
-                    ? "col-span-12 order-1 w-full"
+                    ? "order-1 w-full"
                     : isBottom
-                      ? "col-span-12 order-2 w-full"
+                      ? "order-2 w-full"
                       : activeLayout === "editorial-poster"
                         ? isInverted
                           ? "lg:col-span-4 lg:order-1"
@@ -3209,15 +3212,15 @@ export function AboutBlock({
 
           {/* Bio Column */}
           <div
-            className={`space-y-5 ${
+            className={`space-y-5 min-w-0 ${
               !showAboutAvatar
-                ? "col-span-12 w-full"
+                ? "w-full"
                 : activeLayout === "spotlight"
                   ? "order-2 text-center"
                   : isTop
-                    ? "col-span-12 order-2 w-full"
+                    ? "order-2 w-full"
                     : isBottom
-                      ? "col-span-12 order-1 w-full"
+                      ? "order-1 w-full"
                       : activeLayout === "editorial-poster"
                         ? isInverted
                           ? "lg:col-span-8 lg:order-2"
@@ -3241,14 +3244,14 @@ export function AboutBlock({
           >
             <div>
               <span
-                className={`text-xs font-bold uppercase tracking-[0.2em] ${
+                className={`text-xs font-bold uppercase tracking-[0.2em] inline-block ${
                   isTerminal ? "font-mono" : ""
                 } ${isCreative ? "rounded-md border-2 border-black bg-amber-300 px-2.5 py-1 text-black shadow-[2px_2px_0px_#000]" : ""}`}
                 style={isCreative ? undefined : { color: theme.primaryColor }}
               >
                 {formatSectionEyebrow(archetypeId, "01", "Profile Story")}
               </span>
-              <h2 className="mt-1 font-editorial text-3xl font-bold sm:text-4xl">
+              <h2 className="mt-1 font-editorial text-2xl sm:text-3xl lg:text-4xl font-bold break-words">
                 <InlineAboutText
                   value={section.title}
                   editable={editable}
@@ -3258,11 +3261,12 @@ export function AboutBlock({
               </h2>
             </div>
 
-            <p className="text-base leading-relaxed opacity-85">
+            <p className="text-sm sm:text-base leading-relaxed opacity-85 break-words">
               <InlineAboutText
                 value={section.biography}
                 editable={editable}
                 ariaLabel="Nội dung giới thiệu bản thân"
+                multiline={true}
                 onSave={(value) => updateAbout({ biography: value })}
               />
             </p>
