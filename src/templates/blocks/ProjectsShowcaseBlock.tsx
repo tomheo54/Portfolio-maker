@@ -90,10 +90,12 @@ function DocxFileLink({
   url,
   label,
   theme,
+  editable = false,
 }: {
   url: string | undefined;
   label?: string;
   theme?: ThemeConfig;
+  editable?: boolean;
 }) {
   const href = getSafeDocxHref(url);
   if (!href) return null;
@@ -101,6 +103,28 @@ function DocxFileLink({
   const borderColor = theme?.primaryColor ? `${theme.primaryColor}50` : "var(--primary, #735340)";
   const textColor = theme?.primaryColor || "var(--primary, #735340)";
   const bgColor = theme?.surfaceColor ? theme.surfaceColor : "var(--surface, #FFF8F0)";
+
+  if (editable) {
+    return (
+      <span
+        aria-label={label || "File DOCX đính kèm"}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+        }}
+        className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold shadow-xs whitespace-nowrap cursor-default"
+        style={{
+          borderColor,
+          color: textColor,
+          backgroundColor: bgColor,
+        }}
+        title="Liên kết file đính kèm (chỉ mở ra link ở chế độ xem trang / preview)"
+      >
+        <FileText className="h-3 w-3 shrink-0" />
+        <span>{label || "Mở file DOCX"}</span>
+      </span>
+    );
+  }
 
   return (
     <a
@@ -122,7 +146,7 @@ function DocxFileLink({
   );
 }
 
-function renderProjectFilesBar(project: ProjectItem, theme: ThemeConfig) {
+function renderProjectFilesBar(project: ProjectItem, theme: ThemeConfig, editable = false) {
   const hasDocx = Boolean(getSafeDocxHref(project.docxUrl));
   const hasFileName = Boolean(project.sourceDocxFileName?.trim());
   const hasLinks = Boolean(project.links && project.links.length > 0);
@@ -150,6 +174,7 @@ function renderProjectFilesBar(project: ProjectItem, theme: ThemeConfig) {
           url={project.docxUrl}
           label={project.docxLinkLabel}
           theme={theme}
+          editable={editable}
         />
       )}
       {project.links?.map((link, lIdx) => (
@@ -158,6 +183,7 @@ function renderProjectFilesBar(project: ProjectItem, theme: ThemeConfig) {
           url={link.url}
           label={link.label}
           theme={theme}
+          editable={editable}
         />
       ))}
     </div>
@@ -1160,12 +1186,16 @@ export function ProjectsShowcaseBlock({
                       <DocxFileLink
                         url={project.docxUrl}
                         label={project.docxLinkLabel}
+                        theme={theme}
+                        editable={editable}
                       />
                       {project.links?.map((link, lIdx) => (
                         <DocxFileLink
                           key={`extra-link-${lIdx}`}
                           url={link.url}
                           label={link.label}
+                          theme={theme}
+                          editable={editable}
                         />
                       ))}
                     </div>
@@ -1499,12 +1529,16 @@ export function ProjectsShowcaseBlock({
             <DocxFileLink
               url={project.docxUrl}
               label={project.docxLinkLabel}
+              theme={theme}
+              editable={editable}
             />
             {project.links?.map((link, lIdx) => (
               <DocxFileLink
                 key={`extra-link-alt-${lIdx}`}
                 url={link.url}
                 label={link.label}
+                theme={theme}
+                editable={editable}
               />
             ))}
           </div>
@@ -1864,7 +1898,7 @@ export function ProjectsShowcaseBlock({
                               <Award className="h-3.5 w-3.5" style={{ color: theme.secondaryColor }} /> DỰ ÁN {idxStr}
                             </span>
                             <div className="flex flex-wrap items-center gap-2">
-                              {renderProjectFilesBar(project, theme)}
+                              {renderProjectFilesBar(project, theme, editable)}
                               <span className="text-xs font-semibold text-stone-500 font-mono">
                                 {project.category}
                               </span>
@@ -2003,7 +2037,7 @@ export function ProjectsShowcaseBlock({
                             <Activity className="h-3.5 w-3.5" style={{ color: theme.primaryColor }} /> [CASE {idxStr}]
                           </span>
                           <div className="flex flex-wrap items-center gap-2">
-                            {renderProjectFilesBar(project, theme)}
+                            {renderProjectFilesBar(project, theme, editable)}
                             <span
                               className="rounded px-2 py-0.5 text-[10px] font-bold border"
                               style={{
@@ -2265,7 +2299,7 @@ export function ProjectsShowcaseBlock({
                         >
                           <BookOpen className="h-4 w-4 shrink-0" style={{ color: theme.primaryColor }} /> CÔNG TRÌNH NGHIÊN CỨU SỐ {idxStr}
                         </span>
-                        {renderProjectFilesBar(project, theme)}
+                        {renderProjectFilesBar(project, theme, editable)}
                       </div>
 
                       {/* Mobile Title Banner */}
@@ -2442,7 +2476,7 @@ export function ProjectsShowcaseBlock({
                             🌸 KẾ HOẠCH BÀI DẠY {idxStr}
                           </span>
                           <div className="flex flex-wrap items-center gap-2">
-                            {renderProjectFilesBar(project, theme)}
+                            {renderProjectFilesBar(project, theme, editable)}
                             <span className="text-xs text-stone-500 font-medium">
                               TIẾT DẠY THỰC TẬP
                             </span>

@@ -779,29 +779,36 @@ export function AboutBlock({
 
             <div className="mt-4 space-y-2.5 text-xs">
               {(section.contactInfo.email || editable) && !hiddenContactFields.includes("email") && (
-                <a
-                  href={
-                    section.contactInfo.email
-                      ? `mailto:${section.contactInfo.email}`
-                      : undefined
-                  }
-                  onClick={(event) => {
-                    if (editable) event.preventDefault();
-                  }}
-                  className="flex items-center gap-2 truncate opacity-85 hover:underline"
-                >
-                  <Mail
-                    className="h-3.5 w-3.5 shrink-0"
-                    style={{ color: theme.primaryColor }}
-                  />
-                  <InlineAboutText
-                    value={section.contactInfo.email ?? "Thêm email"}
-                    editable={editable}
-                    ariaLabel="Email trong ô liên hệ"
-                    className="truncate"
-                    onSave={(value) => updateContactInfo("email", value)}
-                  />
-                </a>
+                editable ? (
+                  <div className="flex items-center gap-2 truncate opacity-85">
+                    <Mail
+                      className="h-3.5 w-3.5 shrink-0"
+                      style={{ color: theme.primaryColor }}
+                    />
+                    <InlineAboutText
+                      value={section.contactInfo.email ?? "Thêm email"}
+                      editable={editable}
+                      ariaLabel="Email trong ô liên hệ"
+                      className="truncate"
+                      onSave={(value) => updateContactInfo("email", value)}
+                    />
+                  </div>
+                ) : (
+                  <a
+                    href={
+                      section.contactInfo.email
+                        ? `mailto:${section.contactInfo.email}`
+                        : undefined
+                    }
+                    className="flex items-center gap-2 truncate opacity-85 hover:underline"
+                  >
+                    <Mail
+                      className="h-3.5 w-3.5 shrink-0"
+                      style={{ color: theme.primaryColor }}
+                    />
+                    <span className="truncate">{section.contactInfo.email}</span>
+                  </a>
+                )
               )}
               {(section.contactInfo.phone || editable) && !hiddenContactFields.includes("phone") && (
                 <div className="flex items-center gap-2 opacity-85">
@@ -832,27 +839,34 @@ export function AboutBlock({
                 </div>
               )}
               {(section.contactInfo.website || editable) && !hiddenContactFields.includes("website") && (
-                <a
-                  href={section.contactInfo.website || undefined}
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={(event) => {
-                    if (editable) event.preventDefault();
-                  }}
-                  className="flex items-center gap-2 opacity-85 hover:underline"
-                >
-                  <Globe
-                    className="h-3.5 w-3.5 shrink-0"
-                    style={{ color: theme.primaryColor }}
-                  />
-                  <InlineAboutText
-                    value={section.contactInfo.website ?? "Portfolio Web"}
-                    editable={editable}
-                    ariaLabel="Liên kết website trong ô liên hệ"
-                    onSave={(value) => updateContactInfo("website", value)}
-                  />
-                  <ExternalLink className="h-2.5 w-2.5 opacity-60" />
-                </a>
+                editable ? (
+                  <div className="flex items-center gap-2 opacity-85">
+                    <Globe
+                      className="h-3.5 w-3.5 shrink-0"
+                      style={{ color: theme.primaryColor }}
+                    />
+                    <InlineAboutText
+                      value={section.contactInfo.website ?? "https://..."}
+                      editable={editable}
+                      ariaLabel="Liên kết website trong ô liên hệ"
+                      onSave={(value) => updateContactInfo("website", value)}
+                    />
+                  </div>
+                ) : (
+                  <a
+                    href={section.contactInfo.website || undefined}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 opacity-85 hover:underline"
+                  >
+                    <Globe
+                      className="h-3.5 w-3.5 shrink-0"
+                      style={{ color: theme.primaryColor }}
+                    />
+                    <span>{section.contactInfo.website}</span>
+                    <ExternalLink className="h-2.5 w-2.5 opacity-60" />
+                  </a>
+                )
               )}
               {(section.contactInfo.customItems ?? []).map((item) => {
                 const Icon = CONTACT_ITEM_ICONS[item.icon] ?? Link2;
@@ -863,16 +877,15 @@ export function AboutBlock({
                     <span className="min-w-0 truncate">
                       {item.label ? `${item.label}: ` : ""}{item.value}
                     </span>
-                    {href && <ExternalLink className="h-2.5 w-2.5 shrink-0 opacity-60" />}
+                    {href && !editable && <ExternalLink className="h-2.5 w-2.5 shrink-0 opacity-60" />}
                   </>
                 );
-                return href ? (
+                return href && !editable ? (
                   <a
                     key={item.id}
                     href={href}
                     target={/^https?:\/\//i.test(href) ? "_blank" : undefined}
                     rel={/^https?:\/\//i.test(href) ? "noreferrer" : undefined}
-                    onClick={(event) => { if (editable) event.preventDefault(); }}
                     className="flex items-center gap-2 truncate opacity-85 hover:underline"
                   >
                     {content}

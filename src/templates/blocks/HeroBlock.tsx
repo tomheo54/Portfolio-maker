@@ -295,52 +295,61 @@ export function HeroBlock({
     <div
       className={`flex flex-wrap gap-3 pt-1 ${centered ? "justify-center" : ""}`}
     >
-      {section.ctaButtons.map((btn, idx) => (
-        <a
-          key={idx}
-          href={btn.href}
-          className={`inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${buttonRadiusClass} ${
-            isCreative
-              ? "border-2 border-black font-black shadow-[4px_4px_0px_#000]"
-              : ""
-          }`}
-          style={
-            btn.style === "primary"
-              ? { backgroundColor: theme.primaryColor, color: "#FFFFFF" }
-              : btn.style === "secondary"
-                ? { backgroundColor: theme.secondaryColor, color: "#FFFFFF" }
-                : {
-                    border: isCreative
-                      ? undefined
-                      : `1.5px solid ${
-                          tokens.isDarkBg
-                            ? theme.primaryColor
-                            : theme.secondaryColor
-                        }`,
-                    color: tokens.isDarkBg
-                      ? theme.primaryColor
-                      : theme.secondaryColor,
-                    backgroundColor: `var(--section-surface-color, ${theme.surfaceColor})`,
-                  }
-          }
-        >
-          <InlineEditableText
-            value={btn.label}
-            editable={editable}
-            ariaLabel={`Nút CTA ${idx + 1}`}
-            onSave={(val) => {
-              if (sectionIndex === undefined) return;
-              updateSection(sectionIndex, {
-                ...section,
-                ctaButtons: section.ctaButtons.map((b, i) =>
-                  i === idx ? { ...b, label: val } : b,
-                ),
-              });
-            }}
-          />
-          <ArrowDownRight className="h-4 w-4" />
-        </a>
-      ))}
+      {section.ctaButtons.map((btn, idx) => {
+        const btnClass = `inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${buttonRadiusClass} ${
+          isCreative
+            ? "border-2 border-black font-black shadow-[4px_4px_0px_#000]"
+            : ""
+        }`;
+        const btnStyle =
+          btn.style === "primary"
+            ? { backgroundColor: theme.primaryColor, color: "#FFFFFF" }
+            : btn.style === "secondary"
+              ? { backgroundColor: theme.secondaryColor, color: "#FFFFFF" }
+              : {
+                  border: isCreative
+                    ? undefined
+                    : `1.5px solid ${
+                        tokens.isDarkBg
+                          ? theme.primaryColor
+                          : theme.secondaryColor
+                      }`,
+                  color: tokens.isDarkBg
+                    ? theme.primaryColor
+                    : theme.secondaryColor,
+                  backgroundColor: `var(--section-surface-color, ${theme.surfaceColor})`,
+                };
+
+        const content = (
+          <>
+            <InlineEditableText
+              value={btn.label}
+              editable={editable}
+              ariaLabel={`Nút CTA ${idx + 1}`}
+              onSave={(val) => {
+                if (sectionIndex === undefined) return;
+                updateSection(sectionIndex, {
+                  ...section,
+                  ctaButtons: section.ctaButtons.map((b, i) =>
+                    i === idx ? { ...b, label: val } : b,
+                  ),
+                });
+              }}
+            />
+            <ArrowDownRight className="h-4 w-4" />
+          </>
+        );
+
+        return editable ? (
+          <div key={idx} className={btnClass} style={btnStyle}>
+            {content}
+          </div>
+        ) : (
+          <a key={idx} href={btn.href} className={btnClass} style={btnStyle}>
+            {content}
+          </a>
+        );
+      })}
     </div>
   );
 

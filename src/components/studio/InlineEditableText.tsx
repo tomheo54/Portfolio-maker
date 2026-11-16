@@ -52,6 +52,7 @@ export function InlineEditableText({
       style={style}
       onClick={(event: React.MouseEvent) => {
         if (editable) {
+          event.preventDefault();
           event.stopPropagation();
         }
       }}
