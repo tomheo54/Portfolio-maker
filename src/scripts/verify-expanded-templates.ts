@@ -89,8 +89,17 @@ function main() {
     throw new Error("medical-ruby should have isCanvaEditorial=true and isMusicEditorial=false");
   }
   const rubyHtml = renderStandaloneHtml(rubyDoc, new Map());
-  if (!rubyHtml.includes("theme-canva-editorial")) {
-    throw new Error("medical-ruby missing theme-canva-editorial body class");
+  if (!rubyHtml.includes("medical-ruby-hero")) {
+    throw new Error("medical-ruby missing medical-ruby-hero layout class");
+  }
+  if (!rubyHtml.includes("HỒ SƠ NĂNG LỰC DƯỢC HỌC")) {
+    throw new Error("medical-ruby missing pharmacy summary ribbon");
+  }
+  if (!rubyHtml.includes("MỤC LỤC HỒ SƠ CHUYÊN MÔN DƯỢC")) {
+    throw new Error("medical-ruby missing 2-column syllabus index");
+  }
+  if (!rubyHtml.includes("medical-arch-frame")) {
+    throw new Error("medical-ruby missing medical-arch-frame");
   }
   if (!rubyHtml.includes("Highlight Projects")) {
     throw new Error("medical-ruby projects section should display 'Highlight Projects'");
@@ -101,30 +110,170 @@ function main() {
   if (!rubyHtml.includes("QUY TRÌNH THỰC HIỆN")) {
     throw new Error("medical-ruby should display 'QUY TRÌNH THỰC HIỆN'");
   }
-  if (!rubyHtml.includes("border-radius: 160px 160px 24px 24px;")) {
-    throw new Error("medical-ruby avatar should have arch-window border-radius");
+  if (!rubyHtml.includes("data-about-layout=\"medical-license\"")) {
+    throw new Error("medical-ruby missing data-about-layout='medical-license'");
+  }
+  if (!rubyHtml.includes("#VN-PHARM-8892")) {
+    throw new Error("medical-ruby missing pharmacist license #VN-PHARM-8892");
   }
 
-  // Test clinical-navy
+  // Test clinical-navy (Thu Trang - Clinical Case Dossier)
   const clinicalDoc: PortfolioDocument = {
     ...baseDoc,
     templateId: "clinical-navy",
   };
   const clinicalHtml = renderStandaloneHtml(clinicalDoc, new Map());
-  if (!clinicalHtml.includes("MỤC TIÊU TRỌNG TÂM")) {
-    throw new Error("clinical-navy should display 'MỤC TIÊU TRỌNG TÂM'");
+  if (!clinicalHtml.includes("clinical-navy-hero")) {
+    throw new Error("clinical-navy missing clinical-navy-hero layout class");
+  }
+  if (!clinicalHtml.includes("[DOSSIER ARCHIVE: 2024-MED-CLINICAL]")) {
+    throw new Error("clinical-navy missing dossier archive status bar");
+  }
+  if (!clinicalHtml.includes("DANH MỤC CA BỆNH &amp; CHUYÊN MÔN")) {
+    throw new Error("clinical-navy missing diagnostic case index");
+  }
+  if (!clinicalHtml.includes("clinical-avatar-frame")) {
+    throw new Error("clinical-navy missing clinical-avatar-frame");
+  }
+  if (!clinicalHtml.includes("Clinical Case Dossier")) {
+    throw new Error("clinical-navy projects section should display 'Clinical Case Dossier'");
+  }
+  if (!clinicalHtml.includes("data-about-layout=\"clinical-dossier\"")) {
+    throw new Error("clinical-navy missing data-about-layout='clinical-dossier'");
+  }
+  if (!clinicalHtml.includes("MD-HN-2024")) {
+    throw new Error("clinical-navy missing physician registration MD-HN-2024");
   }
 
-  // Test educational-terracotta
+  // Test content-creator (Hà Lê - Bold Creator Magazine)
+  const creatorDoc: PortfolioDocument = {
+    ...baseDoc,
+    templateId: "content-creator",
+  };
+  const creatorHtml = renderStandaloneHtml(creatorDoc, new Map());
+  if (!creatorHtml.includes("creator-hero")) {
+    throw new Error("content-creator missing creator-hero layout class");
+  }
+  if (!creatorHtml.includes("CREATIVE DIRECTORY • ISSUE NO. 01")) {
+    throw new Error("content-creator missing editorial masthead");
+  }
+  if (!creatorHtml.includes("creator-stickers")) {
+    throw new Error("content-creator missing floating sticker badges");
+  }
+  if (!creatorHtml.includes("creator-polaroid-frame")) {
+    throw new Error("content-creator missing polaroid frame");
+  }
+  if (!creatorHtml.includes("Creator Stories &amp; Campaigns")) {
+    throw new Error("content-creator projects section should display 'Creator Stories & Campaigns'");
+  }
+  if (!creatorHtml.includes("data-about-layout=\"creator-profile\"")) {
+    throw new Error("content-creator missing data-about-layout='creator-profile'");
+  }
+  if (!creatorHtml.includes("TIKTOK REACH")) {
+    throw new Error("content-creator missing creator reach stats");
+  }
+
+  // Test educational-terracotta (Võ Thị Hoài - Academic Monograph)
   const terracottaDoc: PortfolioDocument = {
     ...baseDoc,
     templateId: "educational-terracotta",
   };
   const terracottaHtml = renderStandaloneHtml(terracottaDoc, new Map());
-  if (!terracottaHtml.includes("border-radius: 160px 160px 24px 24px;")) {
-    throw new Error("educational-terracotta avatar should have arch-window border-radius");
+  if (!terracottaHtml.includes("academic-monograph-hero")) {
+    throw new Error("educational-terracotta missing academic-monograph-hero layout class");
+  }
+  if (!terracottaHtml.includes("ĐẠI HỌC QUỐC GIA HÀ NỘI")) {
+    throw new Error("educational-terracotta missing university monograph header");
+  }
+  if (!terracottaHtml.includes("KHUNG NGHIÊN CỨU &amp; HỌC THUẬT SƯ PHẠM")) {
+    throw new Error("educational-terracotta missing research framework box");
+  }
+  if (!terracottaHtml.includes("academic-arch-frame")) {
+    throw new Error("educational-terracotta missing academic-arch-frame");
+  }
+  if (!terracottaHtml.includes("Công trình Nghiên cứu")) {
+    throw new Error("educational-terracotta projects section should display 'Công trình Nghiên cứu'");
+  }
+  if (!terracottaHtml.includes("data-about-layout=\"academic-cv\"")) {
+    throw new Error("educational-terracotta missing data-about-layout='academic-cv'");
+  }
+  if (!terracottaHtml.includes("VNU-UEd-CV")) {
+    throw new Error("educational-terracotta missing monograph code VNU-UEd-CV");
   }
 
+  // Test pedagogical-mauve (Nguyệt Ánh - Pedagogical Journal)
+  const mauveDoc: PortfolioDocument = {
+    ...baseDoc,
+    templateId: "pedagogical-mauve",
+  };
+  const mauveHtml = renderStandaloneHtml(mauveDoc, new Map());
+  if (!mauveHtml.includes("pedagogical-journal-hero")) {
+    throw new Error("pedagogical-mauve missing pedagogical-journal-hero layout class");
+  }
+  if (!mauveHtml.includes("NHẬT KÝ SƯ PHẠM &amp; THỰC TẬP GIẢNG DẠY")) {
+    throw new Error("pedagogical-mauve missing pedagogical bookmark ribbon");
+  }
+  if (!mauveHtml.includes("TIẾN TRÌNH THỰC TẬP &amp; KẾ HOẠCH BÀI DẠY")) {
+    throw new Error("pedagogical-mauve missing lesson plan index box");
+  }
+  if (!mauveHtml.includes("pedagogical-avatar-frame")) {
+    throw new Error("pedagogical-mauve missing pedagogical-avatar-frame");
+  }
+  if (!mauveHtml.includes("Kế hoạch Bài dạy &amp; Tiến trình Sư phạm")) {
+    throw new Error("pedagogical-mauve projects section should display 'Kế hoạch Bài dạy & Tiến trình Sư phạm'");
+  }
+  if (!mauveHtml.includes("data-about-layout=\"pedagogical-journal\"")) {
+    throw new Error("pedagogical-mauve missing data-about-layout='pedagogical-journal'");
+  }
+  if (!mauveHtml.includes("Tâm Niệm Nghề Giáo")) {
+    throw new Error("pedagogical-mauve missing teacher motto");
+  }
+
+  // === 5. Edge Cases & Layout Customization Tests ===
+  console.log("\n=== 5. Checking Edge Cases & Custom Variant Overrides ===");
+  // Test customized section variants (overriding archetype defaults)
+  const customRubyDoc: PortfolioDocument = {
+    ...baseDoc,
+    templateId: "medical-ruby",
+    sections: baseDoc.sections.map((sec) => {
+      if (sec.type === "hero") return { ...sec, variant: "bento-intro" };
+      if (sec.type === "about") return { ...sec, variant: "two-column-bio" };
+      if (sec.type === "projects") return { ...sec, variant: "carousel" };
+      return sec;
+    }),
+  };
+  renderStandaloneHtml(customRubyDoc, new Map());
+
+  // Test empty projects array
+  const emptyProjectsDoc: PortfolioDocument = {
+    ...baseDoc,
+    templateId: "clinical-navy",
+    sections: baseDoc.sections.map((sec) => {
+      if (sec.type === "projects") return { ...sec, projects: [] };
+      return sec;
+    }),
+  };
+  renderStandaloneHtml(emptyProjectsDoc, new Map());
+
+  // Test empty about fields (testing optional socials safety)
+  const emptyAboutDoc: PortfolioDocument = {
+    ...baseDoc,
+    templateId: "content-creator",
+    sections: baseDoc.sections.map((sec) => {
+      if (sec.type === "about") {
+        return {
+          ...sec,
+          biography: "",
+          highlights: [],
+          contactInfo: { socials: [] },
+        };
+      }
+      return sec;
+    }),
+  };
+  renderStandaloneHtml(emptyAboutDoc, new Map());
+
+  console.log("All edge case scenarios verified safely!");
   console.log("All HTML export tests passed with 100% visual and archetype fidelity!");
 }
 

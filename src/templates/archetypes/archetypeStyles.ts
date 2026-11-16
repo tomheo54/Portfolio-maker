@@ -26,7 +26,18 @@ export interface ArchetypeProfile {
   dividerVariant: ArchetypeDividerVariant;
   wrapperClassName: string;
   alternateProjectMedia: boolean;
-  heroLayoutMode: 'editorial' | 'bento' | 'minimal' | 'exhibit' | 'growth' | 'terminal';
+  heroLayoutMode:
+    | 'editorial'
+    | 'bento'
+    | 'minimal'
+    | 'exhibit'
+    | 'growth'
+    | 'terminal'
+    | 'medical-arch'
+    | 'clinical-dossier'
+    | 'creator-cover'
+    | 'academic-monograph'
+    | 'pedagogical-journal';
 }
 
 export const ARCHETYPE_PROFILES: Record<TemplateId, ArchetypeProfile> = {
@@ -180,47 +191,47 @@ export const ARCHETYPE_PROFILES: Record<TemplateId, ArchetypeProfile> = {
     frameVariant: 'arch-window',
     navVariant: 'canva-pills',
     showSlideNumbers: false,
-    slideLabelPrefix: 'Project',
+    slideLabelPrefix: 'Chuyên môn',
     dividerVariant: 'sparkles',
-    wrapperClassName: '',
+    wrapperClassName: 'theme-medical-ruby',
     alternateProjectMedia: false,
-    heroLayoutMode: 'editorial',
+    heroLayoutMode: 'medical-arch',
   },
   'clinical-navy': {
     id: 'clinical-navy',
     badgeLabel: 'Clinical Navy (Thu Trang)',
     frameVariant: 'rounded-card',
-    navVariant: 'minimal-bar',
+    navVariant: 'badge-bar',
     showSlideNumbers: false,
     slideLabelPrefix: 'Case',
     dividerVariant: 'hairline',
-    wrapperClassName: '',
+    wrapperClassName: 'theme-clinical-navy',
     alternateProjectMedia: false,
-    heroLayoutMode: 'minimal',
+    heroLayoutMode: 'clinical-dossier',
   },
   'pedagogical-mauve': {
     id: 'pedagogical-mauve',
     badgeLabel: 'Pedagogical Mauve (Nguyệt Ánh)',
-    frameVariant: 'polaroid',
+    frameVariant: 'rounded-card',
     navVariant: 'canva-pills',
     showSlideNumbers: false,
-    slideLabelPrefix: 'Project',
+    slideLabelPrefix: 'Giáo án',
     dividerVariant: 'sparkles',
-    wrapperClassName: '',
+    wrapperClassName: 'theme-pedagogical-mauve',
     alternateProjectMedia: true,
-    heroLayoutMode: 'editorial',
+    heroLayoutMode: 'pedagogical-journal',
   },
   'content-creator': {
     id: 'content-creator',
     badgeLabel: 'Content Creator (Hà Lê)',
-    frameVariant: 'arch-window',
+    frameVariant: 'polaroid',
     navVariant: 'canva-pills',
     showSlideNumbers: false,
     slideLabelPrefix: 'Story',
     dividerVariant: 'sparkles',
-    wrapperClassName: '',
+    wrapperClassName: 'theme-content-creator',
     alternateProjectMedia: true,
-    heroLayoutMode: 'editorial',
+    heroLayoutMode: 'creator-cover',
   },
   'oceanic-teal': {
     id: 'oceanic-teal',
@@ -230,7 +241,7 @@ export const ARCHETYPE_PROFILES: Record<TemplateId, ArchetypeProfile> = {
     showSlideNumbers: false,
     slideLabelPrefix: 'Project',
     dividerVariant: 'hairline',
-    wrapperClassName: '',
+    wrapperClassName: 'theme-oceanic-teal',
     alternateProjectMedia: false,
     heroLayoutMode: 'editorial',
   },
@@ -242,9 +253,9 @@ export const ARCHETYPE_PROFILES: Record<TemplateId, ArchetypeProfile> = {
     showSlideNumbers: false,
     slideLabelPrefix: 'Nghiên cứu',
     dividerVariant: 'sparkles',
-    wrapperClassName: '',
+    wrapperClassName: 'theme-educational-terracotta',
     alternateProjectMedia: false,
-    heroLayoutMode: 'editorial',
+    heroLayoutMode: 'academic-monograph',
   },
   'pedagogical-rose': {
     id: 'pedagogical-rose',
@@ -252,11 +263,11 @@ export const ARCHETYPE_PROFILES: Record<TemplateId, ArchetypeProfile> = {
     frameVariant: 'rounded-card',
     navVariant: 'canva-pills',
     showSlideNumbers: false,
-    slideLabelPrefix: 'Dự án',
-    dividerVariant: 'hairline',
-    wrapperClassName: '',
+    slideLabelPrefix: 'Giáo án',
+    dividerVariant: 'sparkles',
+    wrapperClassName: 'theme-pedagogical-rose',
     alternateProjectMedia: true,
-    heroLayoutMode: 'editorial',
+    heroLayoutMode: 'pedagogical-journal',
   },
 };
 
@@ -610,11 +621,142 @@ export function getBackdropStyle(
         backgroundImage: `linear-gradient(to right, ${theme.primaryColor}0D 1px, transparent 1px), linear-gradient(to bottom, ${theme.primaryColor}0D 1px, transparent 1px)`,
         backgroundSize: '32px 32px',
       };
+    case 'medical-ruby':
+      return {
+        backgroundImage: `radial-gradient(${theme.primaryColor}14 1.2px, transparent 1.2px), radial-gradient(#C29B3818 1px, transparent 1px)`,
+        backgroundSize: '24px 24px, 48px 48px',
+      };
+    case 'clinical-navy':
+      return {
+        backgroundImage: `linear-gradient(to right, ${theme.primaryColor}12 1px, transparent 1px), linear-gradient(to bottom, ${theme.primaryColor}12 1px, transparent 1px)`,
+        backgroundSize: '20px 20px',
+      };
+    case 'content-creator':
+      return {
+        backgroundImage: `radial-gradient(${theme.primaryColor}22 1.5px, transparent 1.5px)`,
+        backgroundSize: '20px 20px',
+      };
+    case 'educational-terracotta':
+      return {
+        backgroundImage: `linear-gradient(to right, #9B302D12 1px, transparent 1px), linear-gradient(to bottom, #9B302D12 1px, transparent 1px)`,
+        backgroundSize: '24px 24px',
+      };
+    case 'pedagogical-mauve':
+    case 'pedagogical-rose':
+      return {
+        backgroundImage: `radial-gradient(#9B546418 1.2px, transparent 1.2px)`,
+        backgroundSize: '18px 18px',
+      };
+    case 'oceanic-teal':
+      return {
+        backgroundImage: `radial-gradient(${theme.primaryColor}15 1.2px, transparent 1.2px)`,
+        backgroundSize: '22px 22px',
+      };
     case 'minimal-chic':
     case 'framer-minimal':
     case 'canva-editorial':
     default:
       return {};
+  }
+}
+
+export function getArchetypeDefaultVariants(templateId: TemplateId) {
+  switch (templateId) {
+    case 'medical-ruby':
+      return {
+        hero: 'medical-arch',
+        about: 'medical-license',
+        projects: 'medical-spread',
+      } as const;
+    case 'clinical-navy':
+      return {
+        hero: 'clinical-dossier',
+        about: 'clinical-dossier',
+        projects: 'clinical-dossier',
+      } as const;
+    case 'content-creator':
+      return {
+        hero: 'creator-cover',
+        about: 'creator-profile',
+        projects: 'creator-filmstrip',
+      } as const;
+    case 'educational-terracotta':
+      return {
+        hero: 'academic-monograph',
+        about: 'academic-cv',
+        projects: 'academic-monograph',
+      } as const;
+    case 'pedagogical-mauve':
+    case 'pedagogical-rose':
+      return {
+        hero: 'pedagogical-journal',
+        about: 'pedagogical-journal',
+        projects: 'lesson-plan',
+      } as const;
+    case 'bento-grid':
+    case 'vibrant-student':
+      return {
+        hero: 'bento-intro',
+        about: 'bento-facts',
+        projects: 'bento-projects',
+      } as const;
+    case 'framer-minimal':
+    case 'minimal-chic':
+      return {
+        hero: 'minimal-center',
+        about: 'two-column-bio',
+        projects: 'grid',
+      } as const;
+    case 'growth-marketer':
+      return {
+        hero: 'editorial-magazine',
+        about: 'profile-dashboard',
+        projects: 'case-study-cards',
+      } as const;
+    case 'tech-developer':
+      return {
+        hero: 'split-left',
+        about: 'profile-dashboard',
+        projects: 'grid',
+      } as const;
+    case 'creative-showcase':
+    case 'creative-bold':
+      return {
+        hero: 'editorial-asymmetric',
+        about: 'cards',
+        projects: 'staggered-cards',
+      } as const;
+    case 'warm-editorial':
+      return {
+        hero: 'editorial-asymmetric',
+        about: 'editorial-poster',
+        projects: 'masonry-gallery',
+      } as const;
+    case 'artistic-organic':
+      return {
+        hero: 'editorial-asymmetric',
+        about: 'organic',
+        projects: 'masonry-gallery',
+      } as const;
+    case 'academic-presentation':
+      return {
+        hero: 'editorial-magazine',
+        about: 'timeline',
+        projects: 'case-study-cards',
+      } as const;
+    case 'oceanic-teal':
+      return {
+        hero: 'split-modern',
+        about: 'two-column-bio',
+        projects: 'grid',
+      } as const;
+    case 'canva-editorial':
+    default:
+      return {
+        hero: 'canva-cover',
+        about: 'story-card',
+        projects: 'canva-slide-showcase',
+      } as const;
   }
 }
 

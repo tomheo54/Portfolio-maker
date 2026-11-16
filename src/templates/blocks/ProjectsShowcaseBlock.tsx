@@ -20,6 +20,9 @@ import {
   GripVertical,
   RefreshCw,
   LayoutTemplate,
+  Award,
+  BookOpen,
+  Activity,
 } from "lucide-react";
 import {
   DndContext,
@@ -50,6 +53,7 @@ import {
 } from "@/components/visual-primitives";
 import {
   formatSectionEyebrow,
+  getArchetypeDefaultVariants,
   getArchetypeProfile,
   getCardDecoration,
   getRadiusClass,
@@ -397,28 +401,31 @@ export function ProjectsShowcaseBlock({
   const resolvedFrameVariant: MediaFrameVariant =
     frameVariant ?? profile.frameVariant;
 
-  const isCanvaEditorial = archetypeId === "canva-editorial";
-  const isStaggered = section.variant === "staggered-cards";
-  const isCarousel = section.variant === "carousel";
-  const isList = section.variant === "list";
-  const isGrid = section.variant === "grid";
-  const isBento = section.variant === "bento-projects";
-  const isCanvaSlideShowcase = section.variant === "canva-slide-showcase";
-  const isCaseStudyCards = section.variant === "case-study-cards";
+  const defaults = getArchetypeDefaultVariants(archetypeId);
+  const activeProjectsVariant = section.variant || defaults.projects;
+
+  const isCanvaEditorial = activeProjectsVariant === "canva-slide-showcase" || (archetypeId === "canva-editorial" && !section.variant);
+  const isStaggered = activeProjectsVariant === "staggered-cards";
+  const isCarousel = activeProjectsVariant === "carousel";
+  const isList = activeProjectsVariant === "list";
+  const isGrid = activeProjectsVariant === "grid";
+  const isBento = activeProjectsVariant === "bento-projects";
+  const isCanvaSlideShowcase = activeProjectsVariant === "canva-slide-showcase";
+  const isCaseStudyCards = activeProjectsVariant === "case-study-cards";
   const isMinimal =
-    archetypeId === "framer-minimal" || archetypeId === "minimal-chic";
+    activeProjectsVariant === "grid" && (archetypeId === "framer-minimal" || archetypeId === "minimal-chic");
   const isCreative =
-    archetypeId === "creative-showcase" || archetypeId === "creative-bold";
-  const isGrowth = archetypeId === "growth-marketer";
-  const isTerminal = archetypeId === "tech-developer";
+    activeProjectsVariant === "staggered-cards" && (archetypeId === "creative-showcase" || archetypeId === "creative-bold");
+  const isGrowth = activeProjectsVariant === "case-study-cards" && archetypeId === "growth-marketer";
+  const isTerminal = activeProjectsVariant === "grid" && archetypeId === "tech-developer";
   const isOrganic = archetypeId === "artistic-organic";
-  const isAcademic = archetypeId === "academic-presentation";
-  const isMedicalRuby = archetypeId === "medical-ruby";
-  const isClinicalNavy = archetypeId === "clinical-navy";
-  const isPedagogical = archetypeId === "pedagogical-mauve";
-  const isContentCreator = archetypeId === "content-creator";
+  const isAcademic = activeProjectsVariant === "case-study-cards" && archetypeId === "academic-presentation";
+  const isMedicalRuby = activeProjectsVariant === "medical-spread";
+  const isClinicalNavy = activeProjectsVariant === "clinical-dossier";
+  const isPedagogical = activeProjectsVariant === "lesson-plan";
+  const isContentCreator = activeProjectsVariant === "creator-filmstrip";
   const isOceanicTeal = archetypeId === "oceanic-teal";
-  const isEducationalTerracotta = archetypeId === "educational-terracotta";
+  const isEducationalTerracotta = activeProjectsVariant === "academic-monograph";
   const isPedagogicalRose = archetypeId === "pedagogical-rose";
   const isRubric3Tier =
     isMedicalRuby ||
@@ -426,7 +433,7 @@ export function ProjectsShowcaseBlock({
     isEducationalTerracotta ||
     isPedagogicalRose ||
     isPedagogical ||
-    section.variant === "canva-slide-showcase";
+    activeProjectsVariant === "canva-slide-showcase";
 
   const openModal = (
     project: ProjectItem,
@@ -1671,6 +1678,424 @@ export function ProjectsShowcaseBlock({
       {/* Layout based on archetype & section variant */}
       {(() => {
         const renderLayoutContent = () => {
+          if (isMedicalRuby || section.variant === "medical-spread") {
+            return (
+              <div className="space-y-12 pb-8">
+                {section.projects.map((project, index) => {
+                  const mediaPosition = getProjectMediaPosition(project, index % 2 === 1 ? "right" : "left");
+                  const mediaOrder = getProjectMediaOrder(mediaPosition);
+                  const isVideo = isProjectVideoMode(project);
+                  const hasMedia = (project.media?.length ?? 0) > 0 || isVideo;
+                  const idxStr = String(index + 1).padStart(2, "0");
+                  return (
+                    <SortableProjectCardWrapper
+                      key={project.id}
+                      id={project.id}
+                      editable={editable}
+                      mediaPosition={mediaPosition}
+                      className="rounded-3xl border-2 p-6 sm:p-8 transition-all hover:shadow-xl bg-white/90"
+                      style={{
+                        borderColor: "rgba(123, 17, 19, 0.3)",
+                        boxShadow: "0 10px 30px -10px rgba(123, 17, 19, 0.15)",
+                      }}
+                    >
+                      <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
+                        {hasMedia && (
+                          <div
+                            className={`lg:col-span-5 ${mediaOrder.media}`}
+                            data-project-content="media"
+                          >
+                            <div className="relative group">
+                              <div
+                                className="overflow-hidden p-1.5 bg-white shadow-md"
+                                style={{
+                                  borderRadius: "140px 140px 20px 20px",
+                                  border: "3px solid #7B1113",
+                                }}
+                              >
+                                {renderAdaptiveMedia(project, index)}
+                              </div>
+                              <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 rounded-full border border-amber-300 bg-[#7B1113] px-3 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white shadow whitespace-nowrap">
+                                CHUẨN GMP / GSP
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                        <div
+                          className={`space-y-5 ${!hasMedia ? "lg:col-span-12" : "lg:col-span-7"} ${mediaOrder.details}`}
+                          data-project-content="details"
+                        >
+                          <div className="flex items-center justify-between border-b border-rose-900/15 pb-2">
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-900/10 px-3 py-0.5 text-xs font-bold text-[#7B1113]">
+                              <Award className="h-3.5 w-3.5 text-amber-600" /> CASE DƯỢC HỌC {idxStr}
+                            </span>
+                            <span className="text-xs font-semibold text-stone-500 font-mono">
+                              {project.category}
+                            </span>
+                          </div>
+                          <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-[#2B1810]">
+                            {project.title}
+                          </h3>
+
+                          {/* 3-Tier Medical Analysis */}
+                          <div className="space-y-3 text-xs">
+                            <div className="rounded-xl border border-amber-200/70 bg-amber-50/60 p-3">
+                              <div className="font-bold text-[#7B1113] uppercase tracking-wide flex items-center gap-1.5 mb-1">
+                                <Target className="h-3.5 w-3.5" /> 1. Mục tiêu nghiên cứu &amp; Dược học
+                              </div>
+                              <p className="text-[#2B1810]/85 leading-relaxed">{project.assignmentBrief || project.summary}</p>
+                            </div>
+                            <div className="rounded-xl border border-rose-200/70 bg-white p-3">
+                              <div className="font-bold text-[#7B1113] uppercase tracking-wide flex items-center gap-1.5 mb-1">
+                                <Lightbulb className="h-3.5 w-3.5" /> 2. Quy trình &amp; Tiêu chuẩn GMP/GSP
+                              </div>
+                              <p className="text-[#2B1810]/85 leading-relaxed">{project.summary}</p>
+                            </div>
+                            {project.keyTakeaways.length > 0 && (
+                              <div className="rounded-xl border border-emerald-200/70 bg-emerald-50/40 p-3">
+                                <div className="font-bold text-emerald-800 uppercase tracking-wide flex items-center gap-1.5 mb-1">
+                                  <CheckCircle2 className="h-3.5 w-3.5" /> 3. Kết quả &amp; Ứng dụng lâm sàng
+                                </div>
+                                <ul className="space-y-1 text-emerald-950/85">
+                                  {project.keyTakeaways.filter(Boolean).map((t, tIdx) => (
+                                    <li key={tIdx} className="flex items-start gap-1.5">
+                                      <span>•</span> <span>{t}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-rose-900/10">
+                            <div className="flex flex-wrap gap-1.5">
+                              {project.tags.slice(0, 3).map((t, tIdx) => (
+                                <span key={tIdx} className="rounded-full bg-stone-100 px-2.5 py-0.5 text-[10px] font-semibold text-stone-700">
+                                  #{t}
+                                </span>
+                              ))}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); openModal(project, index, 0); }}
+                              className="rounded-full border border-[#7B1113] bg-[#7B1113] px-4 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-rose-900 transition inline-flex items-center gap-1.5"
+                            >
+                              <Eye className="h-3.5 w-3.5" /> Chi tiết đề tài
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </SortableProjectCardWrapper>
+                  );
+                })}
+              </div>
+            );
+          }
+
+          if (isClinicalNavy || section.variant === "clinical-dossier") {
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-8">
+                {section.projects.map((project, index) => {
+                  const idxStr = String(index + 1).padStart(2, "0");
+                  const isVideo = isProjectVideoMode(project);
+                  const hasMedia = (project.media?.length ?? 0) > 0 || isVideo;
+                  return (
+                    <SortableProjectCardWrapper
+                      key={project.id}
+                      id={project.id}
+                      editable={editable}
+                      className="rounded-2xl border-2 border-[#1A1264]/30 bg-white p-6 shadow-md transition-all hover:shadow-xl flex flex-col justify-between space-y-5"
+                    >
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between border-b border-indigo-950/15 pb-2 font-mono text-xs">
+                          <span className="font-bold text-[#1A1264] flex items-center gap-1.5">
+                            <Activity className="h-3.5 w-3.5" /> [CASE {idxStr}]
+                          </span>
+                          <span className="rounded bg-indigo-50 px-2 py-0.5 text-[10px] font-bold text-indigo-700 border border-indigo-200">
+                            ICD-10 CLASSIFIED
+                          </span>
+                        </div>
+                        <h3 className="text-xl font-extrabold text-[#0C0838] leading-snug">
+                          {project.title}
+                        </h3>
+
+                        {hasMedia && (
+                          <div className="rounded-xl border border-indigo-950/20 overflow-hidden shadow-xs">
+                            {renderAdaptiveMedia(project, index)}
+                          </div>
+                        )}
+
+                        {/* 4-Step Clinical Workflow */}
+                        <div className="space-y-2 font-mono text-xs text-slate-800">
+                          <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                            <span className="font-bold text-[#1A1264]">🩺 1. Triệu chứng &amp; Tiền sử:</span>
+                            <p className="mt-0.5 font-sans text-xs text-slate-700">{project.assignmentBrief || project.summary}</p>
+                          </div>
+                          <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                            <span className="font-bold text-[#1A1264]">🧪 2. Cận lâm sàng &amp; Chẩn đoán:</span>
+                            <p className="mt-0.5 font-sans text-xs text-slate-700">{project.summary}</p>
+                          </div>
+                          {project.keyTakeaways.length > 0 && (
+                            <div className="p-2.5 rounded-lg bg-indigo-50/60 border border-indigo-200">
+                              <span className="font-bold text-indigo-900">📋 3. Phác đồ can thiệp &amp; Tiên lượng:</span>
+                              <ul className="mt-0.5 font-sans text-xs text-indigo-950 space-y-1">
+                                {project.keyTakeaways.filter(Boolean).map((t, tIdx) => (
+                                  <li key={tIdx}>• {t}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-3 border-t border-slate-200 font-mono text-xs">
+                        <span className="text-[11px] text-slate-500">DOSSIER VERIFIED</span>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); openModal(project, index, 0); }}
+                          className="rounded-lg bg-[#1A1264] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-indigo-950 transition inline-flex items-center gap-1.5"
+                        >
+                          <Eye className="h-3.5 w-3.5" /> Xem hồ sơ ca bệnh
+                        </button>
+                      </div>
+                    </SortableProjectCardWrapper>
+                  );
+                })}
+              </div>
+            );
+          }
+
+          if (isContentCreator || section.variant === "creator-filmstrip") {
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-8">
+                {section.projects.map((project, index) => {
+                  const idxStr = String(index + 1).padStart(2, "0");
+                  const isVideo = isProjectVideoMode(project);
+                  const hasMedia = (project.media?.length ?? 0) > 0 || isVideo;
+                  const tiltClass = index % 2 === 0 ? "rotate-[-1deg]" : "rotate-[1deg]";
+                  return (
+                    <SortableProjectCardWrapper
+                      key={project.id}
+                      id={project.id}
+                      editable={editable}
+                      className={`rounded-3xl border-4 border-black bg-white p-6 shadow-[8px_8px_0px_#000] transition-all hover:rotate-0 flex flex-col justify-between space-y-5 ${tiltClass}`}
+                    >
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between border-b-2 border-black pb-2">
+                          <span className="inline-flex items-center gap-1 rounded-full border-2 border-black bg-amber-300 px-3 py-0.5 text-xs font-black text-black shadow-[2px_2px_0px_#000]">
+                            ⚡ STORY {idxStr}
+                          </span>
+                          <span className="text-xs font-black uppercase text-[#722F37]">
+                            {project.category}
+                          </span>
+                        </div>
+                        <h3 className="font-editorial text-2xl font-black text-[#2D1418]">
+                          {project.title}
+                        </h3>
+
+                        {hasMedia && (
+                          <div className="rounded-2xl border-2 border-black overflow-hidden shadow-sm">
+                            {renderAdaptiveMedia(project, index)}
+                          </div>
+                        )}
+
+                        {/* Viral Metrics Bar */}
+                        <div className="flex flex-wrap gap-2 pt-1">
+                          <span className="rounded-lg border border-black bg-amber-100 px-2.5 py-1 text-[11px] font-bold text-black">
+                            👁️ Lượt xem: 250K+
+                          </span>
+                          <span className="rounded-lg border border-black bg-rose-100 px-2.5 py-1 text-[11px] font-bold text-black">
+                            ❤️ Tương tác: 9.2%
+                          </span>
+                          <span className="rounded-lg border border-black bg-emerald-100 px-2.5 py-1 text-[11px] font-bold text-black">
+                            🚀 Viral Hit
+                          </span>
+                        </div>
+
+                        {/* 3-Step Creator Narrative */}
+                        <div className="space-y-2 text-xs text-[#2D1418]">
+                          <div className="p-2.5 rounded-xl border border-black/20 bg-stone-50">
+                            <strong>💡 Ý tưởng &amp; Brief: </strong>
+                            <span>{project.assignmentBrief || project.summary}</span>
+                          </div>
+                          <div className="p-2.5 rounded-xl border border-black/20 bg-stone-50">
+                            <strong>🎨 Sản xuất &amp; Visual Hook: </strong>
+                            <span>{project.summary}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-3 border-t-2 border-black">
+                        <span className="text-xs font-bold text-stone-600">TIKTOK &amp; REELS</span>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); openModal(project, index, 0); }}
+                          className="rounded-full border-2 border-black bg-black px-4 py-1.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] hover:bg-stone-800 transition inline-flex items-center gap-1.5"
+                        >
+                          <Eye className="h-3.5 w-3.5" /> Khám phá Story
+                        </button>
+                      </div>
+                    </SortableProjectCardWrapper>
+                  );
+                })}
+              </div>
+            );
+          }
+
+          if (isEducationalTerracotta || section.variant === "academic-monograph") {
+            return (
+              <div className="space-y-10 pb-8">
+                {section.projects.map((project, index) => {
+                  const idxStr = String(index + 1).padStart(2, "0");
+                  const isVideo = isProjectVideoMode(project);
+                  const hasMedia = (project.media?.length ?? 0) > 0 || isVideo;
+                  return (
+                    <SortableProjectCardWrapper
+                      key={project.id}
+                      id={project.id}
+                      editable={editable}
+                      className="rounded-2xl border-2 p-6 sm:p-8 bg-white/90 shadow-sm transition-all hover:shadow-lg"
+                      style={{ borderColor: "rgba(155, 48, 45, 0.35)" }}
+                    >
+                      <div className="flex flex-wrap items-center justify-between border-b pb-3 mb-5" style={{ borderColor: "#9B302D" }}>
+                        <span className="text-xs font-bold uppercase tracking-widest text-[#9B302D] flex items-center gap-1.5">
+                          <BookOpen className="h-4 w-4" /> CÔNG TRÌNH NGHIÊN CỨU SỐ {idxStr}
+                        </span>
+                        <span className="rounded border px-2.5 py-0.5 text-[10px] font-bold text-[#9B302D] bg-[#EDEAE2]" style={{ borderColor: "#9B302D" }}>
+                          MÃ ĐỀ TÀI: ED-VNU-2024-{idxStr}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 items-start">
+                        {hasMedia && (
+                          <div className="lg:col-span-5">
+                            <div className="rounded-xl border border-[#9B302D]/30 overflow-hidden shadow-xs">
+                              {renderAdaptiveMedia(project, index)}
+                            </div>
+                          </div>
+                        )}
+                        <div className={`space-y-4 ${hasMedia ? "lg:col-span-7" : "lg:col-span-12"}`}>
+                          <h3 className="font-editorial text-2xl font-bold text-[#282828]">
+                            {project.title}
+                          </h3>
+
+                          {/* 3 Academic Monograph Framework Boxes */}
+                          <div className="space-y-2.5 text-xs text-[#282828]">
+                            <div className="rounded-lg border border-[#9B302D]/20 bg-[#EDEAE2]/40 p-3">
+                              <strong className="text-[#9B302D] block mb-1">📖 1. Đặt vấn đề &amp; Cơ sở lý luận:</strong>
+                              <p className="leading-relaxed opacity-90">{project.assignmentBrief || project.summary}</p>
+                            </div>
+                            <div className="rounded-lg border border-[#9B302D]/20 bg-white p-3">
+                              <strong className="text-[#9B302D] block mb-1">🔍 2. Phương pháp nghiên cứu &amp; Khảo sát:</strong>
+                              <p className="leading-relaxed opacity-90">{project.summary}</p>
+                            </div>
+                            {project.keyTakeaways.length > 0 && (
+                              <div className="rounded-lg border border-[#9B302D]/20 bg-[#EDEAE2]/40 p-3">
+                                <strong className="text-[#9B302D] block mb-1">📊 3. Kết quả &amp; Đề xuất sư phạm:</strong>
+                                <ul className="space-y-1 opacity-90">
+                                  {project.keyTakeaways.filter(Boolean).map((t, tIdx) => (
+                                    <li key={tIdx}>• {t}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="pt-2 flex items-center justify-between border-t border-stone-200">
+                            <span className="text-[11px] italic text-stone-500 font-serif">
+                              Trích dẫn: Tạp chí Khoa học Giáo dục ĐHQGHN
+                            </span>
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); openModal(project, index, 0); }}
+                              className="rounded-md border border-[#9B302D] bg-[#9B302D] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-stone-800 transition inline-flex items-center gap-1.5"
+                            >
+                              <Eye className="h-3.5 w-3.5" /> Xem công trình
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </SortableProjectCardWrapper>
+                  );
+                })}
+              </div>
+            );
+          }
+
+          if (isPedagogical || section.variant === "lesson-plan") {
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-8">
+                {section.projects.map((project, index) => {
+                  const idxStr = String(index + 1).padStart(2, "0");
+                  const isVideo = isProjectVideoMode(project);
+                  const hasMedia = (project.media?.length ?? 0) > 0 || isVideo;
+                  return (
+                    <SortableProjectCardWrapper
+                      key={project.id}
+                      id={project.id}
+                      editable={editable}
+                      className="rounded-3xl border-2 border-[#9B5464]/30 bg-white p-6 shadow-sm transition-all hover:shadow-md flex flex-col justify-between space-y-5"
+                    >
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between border-b border-[#9B5464]/20 pb-2">
+                          <span className="rounded-full bg-[#9B5464]/10 px-3 py-0.5 text-xs font-bold text-[#9B5464]">
+                            🌸 KẾ HOẠCH BÀI DẠY {idxStr}
+                          </span>
+                          <span className="text-xs text-stone-500 font-medium">
+                            TIẾT DẠY THỰC TẬP
+                          </span>
+                        </div>
+
+                        <h3 className="font-editorial text-2xl font-bold text-[#3A2329]">
+                          {project.title}
+                        </h3>
+
+                        {hasMedia && (
+                          <div className="rounded-2xl border border-[#9B5464]/20 overflow-hidden shadow-xs">
+                            {renderAdaptiveMedia(project, index)}
+                          </div>
+                        )}
+
+                        {/* 4-Phase Lesson Plan Flow */}
+                        <div className="space-y-2 text-xs text-[#3A2329]">
+                          <div className="p-2.5 rounded-xl bg-[#F9F6F2] border border-[#9B5464]/15">
+                            <strong className="text-[#9B5464]">🎯 Yêu cầu cần đạt: </strong>
+                            <span>{project.assignmentBrief || project.summary}</span>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-[#F9F6F2] border border-[#9B5464]/15">
+                            <strong className="text-[#9B5464]">🚀 Tiến trình 4 bước: </strong>
+                            <span>Khởi động ➔ Khám phá ➔ Luyện tập ➔ Vận dụng</span>
+                          </div>
+                          {project.keyTakeaways.length > 0 && (
+                            <div className="p-2.5 rounded-xl bg-white border border-[#9B5464]/20">
+                              <strong className="text-[#9B5464]">💡 Đổi mới EdTech &amp; Phản tư: </strong>
+                              <ul className="mt-1 space-y-0.5 text-stone-700">
+                                {project.keyTakeaways.filter(Boolean).map((t, tIdx) => (
+                                  <li key={tIdx}>• {t}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-3 border-t border-[#9B5464]/15">
+                        <span className="text-xs text-[#9B5464] font-medium">UEd SƯ PHẠM</span>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); openModal(project, index, 0); }}
+                          className="rounded-full bg-[#9B5464] px-4 py-1.5 text-xs font-bold text-white hover:bg-rose-900 transition inline-flex items-center gap-1.5"
+                        >
+                          <Eye className="h-3.5 w-3.5" /> Chi tiết giáo án
+                        </button>
+                      </div>
+                    </SortableProjectCardWrapper>
+                  );
+                })}
+              </div>
+            );
+          }
+
           if (isStaggered) {
             /* Alternating Staggered Cards (Hong Quyen / creative-bold link parity) */
             return (

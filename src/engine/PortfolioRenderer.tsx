@@ -9,6 +9,11 @@ import {
   CreativeShowcaseTemplate,
   GrowthMarketerTemplate,
   TechDeveloperTemplate,
+  MedicalRubyTemplate,
+  ClinicalNavyTemplate,
+  ContentCreatorTemplate,
+  EducationalTerracottaTemplate,
+  PedagogicalMauveTemplate,
   TemplateShell,
 } from '@/templates/archetypes';
 
@@ -60,19 +65,24 @@ export function PortfolioRenderer({
       return <GrowthMarketerTemplate {...sharedProps} />;
     case 'tech-developer':
       return <TechDeveloperTemplate {...sharedProps} />;
+    case 'medical-ruby':
+      return <MedicalRubyTemplate {...sharedProps} />;
+    case 'clinical-navy':
+      return <ClinicalNavyTemplate {...sharedProps} />;
+    case 'content-creator':
+      return <ContentCreatorTemplate {...sharedProps} />;
+    case 'educational-terracotta':
+      return <EducationalTerracottaTemplate {...sharedProps} />;
+    case 'pedagogical-mauve':
+    case 'pedagogical-rose':
+      return <PedagogicalMauveTemplate {...sharedProps} />;
     case 'warm-editorial':
     case 'creative-bold':
     case 'minimal-chic':
     case 'vibrant-student':
     case 'artistic-organic':
     case 'academic-presentation':
-    case 'medical-ruby':
-    case 'clinical-navy':
-    case 'pedagogical-mauve':
-    case 'content-creator':
     case 'oceanic-teal':
-    case 'educational-terracotta':
-    case 'pedagogical-rose':
       return <TemplateShell {...sharedProps} archetypeId={document.templateId} />;
     default:
       return <CanvaEditorialTemplate {...sharedProps} />;

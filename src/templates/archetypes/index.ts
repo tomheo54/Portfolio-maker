@@ -7,3 +7,8 @@ export * from './FramerMinimalTemplate';
 export * from './CreativeShowcaseTemplate';
 export * from './GrowthMarketerTemplate';
 export * from './TechDeveloperTemplate';
+export * from './MedicalRubyTemplate';
+export * from './ClinicalNavyTemplate';
+export * from './ContentCreatorTemplate';
+export * from './EducationalTerracottaTemplate';
+export * from './PedagogicalMauveTemplate';

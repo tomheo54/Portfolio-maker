@@ -15,6 +15,9 @@ import {
   LayoutTemplate,
   CheckCircle2,
   Link2,
+  Award,
+  BookOpen,
+  Activity,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -43,6 +46,7 @@ import type {
 import { AvatarFrame } from "@/components/visual-primitives/AvatarFrame";
 import {
   formatSectionEyebrow,
+  getArchetypeDefaultVariants,
   getCardDecoration,
   getThemeTokens,
 } from "@/templates/archetypes/archetypeStyles";
@@ -485,12 +489,20 @@ export function AboutBlock({
     archetypeId === "artistic-organic" || section.variant === "organic";
   const isAcademic =
     archetypeId === "academic-presentation" || section.variant === "timeline";
-  const isMedicalRuby = archetypeId === "medical-ruby";
-  const isClinicalNavy = archetypeId === "clinical-navy";
-  const isPedagogical = archetypeId === "pedagogical-mauve";
-  const isContentCreator = archetypeId === "content-creator";
+  const isMedicalRuby =
+    archetypeId === "medical-ruby" || section.variant === "medical-license";
+  const isClinicalNavy =
+    archetypeId === "clinical-navy" || section.variant === "clinical-dossier";
+  const isPedagogical =
+    archetypeId === "pedagogical-mauve" ||
+    archetypeId === "pedagogical-rose" ||
+    section.variant === "pedagogical-journal";
+  const isContentCreator =
+    archetypeId === "content-creator" || section.variant === "creator-profile";
   const isOceanicTeal = archetypeId === "oceanic-teal";
-  const isEducationalTerracotta = archetypeId === "educational-terracotta";
+  const isEducationalTerracotta =
+    archetypeId === "educational-terracotta" ||
+    section.variant === "academic-cv";
   const isPedagogicalRose = archetypeId === "pedagogical-rose";
 
   // Resolved Profile Values
@@ -617,20 +629,21 @@ export function AboutBlock({
     configuredCardOrder.length > 0
       ? configuredCardOrder
       : ["contact", "education", "learningGoals"];
-  const activeLayout =
-    section.variant === "story-card" ||
-    section.variant === "bento-facts" ||
-    section.variant === "editorial-poster" ||
-    section.variant === "profile-dashboard" ||
-    section.variant === "spotlight" ||
-    section.variant === "cards" ||
-    section.variant === "grid" ||
-    section.variant === "tabs" ||
-    section.variant === "organic" ||
-    section.variant === "timeline" ||
-    section.variant === "two-column-bio"
+  const defaultVariants = getArchetypeDefaultVariants(archetypeId);
+  const activeLayout = (
+    section.variant &&
+    section.variant !== "cards" &&
+    section.variant !== "story-card"
       ? section.variant
-      : "cards";
+      : (archetypeId === "medical-ruby" ||
+         archetypeId === "clinical-navy" ||
+         archetypeId === "content-creator" ||
+         archetypeId === "educational-terracotta" ||
+         archetypeId === "pedagogical-mauve" ||
+         archetypeId === "pedagogical-rose") && (!section.variant || section.variant === "story-card" || section.variant === "cards")
+        ? defaultVariants.about
+        : section.variant || defaultVariants.about
+  );
   const isFreeLayout = Boolean(section.cardPositions);
 
   const sensors = useSensors(
@@ -1094,6 +1107,501 @@ export function AboutBlock({
   };
 
   const renderCardLayout = (layout: Exclude<typeof activeLayout, "tabs">) => {
+    if (layout === "medical-license") {
+      return (
+        <div data-testid="about-layout-content" data-layout="medical-license" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div
+              className="lg:col-span-7 rounded-3xl border-2 p-6 sm:p-8 bg-white/95 shadow-md flex flex-col justify-between"
+              style={{
+                borderColor: "rgba(123, 17, 19, 0.35)",
+                boxShadow: "0 10px 30px -10px rgba(123, 17, 19, 0.15)",
+              }}
+            >
+              <div className="space-y-4">
+                <div
+                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3"
+                  style={{ borderColor: "rgba(123, 17, 19, 0.18)" }}
+                >
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-[#7B1113] px-3.5 py-1 text-xs font-bold text-white shadow-xs">
+                    <Award className="h-3.5 w-3.5 text-amber-300" />
+                    HỒ SƠ HÀNH NGHỀ DƯỢC • CHUẨN GMP/GSP
+                  </span>
+                  <span className="font-mono text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200">
+                    LICENSE: #VN-PHARM-8892
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="font-editorial text-2xl font-bold text-[#2B1810]">
+                    Dược sĩ Chuyên khoa &amp; Nghiên cứu Phát triển (R&amp;D)
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-[#2B1810]/85">
+                    {section.biography ||
+                      "Dược sĩ phụ trách kiểm soát chất lượng, nghiên cứu tối ưu hóa công thức bào chế theo tiêu chuẩn GMP-WHO và Dược điển Việt Nam V."}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
+                  <div className="p-3 rounded-xl border border-amber-200/80 bg-amber-50/50">
+                    <span className="font-bold text-[#7B1113] block mb-1">🔬 Bào chế &amp; Độc học</span>
+                    <span className="text-stone-700">Công nghệ nano sinh học, viên nén giải phóng biến đổi</span>
+                  </div>
+                  <div className="p-3 rounded-xl border border-amber-200/80 bg-amber-50/50">
+                    <span className="font-bold text-[#7B1113] block mb-1">📋 Tiêu chuẩn GMP-WHO</span>
+                    <span className="text-stone-700">Thẩm định quy trình sản xuất, HACCP &amp; GLP phòng LAB</span>
+                  </div>
+                  <div className="p-3 rounded-xl border border-amber-200/80 bg-amber-50/50">
+                    <span className="font-bold text-[#7B1113] block mb-1">💊 Dược lâm sàng</span>
+                    <span className="text-stone-700">Tương tác thuốc &amp; Cảnh giác dược an toàn người bệnh</span>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                className="mt-5 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs text-[#7B1113] font-semibold"
+                style={{ borderColor: "rgba(123, 17, 19, 0.15)" }}
+              >
+                <span>⚖️ CAM KẾT Y ĐỨC &amp; AN TOÀN SỬ DỤNG THUỐC</span>
+                <span>BỘ Y TẾ VIỆT NAM VERIFIED</span>
+              </div>
+            </div>
+
+            <div className="lg:col-span-5 space-y-4">
+              <div
+                className="rounded-2xl border p-5 bg-white/90 shadow-xs"
+                style={{ borderColor: "rgba(123, 17, 19, 0.25)" }}
+              >
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#7B1113] mb-3 flex items-center gap-1.5">
+                  <GraduationCap className="h-4 w-4 text-amber-600" /> HỌC VẤN &amp; ĐÀO TẠO CHUYÊN MÔN
+                </h4>
+                <div className="text-xs space-y-1.5 text-stone-800">
+                  <p className="font-bold text-sm text-[#2B1810]">
+                    {eduSchool}
+                  </p>
+                  <p className="font-medium text-[#7B1113]">
+                    {eduDegree}
+                  </p>
+                  <p className="text-stone-500">
+                    {section.educationPeriod || "Khoá K18 • Hệ Chính quy Dược khoa"}
+                  </p>
+                </div>
+              </div>
+
+              <div
+                className="rounded-2xl border p-5 bg-white/90 shadow-xs"
+                style={{ borderColor: "rgba(123, 17, 19, 0.25)" }}
+              >
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#7B1113] mb-3 flex items-center gap-1.5">
+                  <Mail className="h-4 w-4 text-amber-600" /> THÔNG TIN LIÊN HỆ &amp; HỢP TÁC
+                </h4>
+                <div className="space-y-2 text-xs text-stone-700">
+                  {section.contactInfo.email && (
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-[#7B1113]">Email:</span>
+                      <a href={`mailto:${section.contactInfo.email}`} className="hover:underline text-stone-800 font-medium">
+                        {section.contactInfo.email}
+                      </a>
+                    </div>
+                  )}
+                  {section.contactInfo.phone && (
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-[#7B1113]">Hotline:</span>
+                      <span className="text-stone-800 font-medium">{section.contactInfo.phone}</span>
+                    </div>
+                  )}
+                  {section.contactInfo.location && (
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-[#7B1113]">Địa bàn:</span>
+                      <span className="text-stone-800 font-medium">{section.contactInfo.location}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (layout === "clinical-dossier") {
+      return (
+        <div data-testid="about-layout-content" data-layout="clinical-dossier" className="space-y-6 font-mono">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div className="lg:col-span-7 rounded-2xl border-2 border-[#1A1264] p-6 bg-white shadow-md flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-900/15 pb-3 text-xs">
+                  <span className="font-bold text-[#1A1264] flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    [PHYSICIAN CLINICAL DOSSIER // MD. REGISTRATION]
+                  </span>
+                  <span className="rounded bg-[#1A1264] px-2 py-0.5 text-[10px] text-white font-bold">
+                    MD-HN-2024
+                  </span>
+                </div>
+                <div>
+                  <h3 className="font-sans text-2xl font-bold text-[#0C0838]">
+                    Bác sĩ Nội trú / Điều trị Lâm sàng
+                  </h3>
+                  <p className="mt-1 text-xs text-indigo-900 font-semibold font-mono">
+                    BỆNH VIỆN BẠCH MAI • BỘ MÔN NỘI - ĐH Y HÀ NỘI
+                  </p>
+                  <p className="mt-3 font-sans text-sm leading-relaxed text-slate-700">
+                    {section.biography ||
+                      "Bác sĩ lâm sàng trực tiếp điều trị tại khoa Cấp cứu & Can thiệp hồi sức tim mạch, ứng dụng y học chứng cứ trong chẩn đoán và theo dõi phác đồ."}
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 text-[11px] font-sans">
+                  <div className="p-2.5 rounded-lg border border-slate-200 bg-slate-50">
+                    <strong className="text-[#1A1264] block">🩺 Cấp cứu Hồi sức</strong>
+                    <span className="text-slate-600">ACLS nâng cao, can thiệp sốc tuần hoàn</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg border border-slate-200 bg-slate-50">
+                    <strong className="text-[#1A1264] block">📊 Y học chứng cứ</strong>
+                    <span className="text-slate-600">Phác đồ Bộ Y tế &amp; Guideline AHA/ESC</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg border border-slate-200 bg-slate-50">
+                    <strong className="text-[#1A1264] block">🧬 Cận lâm sàng</strong>
+                    <span className="text-slate-600">Chẩn đoán hình ảnh CT/MRI &amp; Xét nghiệm</span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-5 pt-3 border-t border-slate-200 flex items-center justify-between text-[11px] text-indigo-900 font-bold">
+                <span>STATUS: PRACTICING PHYSICIAN</span>
+                <span>HIPPOCRATIC OATH VERIFIED</span>
+              </div>
+            </div>
+
+            <div className="lg:col-span-5 space-y-4">
+              <div className="rounded-xl border border-indigo-900/20 bg-white p-5 shadow-xs">
+                <div className="flex items-center justify-between border-b border-indigo-900/10 pb-2 mb-3 text-xs font-bold text-[#1A1264]">
+                  <span>[HOSPITAL AFFILIATIONS &amp; DEGREE]</span>
+                  <span className="text-[10px] text-slate-400">ICD-10</span>
+                </div>
+                <div className="space-y-1.5 text-xs text-slate-700 font-sans">
+                  <p className="font-bold text-[#0C0838]">
+                    {eduSchool}
+                  </p>
+                  <p className="font-medium text-indigo-900">
+                    {eduDegree}
+                  </p>
+                  <p className="text-slate-500 font-mono text-[11px]">
+                    {section.educationPeriod || "Bác sĩ Nội trú Khóa K47"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-indigo-900/20 bg-white p-5 shadow-xs">
+                <div className="flex items-center justify-between border-b border-indigo-900/10 pb-2 mb-3 text-xs font-bold text-[#1A1264]">
+                  <span>[CLINICAL CONTACT &amp; PAGER]</span>
+                  <span className="text-[10px] text-emerald-600 font-bold">ON CALL</span>
+                </div>
+                <div className="space-y-2 text-xs text-slate-700 font-sans">
+                  {section.contactInfo.email && (
+                    <div>
+                      <strong className="text-[#1A1264]">Email BV:</strong>{" "}
+                      <a href={`mailto:${section.contactInfo.email}`} className="text-[#1A1264] underline">
+                        {section.contactInfo.email}
+                      </a>
+                    </div>
+                  )}
+                  {section.contactInfo.phone && (
+                    <div>
+                      <strong className="text-[#1A1264]">Pager / Hotline:</strong>{" "}
+                      <span className="font-mono">{section.contactInfo.phone}</span>
+                    </div>
+                  )}
+                  {section.contactInfo.location && (
+                    <div>
+                      <strong className="text-[#1A1264]">Khoa / Phòng:</strong>{" "}
+                      <span>{section.contactInfo.location}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (layout === "creator-profile") {
+      return (
+        <div data-testid="about-layout-content" data-layout="creator-profile" className="space-y-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="rounded-2xl border-2 border-black bg-amber-300 p-4 shadow-[4px_4px_0px_#000] rotate-[-1deg]">
+              <span className="text-[10px] font-black uppercase tracking-wider text-black block">TIKTOK REACH</span>
+              <span className="font-editorial text-2xl font-black text-black">250K+</span>
+              <span className="text-[11px] font-bold text-black/80 block">3.2M Lượt Thích</span>
+            </div>
+            <div className="rounded-2xl border-2 border-black bg-rose-300 p-4 shadow-[4px_4px_0px_#000] rotate-[1deg]">
+              <span className="text-[10px] font-black uppercase tracking-wider text-black block">INSTAGRAM / REELS</span>
+              <span className="font-editorial text-2xl font-black text-black">85K+</span>
+              <span className="text-[11px] font-bold text-black/80 block">15.2% Avg. Reach</span>
+            </div>
+            <div className="rounded-2xl border-2 border-black bg-sky-300 p-4 shadow-[4px_4px_0px_#000] rotate-[-1deg]">
+              <span className="text-[10px] font-black uppercase tracking-wider text-black block">YOUTUBE SHORTS</span>
+              <span className="font-editorial text-2xl font-black text-black">120K+</span>
+              <span className="text-[11px] font-bold text-black/80 block">Views / Tháng</span>
+            </div>
+            <div className="rounded-2xl border-2 border-black bg-emerald-300 p-4 shadow-[4px_4px_0px_#000] rotate-[1deg]">
+              <span className="text-[10px] font-black uppercase tracking-wider text-black block">ENGAGEMENT RATE</span>
+              <span className="font-editorial text-2xl font-black text-black">8.4%</span>
+              <span className="text-[11px] font-bold text-black/80 block">Top Creator GenZ</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div className="lg:col-span-7 rounded-3xl border-4 border-black bg-white p-6 sm:p-8 shadow-[6px_6px_0px_#000]">
+              <div className="flex items-center justify-between border-b-2 border-black pb-3 mb-4">
+                <span className="font-editorial text-sm font-black uppercase tracking-wider text-[#722F37]">
+                  CREATOR MEDIA DECK • ISSUE NO. 01
+                </span>
+                <span className="rounded-full border border-black bg-amber-300 px-3 py-0.5 text-xs font-black text-black">
+                  OPEN FOR BOOKING ⚡
+                </span>
+              </div>
+              <h3 className="font-editorial text-3xl font-black text-[#2D1418]">
+                Visual Storytelling &amp; Viral Content Creation
+              </h3>
+              <p className="mt-3 text-sm font-medium leading-relaxed text-[#2D1418]/85">
+                {section.biography ||
+                  "Sáng tạo nội dung đa nền tảng kết hợp hình ảnh đậm tính thẩm mỹ, storytelling chân thực và thông điệp lan tỏa tích cực đến cộng đồng người trẻ."}
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2 text-xs font-black">
+                <span className="rounded-lg border-2 border-black bg-stone-100 px-3 py-1">🎬 Brand Integration</span>
+                <span className="rounded-lg border-2 border-black bg-stone-100 px-3 py-1">📱 UGC &amp; Review</span>
+                <span className="rounded-lg border-2 border-black bg-stone-100 px-3 py-1">🎙️ Podcast Host</span>
+                <span className="rounded-lg border-2 border-black bg-stone-100 px-3 py-1">📸 Concept Shoot</span>
+              </div>
+            </div>
+
+            <div className="lg:col-span-5 space-y-4">
+              <div className="rounded-3xl border-4 border-black bg-white p-5 shadow-[4px_4px_0px_#000]">
+                <h4 className="font-editorial text-sm font-black uppercase tracking-wider text-[#722F37] mb-2">
+                  HỢP TÁC THƯƠNG HIỆU &amp; BOOKING
+                </h4>
+                <div className="space-y-2 text-xs font-semibold text-[#2D1418]">
+                  {section.contactInfo.email && (
+                    <div>
+                      <span>Email:</span>{" "}
+                      <a href={`mailto:${section.contactInfo.email}`} className="underline ml-1">
+                        {section.contactInfo.email}
+                      </a>
+                    </div>
+                  )}
+                  {section.contactInfo.phone && (
+                    <div>
+                      <span>Agency Booking:</span> <span className="ml-1">{section.contactInfo.phone}</span>
+                    </div>
+                  )}
+                  {section.contactInfo.location && (
+                    <div>
+                      <span>Studio Base:</span> <span className="ml-1">{section.contactInfo.location}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="rounded-3xl border-4 border-black bg-stone-50 p-5 shadow-[4px_4px_0px_#000]">
+                <h4 className="font-editorial text-sm font-black uppercase tracking-wider text-black mb-2">
+                  PRODUCTION GEAR // SPECS
+                </h4>
+                <div className="text-xs text-stone-700 space-y-1">
+                  <p>• Camera: Sony Cinema FX30 &amp; G-Master Lenses</p>
+                  <p>• Audio: DJI Wireless Mic 2 Studio Setup</p>
+                  <p>• Color Grading: DaVinci Resolve Studio 18</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (layout === "academic-cv") {
+      return (
+        <div data-testid="about-layout-content" data-layout="academic-cv" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div
+              className="lg:col-span-7 rounded-2xl border-2 p-6 sm:p-8 bg-white/95 shadow-sm flex flex-col justify-between"
+              style={{ borderColor: "rgba(155, 48, 45, 0.35)" }}
+            >
+              <div className="space-y-4">
+                <div
+                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3"
+                  style={{ borderColor: "rgba(155, 48, 45, 0.2)" }}
+                >
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#9B302D]">
+                    HỒ SƠ HỌC THUẬT &amp; LÝ LỊCH KHOA HỌC • ĐHQGHN
+                  </span>
+                  <span className="rounded bg-[#9B302D] px-2.5 py-0.5 text-[10px] font-bold text-white">
+                    VNU-UEd-CV
+                  </span>
+                </div>
+                <div>
+                  <h3 className="font-editorial text-2xl font-bold text-[#282828]">
+                    Nghiên cứu sinh &amp; Giảng viên Sư phạm Tương lai
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-[#282828]/85">
+                    {section.biography ||
+                      "Nghiên cứu chuyên sâu về đổi mới phương pháp giảng dạy, ứng dụng chuyển đổi số và phát triển năng lực tự học cho học sinh trong chương trình GDPT 2018."}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-[#9B302D]/20 bg-[#EDEAE2]/30 p-3.5 text-xs text-[#282828]">
+                  <strong className="text-[#9B302D] block mb-1">📜 Triết lý nghiên cứu giáo dục:</strong>
+                  <p className="italic leading-relaxed">
+                    &ldquo;Lấy người học làm trung tâm của mọi chuyển hóa, công nghệ làm đòn bẩy kích hoạt tư duy và sự thấu cảm làm nền tảng của y đức sư phạm.&rdquo;
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 pt-3 border-t border-[#9B302D]/15 flex items-center justify-between text-xs text-[#9B302D] font-bold">
+                <span>TRƯỜNG ĐẠI HỌC GIÁO DỤC • ĐHQGHN</span>
+                <span>ACADEMIC VERIFIED</span>
+              </div>
+            </div>
+
+            <div className="lg:col-span-5 space-y-4">
+              <div
+                className="rounded-xl border p-5 bg-white/90 shadow-xs"
+                style={{ borderColor: "rgba(155, 48, 45, 0.25)" }}
+              >
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#9B302D] mb-2 flex items-center gap-1.5">
+                  <BookOpen className="h-4 w-4" /> CÔNG BỐ KHOA HỌC &amp; ĐỀ TÀI
+                </h4>
+                <div className="space-y-2 text-xs text-[#282828]">
+                  <p>• <strong>01 Đề tài NCKH cấp ĐHQGHN:</strong> Đạt giải Nhất năm 2024</p>
+                  <p>• <strong>03 Bài báo khoa học:</strong> Đăng kỷ yếu Hội thảo Quốc gia</p>
+                  <p>• <strong>Học bổng:</strong> Tài năng Khoa học Sư phạm VNU</p>
+                </div>
+              </div>
+
+              <div
+                className="rounded-xl border p-5 bg-white/90 shadow-xs"
+                style={{ borderColor: "rgba(155, 48, 45, 0.25)" }}
+              >
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#9B302D] mb-2 flex items-center gap-1.5">
+                  <Mail className="h-4 w-4" /> LIÊN HỆ KHOA HỌC &amp; VĂN PHÒNG
+                </h4>
+                <div className="space-y-2 text-xs text-[#282828]">
+                  {section.contactInfo.email && (
+                    <div>
+                      <span>Email:</span>{" "}
+                      <a href={`mailto:${section.contactInfo.email}`} className="text-[#9B302D] font-medium underline ml-1">
+                        {section.contactInfo.email}
+                      </a>
+                    </div>
+                  )}
+                  {section.contactInfo.phone && (
+                    <div>
+                      <span>Điện thoại:</span> <span className="ml-1">{section.contactInfo.phone}</span>
+                    </div>
+                  )}
+                  {section.contactInfo.location && (
+                    <div>
+                      <span>Văn phòng:</span> <span className="ml-1">{section.contactInfo.location}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (layout === "pedagogical-journal") {
+      return (
+        <div data-testid="about-layout-content" data-layout="pedagogical-journal" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div className="lg:col-span-7 rounded-3xl border-2 border-[#9B5464]/30 p-6 sm:p-8 bg-white/95 shadow-sm flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#9B5464]/20 pb-3">
+                  <span className="rounded-full bg-[#9B5464]/10 px-3.5 py-1 text-xs font-bold text-[#9B5464]">
+                    🌸 CHÂN DUNG NGƯỜI GIÁO VIÊN TRẺ • SƯ PHẠM UEd
+                  </span>
+                  <span className="text-xs text-stone-500 font-medium">
+                    KHÓA K18 • THỰC TẬP SƯ PHẠM
+                  </span>
+                </div>
+                <div>
+                  <h3 className="font-editorial text-2xl font-bold text-[#3A2329]">
+                    Tâm Niệm Nghề Giáo &amp; Triết Lý Giảng Dạy
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-[#3A2329]/85">
+                    {section.biography ||
+                      "Mỗi học sinh là một nốt nhạc độc bản trong dàn hợp xướng cuộc đời. Người giáo viên không chỉ truyền đạt tri thức mà còn là người thắp lên ngọn lửa đam mê và sự tự tin cho các em."}
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 text-xs">
+                  <div className="p-3 rounded-2xl bg-[#F9F6F2] border border-[#9B5464]/15">
+                    <strong className="text-[#9B5464] block mb-1">🎼 Giáo án tương tác</strong>
+                    <span>Dạy học liên môn &amp; ứng dụng CNTT sinh động</span>
+                  </div>
+                  <div className="p-3 rounded-2xl bg-[#F9F6F2] border border-[#9B5464]/15">
+                    <strong className="text-[#9B5464] block mb-1">💡 Trải nghiệm sáng tạo</strong>
+                    <span>Tổ chức hoạt động ngoại khóa &amp; CLB học đường</span>
+                  </div>
+                  <div className="p-3 rounded-2xl bg-[#F9F6F2] border border-[#9B5464]/15">
+                    <strong className="text-[#9B5464] block mb-1">❤️ Thấu cảm học trò</strong>
+                    <span>Xây dựng môi trường lớp học hạnh phúc</span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-5 pt-3 border-t border-[#9B5464]/15 flex items-center justify-between text-xs text-[#9B5464] font-semibold">
+                <span>TRƯỜNG ĐH SƯ PHẠM NGHỆ THUẬT TW</span>
+                <span>TỐT NGHIỆP XUẤT SẮC 🌸</span>
+              </div>
+            </div>
+
+            <div className="lg:col-span-5 space-y-4">
+              <div className="rounded-2xl border border-[#9B5464]/25 p-5 bg-white/90 shadow-xs">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#9B5464] mb-2 flex items-center gap-1.5">
+                  <GraduationCap className="h-4 w-4 text-[#9B5464]" /> ĐƠN VỊ THỰC TẬP &amp; HỌC VẤN
+                </h4>
+                <div className="space-y-1.5 text-xs text-stone-800">
+                  <p className="font-bold text-sm text-[#3A2329]">
+                    {eduSchool}
+                  </p>
+                  <p className="font-medium text-[#9B5464]">
+                    {eduDegree}
+                  </p>
+                  <p className="text-stone-500">
+                    {section.educationPeriod || "Khoá K18 • Thực tập Sư phạm"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-[#9B5464]/25 p-5 bg-white/90 shadow-xs">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#9B5464] mb-2 flex items-center gap-1.5">
+                  <Mail className="h-4 w-4 text-[#9B5464]" /> LIÊN HỆ GIÁO VIÊN
+                </h4>
+                <div className="space-y-2 text-xs text-stone-700">
+                  {section.contactInfo.email && (
+                    <div>
+                      <span>Email:</span>{" "}
+                      <a href={`mailto:${section.contactInfo.email}`} className="text-[#9B5464] font-medium underline ml-1">
+                        {section.contactInfo.email}
+                      </a>
+                    </div>
+                  )}
+                  {section.contactInfo.phone && (
+                    <div>
+                      <span>Hotline:</span> <span className="ml-1">{section.contactInfo.phone}</span>
+                    </div>
+                  )}
+                  {section.contactInfo.location && (
+                    <div>
+                      <span>Địa chỉ:</span> <span className="ml-1">{section.contactInfo.location}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     const layoutTitle = {
       "story-card": "Tiểu sử dạng câu chuyện",
       "bento-facts": "Bento thông tin",
@@ -1105,6 +1613,11 @@ export function AboutBlock({
       organic: "Bố cục tự do",
       timeline: "Dòng thời gian hồ sơ",
       "two-column-bio": "Tiểu sử 2 cột",
+      "medical-license": "Dược sĩ Lâm sàng Mộc Anh",
+      "clinical-dossier": "Bệnh án Bác sĩ Thu Trang",
+      "creator-profile": "Creator & Media Deck",
+      "academic-cv": "Hồ sơ Học thuật ĐHQGHN",
+      "pedagogical-journal": "Nhật ký Giáo viên Sư phạm",
     }[layout];
 
     const containerClassName = {
@@ -1118,6 +1631,11 @@ export function AboutBlock({
       organic: "grid grid-cols-1 gap-5 md:grid-cols-[1.2fr_0.8fr]",
       timeline: "relative space-y-5",
       "two-column-bio": "grid grid-cols-1 gap-5 md:grid-cols-2",
+      "medical-license": "grid grid-cols-1 gap-5 md:grid-cols-[1.25fr_0.75fr]",
+      "clinical-dossier": "grid grid-cols-1 gap-5 md:grid-cols-2",
+      "creator-profile": "grid grid-cols-1 gap-5 md:grid-cols-[1.2fr_0.8fr]",
+      "academic-cv": "grid grid-cols-1 gap-5 md:grid-cols-2",
+      "pedagogical-journal": "grid grid-cols-1 gap-5 md:grid-cols-[1.1fr_0.9fr]",
     }[layout];
 
     const getItemClassName = (index: number) => {

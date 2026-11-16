@@ -1059,6 +1059,58 @@ section { padding: 44px 0; position: relative; }
   display: inline-flex; align-items: center; justify-content: center;
   background: var(--primary); color: var(--bg);
 }
+
+/* Medical Ruby Magazine (Mộc Anh) */
+.medical-ruby-hero { padding: 20px 0 36px; }
+.medical-ribbon { display: inline-flex; align-items: center; gap: 8px; background: var(--primary); color: #fff; padding: 6px 18px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 20px; border: 1.5px solid #C29B38; box-shadow: 0 4px 14px rgba(123,17,19,0.25); }
+.medical-syllabus-box { border: 1.5px solid ${hexToRgba(pal.primary, 0.25)}; border-radius: 18px; padding: 18px; background: var(--surface); box-shadow: 0 6px 20px -6px rgba(123,17,19,0.12); margin-top: 20px; }
+.medical-syllabus-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid ${hexToRgba(pal.primary, 0.18)}; padding-bottom: 10px; margin-bottom: 12px; }
+.medical-pill { font-size: 10px; font-weight: 700; color: #854D0E; background: #FEF3C7; padding: 2px 8px; border-radius: 999px; border: 1px solid #FCD34D; }
+.medical-syllabus-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; font-size: 12px; }
+.medical-syllabus-item { padding: 8px 12px; border-radius: 8px; background: ${hexToRgba(pal.primary, 0.05)}; border: 1px solid ${hexToRgba(pal.primary, 0.12)}; }
+.medical-arch-frame { position: relative; border-radius: 160px 160px 24px 24px; border: 4px solid var(--primary); padding: 4px; background: var(--surface); box-shadow: 0 0 0 2px #C29B38, 0 16px 36px -10px rgba(123,17,19,0.35); }
+.medical-frame-badge { position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; border: 1.5px solid #C29B38; padding: 4px 14px; border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+/* Clinical Navy Dossier (Thu Trang) */
+.clinical-navy-hero { padding: 20px 0 36px; }
+.clinical-status-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; border: 1px solid ${hexToRgba(pal.primary, 0.25)}; border-radius: 12px; padding: 8px 16px; background: #F1F5F9; font-family: monospace; font-size: 12px; margin-bottom: 24px; color: var(--text); }
+.clinical-dot { display: inline-block; width: 8px; height: 8px; border-radius: 999px; background: #10B981; margin-right: 6px; }
+.clinical-badge-pill { background: var(--primary); color: #fff; padding: 3px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; }
+.clinical-diagnostic-index { border: 1.5px solid ${hexToRgba(pal.primary, 0.2)}; border-radius: 12px; padding: 16px; background: var(--surface); margin-top: 20px; font-family: monospace; font-size: 12px; }
+.clinical-diagnostic-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid ${hexToRgba(pal.primary, 0.12)}; padding-bottom: 8px; margin-bottom: 12px; font-weight: 700; color: var(--primary); }
+.clinical-diagnostic-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
+.clinical-diag-item { padding: 8px 10px; border-radius: 6px; background: #F8FAFC; border: 1px solid #E2E8F0; }
+.clinical-avatar-frame { border: 2px solid var(--primary); border-radius: 16px; padding: 10px; background: var(--surface); box-shadow: 0 10px 28px -8px rgba(26,18,100,0.25); }
+
+/* Content Creator Magazine (Hà Lê) */
+.creator-hero { padding: 20px 0 36px; }
+.creator-masthead { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 8px; font-size: 12px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: var(--primary); margin-bottom: 24px; }
+.creator-stickers { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.creator-sticker-pill { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 999px; border: 2px solid #000; font-size: 11px; font-weight: 900; color: #000; box-shadow: 2px 2px 0px #000; }
+.sticker-yellow { background: #FDE047; transform: rotate(-2deg); }
+.sticker-pink { background: #F472B6; transform: rotate(1.5deg); }
+.sticker-blue { background: #38BDF8; transform: rotate(-1deg); }
+.sticker-green { background: #4ADE80; transform: rotate(2deg); }
+.creator-polaroid-frame { position: relative; border: 4px solid #000; border-radius: 24px; padding: 12px; background: #fff; box-shadow: 8px 8px 0px #000; transform: rotate(1.5deg); }
+.creator-tape { position: absolute; top: -14px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 80px; height: 24px; background: rgba(253, 224, 71, 0.9); border: 1px solid rgba(0,0,0,0.3); }
+
+/* Academic Monograph (Võ Thị Hoài) */
+.academic-monograph-hero { padding: 20px 0 36px; }
+.academic-ribbon { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; font-size: 12px; font-weight: 700; color: var(--primary); margin-bottom: 24px; }
+.academic-vol-tag { border: 1px solid var(--primary); padding: 2px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; background: var(--bg); }
+.academic-framework-box { border: 1.5px solid ${hexToRgba(pal.primary, 0.3)}; border-radius: 12px; padding: 16px; background: var(--surface); margin-top: 20px; }
+.academic-arch-frame { position: relative; border-radius: 160px 160px 24px 24px; border: 3px solid var(--primary); padding: 4px; background: var(--surface); box-shadow: 0 10px 28px -6px rgba(155,48,45,0.25); }
+.academic-frame-badge { position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; padding: 4px 14px; border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+
+/* Pedagogical Journal (Nguyệt Ánh & Thùy Linh) */
+.pedagogical-journal-hero { padding: 20px 0 36px; }
+.pedagogical-ribbon { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid ${hexToRgba(pal.primary, 0.3)}; padding-bottom: 10px; font-size: 12px; font-weight: 700; color: var(--primary); margin-bottom: 24px; }
+.pedagogical-tag { background: ${hexToRgba(pal.primary, 0.1)}; color: var(--primary); padding: 3px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.pedagogical-index-box { border: 1.5px solid ${hexToRgba(pal.primary, 0.25)}; border-radius: 18px; padding: 16px; background: var(--surface); margin-top: 20px; }
+.pedagogical-index-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; font-size: 12px; }
+.pedagogical-item { padding: 8px 10px; border-radius: 8px; background: #F9F6F2; border: 1px solid ${hexToRgba(pal.primary, 0.15)}; }
+.pedagogical-avatar-frame { position: relative; border-radius: 24px; border: 2px solid ${hexToRgba(pal.primary, 0.4)}; padding: 6px; background: var(--surface); box-shadow: 0 8px 24px -6px rgba(155,84,100,0.2); }
+.pedagogical-bookmark { position: absolute; top: -10px; right: 14px; background: var(--primary); color: #fff; padding: 2px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
 .highlight-label {
   font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
   color: var(--primary); margin: 0 0 2px;
@@ -1891,7 +1943,353 @@ function renderHeroHtml(
     )
     .join("");
 
-  if (isCanvaEditorial) {
+  const isMedicalRuby =
+    templateId === "medical-ruby" || hero.variant === "medical-arch";
+  const isClinicalNavy =
+    templateId === "clinical-navy" || hero.variant === "clinical-dossier";
+  const isContentCreator =
+    templateId === "content-creator" || hero.variant === "creator-cover";
+  const isEducationalTerracotta =
+    templateId === "educational-terracotta" ||
+    hero.variant === "academic-monograph";
+  const isPedagogicalJournal =
+    templateId === "pedagogical-mauve" ||
+    templateId === "pedagogical-rose" ||
+    hero.variant === "pedagogical-journal";
+
+  if (isMedicalRuby) {
+    return `<section id="hero" class="reveal-on-scroll">
+      <div class="medical-ruby-hero">
+        <div class="medical-ribbon">
+          <span>🏆 HỒ SƠ NĂNG LỰC DƯỢC HỌC • CHUẨN GMP/GSP • CLINICAL PHARMACY</span>
+        </div>
+        <div class="hero-grid" style="align-items:center;">
+          <div>
+            <p class="hero-eyebrow" style="color:var(--secondary);font-weight:700;letter-spacing:0.2em;text-transform:uppercase;">DƯỢC SĨ ĐẠI HỌC • NGHIÊN CỨU &amp; BÀO CHẾ</p>
+            <h1 class="font-editorial" style="font-size: clamp(32px, 5vw, 56px); font-weight: 700; line-height: 1.15; margin: 12px 0; color: var(--text);">${escapeHtml(
+              hero.fullName,
+            )}</h1>
+            <p style="font-size: 18px; font-weight: 600; font-style: italic; color: var(--primary); margin-bottom: 16px;">${escapeHtml(
+              hero.roleTitle,
+            )}</p>
+            <p style="font-size: 15px; line-height: 1.7; opacity: 0.9; margin-bottom: 24px; max-width: 540px;">${escapeHtml(
+              hero.shortBio,
+            )}</p>
+
+            <div class="medical-syllabus-box">
+              <div class="medical-syllabus-header">
+                <span style="font-weight:700;color:var(--primary);text-transform:uppercase;font-size:12px;letter-spacing:0.05em;">📖 MỤC LỤC HỒ SƠ CHUYÊN MÔN DƯỢC</span>
+                <span class="medical-pill">SYLLABUS 2024</span>
+              </div>
+              <div class="medical-syllabus-grid">
+                <div class="medical-syllabus-item"><strong>01.</strong> Lý lịch Dược sĩ &amp; Y đức</div>
+                <div class="medical-syllabus-item"><strong>02.</strong> Chuyên môn Lâm sàng &amp; Bào chế</div>
+                <div class="medical-syllabus-item"><strong>03.</strong> Đề tài &amp; Dự án trọng điểm</div>
+                <div class="medical-syllabus-item"><strong>04.</strong> Chứng chỉ &amp; Tiêu chuẩn GMP</div>
+              </div>
+            </div>
+
+            <div class="hero-cta" style="margin-top:24px;">
+              ${hero.ctaButtons
+                .map(
+                  (btn) =>
+                    `<a href="${escapeHtml(
+                      btn.href,
+                    )}" class="btn btn-primary" style="background:var(--primary);color:#fff;border-radius:999px;padding:12px 28px;font-weight:600;box-shadow:0 4px 14px rgba(123,17,19,0.3);">${escapeHtml(
+                      btn.label,
+                    )}</a>`,
+                )
+                .join("")}
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:center;">
+            ${
+              showAvatar
+                ? `
+            <div class="medical-arch-frame">
+              <img src="${escapeHtml(
+                resolveSrc(hero.avatar.url),
+              )}" alt="${escapeHtml(
+                hero.fullName,
+              )}" style="width:100%;max-width:320px;height:420px;object-fit:cover;border-radius:156px 156px 20px 20px;" />
+              <div class="medical-frame-badge">TIÊU CHUẨN GMP/GSP • BỘ Y TẾ</div>
+            </div>`
+                : ""
+            }
+          </div>
+        </div>
+      </div>
+    </section>`;
+  }
+
+  if (isClinicalNavy) {
+    return `<section id="hero" class="reveal-on-scroll">
+      <div class="clinical-navy-hero">
+        <div class="clinical-status-bar">
+          <span style="font-weight:700;"><span class="clinical-dot"></span> [DOSSIER ARCHIVE: 2024-MED-CLINICAL]</span>
+          <span style="opacity:0.8;">BỆNH VIỆN BẠCH MAI • TRƯỜNG ĐH Y HÀ NỘI</span>
+          <span class="clinical-badge-pill">STATUS: ACTIVE RESIDENT</span>
+        </div>
+        <div class="hero-grid" style="align-items:center;">
+          <div>
+            <p style="font-family:monospace;font-size:12px;font-weight:700;color:var(--primary);letter-spacing:0.15em;text-transform:uppercase;">[CLINICAL CASE DOSSIER // RESIDENT PROFILE]</p>
+            <h1 style="font-size: clamp(32px, 5vw, 56px); font-weight: 800; line-height: 1.15; margin: 12px 0; color: var(--text);">${escapeHtml(
+              hero.fullName,
+            )}</h1>
+            <p style="font-size: 16px; font-weight: 600; color: var(--primary); margin-bottom: 16px;">${escapeHtml(
+              hero.roleTitle,
+            )}</p>
+            <p style="font-size: 15px; line-height: 1.7; opacity: 0.9; margin-bottom: 24px; max-width: 540px;">${escapeHtml(
+              hero.shortBio,
+            )}</p>
+
+            <div class="clinical-diagnostic-index">
+              <div class="clinical-diagnostic-header">
+                <span>🩺 DANH MỤC CA BỆNH &amp; CHUYÊN MÔN</span>
+                <span style="font-size:10px;opacity:0.7;">ICD-10 CLINICAL ARCHIVE</span>
+              </div>
+              <div class="clinical-diagnostic-grid">
+                <div class="clinical-diag-item"><strong style="color:var(--primary);">[CASE 01]</strong> Cấp cứu &amp; Can thiệp hồi sức</div>
+                <div class="clinical-diag-item"><strong style="color:var(--primary);">[CASE 02]</strong> Phác đồ điều trị nội khoa</div>
+                <div class="clinical-diag-item"><strong style="color:var(--primary);">[CASE 03]</strong> Chẩn đoán cận lâm sàng</div>
+                <div class="clinical-diag-item"><strong style="color:var(--primary);">[CASE 04]</strong> Y học chứng cứ &amp; Báo cáo</div>
+              </div>
+            </div>
+
+            <div class="hero-cta" style="margin-top:24px;">
+              ${hero.ctaButtons
+                .map(
+                  (btn) =>
+                    `<a href="${escapeHtml(
+                      btn.href,
+                    )}" class="btn btn-primary" style="background:var(--primary);color:#fff;border-radius:8px;padding:12px 28px;font-weight:700;font-family:monospace;">${escapeHtml(
+                      btn.label,
+                    )}</a>`,
+                )
+                .join("")}
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:center;">
+            ${
+              showAvatar
+                ? `
+            <div class="clinical-avatar-frame">
+              <div style="font-family:monospace;font-size:9px;font-weight:700;color:var(--primary);margin-bottom:6px;">[CASE_IMAGE // HIGH_RES]</div>
+              <img src="${escapeHtml(
+                resolveSrc(hero.avatar.url),
+              )}" alt="${escapeHtml(
+                hero.fullName,
+              )}" style="width:100%;max-width:320px;height:420px;object-fit:cover;border-radius:12px;" />
+              <div style="display:flex;justify-content:space-between;margin-top:8px;font-family:monospace;font-size:10px;color:var(--primary);">
+                <span>RECORD: VERIFIED</span>
+                <span>HOSPITAL ID: #9821</span>
+              </div>
+            </div>`
+                : ""
+            }
+          </div>
+        </div>
+      </div>
+    </section>`;
+  }
+
+  if (isContentCreator) {
+    return `<section id="hero" class="reveal-on-scroll">
+      <div class="creator-hero">
+        <div class="creator-masthead">
+          <span>CREATIVE DIRECTORY • ISSUE NO. 01</span>
+          <span>MEDIA &amp; VIRAL STORYTELLING</span>
+          <span>EST. 2024</span>
+        </div>
+        <div class="hero-grid" style="align-items:center;">
+          <div>
+            <h1 class="font-editorial" style="font-size: clamp(36px, 6vw, 68px); font-weight: 900; line-height: 0.95; margin: 12px 0; text-transform:uppercase; color: var(--text);">${escapeHtml(
+              hero.fullName,
+            )}</h1>
+            <p style="font-size: 18px; font-weight: 800; text-transform:uppercase; color: var(--primary); margin-bottom: 16px; letter-spacing:0.05em;">${escapeHtml(
+              hero.roleTitle,
+            )}</p>
+            <p style="font-size: 15px; line-height: 1.7; opacity: 0.9; margin-bottom: 24px; max-width: 520px; font-weight:500;">${escapeHtml(
+              hero.shortBio,
+            )}</p>
+
+            <div class="creator-stickers">
+              <span class="creator-sticker-pill sticker-yellow">🔥 VIRAL CAMPAIGN</span>
+              <span class="creator-sticker-pill sticker-pink">🎬 TIKTOK CREATOR</span>
+              <span class="creator-sticker-pill sticker-blue">✨ 500K+ REACH</span>
+              <span class="creator-sticker-pill sticker-green">📸 VISUAL STORYTELLER</span>
+            </div>
+
+            <div style="margin-top:20px;display:flex;gap:16px;font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;">
+              <span>• TIKTOK</span><span>• REELS</span><span>• YOUTUBE</span><span>• PODCAST</span>
+            </div>
+
+            <div class="hero-cta" style="margin-top:24px;">
+              ${hero.ctaButtons
+                .map(
+                  (btn) =>
+                    `<a href="${escapeHtml(
+                      btn.href,
+                    )}" class="btn btn-primary" style="background:#000;color:#fff;border-radius:999px;padding:12px 28px;font-weight:900;border:2px solid #000;box-shadow:4px 4px 0px var(--primary);">${escapeHtml(
+                      btn.label,
+                    )}</a>`,
+                )
+                .join("")}
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:center;">
+            ${
+              showAvatar
+                ? `
+            <div class="creator-polaroid-frame">
+              <div class="creator-tape"></div>
+              <img src="${escapeHtml(
+                resolveSrc(hero.avatar.url),
+              )}" alt="${escapeHtml(
+                hero.fullName,
+              )}" style="width:100%;max-width:320px;height:400px;object-fit:cover;border-radius:16px;" />
+              <p style="margin-top:12px;text-align:center;font-family:var(--font-heading);font-size:14px;font-weight:700;font-style:italic;">Campaign On Set 2024 ⚡</p>
+            </div>`
+                : ""
+            }
+          </div>
+        </div>
+      </div>
+    </section>`;
+  }
+
+  if (isEducationalTerracotta) {
+    return `<section id="hero" class="reveal-on-scroll">
+      <div class="academic-monograph-hero">
+        <div class="academic-ribbon">
+          <span style="font-weight:700;letter-spacing:0.15em;">ĐẠI HỌC QUỐC GIA HÀ NỘI • TRƯỜNG ĐẠI HỌC GIÁO DỤC</span>
+          <span class="academic-vol-tag">MONOGRAPH VOL. 2024</span>
+        </div>
+        <div class="hero-grid" style="align-items:center;">
+          <div>
+            <p style="font-size:12px;font-weight:700;color:var(--primary);letter-spacing:0.2em;text-transform:uppercase;">HỒ SƠ HỌC THUẬT &amp; NGHIÊN CỨU SƯ PHẠM</p>
+            <h1 class="font-editorial" style="font-size: clamp(32px, 5vw, 56px); font-weight: 700; line-height: 1.15; margin: 12px 0; color: var(--text);">${escapeHtml(
+              hero.fullName,
+            )}</h1>
+            <p style="font-size: 18px; font-weight: 600; font-style: italic; color: var(--primary); margin-bottom: 16px;">${escapeHtml(
+              hero.roleTitle,
+            )}</p>
+            <p style="font-size: 15px; line-height: 1.7; opacity: 0.9; margin-bottom: 24px; max-width: 540px;">${escapeHtml(
+              hero.shortBio,
+            )}</p>
+
+            <div class="academic-framework-box">
+              <div style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;margin-bottom:10px;letter-spacing:0.05em;">📖 KHUNG NGHIÊN CỨU &amp; HỌC THUẬT SƯ PHẠM</div>
+              <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--text);">
+                <div><strong style="color:var(--primary);">I.</strong> Lý lịch khoa học &amp; Triết lý giáo dục</div>
+                <div><strong style="color:var(--primary);">II.</strong> Năng lực sư phạm &amp; Dạy học tích cực</div>
+                <div><strong style="color:var(--primary);">III.</strong> Các công trình nghiên cứu &amp; Đề tài thực nghiệm</div>
+                <div><strong style="color:var(--primary);">IV.</strong> Xuất bản tạp chí &amp; Báo cáo sư phạm</div>
+              </div>
+            </div>
+
+            <div class="hero-cta" style="margin-top:24px;">
+              ${hero.ctaButtons
+                .map(
+                  (btn) =>
+                    `<a href="${escapeHtml(
+                      btn.href,
+                    )}" class="btn btn-primary" style="background:var(--primary);color:#fff;border-radius:8px;padding:12px 28px;font-weight:600;">${escapeHtml(
+                      btn.label,
+                    )}</a>`,
+                )
+                .join("")}
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:center;">
+            ${
+              showAvatar
+                ? `
+            <div class="academic-arch-frame">
+              <img src="${escapeHtml(
+                resolveSrc(hero.avatar.url),
+              )}" alt="${escapeHtml(
+                hero.fullName,
+              )}" style="width:100%;max-width:320px;height:420px;object-fit:cover;border-radius:156px 156px 20px 20px;" />
+              <div class="academic-frame-badge">VNU-UEd RESEARCH FELLOW</div>
+            </div>`
+                : ""
+            }
+          </div>
+        </div>
+      </div>
+    </section>`;
+  }
+
+  if (isPedagogicalJournal) {
+    return `<section id="hero" class="reveal-on-scroll">
+      <div class="pedagogical-journal-hero">
+        <div class="pedagogical-ribbon">
+          <span style="font-weight:700;letter-spacing:0.15em;text-transform:uppercase;">NHẬT KÝ SƯ PHẠM &amp; THỰC TẬP GIẢNG DẠY</span>
+          <span class="pedagogical-tag">GIÁO VIÊN TƯƠNG LAI • UEd</span>
+        </div>
+        <div class="hero-grid" style="align-items:center;">
+          <div>
+            <p style="font-size:12px;font-weight:700;color:var(--primary);letter-spacing:0.15em;text-transform:uppercase;">NHẬT KÝ NGƯỜI GIÁO VIÊN TRẺ</p>
+            <h1 class="font-editorial" style="font-size: clamp(32px, 5vw, 56px); font-weight: 700; line-height: 1.15; margin: 12px 0; color: var(--text);">${escapeHtml(
+              hero.fullName,
+            )}</h1>
+            <p style="font-size: 17px; font-weight: 600; font-style: italic; color: var(--primary); margin-bottom: 16px;">${escapeHtml(
+              hero.roleTitle,
+            )}</p>
+            <p style="font-size: 15px; line-height: 1.7; opacity: 0.9; margin-bottom: 24px; max-width: 540px;">${escapeHtml(
+              hero.shortBio,
+            )}</p>
+
+            <div class="pedagogical-index-box">
+              <div style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;margin-bottom:10px;">🌸 TIẾN TRÌNH THỰC TẬP &amp; KẾ HOẠCH BÀI DẠY</div>
+              <div class="pedagogical-index-grid">
+                <div class="pedagogical-item">🌸 Bài 1: Chân dung người giáo viên</div>
+                <div class="pedagogical-item">🌸 Bài 2: Kế hoạch bài dạy (Giáo án)</div>
+                <div class="pedagogical-item">🌸 Bài 3: Hoạt động trải nghiệm sáng tạo</div>
+                <div class="pedagogical-item">🌸 Bài 4: Phản tư &amp; Nhận xét học sinh</div>
+              </div>
+            </div>
+
+            <div class="hero-cta" style="margin-top:24px;">
+              ${hero.ctaButtons
+                .map(
+                  (btn) =>
+                    `<a href="${escapeHtml(
+                      btn.href,
+                    )}" class="btn btn-primary" style="background:var(--primary);color:#fff;border-radius:999px;padding:12px 28px;font-weight:600;">${escapeHtml(
+                      btn.label,
+                    )}</a>`,
+                )
+                .join("")}
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:center;">
+            ${
+              showAvatar
+                ? `
+            <div class="pedagogical-avatar-frame">
+              <div class="pedagogical-bookmark">SƯ PHẠM 2024</div>
+              <img src="${escapeHtml(
+                resolveSrc(hero.avatar.url),
+              )}" alt="${escapeHtml(
+                hero.fullName,
+              )}" style="width:100%;max-width:320px;height:420px;object-fit:cover;border-radius:20px;" />
+            </div>`
+                : ""
+            }
+          </div>
+        </div>
+      </div>
+    </section>`;
+  }
+
+  if (isMusicEditorial || (isCanvaEditorial && templateId === "canva-editorial")) {
     return `<section id="hero" class="reveal-on-scroll">
       <div class="cover-canvas">
         ${isMusicEditorial ? svgCoverStaffTopLeft() : ""}
@@ -2122,6 +2520,270 @@ function renderAboutHtml(
         })
         .join("")}
     </div>`;
+
+  const isMedicalRuby =
+    templateId === "medical-ruby" || about.variant === "medical-license";
+  const isClinicalNavy =
+    templateId === "clinical-navy" || about.variant === "clinical-dossier";
+  const isContentCreator =
+    templateId === "content-creator" || about.variant === "creator-profile";
+  const isEducationalTerracotta =
+    templateId === "educational-terracotta" || about.variant === "academic-cv";
+  const isPedagogicalJournal =
+    templateId === "pedagogical-mauve" ||
+    templateId === "pedagogical-rose" ||
+    about.variant === "pedagogical-journal";
+
+  if (isMedicalRuby) {
+    return `<section id="about" class="about-wrap reveal-on-scroll" data-about-layout="medical-license">
+      <div style="position:relative; z-index:2; margin-bottom: 24px;">
+        <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
+          <div style="border: 2px solid rgba(123, 17, 19, 0.35); border-radius: 24px; padding: 24px; background: var(--surface); box-shadow: 0 10px 30px -10px rgba(123, 17, 19, 0.15);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(123, 17, 19, 0.18); padding-bottom: 12px; margin-bottom: 14px;">
+              <span class="medical-ribbon" style="margin-bottom:0; font-size:10px; padding:4px 12px;">🏆 HỒ SƠ HÀNH NGHỀ DƯỢC • CHUẨN GMP/GSP</span>
+              <span class="medical-pill" style="font-family:monospace;">#VN-PHARM-8892</span>
+            </div>
+            <h3 class="font-editorial" style="font-size:22px; font-weight:700; color:#2B1810; margin:0 0 10px;">Dược sĩ Chuyên khoa &amp; Nghiên cứu Phát triển (R&amp;D)</h3>
+            <p style="font-size:14px; line-height:1.7; color:#2B1810; opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Dược sĩ phụ trách kiểm soát chất lượng, nghiên cứu tối ưu hóa công thức bào chế theo tiêu chuẩn GMP-WHO và Dược điển Việt Nam V.")}</p>
+            <div class="medical-syllabus-grid" style="grid-template-columns: repeat(3, 1fr); gap: 10px;">
+              <div class="medical-syllabus-item">
+                <strong style="color:var(--primary); display:block; margin-bottom:4px;">🔬 Bào chế &amp; Độc học</strong>
+                <span style="font-size:11px; opacity:0.85;">Nano sinh học, viên nén phóng thích biến đổi</span>
+              </div>
+              <div class="medical-syllabus-item">
+                <strong style="color:var(--primary); display:block; margin-bottom:4px;">📋 Tiêu chuẩn GMP-WHO</strong>
+                <span style="font-size:11px; opacity:0.85;">Thẩm định quy trình sản xuất, GLP phòng LAB</span>
+              </div>
+              <div class="medical-syllabus-item">
+                <strong style="color:var(--primary); display:block; margin-bottom:4px;">💊 Dược lâm sàng</strong>
+                <span style="font-size:11px; opacity:0.85;">Tương tác thuốc &amp; Cảnh giác dược an toàn</span>
+              </div>
+            </div>
+            <div style="margin-top:16px; padding-top:10px; border-top:1px solid rgba(123, 17, 19, 0.15); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
+              <span>⚖️ CAM KẾT Y ĐỨC &amp; AN TOÀN SỬ DỤNG THUỐC</span>
+              <span>BỘ Y TẾ VIỆT NAM VERIFIED</span>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="border: 1px solid rgba(123, 17, 19, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
+              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary); margin:0 0 10px;">🎓 HỌC VẤN &amp; ĐÀO TẠO CHUYÊN MÔN</h4>
+              <p style="font-weight:700; font-size:15px; margin:0 0 4px; color:#2B1810;">${escapeHtml(eduSchool)}</p>
+              <p style="font-weight:600; font-size:13px; margin:0 0 4px; color:var(--primary);">${escapeHtml(eduDegree)}</p>
+              <p style="font-size:11px; opacity:0.75; margin:0;">${escapeHtml(about.educationPeriod || "Khoá K18 • Hệ Chính quy Dược khoa")}</p>
+            </div>
+            <div style="border: 1px solid rgba(123, 17, 19, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
+              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary); margin:0 0 10px;">✉️ THÔNG TIN LIÊN HỆ &amp; HỢP TÁC</h4>
+              ${contactInfo.email ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Email:</strong> <a href="mailto:${escapeHtml(contactInfo.email)}" style="color:var(--primary);">${escapeHtml(contactInfo.email)}</a></p>` : ""}
+              ${contactInfo.phone ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Hotline:</strong> ${escapeHtml(contactInfo.phone)}</p>` : ""}
+              ${contactInfo.location ? `<p style="font-size:12px; margin:0;"><strong>Địa bàn:</strong> ${escapeHtml(contactInfo.location)}</p>` : ""}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  }
+
+  if (isClinicalNavy) {
+    return `<section id="about" class="about-wrap reveal-on-scroll" data-about-layout="clinical-dossier" style="font-family:monospace;">
+      <div style="position:relative; z-index:2; margin-bottom: 24px;">
+        <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
+          <div style="border: 2px solid var(--primary); border-radius: 16px; padding: 24px; background: var(--surface); box-shadow: 0 10px 28px -8px rgba(26,18,100,0.25);">
+            <div class="clinical-status-bar" style="margin-bottom:14px; padding:6px 12px;">
+              <span style="font-weight:700;"><span class="clinical-dot"></span> [PHYSICIAN CLINICAL DOSSIER // MD. REGISTRATION]</span>
+              <span class="clinical-badge-pill">MD-HN-2024</span>
+            </div>
+            <h3 style="font-family:sans-serif; font-size:22px; font-weight:700; color:var(--text); margin:0 0 6px;">Bác sĩ Nội trú / Điều trị Lâm sàng</h3>
+            <p style="font-size:12px; font-weight:600; color:var(--primary); margin:0 0 12px;">BỆNH VIỆN BẠCH MAI • BỘ MÔN NỘI - ĐH Y HÀ NỘI</p>
+            <p style="font-family:sans-serif; font-size:14px; line-height:1.7; color:var(--text); opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Bác sĩ lâm sàng trực tiếp điều trị tại khoa Cấp cứu & Can thiệp hồi sức tim mạch, ứng dụng y học chứng cứ trong chẩn đoán và theo dõi phác đồ.")}</p>
+            <div class="clinical-diagnostic-grid" style="grid-template-columns: repeat(3, 1fr); gap: 8px;">
+              <div class="clinical-diag-item">
+                <strong style="color:var(--primary); display:block; margin-bottom:2px;">🩺 Cấp cứu Hồi sức</strong>
+                <span style="font-family:sans-serif; font-size:11px; opacity:0.85;">ACLS nâng cao, can thiệp sốc</span>
+              </div>
+              <div class="clinical-diag-item">
+                <strong style="color:var(--primary); display:block; margin-bottom:2px;">📊 Y học chứng cứ</strong>
+                <span style="font-family:sans-serif; font-size:11px; opacity:0.85;">Guideline AHA/ESC cập nhật</span>
+              </div>
+              <div class="clinical-diag-item">
+                <strong style="color:var(--primary); display:block; margin-bottom:2px;">🧬 Cận lâm sàng</strong>
+                <span style="font-family:sans-serif; font-size:11px; opacity:0.85;">Chẩn đoán hình ảnh CT/MRI</span>
+              </div>
+            </div>
+            <div style="margin-top:16px; padding-top:10px; border-top:1px solid rgba(26,18,100,0.15); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
+              <span>STATUS: PRACTICING PHYSICIAN</span>
+              <span>HIPPOCRATIC OATH VERIFIED</span>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="border: 1px solid rgba(26,18,100,0.2); border-radius: 12px; padding: 18px; background: var(--surface);">
+              <div class="clinical-diagnostic-header" style="font-size:11px; margin-bottom:8px;">[HOSPITAL AFFILIATIONS &amp; DEGREE]</div>
+              <p style="font-family:sans-serif; font-weight:700; font-size:14px; margin:0 0 4px; color:var(--text);">${escapeHtml(eduSchool)}</p>
+              <p style="font-family:sans-serif; font-weight:600; font-size:13px; margin:0 0 4px; color:var(--primary);">${escapeHtml(eduDegree)}</p>
+              <p style="font-size:11px; opacity:0.75; margin:0;">${escapeHtml(about.educationPeriod || "Bác sĩ Nội trú Khóa K47")}</p>
+            </div>
+            <div style="border: 1px solid rgba(26,18,100,0.2); border-radius: 12px; padding: 18px; background: var(--surface);">
+              <div class="clinical-diagnostic-header" style="font-size:11px; margin-bottom:8px;">[CLINICAL CONTACT &amp; PAGER]</div>
+              ${contactInfo.email ? `<p style="font-family:sans-serif; font-size:12px; margin:0 0 6px;"><strong>Email BV:</strong> <a href="mailto:${escapeHtml(contactInfo.email)}" style="color:var(--primary);">${escapeHtml(contactInfo.email)}</a></p>` : ""}
+              ${contactInfo.phone ? `<p style="font-family:sans-serif; font-size:12px; margin:0 0 6px;"><strong>Pager / Hotline:</strong> ${escapeHtml(contactInfo.phone)}</p>` : ""}
+              ${contactInfo.location ? `<p style="font-family:sans-serif; font-size:12px; margin:0;"><strong>Khoa / Phòng:</strong> ${escapeHtml(contactInfo.location)}</p>` : ""}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  }
+
+  if (isContentCreator) {
+    return `<section id="about" class="about-wrap reveal-on-scroll" data-about-layout="creator-profile">
+      <div style="position:relative; z-index:2; margin-bottom: 24px;">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px; margin-bottom:20px;">
+          <div style="border:2px solid #000; border-radius:18px; padding:14px; background:#FDE047; box-shadow:3px 3px 0px #000;">
+            <span style="font-size:10px; font-weight:900; text-transform:uppercase;">TIKTOK REACH</span>
+            <div style="font-size:24px; font-weight:900;">250K+</div>
+            <span style="font-size:11px; font-weight:700; opacity:0.8;">3.2M Lượt Thích</span>
+          </div>
+          <div style="border:2px solid #000; border-radius:18px; padding:14px; background:#F472B6; box-shadow:3px 3px 0px #000;">
+            <span style="font-size:10px; font-weight:900; text-transform:uppercase;">INSTAGRAM / REELS</span>
+            <div style="font-size:24px; font-weight:900;">85K+</div>
+            <span style="font-size:11px; font-weight:700; opacity:0.8;">15.2% Avg. Reach</span>
+          </div>
+          <div style="border:2px solid #000; border-radius:18px; padding:14px; background:#38BDF8; box-shadow:3px 3px 0px #000;">
+            <span style="font-size:10px; font-weight:900; text-transform:uppercase;">YOUTUBE SHORTS</span>
+            <div style="font-size:24px; font-weight:900;">120K+</div>
+            <span style="font-size:11px; font-weight:700; opacity:0.8;">Views / Tháng</span>
+          </div>
+          <div style="border:2px solid #000; border-radius:18px; padding:14px; background:#4ADE80; box-shadow:3px 3px 0px #000;">
+            <span style="font-size:10px; font-weight:900; text-transform:uppercase;">ENGAGEMENT RATE</span>
+            <div style="font-size:24px; font-weight:900;">8.4%</div>
+            <span style="font-size:11px; font-weight:700; opacity:0.8;">Top Creator GenZ</span>
+          </div>
+        </div>
+
+        <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
+          <div style="border:3px solid #000; border-radius:24px; padding:24px; background:#fff; box-shadow:6px 6px 0px #000;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:14px;">
+              <span style="font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary);">CREATOR MEDIA DECK • ISSUE NO. 01</span>
+              <span style="border:1px solid #000; background:#FDE047; padding:2px 10px; border-radius:999px; font-size:10px; font-weight:900;">OPEN FOR BOOKING ⚡</span>
+            </div>
+            <h3 class="font-editorial" style="font-size:24px; font-weight:900; margin:0 0 12px;">Visual Storytelling &amp; Viral Content Creation</h3>
+            <p style="font-size:14px; line-height:1.7; font-weight:500; opacity:0.9; margin:0 0 16px;">${escapeHtml(about.biography || "Sáng tạo nội dung đa nền tảng kết hợp hình ảnh đậm tính thẩm mỹ, storytelling chân thực và thông điệp lan tỏa tích cực đến cộng đồng người trẻ.")}</p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <span style="border:2px solid #000; border-radius:8px; padding:4px 10px; font-size:11px; font-weight:900; background:#f5f5f5;">🎬 Brand Integration</span>
+              <span style="border:2px solid #000; border-radius:8px; padding:4px 10px; font-size:11px; font-weight:900; background:#f5f5f5;">📱 UGC &amp; Review</span>
+              <span style="border:2px solid #000; border-radius:8px; padding:4px 10px; font-size:11px; font-weight:900; background:#f5f5f5;">🎙️ Podcast Host</span>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="border:3px solid #000; border-radius:20px; padding:18px; background:#fff; box-shadow:4px 4px 0px #000;">
+              <h4 style="font-size:11px; font-weight:900; text-transform:uppercase; color:var(--primary); margin:0 0 10px;">HỢP TÁC THƯƠNG HIỆU &amp; BOOKING</h4>
+              ${contactInfo.email ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Email:</strong> <a href="mailto:${escapeHtml(contactInfo.email)}" style="color:var(--primary);">${escapeHtml(contactInfo.email)}</a></p>` : ""}
+              ${contactInfo.phone ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Agency Booking:</strong> ${escapeHtml(contactInfo.phone)}</p>` : ""}
+              ${contactInfo.location ? `<p style="font-size:12px; margin:0;"><strong>Studio Base:</strong> ${escapeHtml(contactInfo.location)}</p>` : ""}
+            </div>
+            <div style="border:3px solid #000; border-radius:20px; padding:18px; background:#F8FAFC; box-shadow:4px 4px 0px #000;">
+              <h4 style="font-size:11px; font-weight:900; text-transform:uppercase; margin:0 0 8px;">PRODUCTION GEAR // SPECS</h4>
+              <p style="font-size:11px; margin:0 0 4px; opacity:0.85;">• Camera: Sony Cinema FX30 &amp; G-Master Lenses</p>
+              <p style="font-size:11px; margin:0 0 4px; opacity:0.85;">• Audio: DJI Wireless Mic 2 Studio Setup</p>
+              <p style="font-size:11px; margin:0; opacity:0.85;">• Color Grading: DaVinci Resolve Studio 18</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  }
+
+  if (isEducationalTerracotta) {
+    return `<section id="about" class="about-wrap reveal-on-scroll" data-about-layout="academic-cv">
+      <div style="position:relative; z-index:2; margin-bottom: 24px;">
+        <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
+          <div style="border: 2px solid rgba(155, 48, 45, 0.35); border-radius: 20px; padding: 24px; background: var(--surface);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(155, 48, 45, 0.2); padding-bottom: 12px; margin-bottom: 14px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary);">HỒ SƠ HỌC THUẬT &amp; LÝ LỊCH KHOA HỌC • ĐHQGHN</span>
+              <span class="academic-vol-tag" style="background:var(--primary); color:#fff;">VNU-UEd-CV</span>
+            </div>
+            <h3 class="font-editorial" style="font-size:22px; font-weight:700; margin:0 0 10px;">Nghiên cứu sinh &amp; Giảng viên Sư phạm Tương lai</h3>
+            <p style="font-size:14px; line-height:1.7; opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Nghiên cứu chuyên sâu về đổi mới phương pháp giảng dạy, ứng dụng chuyển đổi số và phát triển năng lực tự học cho học sinh trong chương trình GDPT 2018.")}</p>
+            <div style="border:1px solid rgba(155,48,45,0.25); border-radius:12px; padding:12px; background:rgba(237,234,226,0.3); font-size:12px; font-style:italic;">
+              <strong style="color:var(--primary); font-style:normal; display:block; margin-bottom:2px;">📜 Triết lý nghiên cứu giáo dục:</strong>
+              &ldquo;Lấy người học làm trung tâm của mọi chuyển hóa, công nghệ làm đòn bẩy kích hoạt tư duy và sự thấu cảm làm nền tảng của y đức sư phạm.&rdquo;
+            </div>
+            <div style="margin-top:16px; padding-top:10px; border-top:1px solid rgba(155, 48, 45, 0.15); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
+              <span>TRƯỜNG ĐẠI HỌC GIÁO DỤC • ĐHQGHN</span>
+              <span>ACADEMIC VERIFIED</span>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="border: 1px solid rgba(155, 48, 45, 0.25); border-radius: 16px; padding: 18px; background: var(--surface);">
+              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">📖 CÔNG BỐ KHOA HỌC &amp; ĐỀ TÀI</h4>
+              <p style="font-size:12px; margin:0 0 6px;">• <strong>01 Đề tài NCKH ĐHQGHN:</strong> Giải Nhất 2024</p>
+              <p style="font-size:12px; margin:0 0 6px;">• <strong>03 Bài báo khoa học:</strong> Kỷ yếu Hội thảo Quốc gia</p>
+              <p style="font-size:12px; margin:0;">• <strong>Học bổng:</strong> Tài năng Sư phạm VNU</p>
+            </div>
+            <div style="border: 1px solid rgba(155, 48, 45, 0.25); border-radius: 16px; padding: 18px; background: var(--surface);">
+              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">✉️ LIÊN HỆ KHOA HỌC &amp; VĂN PHÒNG</h4>
+              ${contactInfo.email ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Email:</strong> <a href="mailto:${escapeHtml(contactInfo.email)}" style="color:var(--primary);">${escapeHtml(contactInfo.email)}</a></p>` : ""}
+              ${contactInfo.phone ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Điện thoại:</strong> ${escapeHtml(contactInfo.phone)}</p>` : ""}
+              ${contactInfo.location ? `<p style="font-size:12px; margin:0;"><strong>Văn phòng:</strong> ${escapeHtml(contactInfo.location)}</p>` : ""}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  }
+
+  if (isPedagogicalJournal) {
+    return `<section id="about" class="about-wrap reveal-on-scroll" data-about-layout="pedagogical-journal">
+      <div style="position:relative; z-index:2; margin-bottom: 24px;">
+        <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
+          <div style="border: 2px solid rgba(155, 84, 100, 0.3); border-radius: 24px; padding: 24px; background: var(--surface);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(155, 84, 100, 0.2); padding-bottom: 12px; margin-bottom: 14px;">
+              <span class="pedagogical-tag">🌸 CHÂN DUNG NGƯỜI GIÁO VIÊN TRẺ • SƯ PHẠM UEd</span>
+              <span style="font-size:11px; opacity:0.75;">KHÓA K18 • THỰC TẬP</span>
+            </div>
+            <h3 class="font-editorial" style="font-size:22px; font-weight:700; margin:0 0 10px;">Tâm Niệm Nghề Giáo &amp; Triết Lý Giảng Dạy</h3>
+            <p style="font-size:14px; line-height:1.7; opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Mỗi học sinh là một nốt nhạc độc bản trong dàn hợp xướng cuộc đời. Người giáo viên không chỉ truyền đạt tri thức mà còn là người thắp lên ngọn lửa đam mê và sự tự tin cho các em.")}</p>
+            <div class="pedagogical-index-grid" style="grid-template-columns: repeat(3, 1fr); gap: 8px;">
+              <div class="pedagogical-item">
+                <strong style="color:var(--primary); display:block; margin-bottom:2px;">🎼 Giáo án tương tác</strong>
+                <span style="font-size:11px; opacity:0.85;">Dạy học liên môn &amp; CNTT</span>
+              </div>
+              <div class="pedagogical-item">
+                <strong style="color:var(--primary); display:block; margin-bottom:2px;">💡 Trải nghiệm sáng tạo</strong>
+                <span style="font-size:11px; opacity:0.85;">Ngoại khóa &amp; CLB học đường</span>
+              </div>
+              <div class="pedagogical-item">
+                <strong style="color:var(--primary); display:block; margin-bottom:2px;">❤️ Thấu cảm học trò</strong>
+                <span style="font-size:11px; opacity:0.85;">Lớp học hạnh phúc</span>
+              </div>
+            </div>
+            <div style="margin-top:16px; padding-top:10px; border-top:1px solid rgba(155, 84, 100, 0.15); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
+              <span>TRƯỜNG ĐH SƯ PHẠM NGHỆ THUẬT TW</span>
+              <span>TỐT NGHIỆP XUẤT SẮC 🌸</span>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="border: 1px solid rgba(155, 84, 100, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
+              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">🎓 ĐƠN VỊ THỰC TẬP &amp; HỌC VẤN</h4>
+              <p style="font-weight:700; font-size:14px; margin:0 0 4px;">${escapeHtml(eduSchool)}</p>
+              <p style="font-weight:600; font-size:13px; margin:0 0 4px; color:var(--primary);">${escapeHtml(eduDegree)}</p>
+              <p style="font-size:11px; opacity:0.75; margin:0;">${escapeHtml(about.educationPeriod || "Khoá K18 • Thực tập Sư phạm")}</p>
+            </div>
+            <div style="border: 1px solid rgba(155, 84, 100, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
+              <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">✉️ LIÊN HỆ GIÁO VIÊN</h4>
+              ${contactInfo.email ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Email:</strong> <a href="mailto:${escapeHtml(contactInfo.email)}" style="color:var(--primary);">${escapeHtml(contactInfo.email)}</a></p>` : ""}
+              ${contactInfo.phone ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Hotline:</strong> ${escapeHtml(contactInfo.phone)}</p>` : ""}
+              ${contactInfo.location ? `<p style="font-size:12px; margin:0;"><strong>Địa chỉ:</strong> ${escapeHtml(contactInfo.location)}</p>` : ""}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  }
 
   if (isCanvaEditorial) {
     const bioParagraphs = about.biography
@@ -2411,11 +3073,18 @@ function renderProjectsHtml(
   isMusicEditorial = false,
   templateId = "canva-editorial",
 ): string {
-  const isMedicalRuby = templateId === "medical-ruby";
-  const isClinicalNavy = templateId === "clinical-navy";
-  const isEducationalTerracotta = templateId === "educational-terracotta";
+  const isMedicalRuby =
+    templateId === "medical-ruby" || projects.variant === "medical-spread";
+  const isClinicalNavy =
+    templateId === "clinical-navy" || projects.variant === "clinical-dossier";
+  const isContentCreator =
+    templateId === "content-creator" || projects.variant === "creator-filmstrip";
+  const isEducationalTerracotta =
+    templateId === "educational-terracotta" ||
+    projects.variant === "academic-monograph";
   const isPedagogicalRose = templateId === "pedagogical-rose";
-  const isPedagogical = templateId === "pedagogical-mauve";
+  const isPedagogical =
+    templateId === "pedagogical-mauve" || projects.variant === "lesson-plan";
   const isMedicalFamily =
     isMedicalRuby ||
     isClinicalNavy ||
@@ -2424,7 +3093,17 @@ function renderProjectsHtml(
     isPedagogical ||
     projects.variant === "canva-slide-showcase";
 
-  const displayTitle = isMedicalRuby ? "Highlight Projects" : "project";
+  const displayTitle = isMedicalRuby
+    ? "Highlight Projects"
+    : isClinicalNavy
+      ? "Clinical Case Dossier"
+      : isContentCreator
+        ? "Creator Stories & Campaigns"
+        : isEducationalTerracotta
+          ? "Công trình Nghiên cứu"
+          : isPedagogical || isPedagogicalRose
+            ? "Kế hoạch Bài dạy & Tiến trình Sư phạm"
+            : "project";
 
   const headerHtml = isCanvaEditorial
     ? `<div style="padding-bottom: 16px;">
@@ -2861,7 +3540,7 @@ function renderContactHtml(
                 : ""
             }
             ${
-              about && about.contactInfo.socials.length > 0
+              about?.contactInfo?.socials && about.contactInfo.socials.length > 0
                 ? `<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;">${about.contactInfo.socials
                     .map(
                       (s) =>
@@ -2934,7 +3613,7 @@ function renderContactHtml(
           : ""
       }
       ${
-        about && about.contactInfo.socials.length > 0
+        about?.contactInfo?.socials && about.contactInfo.socials.length > 0
           ? `<div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:16px;">${about.contactInfo.socials
               .map(
                 (s) =>

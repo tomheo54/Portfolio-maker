@@ -690,6 +690,11 @@ export function SectionInspector({
                   {(
                     [
                       { id: "canva-cover", label: "Canva Cover" },
+                      { id: "medical-arch", label: "Dược Mộc Anh (Arch)" },
+                      { id: "clinical-dossier", label: "Bệnh án Thu Trang" },
+                      { id: "creator-cover", label: "Creator Hà Lê" },
+                      { id: "academic-monograph", label: "Monograph ĐHQG" },
+                      { id: "pedagogical-journal", label: "Nhật ký Sư phạm" },
                       { id: "split-modern", label: "Split Modern" },
                       { id: "bento-intro", label: "Bento Intro" },
                       { id: "minimal-center", label: "Minimal Center" },
@@ -945,6 +950,11 @@ export function SectionInspector({
                   {(
                     [
                       { id: "story-card", label: "Story Card" },
+                      { id: "medical-license", label: "Dược sĩ Mộc Anh" },
+                      { id: "clinical-dossier", label: "Bác sĩ Thu Trang" },
+                      { id: "creator-profile", label: "Creator Hà Lê" },
+                      { id: "academic-cv", label: "Học thuật ĐHQG" },
+                      { id: "pedagogical-journal", label: "Nhật ký Sư phạm" },
                       { id: "bento-facts", label: "Bento Facts" },
                       { id: "editorial-poster", label: "Editorial Poster" },
                       { id: "profile-dashboard", label: "Profile Dashboard" },
@@ -1935,6 +1945,11 @@ export function SectionInspector({
                   {(
                     [
                       { id: "grid", label: "Lưới (Grid)" },
+                      { id: "medical-spread", label: "Mộc Anh (Spread)" },
+                      { id: "clinical-dossier", label: "Thu Trang (Case Dossier)" },
+                      { id: "creator-filmstrip", label: "Hà Lê (Creator Filmstrip)" },
+                      { id: "academic-monograph", label: "Võ Hoài (Nghiên cứu ĐHQG)" },
+                      { id: "lesson-plan", label: "Nguyệt Ánh (Giáo án Sư phạm)" },
                       { id: "staggered-cards", label: "Cards so le" },
                       { id: "carousel", label: "Carousel trượt" },
                       { id: "list", label: "Danh sách (List)" },

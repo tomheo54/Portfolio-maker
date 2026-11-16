@@ -18,9 +18,11 @@ import {
   type HeroSection,
   type AboutSection,
   type SkillsSection,
+  type ProjectsSection,
 } from '@/schema/portfolio.schema';
 import type { SummarizeAssignmentsResponse } from '@/schema/docx-ingestion.schema';
 import { THEME_PRESETS, resolveThemeFromContext } from '@/schema/theme.schema';
+import { getArchetypeDefaultVariants } from '@/templates/archetypes/archetypeStyles';
 import { sanitizeSlug } from '@/utils/slug';
 
 const PARSED_PRESET_DOC = PortfolioDocumentSchema.parse(completedPortfolioPreset);
@@ -257,9 +259,17 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
         preset.id === 'canva-editorial-pastel'
           ? { ...CANVA_REFERENCE_THEME }
           : { ...preset.theme };
+      const defaults = getArchetypeDefaultVariants(preset.templateId);
+      const updatedSections: PortfolioSection[] = state.document.sections.map((sec) => {
+        if (sec.type === 'hero') return { ...sec, variant: defaults.hero as HeroSection['variant'] };
+        if (sec.type === 'about') return { ...sec, variant: defaults.about as AboutSection['variant'] };
+        if (sec.type === 'projects') return { ...sec, variant: defaults.projects as ProjectsSection['variant'] };
+        return sec;
+      });
       return pushHistory(state, {
         ...state.document,
         templateId: preset.templateId,
+        sections: updatedSections,
         imageGenerationConfig: {
           ...state.document.imageGenerationConfig,
           visualStyle: preset.recommendedVisualStyle,
@@ -282,9 +292,17 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
           : matchingPreset
           ? { ...matchingPreset.theme }
           : state.document.theme;
+      const defaults = getArchetypeDefaultVariants(templateId);
+      const updatedSections: PortfolioSection[] = state.document.sections.map((sec) => {
+        if (sec.type === 'hero') return { ...sec, variant: defaults.hero as HeroSection['variant'] };
+        if (sec.type === 'about') return { ...sec, variant: defaults.about as AboutSection['variant'] };
+        if (sec.type === 'projects') return { ...sec, variant: defaults.projects as ProjectsSection['variant'] };
+        return sec;
+      });
       return pushHistory(state, {
         ...state.document,
         templateId,
+        sections: updatedSections,
         theme: {
           ...nextTheme,
           ...(state.document.theme.tableOfContents
