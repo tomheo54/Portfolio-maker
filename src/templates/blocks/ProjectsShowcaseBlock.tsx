@@ -2168,16 +2168,6 @@ export function ProjectsShowcaseBlock({
                         >
                           <BookOpen className="h-4 w-4" style={{ color: theme.primaryColor }} /> CÔNG TRÌNH NGHIÊN CỨU SỐ {idxStr}
                         </span>
-                        <span
-                          className="rounded border px-2.5 py-0.5 text-[10px] font-bold"
-                          style={{
-                            color: theme.primaryColor,
-                            backgroundColor: `${theme.primaryColor}10`,
-                            borderColor: `${theme.primaryColor}40`,
-                          }}
-                        >
-                          MÃ ĐỀ TÀI: ED-VNU-2024-{idxStr}
-                        </span>
                       </div>
 
                       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 items-start">
@@ -2193,7 +2183,12 @@ export function ProjectsShowcaseBlock({
                         )}
                         <div className={`space-y-4 ${hasMedia ? "lg:col-span-7" : "lg:col-span-12"}`}>
                           <h3 className="font-editorial text-2xl font-bold" style={{ color: theme.textColor }}>
-                            {project.title}
+                            <InlineEditableText
+                              value={project.title}
+                              editable={editable}
+                              ariaLabel="Tên công trình"
+                              onSave={(val) => updateProject(project.id, { title: val })}
+                            />
                           </h3>
 
                           {/* 3 Academic Monograph Framework Boxes */}
@@ -2208,7 +2203,15 @@ export function ProjectsShowcaseBlock({
                               <strong className="block mb-1" style={{ color: theme.primaryColor }}>
                                 📖 1. Đặt vấn đề &amp; Cơ sở lý luận:
                               </strong>
-                              <p className="leading-relaxed opacity-90">{project.assignmentBrief || project.summary}</p>
+                              <p className="leading-relaxed opacity-90">
+                                <InlineEditableText
+                                  value={project.assignmentBrief || project.summary}
+                                  multiline
+                                  editable={editable}
+                                  ariaLabel="Đặt vấn đề & Cơ sở lý luận"
+                                  onSave={(val) => updateProject(project.id, { assignmentBrief: val })}
+                                />
+                              </p>
                             </div>
                             <div
                               className="rounded-lg border bg-white p-3"
@@ -2217,7 +2220,15 @@ export function ProjectsShowcaseBlock({
                               <strong className="block mb-1" style={{ color: theme.primaryColor }}>
                                 🔍 2. Phương pháp nghiên cứu &amp; Khảo sát:
                               </strong>
-                              <p className="leading-relaxed opacity-90">{project.summary}</p>
+                              <p className="leading-relaxed opacity-90">
+                                <InlineEditableText
+                                  value={project.summary}
+                                  multiline
+                                  editable={editable}
+                                  ariaLabel="Phương pháp nghiên cứu & Khảo sát"
+                                  onSave={(val) => updateProject(project.id, { summary: val })}
+                                />
+                              </p>
                             </div>
                             {project.keyTakeaways.length > 0 && (
                               <div
@@ -2232,17 +2243,28 @@ export function ProjectsShowcaseBlock({
                                 </strong>
                                 <ul className="space-y-1 opacity-90">
                                   {project.keyTakeaways.filter(Boolean).map((t, tIdx) => (
-                                    <li key={tIdx}>• {t}</li>
+                                    <li key={tIdx} className="flex items-start gap-1.5">
+                                      <span>•</span>
+                                      <span>
+                                        <InlineEditableText
+                                          value={t}
+                                          editable={editable}
+                                          ariaLabel="Kết quả nghiên cứu"
+                                          onSave={(val) => {
+                                            const next = [...project.keyTakeaways];
+                                            next[tIdx] = val;
+                                            updateProject(project.id, { keyTakeaways: next });
+                                          }}
+                                        />
+                                      </span>
+                                    </li>
                                   ))}
                                 </ul>
                               </div>
                             )}
                           </div>
 
-                          <div className="pt-2 flex items-center justify-between border-t border-stone-200">
-                            <span className="text-[11px] italic text-stone-500 font-serif">
-                              Trích dẫn: Tạp chí Khoa học Giáo dục ĐHQGHN
-                            </span>
+                          <div className="pt-2 flex items-center justify-end border-t border-stone-200">
                             <button
                               type="button"
                               onClick={(e) => { e.stopPropagation(); openModal(project, index, 0); }}
