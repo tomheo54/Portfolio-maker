@@ -174,6 +174,90 @@ export const ARCHETYPE_PROFILES: Record<TemplateId, ArchetypeProfile> = {
     alternateProjectMedia: false,
     heroLayoutMode: 'editorial',
   },
+  'medical-ruby': {
+    id: 'medical-ruby',
+    badgeLabel: 'Medical Ruby (Mộc Anh)',
+    frameVariant: 'arch-window',
+    navVariant: 'canva-pills',
+    showSlideNumbers: false,
+    slideLabelPrefix: 'Project',
+    dividerVariant: 'sparkles',
+    wrapperClassName: '',
+    alternateProjectMedia: false,
+    heroLayoutMode: 'editorial',
+  },
+  'clinical-navy': {
+    id: 'clinical-navy',
+    badgeLabel: 'Clinical Navy (Thu Trang)',
+    frameVariant: 'rounded-card',
+    navVariant: 'minimal-bar',
+    showSlideNumbers: false,
+    slideLabelPrefix: 'Case',
+    dividerVariant: 'hairline',
+    wrapperClassName: '',
+    alternateProjectMedia: false,
+    heroLayoutMode: 'minimal',
+  },
+  'pedagogical-mauve': {
+    id: 'pedagogical-mauve',
+    badgeLabel: 'Pedagogical Mauve (Nguyệt Ánh)',
+    frameVariant: 'polaroid',
+    navVariant: 'canva-pills',
+    showSlideNumbers: false,
+    slideLabelPrefix: 'Project',
+    dividerVariant: 'sparkles',
+    wrapperClassName: '',
+    alternateProjectMedia: true,
+    heroLayoutMode: 'editorial',
+  },
+  'content-creator': {
+    id: 'content-creator',
+    badgeLabel: 'Content Creator (Hà Lê)',
+    frameVariant: 'arch-window',
+    navVariant: 'canva-pills',
+    showSlideNumbers: false,
+    slideLabelPrefix: 'Story',
+    dividerVariant: 'sparkles',
+    wrapperClassName: '',
+    alternateProjectMedia: true,
+    heroLayoutMode: 'editorial',
+  },
+  'oceanic-teal': {
+    id: 'oceanic-teal',
+    badgeLabel: 'Oceanic Teal (Đăng Dương)',
+    frameVariant: 'rounded-card',
+    navVariant: 'badge-bar',
+    showSlideNumbers: false,
+    slideLabelPrefix: 'Project',
+    dividerVariant: 'hairline',
+    wrapperClassName: '',
+    alternateProjectMedia: false,
+    heroLayoutMode: 'editorial',
+  },
+  'educational-terracotta': {
+    id: 'educational-terracotta',
+    badgeLabel: 'Educational Terracotta (Võ Thị Hoài)',
+    frameVariant: 'arch-window',
+    navVariant: 'canva-pills',
+    showSlideNumbers: false,
+    slideLabelPrefix: 'Nghiên cứu',
+    dividerVariant: 'sparkles',
+    wrapperClassName: '',
+    alternateProjectMedia: false,
+    heroLayoutMode: 'editorial',
+  },
+  'pedagogical-rose': {
+    id: 'pedagogical-rose',
+    badgeLabel: 'Pedagogical Rose (Thùy Linh)',
+    frameVariant: 'rounded-card',
+    navVariant: 'canva-pills',
+    showSlideNumbers: false,
+    slideLabelPrefix: 'Dự án',
+    dividerVariant: 'hairline',
+    wrapperClassName: '',
+    alternateProjectMedia: true,
+    heroLayoutMode: 'editorial',
+  },
 };
 
 export function getArchetypeProfile(archetypeId?: TemplateId): ArchetypeProfile {
@@ -265,12 +349,20 @@ export function getRadiusClass(
     case 'canva-editorial':
     case 'warm-editorial':
     case 'vibrant-student':
+    case 'medical-ruby':
+    case 'educational-terracotta':
       return 'rounded-[28px]';
+    case 'content-creator':
+      return 'rounded-[24px]';
     case 'artistic-organic':
       return 'rounded-[32px]';
     case 'minimal-chic':
+    case 'pedagogical-mauve':
+    case 'oceanic-teal':
+    case 'pedagogical-rose':
       return 'rounded-2xl';
     case 'academic-presentation':
+    case 'clinical-navy':
       return 'rounded-xl';
     case 'bento-grid':
       return 'rounded-3xl';
@@ -392,6 +484,71 @@ export function getCardDecoration(
           boxShadow: `0 0 0 1px ${theme.primaryColor}12, 0 10px 30px -15px rgba(0,0,0,0.45)`,
         },
       };
+    case 'medical-ruby':
+      return {
+        className: `${radius} border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`,
+        style: {
+          backgroundColor: theme.surfaceColor,
+          borderColor: `${theme.primaryColor}2B`,
+          boxShadow: `0 8px 24px -6px ${theme.primaryColor}18`,
+        },
+      };
+    case 'clinical-navy':
+      return {
+        className: `${radius} border shadow-sm transition-all duration-200 hover:shadow-md`,
+        style: {
+          backgroundColor: theme.surfaceColor,
+          borderColor: `${theme.primaryColor}24`,
+          borderTopWidth: '3px',
+          borderTopColor: theme.primaryColor,
+        },
+      };
+    case 'pedagogical-mauve':
+      return {
+        className: `${radius} border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md`,
+        style: {
+          backgroundColor: theme.surfaceColor,
+          borderColor: `${theme.primaryColor}2E`,
+          boxShadow: `0 6px 20px -4px ${theme.primaryColor}14`,
+        },
+      };
+    case 'content-creator':
+      return {
+        className: `${radius} border-2 transition-transform duration-300 hover:-translate-y-1`,
+        style: {
+          backgroundColor: theme.surfaceColor,
+          borderColor: `${theme.primaryColor}38`,
+          boxShadow: `4px 4px 0px ${theme.primaryColor}20`,
+        },
+      };
+    case 'oceanic-teal':
+      return {
+        className: `${radius} border shadow-sm transition-all duration-200 hover:shadow-md`,
+        style: {
+          backgroundColor: theme.surfaceColor,
+          borderColor: `${theme.primaryColor}28`,
+          borderLeftWidth: '4px',
+          borderLeftColor: theme.primaryColor,
+        },
+      };
+    case 'educational-terracotta':
+      return {
+        className: `${radius} border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`,
+        style: {
+          backgroundColor: theme.surfaceColor,
+          borderColor: `${theme.primaryColor}30`,
+          boxShadow: `0 8px 24px -6px ${theme.primaryColor}20`,
+        },
+      };
+    case 'pedagogical-rose':
+      return {
+        className: `${radius} border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md`,
+        style: {
+          backgroundColor: theme.surfaceColor,
+          borderColor: `${theme.primaryColor}28`,
+          boxShadow: `0 6px 18px -4px ${theme.primaryColor}16`,
+        },
+      };
     case 'canva-editorial':
     default:
       return {
@@ -489,6 +646,20 @@ export function formatSectionEyebrow(
       return `~ ${text} ~`;
     case 'academic-presentation':
       return `RESEARCH ${indexLabel} • ${text}`;
+    case 'medical-ruby':
+      return `${indexLabel}. ${text}`;
+    case 'clinical-navy':
+      return `CASE ${indexLabel} • ${text}`;
+    case 'pedagogical-mauve':
+      return `${indexLabel} ✦ ${text}`;
+    case 'educational-terracotta':
+      return `EDU ${indexLabel} // ${text}`;
+    case 'pedagogical-rose':
+      return `${indexLabel} • ${text}`;
+    case 'content-creator':
+      return `STORY ${indexLabel} ★ ${text}`;
+    case 'oceanic-teal':
+      return `${indexLabel} — ${text}`;
     case 'canva-editorial':
     default:
       return text;

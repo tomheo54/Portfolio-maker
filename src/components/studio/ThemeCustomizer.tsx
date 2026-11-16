@@ -314,12 +314,19 @@ export function ThemeCustomizer() {
               className="mt-1 w-full rounded-xl border border-stone-200 bg-stone-50 px-2.5 py-2 text-xs font-semibold text-stone-800"
             >
               <option value="" disabled>
-                Tùy chỉnh (Chọn 1 trong 12 Presets...)
+                Tùy chỉnh (Chọn 1 trong 19 Presets...)
               </option>
-              <optgroup label="🌟 6 Mẫu Canva tham khảo thực tế">
+              <optgroup label="🌟 13 Mẫu Canva tham khảo thực tế">
                 {THEME_PRESETS.filter((p) =>
                   [
                     "canva-editorial-pastel",
+                    "canva-medical-ruby-mocanh",
+                    "canva-clinical-navy-thutrang",
+                    "canva-pedagogical-mauve-nguyetanh",
+                    "canva-educational-terracotta-hoai",
+                    "canva-pedagogical-rose-linh",
+                    "canva-content-creator-bordeaux-hale",
+                    "canva-oceanic-teal-duong",
                     "canva-warm-editorial-slate",
                     "canva-bold-creative-rose",
                     "canva-minimal-chic-marine",
@@ -338,6 +345,13 @@ export function ThemeCustomizer() {
                   (p) =>
                     ![
                       "canva-editorial-pastel",
+                      "canva-medical-ruby-mocanh",
+                      "canva-clinical-navy-thutrang",
+                      "canva-pedagogical-mauve-nguyetanh",
+                      "canva-educational-terracotta-hoai",
+                      "canva-pedagogical-rose-linh",
+                      "canva-content-creator-bordeaux-hale",
+                      "canva-oceanic-teal-duong",
                       "canva-warm-editorial-slate",
                       "canva-bold-creative-rose",
                       "canva-minimal-chic-marine",

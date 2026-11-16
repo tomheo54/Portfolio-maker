@@ -294,6 +294,7 @@ export function hexToRgba(hex: string, alpha: number): string {
 
 export interface ResolvedPalette {
   isCanvaEditorial: boolean;
+  isMusicEditorial?: boolean;
   primary: string;
   secondary: string;
   bg: string;
@@ -304,8 +305,26 @@ export interface ResolvedPalette {
   bodyFont: string;
 }
 
+export const CANVA_ARCHETYPE_IDS = new Set<string>([
+  "canva-editorial",
+  "medical-ruby",
+  "clinical-navy",
+  "pedagogical-mauve",
+  "content-creator",
+  "oceanic-teal",
+  "educational-terracotta",
+  "pedagogical-rose",
+  "warm-editorial",
+  "creative-bold",
+  "minimal-chic",
+  "vibrant-student",
+  "artistic-organic",
+  "academic-presentation",
+]);
+
 export function resolveDocPalette(doc: PortfolioDocument): ResolvedPalette {
-  const isCanvaEditorial = doc.templateId === "canva-editorial";
+  const isCanvaEditorial = CANVA_ARCHETYPE_IDS.has(doc.templateId ?? "canva-editorial");
+  const isMusicEditorial = doc.templateId === "canva-editorial";
   const { theme } = doc;
 
   const primary = theme.primaryColor || "#735340";
@@ -318,6 +337,7 @@ export function resolveDocPalette(doc: PortfolioDocument): ResolvedPalette {
 
   return {
     isCanvaEditorial,
+    isMusicEditorial,
     primary,
     secondary,
     bg,
@@ -1851,6 +1871,8 @@ function renderHeroHtml(
   isCanvaEditorial: boolean,
   primaryColor = "#059669",
   secondaryColor = "#0F172A",
+  isMusicEditorial = false,
+  templateId = "canva-editorial",
 ): string {
   const showAvatar = hero.showAvatar !== false && Boolean(hero.avatar.url);
   const showPortfolioLabel = hero.showPortfolioLabel !== false;
@@ -1872,8 +1894,8 @@ function renderHeroHtml(
   if (isCanvaEditorial) {
     return `<section id="hero" class="reveal-on-scroll">
       <div class="cover-canvas">
-        ${svgCoverStaffTopLeft()}
-        ${svgCoverStaffBottomRight()}
+        ${isMusicEditorial ? svgCoverStaffTopLeft() : ""}
+        ${isMusicEditorial ? svgCoverStaffBottomRight() : ""}
         <div class="cover-title-wrap">
           ${
             showPortfolioLabel
@@ -1976,6 +1998,8 @@ function renderAboutHtml(
   heroAvatarUrl?: string,
   heroFullName?: string,
   educationSec?: EducationSection,
+  isMusicEditorial = false,
+  templateId = "canva-editorial",
 ): string {
   const { contactInfo } = about;
   const eduSchool =
@@ -2129,9 +2153,22 @@ function renderAboutHtml(
     const hasAboutAvatar =
       about.showAvatar !== false && Boolean(heroAvatarUrl?.trim());
 
+    const isArchWindow =
+      templateId === "medical-ruby" ||
+      templateId === "content-creator" ||
+      templateId === "educational-terracotta" ||
+      templateId === "canva-editorial" ||
+      templateId === "warm-editorial";
+    const isPolaroid = templateId === "pedagogical-mauve";
+    const avatarRadiusStyle = isArchWindow
+      ? "border-radius: 160px 160px 24px 24px;"
+      : isPolaroid
+        ? "border-radius: 14px; padding: 10px 10px 24px 10px; background: #fff;"
+        : "border-radius: 28px;";
+
     const avatarColHtml = hasAboutAvatar
       ? `<div style="display:flex;justify-content:center;">
-            <div style="aspect-ratio:3/4;border-radius:28px;border:3px solid var(--primary);overflow:hidden;background:var(--surface);width:100%;max-width:320px;box-shadow:0 12px 24px -8px rgba(0,0,0,0.12);">
+            <div style="aspect-ratio:3/4;${avatarRadiusStyle}border:3px solid var(--primary);overflow:hidden;background:var(--surface);width:100%;max-width:320px;box-shadow:0 12px 24px -8px rgba(0,0,0,0.12);">
               <img src="${escapeHtml(heroAvatarUrl!)}" alt="${escapeHtml(heroFullName || "Portrait")}" style="width:100%;height:100%;object-fit:cover;display:block;" />
             </div>
           </div>`
@@ -2163,7 +2200,7 @@ function renderAboutHtml(
         </div>
 
         ${aboutCardsHtml}
-        ${svgVerticalMusicRibbon()}
+        ${isMusicEditorial ? svgVerticalMusicRibbon() : ""}
 
         <div class="editorial-rule" style="margin-top:28px;"></div>
       </div>
@@ -2371,13 +2408,22 @@ function renderProjectsHtml(
   resolveSrc: (url: string) => string,
   allProjectsCollected: ProjectItem[],
   isCanvaEditorial: boolean,
+  isMusicEditorial = false,
+  templateId = "canva-editorial",
 ): string {
+  const isMedicalRuby = templateId === "medical-ruby";
+  const isClinicalNavy = templateId === "clinical-navy";
+  const isEducationalTerracotta = templateId === "educational-terracotta";
+  const isMedicalFamily = isMedicalRuby || isClinicalNavy || isEducationalTerracotta;
+
+  const displayTitle = isMedicalRuby ? "Highlight Projects" : "project";
+
   const headerHtml = isCanvaEditorial
     ? `<div style="padding-bottom: 16px;">
         <div class="projects-cover-header">
-          ${svgVinylSketch()}
+          ${isMusicEditorial ? svgVinylSketch() : ""}
           <div>
-            <h2 class="projects-display-title font-editorial">project</h2>
+            <h2 class="projects-display-title font-editorial">${escapeHtml(displayTitle)}</h2>
             ${
               projects.subtitle
                 ? `<p style="max-width:560px;margin:12px auto 0;font-size:14px;color:var(--secondary);">${escapeHtml(
@@ -2386,7 +2432,7 @@ function renderProjectsHtml(
                 : ""
             }
           </div>
-          ${svgVinylSketch()}
+          ${isMusicEditorial ? svgVinylSketch() : ""}
         </div>
         <div class="toc-grid">
           ${projects.projects
@@ -2395,7 +2441,7 @@ function renderProjectsHtml(
               const showRightStar =
                 (idx + 1) % 3 !== 0 && idx < projects.projects.length - 1;
               return `<div class="toc-item">
-                ${showRightStar ? svgFourPointStar(22, "var(--primary, #735340)", "toc-star") : ""}
+                ${showRightStar && isMusicEditorial ? svgFourPointStar(22, "var(--primary, #735340)", "toc-star") : ""}
                 <span class="toc-num font-editorial">${numLabel}</span>
                 <a class="toc-pill hover-lift" data-open-project="${idx}" href="#project-item-${idx}">${escapeHtml(
                   stripLeadingIndex(proj.title),
@@ -2456,7 +2502,7 @@ function renderProjectsHtml(
       <div class="project-grid ${proj.media.length > 0 ? "" : "no-media"}" data-project-media-position="${proj.mediaPosition ?? "right"}" style="${proj.media.length > 0 ? "" : "grid-template-columns: 1fr;"}">
         <div class="chapter-left-flex" style="${proj.media.length > 0 ? "" : "width: 100%; max-width: 100%;"}">
           ${
-            isCanvaEditorial && idx % 2 === 1
+            isMusicEditorial && idx % 2 === 1
               ? `<div class="chapter-stars-col" aria-hidden="true">
                   ${svgFourPointStar(26)}
                   ${svgFourPointStar(26)}
@@ -2469,7 +2515,7 @@ function renderProjectsHtml(
               proj.assignmentBrief ||
               proj.keyTakeaways.some((takeaway) => takeaway.trim())
                 ? `<div style="margin-bottom:18px;">
-                  <h4 class="chapter-label">MỤC TIÊU</h4>
+                  <h4 class="chapter-label">${isMedicalFamily ? "MỤC TIÊU TRỌNG TÂM" : "MỤC TIÊU"}</h4>
                   ${
                     proj.assignmentBrief
                       ? `<p style="margin:0 0 10px;font-size:15px;">${escapeHtml(
@@ -2501,7 +2547,7 @@ function renderProjectsHtml(
                 : ""
             }
             <div style="margin-bottom:16px;">
-              <h4 class="chapter-label">QUY TRÌNH &amp; KẾT QUẢ</h4>
+              <h4 class="chapter-label">${isMedicalFamily ? "QUY TRÌNH THỰC HIỆN" : "QUY TRÌNH &amp; KẾT QUẢ"}</h4>
               <p style="margin:0;font-size:15px;">${escapeHtml(proj.summary)}</p>
             </div>
             ${
@@ -2707,6 +2753,8 @@ function renderContactHtml(
   isCanvaEditorial: boolean,
   projects?: ProjectItem[],
   profileOwner?: { fullName?: string },
+  isMusicEditorial = false,
+  templateId = "canva-editorial",
 ): string {
   const ownerIdentity = [hero?.fullName, hero?.roleTitle]
     .filter(Boolean)
@@ -2775,7 +2823,7 @@ function renderContactHtml(
     return `${conclusionHtml}
       <section id="contact" class="reveal-on-scroll" style="padding-bottom:0;">
         <div class="mocha-box-wrap">
-          ${svgRotaSheetSticker()}
+          ${isMusicEditorial ? svgRotaSheetSticker() : ""}
           <div class="mocha-contact-box">
             <p style="margin:0;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.2em;opacity:0.78;">${escapeHtml(
               contact.title,
@@ -2830,8 +2878,8 @@ function renderContactHtml(
         </div>
 
       <div class="thank-you-band">
-        ${svgHalftoneVinylLeft()}
-        ${svgThankYouVinylBurst()}
+        ${isMusicEditorial ? svgHalftoneVinylLeft() : ""}
+        ${isMusicEditorial ? svgThankYouVinylBurst() : ""}
         <h2 class="thank-you-title font-editorial">Thank You !</h2>
         <p style="position:relative;z-index:2;margin:18px 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.2em;">${escapeHtml(
           ownerIdentity || contact.thankYouMessage,
@@ -3018,7 +3066,7 @@ export function renderStandaloneHtml(
       const sectionHtml = (() => {
         switch (sec.type) {
           case "hero":
-            return renderHeroHtml(sec, resolveSrc, isCanvaEditorial, pal.primary, pal.secondary);
+            return renderHeroHtml(sec, resolveSrc, isCanvaEditorial, pal.primary, pal.secondary, pal.isMusicEditorial, doc.templateId);
           case "about":
             return renderAboutHtml(
               sec,
@@ -3026,6 +3074,8 @@ export function renderStandaloneHtml(
               hero?.avatar.url ? resolveSrc(hero.avatar.url) : undefined,
               hero?.fullName,
               education,
+              pal.isMusicEditorial,
+              doc.templateId,
             );
           case "skills":
             return renderSkillsHtml(sec, resolveSrc, isCanvaEditorial);
@@ -3039,6 +3089,8 @@ export function renderStandaloneHtml(
               resolveSrc,
               modalProjects,
               isCanvaEditorial,
+              pal.isMusicEditorial,
+              doc.templateId,
             );
           case "contact":
             return renderContactHtml(
@@ -3048,6 +3100,8 @@ export function renderStandaloneHtml(
               isCanvaEditorial,
               projectsSec?.projects,
               doc.profileOwner,
+              pal.isMusicEditorial,
+              doc.templateId,
             );
         }
       })();

@@ -72,6 +72,13 @@ const SECTION_TITLES: Record<PortfolioSection['type'], string> = {
 
 const TEMPLATE_OPTIONS: Array<{ id: TemplateId; label: string }> = [
   { id: 'canva-editorial', label: 'Canva Editorial ★ (Chuẩn mẫu gốc)' },
+  { id: 'medical-ruby', label: 'Canva Medical Ruby (Ngô Mộc Anh - Dược học)' },
+  { id: 'clinical-navy', label: 'Canva Clinical Navy (Thu Trang - Y khoa)' },
+  { id: 'pedagogical-mauve', label: 'Canva Pedagogical Mauve (Nguyệt Ánh - Sư phạm)' },
+  { id: 'educational-terracotta', label: 'Canva Educational Terracotta (Võ Thị Hoài - Giáo dục)' },
+  { id: 'pedagogical-rose', label: 'Canva Pedagogical Rose (Thùy Linh - Tâm lý & GD)' },
+  { id: 'content-creator', label: 'Canva Content Creator (Hà Lê - Truyền thông)' },
+  { id: 'oceanic-teal', label: 'Canva Oceanic Teal (Đăng Dương - Ngôn ngữ)' },
   { id: 'warm-editorial', label: 'Canva Warm Editorial (Mẫu 01)' },
   { id: 'creative-bold', label: 'Canva Bold Creative (Mẫu 02)' },
   { id: 'minimal-chic', label: 'Canva Minimal Chic (Mẫu 03)' },

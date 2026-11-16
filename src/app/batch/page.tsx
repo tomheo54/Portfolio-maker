@@ -121,6 +121,13 @@ const SAMPLE_BATCH_ITEMS = [
 
 const TEMPLATE_OPTIONS: Array<{ id: TemplateId; label: string }> = [
   { id: "canva-editorial", label: "Canva Editorial" },
+  { id: "medical-ruby", label: "Medical Ruby (Mộc Anh)" },
+  { id: "clinical-navy", label: "Clinical Navy (Thu Trang)" },
+  { id: "pedagogical-mauve", label: "Pedagogical Mauve (Nguyệt Ánh)" },
+  { id: "educational-terracotta", label: "Educational Terracotta (Võ Hoài)" },
+  { id: "pedagogical-rose", label: "Pedagogical Rose (Thùy Linh)" },
+  { id: "content-creator", label: "Content Creator (Hà Lê)" },
+  { id: "oceanic-teal", label: "Oceanic Teal (Đăng Dương)" },
   { id: "warm-editorial", label: "Warm Editorial" },
   { id: "creative-bold", label: "Bold Creative" },
   { id: "minimal-chic", label: "Minimal Chic" },

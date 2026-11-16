@@ -331,6 +331,13 @@ export function ContactBlock({
   const isGrowth = archetypeId === "growth-marketer";
   const isAcademic = archetypeId === "academic-presentation";
   const isOrganic = archetypeId === "artistic-organic";
+  const isMedicalRuby = archetypeId === "medical-ruby";
+  const isClinicalNavy = archetypeId === "clinical-navy";
+  const isPedagogical = archetypeId === "pedagogical-mauve";
+  const isContentCreator = archetypeId === "content-creator";
+  const isOceanicTeal = archetypeId === "oceanic-teal";
+  const isEducationalTerracotta = archetypeId === "educational-terracotta";
+  const isPedagogicalRose = archetypeId === "pedagogical-rose";
 
   const contactVariant = section.variant || "full-banner";
 
@@ -662,6 +669,58 @@ export function ContactBlock({
             color: "#FFFFFF",
             boxShadow: `8px 8px 0px ${theme.primaryColor}`,
           }
+      : isMedicalRuby
+        ? {
+            backgroundColor: theme.primaryColor,
+            borderColor: theme.primaryColor,
+            color: "#FFFFFF",
+            boxShadow: `0 12px 36px -8px ${theme.primaryColor}55`,
+          }
+      : isClinicalNavy
+        ? {
+            backgroundColor: theme.primaryColor,
+            borderColor: theme.secondaryColor,
+            color: "#FFFFFF",
+            borderTopWidth: "4px",
+            borderTopColor: theme.secondaryColor,
+          }
+      : isPedagogical
+        ? {
+            backgroundColor: theme.surfaceColor,
+            borderColor: `${theme.primaryColor}35`,
+            color: theme.textColor,
+            boxShadow: `0 8px 28px -6px ${theme.primaryColor}20`,
+          }
+      : isContentCreator
+        ? {
+            backgroundColor: theme.primaryColor,
+            borderColor: theme.secondaryColor,
+            color: "#FFFFFF",
+            boxShadow: `6px 6px 0px ${theme.secondaryColor}40`,
+          }
+      : isOceanicTeal
+        ? {
+            backgroundColor: theme.surfaceColor,
+            borderColor: `${theme.primaryColor}30`,
+            color: theme.textColor,
+            borderLeftWidth: "6px",
+            borderLeftColor: theme.primaryColor,
+            boxShadow: `0 8px 24px -6px ${theme.primaryColor}20`,
+          }
+      : isEducationalTerracotta
+        ? {
+            backgroundColor: theme.primaryColor,
+            borderColor: theme.primaryColor,
+            color: "#FFFFFF",
+            boxShadow: `0 12px 32px -8px ${theme.primaryColor}50`,
+          }
+      : isPedagogicalRose
+        ? {
+            backgroundColor: theme.surfaceColor,
+            borderColor: `${theme.primaryColor}35`,
+            color: theme.textColor,
+            boxShadow: `0 8px 24px -6px ${theme.primaryColor}18`,
+          }
         : {
             backgroundColor: theme.secondaryColor,
             borderColor: theme.secondaryColor,
@@ -670,7 +729,7 @@ export function ContactBlock({
             borderTopColor: isGrowth ? theme.primaryColor : undefined,
           };
 
-  const usesDarkOrColoredContainer = !isTerminal && !isMinimal;
+  const usesDarkOrColoredContainer = !isTerminal && !isMinimal && !isPedagogical && !isOceanicTeal && !isPedagogicalRose;
 
   const renderContactFormElement = () => (
     <div className="rounded-3xl bg-white p-6 text-stone-900 shadow-xl border border-stone-200">

@@ -485,6 +485,13 @@ export function AboutBlock({
     archetypeId === "artistic-organic" || section.variant === "organic";
   const isAcademic =
     archetypeId === "academic-presentation" || section.variant === "timeline";
+  const isMedicalRuby = archetypeId === "medical-ruby";
+  const isClinicalNavy = archetypeId === "clinical-navy";
+  const isPedagogical = archetypeId === "pedagogical-mauve";
+  const isContentCreator = archetypeId === "content-creator";
+  const isOceanicTeal = archetypeId === "oceanic-teal";
+  const isEducationalTerracotta = archetypeId === "educational-terracotta";
+  const isPedagogicalRose = archetypeId === "pedagogical-rose";
 
   // Resolved Profile Values
   const effectiveAvatarUrl = profileOwner?.avatarUrl || avatarUrl;
@@ -494,7 +501,17 @@ export function AboutBlock({
     profileOwner?.fullName || avatarAlt || section.title || "Student Portrait";
   const effectiveFrameStyle =
     profileOwner?.frameStyle ||
-    (archetypeId === "canva-editorial" ? "arch-window" : "rounded-rect");
+    (archetypeId === "canva-editorial" ||
+    archetypeId === "medical-ruby" ||
+    archetypeId === "content-creator" ||
+    archetypeId === "educational-terracotta" ||
+    archetypeId === "warm-editorial"
+      ? "arch-window"
+      : archetypeId === "pedagogical-mauve"
+        ? "polaroid"
+        : archetypeId === "artistic-organic"
+          ? "cutout-blob"
+          : "rounded-rect");
   const effectiveAspectRatio = profileOwner?.aspectRatio || "3/4";
 
 

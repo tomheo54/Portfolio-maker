@@ -45,6 +45,14 @@ export const TemplateIdSchema = z.enum([
   "vibrant-student",
   "artistic-organic",
   "academic-presentation",
+  // Expanded Canva & Student Archetypes
+  "medical-ruby",
+  "clinical-navy",
+  "pedagogical-mauve",
+  "content-creator",
+  "oceanic-teal",
+  "educational-terracotta",
+  "pedagogical-rose",
 ]);
 
 /**

@@ -413,6 +413,13 @@ export function ProjectsShowcaseBlock({
   const isTerminal = archetypeId === "tech-developer";
   const isOrganic = archetypeId === "artistic-organic";
   const isAcademic = archetypeId === "academic-presentation";
+  const isMedicalRuby = archetypeId === "medical-ruby";
+  const isClinicalNavy = archetypeId === "clinical-navy";
+  const isPedagogical = archetypeId === "pedagogical-mauve";
+  const isContentCreator = archetypeId === "content-creator";
+  const isOceanicTeal = archetypeId === "oceanic-teal";
+  const isEducationalTerracotta = archetypeId === "educational-terracotta";
+  const isPedagogicalRose = archetypeId === "pedagogical-rose";
 
   const openModal = (
     project: ProjectItem,
@@ -1327,7 +1334,14 @@ export function ProjectsShowcaseBlock({
           <div className="flex flex-wrap items-center gap-2">
             {project.showChapter !== false && (
               <>
-                {isMinimal ? (
+                {isMedicalRuby || isEducationalTerracotta ? (
+                  <span
+                    className="font-editorial text-3xl font-bold tracking-tight sm:text-4xl"
+                    style={{ color: theme.primaryColor }}
+                  >
+                    {idxStr}
+                  </span>
+                ) : isMinimal ? (
                   <span
                     className="font-mono text-xs font-bold tracking-wider"
                     style={{ color: theme.primaryColor }}
@@ -1428,7 +1442,7 @@ export function ProjectsShowcaseBlock({
                 }`}
                 style={{ color: theme.primaryColor }}
               >
-                <Target className="h-3.5 w-3.5" /> Đề bài / Mục tiêu
+                <Target className="h-3.5 w-3.5" /> {isMedicalRuby || isClinicalNavy || isEducationalTerracotta ? "Mục tiêu trọng tâm" : "Đề bài / Mục tiêu"}
               </div>
               <p className="opacity-90">{project.assignmentBrief}</p>
             </div>
@@ -1456,7 +1470,7 @@ export function ProjectsShowcaseBlock({
                   : theme.secondaryColor,
               }}
             >
-              <Lightbulb className="h-3.5 w-3.5" /> Giải pháp & Thực hiện
+              <Lightbulb className="h-3.5 w-3.5" /> {isMedicalRuby || isClinicalNavy || isEducationalTerracotta ? "Quy trình thực hiện" : "Giải pháp & Thực hiện"}
             </div>
             <p className="text-sm leading-relaxed opacity-85">
               {project.summary}
@@ -1472,7 +1486,7 @@ export function ProjectsShowcaseBlock({
                 }`}
                 style={{ color: tokens.positiveAccent }}
               >
-                <CheckCircle2 className="h-3.5 w-3.5" /> Kết quả & Điểm nhấn
+                <CheckCircle2 className="h-3.5 w-3.5" /> {isMedicalRuby || isClinicalNavy || isEducationalTerracotta ? "Sản phẩm & Minh chứng" : "Kết quả & Điểm nhấn"}
               </div>
               <ul className="space-y-1">
                 {project.keyTakeaways

@@ -66,6 +66,13 @@ export function PortfolioRenderer({
     case 'vibrant-student':
     case 'artistic-organic':
     case 'academic-presentation':
+    case 'medical-ruby':
+    case 'clinical-navy':
+    case 'pedagogical-mauve':
+    case 'content-creator':
+    case 'oceanic-teal':
+    case 'educational-terracotta':
+    case 'pedagogical-rose':
       return <TemplateShell {...sharedProps} archetypeId={document.templateId} />;
     default:
       return <CanvaEditorialTemplate {...sharedProps} />;
