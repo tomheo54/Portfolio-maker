@@ -2547,13 +2547,13 @@ function renderAboutHtml(
     return `<section id="about" class="about-wrap reveal-on-scroll" data-about-layout="medical-license">
       <div style="position:relative; z-index:2; margin-bottom: 24px;">
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
-          <div style="border: 2px solid rgba(123, 17, 19, 0.35); border-radius: 24px; padding: 24px; background: var(--surface); box-shadow: 0 10px 30px -10px rgba(123, 17, 19, 0.15);">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(123, 17, 19, 0.18); padding-bottom: 12px; margin-bottom: 14px;">
+          <div style="border: 2px solid color-mix(in srgb, var(--primary) 35%, transparent); border-radius: 24px; padding: 24px; background: var(--surface); box-shadow: 0 10px 30px -10px color-mix(in srgb, var(--primary) 15%, transparent);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid color-mix(in srgb, var(--primary) 18%, transparent); padding-bottom: 12px; margin-bottom: 14px;">
               <span class="medical-ribbon" style="margin-bottom:0; font-size:10px; padding:4px 12px;">🏆 ${t("med_badge", "HỒ SƠ HÀNH NGHỀ DƯỢC • CHUẨN GMP/GSP")}</span>
               <span class="medical-pill" style="font-family:monospace;">${t("med_license", "#VN-PHARM-8892")}</span>
             </div>
-            <h3 class="font-editorial" style="font-size:22px; font-weight:700; color:#2B1810; margin:0 0 10px;">${t("med_title", "Dược sĩ Chuyên khoa &amp; Nghiên cứu Phát triển (R&amp;D)")}</h3>
-            <p style="font-size:14px; line-height:1.7; color:#2B1810; opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Dược sĩ phụ trách kiểm soát chất lượng, nghiên cứu tối ưu hóa công thức bào chế theo tiêu chuẩn GMP-WHO và Dược điển Việt Nam V.")}</p>
+            <h3 class="font-editorial" style="font-size:22px; font-weight:700; color:var(--text); margin:0 0 10px;">${t("med_title", "Dược sĩ Chuyên khoa &amp; Nghiên cứu Phát triển (R&amp;D)")}</h3>
+            <p style="font-size:14px; line-height:1.7; color:var(--text); opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Dược sĩ phụ trách kiểm soát chất lượng, nghiên cứu tối ưu hóa công thức bào chế theo tiêu chuẩn GMP-WHO và Dược điển Việt Nam V.")}</p>
             <div class="medical-syllabus-grid" style="grid-template-columns: repeat(3, 1fr); gap: 10px;">
               <div class="medical-syllabus-item">
                 <strong style="color:var(--primary); display:block; margin-bottom:4px;">${t("med_feat1_title", "🔬 Bào chế &amp; Độc học")}</strong>
@@ -2568,20 +2568,20 @@ function renderAboutHtml(
                 <span style="font-size:11px; opacity:0.85;">${t("med_feat3_desc", "Tương tác thuốc &amp; Cảnh giác dược an toàn")}</span>
               </div>
             </div>
-            <div style="margin-top:16px; padding-top:10px; border-top:1px solid rgba(123, 17, 19, 0.15); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
+            <div style="margin-top:16px; padding-top:10px; border-top:1px solid color-mix(in srgb, var(--primary) 15%, transparent); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
               <span>${t("med_footer_left", "⚖️ CAM KẾT Y ĐỨC &amp; AN TOÀN SỬ DỤNG THUỐC")}</span>
               <span>${t("med_footer_right", "BỘ Y TẾ VIỆT NAM VERIFIED")}</span>
             </div>
           </div>
 
           <div style="display:flex; flex-direction:column; gap:16px;">
-            ${about.customTexts?.hide_med_edu !== "true" ? `<div style="border: 1px solid rgba(123, 17, 19, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
+            ${about.customTexts?.hide_med_edu !== "true" ? `<div style="border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); border-radius: 18px; padding: 18px; background: var(--surface);">
               <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary); margin:0 0 10px;">🎓 ${t("med_edu_title", "HỌC VẤN &amp; ĐÀO TẠO CHUYÊN MÔN")}</h4>
-              <p style="font-weight:700; font-size:15px; margin:0 0 4px; color:#2B1810;">${escapeHtml(eduSchool)}</p>
+              <p style="font-weight:700; font-size:15px; margin:0 0 4px; color:var(--text);">${escapeHtml(eduSchool)}</p>
               <p style="font-weight:600; font-size:13px; margin:0 0 4px; color:var(--primary);">${escapeHtml(eduDegree)}</p>
               <p style="font-size:11px; opacity:0.75; margin:0;">${escapeHtml(about.educationPeriod || "Khoá K18 • Hệ Chính quy Dược khoa")}</p>
             </div>` : ""}
-            ${about.customTexts?.hide_med_contact !== "true" ? `<div style="border: 1px solid rgba(123, 17, 19, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
+            ${about.customTexts?.hide_med_contact !== "true" ? `<div style="border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); border-radius: 18px; padding: 18px; background: var(--surface);">
               <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary); margin:0 0 10px;">✉️ ${t("med_contact_title", "THÔNG TIN LIÊN HỆ &amp; HỢP TÁC")}</h4>
               ${contactInfo.email ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Email:</strong> <a href="mailto:${escapeHtml(contactInfo.email)}" style="color:var(--primary);">${escapeHtml(contactInfo.email)}</a></p>` : ""}
               ${contactInfo.phone ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Hotline:</strong> ${escapeHtml(contactInfo.phone)}</p>` : ""}
@@ -2709,31 +2709,31 @@ function renderAboutHtml(
     return `<section id="about" class="about-wrap reveal-on-scroll" data-about-layout="academic-cv">
       <div style="position:relative; z-index:2; margin-bottom: 24px;">
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
-          <div style="border: 2px solid rgba(155, 48, 45, 0.35); border-radius: 20px; padding: 24px; background: var(--surface);">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(155, 48, 45, 0.2); padding-bottom: 12px; margin-bottom: 14px;">
+          <div style="border: 2px solid color-mix(in srgb, var(--primary) 35%, transparent); border-radius: 20px; padding: 24px; background: var(--surface);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid color-mix(in srgb, var(--primary) 20%, transparent); padding-bottom: 12px; margin-bottom: 14px;">
               <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--primary);">${t("acad_badge", "HỒ SƠ HỌC THUẬT &amp; LÝ LỊCH KHOA HỌC • ĐHQGHN")}</span>
               <span class="academic-vol-tag" style="background:var(--primary); color:#fff;">${t("acad_tag", "VNU-UEd-CV")}</span>
             </div>
             <h3 class="font-editorial" style="font-size:22px; font-weight:700; margin:0 0 10px;">${t("acad_title", "Nghiên cứu sinh &amp; Giảng viên Sư phạm Tương lai")}</h3>
             <p style="font-size:14px; line-height:1.7; opacity:0.88; margin:0 0 16px;">${escapeHtml(about.biography || "Nghiên cứu chuyên sâu về đổi mới phương pháp giảng dạy, ứng dụng chuyển đổi số và phát triển năng lực tự học cho học sinh trong chương trình GDPT 2018.")}</p>
-            <div style="border:1px solid rgba(155,48,45,0.25); border-radius:12px; padding:12px; background:rgba(237,234,226,0.3); font-size:12px; font-style:italic;">
+            <div style="border:1px solid color-mix(in srgb, var(--primary) 25%, transparent); border-radius:12px; padding:12px; background:color-mix(in srgb, var(--primary) 8%, transparent); font-size:12px; font-style:italic;">
               <strong style="color:var(--primary); font-style:normal; display:block; margin-bottom:2px;">${t("acad_philo_title", "📜 Triết lý nghiên cứu giáo dục:")}</strong>
               ${t("acad_philo_text", "“Lấy người học làm trung tâm của mọi chuyển hóa, công nghệ làm đòn bẩy kích hoạt tư duy và sự thấu cảm làm nền tảng của y đức sư phạm.”")}
             </div>
-            <div style="margin-top:16px; padding-top:10px; border-top:1px solid rgba(155, 48, 45, 0.15); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
+            <div style="margin-top:16px; padding-top:10px; border-top:1px solid color-mix(in srgb, var(--primary) 15%, transparent); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
               <span>${t("acad_footer_left", "TRƯỜNG ĐẠI HỌC GIÁO DỤC • ĐHQGHN")}</span>
               <span>${t("acad_footer_right", "ACADEMIC VERIFIED")}</span>
             </div>
           </div>
 
           <div style="display:flex; flex-direction:column; gap:16px;">
-            ${about.customTexts?.hide_acad_pubs !== "true" ? `<div style="border: 1px solid rgba(155, 48, 45, 0.25); border-radius: 16px; padding: 18px; background: var(--surface);">
+            ${about.customTexts?.hide_acad_pubs !== "true" ? `<div style="border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); border-radius: 16px; padding: 18px; background: var(--surface);">
               <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">📖 ${t("acad_pub_title", "CÔNG BỐ KHOA HỌC &amp; ĐỀ TÀI")}</h4>
               <p style="font-size:12px; margin:0 0 6px;">${t("acad_pub_1", "• <strong>01 Đề tài NCKH ĐHQGHN:</strong> Giải Nhất 2024")}</p>
               <p style="font-size:12px; margin:0 0 6px;">${t("acad_pub_2", "• <strong>03 Bài báo khoa học:</strong> Kỷ yếu Hội thảo Quốc gia")}</p>
               <p style="font-size:12px; margin:0;">${t("acad_pub_3", "• <strong>Học bổng:</strong> Tài năng Sư phạm VNU")}</p>
             </div>` : ""}
-            ${about.customTexts?.hide_acad_contact !== "true" ? `<div style="border: 1px solid rgba(155, 48, 45, 0.25); border-radius: 16px; padding: 18px; background: var(--surface);">
+            ${about.customTexts?.hide_acad_contact !== "true" ? `<div style="border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); border-radius: 16px; padding: 18px; background: var(--surface);">
               <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">✉️ ${t("acad_contact_title", "LIÊN HỆ KHOA HỌC &amp; VĂN PHÒNG")}</h4>
               ${contactInfo.email ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Email:</strong> <a href="mailto:${escapeHtml(contactInfo.email)}" style="color:var(--primary);">${escapeHtml(contactInfo.email)}</a></p>` : ""}
               ${contactInfo.phone ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Điện thoại:</strong> ${escapeHtml(contactInfo.phone)}</p>` : ""}
@@ -2749,8 +2749,8 @@ function renderAboutHtml(
     return `<section id="about" class="about-wrap reveal-on-scroll" data-about-layout="pedagogical-journal">
       <div style="position:relative; z-index:2; margin-bottom: 24px;">
         <div class="about-hero-grid" style="grid-template-columns: 1.3fr 0.7fr; gap: 24px;">
-          <div style="border: 2px solid rgba(155, 84, 100, 0.3); border-radius: 24px; padding: 24px; background: var(--surface);">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(155, 84, 100, 0.2); padding-bottom: 12px; margin-bottom: 14px;">
+          <div style="border: 2px solid color-mix(in srgb, var(--primary) 30%, transparent); border-radius: 24px; padding: 24px; background: var(--surface);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid color-mix(in srgb, var(--primary) 20%, transparent); padding-bottom: 12px; margin-bottom: 14px;">
               <span class="pedagogical-tag">${t("ped_badge", "🌸 CHÂN DUNG NGƯỜI GIÁO VIÊN TRẺ • SƯ PHẠM UEd")}</span>
               <span style="font-size:11px; opacity:0.75;">${t("ped_tag", "KHÓA K18 • THỰC TẬP")}</span>
             </div>
@@ -2770,20 +2770,20 @@ function renderAboutHtml(
                 <span style="font-size:11px; opacity:0.85;">${t("ped_card3_desc", "Lớp học hạnh phúc")}</span>
               </div>
             </div>
-            <div style="margin-top:16px; padding-top:10px; border-top:1px solid rgba(155, 84, 100, 0.15); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
+            <div style="margin-top:16px; padding-top:10px; border-top:1px solid color-mix(in srgb, var(--primary) 15%, transparent); display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--primary);">
               <span>${t("ped_footer_left", "TRƯỜNG ĐH SƯ PHẠM NGHỆ THUẬT TW")}</span>
               <span>${t("ped_footer_right", "TỐT NGHIỆP XUẤT SẮC 🌸")}</span>
             </div>
           </div>
 
           <div style="display:flex; flex-direction:column; gap:16px;">
-            ${about.customTexts?.hide_ped_edu !== "true" ? `<div style="border: 1px solid rgba(155, 84, 100, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
+            ${about.customTexts?.hide_ped_edu !== "true" ? `<div style="border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); border-radius: 18px; padding: 18px; background: var(--surface);">
               <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">🎓 ${t("ped_edu_title", "ĐƠN VỊ THỰC TẬP &amp; HỌC VẤN")}</h4>
               <p style="font-weight:700; font-size:14px; margin:0 0 4px;">${escapeHtml(eduSchool)}</p>
               <p style="font-weight:600; font-size:13px; margin:0 0 4px; color:var(--primary);">${escapeHtml(eduDegree)}</p>
               <p style="font-size:11px; opacity:0.75; margin:0;">${escapeHtml(about.educationPeriod || "Khoá K18 • Thực tập Sư phạm")}</p>
             </div>` : ""}
-            ${about.customTexts?.hide_ped_contact !== "true" ? `<div style="border: 1px solid rgba(155, 84, 100, 0.25); border-radius: 18px; padding: 18px; background: var(--surface);">
+            ${about.customTexts?.hide_ped_contact !== "true" ? `<div style="border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); border-radius: 18px; padding: 18px; background: var(--surface);">
               <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--primary); margin:0 0 8px;">✉️ ${t("ped_contact_title", "LIÊN HỆ GIÁO VIÊN")}</h4>
               ${contactInfo.email ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Email:</strong> <a href="mailto:${escapeHtml(contactInfo.email)}" style="color:var(--primary);">${escapeHtml(contactInfo.email)}</a></p>` : ""}
               ${contactInfo.phone ? `<p style="font-size:12px; margin:0 0 6px;"><strong>Hotline:</strong> ${escapeHtml(contactInfo.phone)}</p>` : ""}
