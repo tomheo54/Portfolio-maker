@@ -1110,8 +1110,8 @@ section { padding: 44px 0; position: relative; }
 .pedagogical-tag { background: ${hexToRgba(pal.primary, 0.1)}; color: var(--primary); padding: 3px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; }
 .pedagogical-index-box { border: 1.5px solid ${hexToRgba(pal.primary, 0.25)}; border-radius: 18px; padding: 16px; background: var(--surface); margin-top: 20px; }
 .pedagogical-index-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; font-size: 12px; }
-.pedagogical-item { padding: 8px 10px; border-radius: 8px; background: #F9F6F2; border: 1px solid ${hexToRgba(pal.primary, 0.15)}; }
-.pedagogical-avatar-frame { position: relative; border-radius: 24px; border: 2px solid ${hexToRgba(pal.primary, 0.4)}; padding: 6px; background: var(--surface); box-shadow: 0 8px 24px -6px rgba(155,84,100,0.2); }
+.pedagogical-item { padding: 8px 10px; border-radius: 8px; background: ${hexToRgba(pal.primary, 0.06)}; border: 1px solid ${hexToRgba(pal.primary, 0.15)}; }
+.pedagogical-avatar-frame { position: relative; border-radius: 24px; border: 2px solid ${hexToRgba(pal.primary, 0.4)}; padding: 6px; background: var(--surface); box-shadow: 0 8px 24px -6px ${hexToRgba(pal.primary, 0.2)}; }
 .pedagogical-bookmark { position: absolute; top: -10px; right: 14px; background: var(--primary); color: #fff; padding: 2px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
 .highlight-label {
   font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;

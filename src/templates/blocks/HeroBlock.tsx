@@ -591,11 +591,11 @@ export function HeroBlock({
               className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-bold tracking-widest uppercase shadow-sm"
               style={{
                 backgroundColor: theme.primaryColor,
-                borderColor: "#C29B38",
+                borderColor: `${theme.secondaryColor}80`,
                 color: "#FFFFFF",
               }}
             >
-              <Award className="h-4 w-4 text-amber-300" />
+              <Award className="h-4 w-4" style={{ color: theme.secondaryColor }} />
               <InlineEditableText
                 value={section.customTexts?.hero_med_badge || "HỒ SƠ NĂNG LỰC DƯỢC HỌC • CHUẨN GMP/GSP • CLINICAL PHARMACY"}
                 editable={editable}
@@ -607,7 +607,10 @@ export function HeroBlock({
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
               <div className={`space-y-6 ${showHeroAvatar ? "lg:col-span-7" : "lg:col-span-12"} ${isInverted ? "lg:order-2" : ""}`}>
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-[0.22em] text-amber-700">
+                  <span
+                    className="text-xs font-bold uppercase tracking-[0.22em]"
+                    style={{ color: theme.secondaryColor }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.hero_med_eyebrow || "DƯỢC SĨ ĐẠI HỌC • NGHIÊN CỨU & BÀO CHẾ"}
                       editable={editable}
@@ -615,7 +618,10 @@ export function HeroBlock({
                       onSave={(val) => updateCustomText("hero_med_eyebrow", val)}
                     />
                   </span>
-                  <h1 className="mt-2 font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#2B1810] leading-tight">
+                  <h1
+                    className="mt-2 font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
+                    style={{ color: theme.textColor }}
+                  >
                     <InlineEditableText
                       value={section.fullName}
                       editable={editable}
@@ -623,7 +629,7 @@ export function HeroBlock({
                       onSave={(val) => updateHero({ fullName: val })}
                     />
                   </h1>
-                  <p className="mt-2 text-lg font-medium text-[#7B1113] italic">
+                  <p className="mt-2 text-lg font-medium italic" style={{ color: theme.primaryColor }}>
                     <InlineEditableText
                       value={section.roleTitle}
                       editable={editable}
@@ -633,7 +639,7 @@ export function HeroBlock({
                   </p>
                 </div>
 
-                <p className="max-w-xl text-base leading-relaxed text-[#2B1810]/85">
+                <p className="max-w-xl text-base leading-relaxed opacity-85" style={{ color: theme.textColor }}>
                   <InlineEditableText
                     value={section.shortBio}
                     editable={editable}
@@ -647,16 +653,19 @@ export function HeroBlock({
                 <div
                   className="rounded-2xl border p-5 shadow-sm bg-white/80"
                   style={{
-                    borderColor: "rgba(123, 17, 19, 0.25)",
-                    boxShadow: "0 8px 24px -6px rgba(123, 17, 19, 0.12)",
+                    borderColor: `${theme.primaryColor}35`,
+                    boxShadow: `0 8px 24px -6px ${theme.primaryColor}18`,
                   }}
                 >
                   <div
                     className="flex items-center justify-between border-b pb-2.5 mb-3.5"
-                    style={{ borderColor: "rgba(123, 17, 19, 0.18)" }}
+                    style={{ borderColor: `${theme.primaryColor}25` }}
                   >
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#7B1113] flex items-center gap-1.5">
-                      <BookOpen className="h-4 w-4 text-amber-600" />
+                    <span
+                      className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5"
+                      style={{ color: theme.primaryColor }}
+                    >
+                      <BookOpen className="h-4 w-4" style={{ color: theme.secondaryColor }} />
                       <InlineEditableText
                         value={section.customTexts?.hero_med_syllabus_title || "MỤC LỤC HỒ SƠ CHUYÊN MÔN DƯỢC"}
                         editable={editable}
@@ -664,7 +673,14 @@ export function HeroBlock({
                         onSave={(val) => updateCustomText("hero_med_syllabus_title", val)}
                       />
                     </span>
-                    <span className="text-[10px] font-bold text-amber-800 bg-amber-100/80 px-2.5 py-0.5 rounded-full border border-amber-300">
+                    <span
+                      className="text-[10px] font-bold px-2.5 py-0.5 rounded-full border"
+                      style={{
+                        backgroundColor: `${theme.secondaryColor}18`,
+                        color: theme.secondaryColor,
+                        borderColor: `${theme.secondaryColor}40`,
+                      }}
+                    >
                       <InlineEditableText
                         value={section.customTexts?.hero_med_syllabus_badge || "SYLLABUS 2024"}
                         editable={editable}
@@ -673,9 +689,15 @@ export function HeroBlock({
                       />
                     </span>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-[#2B1810]">
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-50/50 border border-amber-200/60">
-                      <span className="font-extrabold text-[#7B1113]">01.</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs" style={{ color: theme.textColor }}>
+                    <div
+                      className="flex items-center gap-2 p-2 rounded-lg border"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}08`,
+                        borderColor: `${theme.primaryColor}20`,
+                      }}
+                    >
+                      <span className="font-extrabold" style={{ color: theme.primaryColor }}>01.</span>
                       <InlineEditableText
                         value={section.customTexts?.hero_med_item_1 || "Lý lịch Dược sĩ & Y đức"}
                         editable={editable}
@@ -683,8 +705,14 @@ export function HeroBlock({
                         onSave={(val) => updateCustomText("hero_med_item_1", val)}
                       />
                     </div>
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-50/50 border border-amber-200/60">
-                      <span className="font-extrabold text-[#7B1113]">02.</span>
+                    <div
+                      className="flex items-center gap-2 p-2 rounded-lg border"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}08`,
+                        borderColor: `${theme.primaryColor}20`,
+                      }}
+                    >
+                      <span className="font-extrabold" style={{ color: theme.primaryColor }}>02.</span>
                       <InlineEditableText
                         value={section.customTexts?.hero_med_item_2 || "Chuyên môn Lâm sàng & Bào chế"}
                         editable={editable}
@@ -692,8 +720,14 @@ export function HeroBlock({
                         onSave={(val) => updateCustomText("hero_med_item_2", val)}
                       />
                     </div>
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-50/50 border border-amber-200/60">
-                      <span className="font-extrabold text-[#7B1113]">03.</span>
+                    <div
+                      className="flex items-center gap-2 p-2 rounded-lg border"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}08`,
+                        borderColor: `${theme.primaryColor}20`,
+                      }}
+                    >
+                      <span className="font-extrabold" style={{ color: theme.primaryColor }}>03.</span>
                       <InlineEditableText
                         value={section.customTexts?.hero_med_item_3 || "Đề tài & Dự án trọng điểm"}
                         editable={editable}
@@ -701,8 +735,14 @@ export function HeroBlock({
                         onSave={(val) => updateCustomText("hero_med_item_3", val)}
                       />
                     </div>
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-50/50 border border-amber-200/60">
-                      <span className="font-extrabold text-[#7B1113]">04.</span>
+                    <div
+                      className="flex items-center gap-2 p-2 rounded-lg border"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}08`,
+                        borderColor: `${theme.primaryColor}20`,
+                      }}
+                    >
+                      <span className="font-extrabold" style={{ color: theme.primaryColor }}>04.</span>
                       <InlineEditableText
                         value={section.customTexts?.hero_med_item_4 || "Chứng chỉ & Tiêu chuẩn GMP"}
                         editable={editable}
@@ -722,14 +762,14 @@ export function HeroBlock({
                   <div className="relative group">
                     <div
                       className="absolute -inset-1.5 rounded-[164px_164px_28px_28px] opacity-75 blur-sm"
-                      style={{ background: "linear-gradient(135deg, #C29B38, #7B1113)" }}
+                      style={{ background: `linear-gradient(135deg, ${theme.secondaryColor}, ${theme.primaryColor})` }}
                     />
                     <div
                       className="relative overflow-hidden p-2 bg-white"
                       style={{
                         borderRadius: "160px 160px 24px 24px",
-                        border: "4px solid #7B1113",
-                        boxShadow: "0 0 0 2px #C29B38, 0 16px 36px -10px rgba(123, 17, 19, 0.35)",
+                        border: `4px solid ${theme.primaryColor}`,
+                        boxShadow: `0 0 0 2px ${theme.secondaryColor}, 0 16px 36px -10px ${theme.primaryColor}55`,
                       }}
                     >
                       <img
@@ -739,7 +779,13 @@ export function HeroBlock({
                         style={{ borderRadius: "152px 152px 18px 18px" }}
                       />
                     </div>
-                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-amber-300 bg-[#7B1113] px-4 py-1.5 text-center text-[10px] font-bold tracking-wider text-white uppercase shadow-lg whitespace-nowrap">
+                    <div
+                      className="absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full border px-4 py-1.5 text-center text-[10px] font-bold tracking-wider text-white uppercase shadow-lg whitespace-nowrap"
+                      style={{
+                        backgroundColor: theme.primaryColor,
+                        borderColor: theme.secondaryColor,
+                      }}
+                    >
                       <InlineEditableText
                         value={section.customTexts?.hero_med_avatar_badge || "TIÊU CHUẨN GMP/GSP • BỘ Y TẾ"}
                         editable={editable}
@@ -754,8 +800,14 @@ export function HeroBlock({
           </div>
         ) : isClinicalNavy ? (
           <div className="space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#1A1264]/20 bg-slate-100/90 px-4 py-2.5 text-xs font-mono text-[#0C0838]">
-              <span className="font-bold flex items-center gap-2">
+            <div
+              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-slate-50/90 px-4 py-2.5 text-xs font-mono"
+              style={{
+                borderColor: `${theme.primaryColor}30`,
+                color: theme.textColor,
+              }}
+            >
+              <span className="font-bold flex items-center gap-2" style={{ color: theme.primaryColor }}>
                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
                 <InlineEditableText
                   value={section.customTexts?.hero_clin_badge || "[DOSSIER ARCHIVE: 2024-MED-CLINICAL]"}
@@ -772,7 +824,10 @@ export function HeroBlock({
                   onSave={(val) => updateCustomText("hero_clin_sub", val)}
                 />
               </span>
-              <span className="rounded bg-[#1A1264] px-2.5 py-0.5 text-[10px] text-white font-bold tracking-wider">
+              <span
+                className="rounded px-2.5 py-0.5 text-[10px] text-white font-bold tracking-wider"
+                style={{ backgroundColor: theme.primaryColor }}
+              >
                 <InlineEditableText
                   value={section.customTexts?.hero_clin_status || "STATUS: ACTIVE RESIDENT"}
                   editable={editable}
@@ -785,7 +840,10 @@ export function HeroBlock({
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
               <div className={`space-y-6 ${showHeroAvatar ? "lg:col-span-7" : "lg:col-span-12"} ${isInverted ? "lg:order-2" : ""}`}>
                 <div>
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-indigo-700">
+                  <span
+                    className="font-mono text-xs font-bold uppercase tracking-widest"
+                    style={{ color: theme.primaryColor }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.hero_clin_eyebrow || "[CLINICAL CASE DOSSIER // RESIDENT PROFILE]"}
                       editable={editable}
@@ -793,7 +851,10 @@ export function HeroBlock({
                       onSave={(val) => updateCustomText("hero_clin_eyebrow", val)}
                     />
                   </span>
-                  <h1 className="mt-2 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0C0838]">
+                  <h1
+                    className="mt-2 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight"
+                    style={{ color: theme.textColor }}
+                  >
                     <InlineEditableText
                       value={section.fullName}
                       editable={editable}
@@ -801,7 +862,7 @@ export function HeroBlock({
                       onSave={(val) => updateHero({ fullName: val })}
                     />
                   </h1>
-                  <p className="mt-2 text-base font-semibold text-[#1A1264]">
+                  <p className="mt-2 text-base font-semibold" style={{ color: theme.primaryColor }}>
                     <InlineEditableText
                       value={section.roleTitle}
                       editable={editable}
@@ -811,7 +872,7 @@ export function HeroBlock({
                   </p>
                 </div>
 
-                <p className="max-w-xl text-base leading-relaxed text-[#0C0838]/85">
+                <p className="max-w-xl text-base leading-relaxed opacity-85" style={{ color: theme.textColor }}>
                   <InlineEditableText
                     value={section.shortBio}
                     editable={editable}
@@ -822,10 +883,16 @@ export function HeroBlock({
                 </p>
 
                 {/* Clinical Diagnostic Index */}
-                <div className="rounded-xl border border-indigo-900/20 bg-white p-4 shadow-sm font-mono text-xs">
-                  <div className="flex items-center justify-between border-b border-indigo-900/10 pb-2 mb-3">
-                    <span className="font-bold text-[#1A1264] flex items-center gap-1.5">
-                      <Activity className="h-4 w-4 text-indigo-600" />
+                <div
+                  className="rounded-xl border bg-white p-4 shadow-sm font-mono text-xs"
+                  style={{ borderColor: `${theme.primaryColor}25` }}
+                >
+                  <div
+                    className="flex items-center justify-between border-b pb-2 mb-3"
+                    style={{ borderColor: `${theme.primaryColor}18` }}
+                  >
+                    <span className="font-bold flex items-center gap-1.5" style={{ color: theme.primaryColor }}>
+                      <Activity className="h-4 w-4" style={{ color: theme.primaryColor }} />
                       <InlineEditableText
                         value={section.customTexts?.hero_clin_diag_title || "DANH MỤC CA BỆNH & CHUYÊN MÔN"}
                         editable={editable}
@@ -843,8 +910,14 @@ export function HeroBlock({
                     </span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700">
-                    <div className="p-2 rounded bg-slate-50 border border-slate-200">
-                      <strong className="text-[#1A1264]">[CASE 01]</strong>{" "}
+                    <div
+                      className="p-2 rounded border"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}06`,
+                        borderColor: `${theme.primaryColor}18`,
+                      }}
+                    >
+                      <strong style={{ color: theme.primaryColor }}>[CASE 01]</strong>{" "}
                       <InlineEditableText
                         value={section.customTexts?.hero_clin_case_1 || "Cấp cứu & Can thiệp hồi sức"}
                         editable={editable}
@@ -852,8 +925,14 @@ export function HeroBlock({
                         onSave={(val) => updateCustomText("hero_clin_case_1", val)}
                       />
                     </div>
-                    <div className="p-2 rounded bg-slate-50 border border-slate-200">
-                      <strong className="text-[#1A1264]">[CASE 02]</strong>{" "}
+                    <div
+                      className="p-2 rounded border"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}06`,
+                        borderColor: `${theme.primaryColor}18`,
+                      }}
+                    >
+                      <strong style={{ color: theme.primaryColor }}>[CASE 02]</strong>{" "}
                       <InlineEditableText
                         value={section.customTexts?.hero_clin_case_2 || "Phác đồ điều trị nội khoa"}
                         editable={editable}
@@ -861,8 +940,14 @@ export function HeroBlock({
                         onSave={(val) => updateCustomText("hero_clin_case_2", val)}
                       />
                     </div>
-                    <div className="p-2 rounded bg-slate-50 border border-slate-200">
-                      <strong className="text-[#1A1264]">[CASE 03]</strong>{" "}
+                    <div
+                      className="p-2 rounded border"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}06`,
+                        borderColor: `${theme.primaryColor}18`,
+                      }}
+                    >
+                      <strong style={{ color: theme.primaryColor }}>[CASE 03]</strong>{" "}
                       <InlineEditableText
                         value={section.customTexts?.hero_clin_case_3 || "Chẩn đoán cận lâm sàng"}
                         editable={editable}
@@ -870,8 +955,14 @@ export function HeroBlock({
                         onSave={(val) => updateCustomText("hero_clin_case_3", val)}
                       />
                     </div>
-                    <div className="p-2 rounded bg-slate-50 border border-slate-200">
-                      <strong className="text-[#1A1264]">[CASE 04]</strong>{" "}
+                    <div
+                      className="p-2 rounded border"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}06`,
+                        borderColor: `${theme.primaryColor}18`,
+                      }}
+                    >
+                      <strong style={{ color: theme.primaryColor }}>[CASE 04]</strong>{" "}
                       <InlineEditableText
                         value={section.customTexts?.hero_clin_case_4 || "Y học chứng cứ & Báo cáo"}
                         editable={editable}
@@ -888,7 +979,10 @@ export function HeroBlock({
 
               {showHeroAvatar && (
                 <div className={`flex justify-center lg:col-span-5 ${isInverted ? "lg:order-1" : ""}`}>
-                  <div className="relative group rounded-2xl border-2 border-[#1A1264] bg-white p-3 shadow-xl">
+                  <div
+                    className="relative group rounded-2xl border-2 bg-white p-3 shadow-xl"
+                    style={{ borderColor: theme.primaryColor }}
+                  >
                     <div className="absolute top-1 left-3 font-mono text-[9px] font-bold text-slate-500">
                       <InlineEditableText
                         value={section.customTexts?.hero_clin_img_tag || "[CASE_IMAGE // HIGH_RES]"}
@@ -902,7 +996,10 @@ export function HeroBlock({
                       alt={section.fullName}
                       className="w-72 h-96 sm:w-80 sm:h-[440px] rounded-xl object-cover"
                     />
-                    <div className="mt-2 flex items-center justify-between font-mono text-[10px] text-[#1A1264]">
+                    <div
+                      className="mt-2 flex items-center justify-between font-mono text-[10px]"
+                      style={{ color: theme.primaryColor }}
+                    >
                       <span>
                         <InlineEditableText
                           value={section.customTexts?.hero_clin_rec_tag || "RECORD: VERIFIED"}
@@ -927,7 +1024,10 @@ export function HeroBlock({
           </div>
         ) : isContentCreator ? (
           <div className="space-y-6">
-            <div className="flex items-center justify-between border-b-2 border-[#722F37] pb-2 text-xs font-black uppercase tracking-widest text-[#722F37]">
+            <div
+              className="flex items-center justify-between border-b-2 pb-2 text-xs font-black uppercase tracking-widest"
+              style={{ borderColor: `${theme.primaryColor}50`, color: theme.primaryColor }}
+            >
               <span>
                 <InlineEditableText
                   value={section.customTexts?.hero_creator_header1 || "CREATIVE DIRECTORY • ISSUE NO. 01"}
@@ -957,7 +1057,10 @@ export function HeroBlock({
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
               <div className={`space-y-6 ${showHeroAvatar ? "lg:col-span-7" : "lg:col-span-12"} ${isInverted ? "lg:order-2" : ""}`}>
                 <div>
-                  <h1 className="font-editorial text-5xl sm:text-6xl font-black uppercase tracking-tight text-[#2D1418] leading-[0.95]">
+                  <h1
+                    className="font-editorial text-5xl sm:text-6xl font-black uppercase tracking-tight leading-[0.95]"
+                    style={{ color: theme.textColor }}
+                  >
                     <InlineEditableText
                       value={section.fullName}
                       editable={editable}
@@ -965,7 +1068,10 @@ export function HeroBlock({
                       onSave={(val) => updateHero({ fullName: val })}
                     />
                   </h1>
-                  <p className="mt-3 text-lg font-bold text-[#722F37] uppercase tracking-wider">
+                  <p
+                    className="mt-3 text-lg font-bold uppercase tracking-wider"
+                    style={{ color: theme.primaryColor }}
+                  >
                     <InlineEditableText
                       value={section.roleTitle}
                       editable={editable}
@@ -975,7 +1081,7 @@ export function HeroBlock({
                   </p>
                 </div>
 
-                <p className="max-w-xl text-base leading-relaxed text-[#2D1418]/90 font-medium">
+                <p className="max-w-xl text-base leading-relaxed font-medium opacity-90" style={{ color: theme.textColor }}>
                   <InlineEditableText
                     value={section.shortBio}
                     editable={editable}
@@ -987,7 +1093,15 @@ export function HeroBlock({
 
                 {/* Floating Viral Sticker Badges */}
                 <div className="flex flex-wrap gap-2.5 pt-1">
-                  <span className="rotate-[-2deg] rounded-full border-2 border-black bg-amber-300 px-3.5 py-1 text-xs font-black text-black shadow-[2px_2px_0px_#000]">
+                  <span
+                    className="rotate-[-2deg] rounded-full border-2 px-3.5 py-1 text-xs font-black"
+                    style={{
+                      backgroundColor: `${theme.primaryColor}18`,
+                      borderColor: theme.primaryColor,
+                      color: theme.primaryColor,
+                      boxShadow: `2px 2px 0px ${theme.textColor}80`,
+                    }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.hero_creator_sticker1 || "🔥 VIRAL CAMPAIGN"}
                       editable={editable}
@@ -995,7 +1109,15 @@ export function HeroBlock({
                       onSave={(val) => updateCustomText("hero_creator_sticker1", val)}
                     />
                   </span>
-                  <span className="rotate-[1.5deg] rounded-full border-2 border-black bg-rose-300 px-3.5 py-1 text-xs font-black text-black shadow-[2px_2px_0px_#000]">
+                  <span
+                    className="rotate-[1.5deg] rounded-full border-2 px-3.5 py-1 text-xs font-black"
+                    style={{
+                      backgroundColor: `${theme.secondaryColor}20`,
+                      borderColor: theme.secondaryColor,
+                      color: theme.secondaryColor,
+                      boxShadow: `2px 2px 0px ${theme.textColor}80`,
+                    }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.hero_creator_sticker2 || "🎬 TIKTOK CREATOR"}
                       editable={editable}
@@ -1003,7 +1125,15 @@ export function HeroBlock({
                       onSave={(val) => updateCustomText("hero_creator_sticker2", val)}
                     />
                   </span>
-                  <span className="rotate-[-1deg] rounded-full border-2 border-black bg-sky-300 px-3.5 py-1 text-xs font-black text-black shadow-[2px_2px_0px_#000]">
+                  <span
+                    className="rotate-[-1deg] rounded-full border-2 px-3.5 py-1 text-xs font-black"
+                    style={{
+                      backgroundColor: `${theme.primaryColor}0e`,
+                      borderColor: `${theme.primaryColor}bb`,
+                      color: theme.primaryColor,
+                      boxShadow: `2px 2px 0px ${theme.textColor}80`,
+                    }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.hero_creator_sticker3 || "✨ 500K+ REACH"}
                       editable={editable}
@@ -1011,7 +1141,15 @@ export function HeroBlock({
                       onSave={(val) => updateCustomText("hero_creator_sticker3", val)}
                     />
                   </span>
-                  <span className="rotate-[2deg] rounded-full border-2 border-black bg-emerald-300 px-3.5 py-1 text-xs font-black text-black shadow-[2px_2px_0px_#000]">
+                  <span
+                    className="rotate-[2deg] rounded-full border-2 px-3.5 py-1 text-xs font-black"
+                    style={{
+                      backgroundColor: `${theme.secondaryColor}15`,
+                      borderColor: `${theme.secondaryColor}bb`,
+                      color: theme.secondaryColor,
+                      boxShadow: `2px 2px 0px ${theme.textColor}80`,
+                    }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.hero_creator_sticker4 || "📸 VISUAL STORYTELLER"}
                       editable={editable}
@@ -1021,7 +1159,10 @@ export function HeroBlock({
                   </span>
                 </div>
 
-                <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-wider text-[#722F37]/80">
+                <div
+                  className="flex items-center gap-4 text-xs font-bold uppercase tracking-wider opacity-80"
+                  style={{ color: theme.primaryColor }}
+                >
                   <span>• TIKTOK</span>
                   <span>• REELS</span>
                   <span>• YOUTUBE</span>
@@ -1034,14 +1175,26 @@ export function HeroBlock({
 
               {showHeroAvatar && (
                 <div className={`flex justify-center lg:col-span-5 ${isInverted ? "lg:order-1" : ""}`}>
-                  <div className="relative rotate-[2deg] rounded-3xl border-4 border-black bg-white p-4 shadow-[8px_8px_0px_#000] transition-transform hover:rotate-0">
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-24 h-7 bg-amber-300/90 border border-black/40 rotate-[-2deg] shadow-sm" />
+                  <div
+                    className="relative rotate-[2deg] rounded-3xl border-3 bg-white p-4 transition-transform hover:rotate-0"
+                    style={{
+                      borderColor: `${theme.textColor}dd`,
+                      boxShadow: `8px 8px 0px ${theme.textColor}cc`,
+                    }}
+                  >
+                    <div
+                      className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-24 h-7 border rotate-[-2deg] shadow-sm"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}30`,
+                        borderColor: `${theme.primaryColor}60`,
+                      }}
+                    />
                     <img
                       src={section.avatar.url}
                       alt={section.fullName}
                       className="w-72 h-96 sm:w-80 sm:h-[430px] rounded-2xl object-cover"
                     />
-                    <p className="mt-3 text-center font-editorial text-sm font-bold text-stone-800 italic">
+                    <p className="mt-3 text-center font-editorial text-sm font-bold italic" style={{ color: theme.textColor }}>
                       <InlineEditableText
                         value={section.customTexts?.hero_creator_caption || "Campaign On Set 2024 ⚡"}
                         editable={editable}
@@ -1056,8 +1209,11 @@ export function HeroBlock({
           </div>
         ) : isAcademicMonograph ? (
           <div className="space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 pb-3" style={{ borderColor: "#9B302D" }}>
-              <span className="text-xs font-bold uppercase tracking-widest text-[#9B302D]">
+            <div
+              className="flex flex-wrap items-center justify-between gap-3 border-b-2 pb-3"
+              style={{ borderColor: `${theme.primaryColor}40` }}
+            >
+              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: theme.primaryColor }}>
                 <InlineEditableText
                   value={section.customTexts?.hero_acad_header1 || "ĐẠI HỌC QUỐC GIA HÀ NỘI • TRƯỜNG ĐẠI HỌC GIÁO DỤC"}
                   editable={editable}
@@ -1066,8 +1222,12 @@ export function HeroBlock({
                 />
               </span>
               <span
-                className="rounded border px-3 py-0.5 text-[11px] font-bold text-[#9B302D] bg-[#EDEAE2]"
-                style={{ borderColor: "#9B302D" }}
+                className="rounded border px-3 py-0.5 text-[11px] font-bold"
+                style={{
+                  color: theme.primaryColor,
+                  backgroundColor: `${theme.primaryColor}10`,
+                  borderColor: `${theme.primaryColor}40`,
+                }}
               >
                 <InlineEditableText
                   value={section.customTexts?.hero_acad_header2 || "ACADEMIC MONOGRAPH VOL. 2024"}
@@ -1081,7 +1241,10 @@ export function HeroBlock({
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
               <div className={`space-y-6 ${showHeroAvatar ? "lg:col-span-7" : "lg:col-span-12"} ${isInverted ? "lg:order-2" : ""}`}>
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#9B302D]">
+                  <span
+                    className="text-xs font-bold uppercase tracking-[0.2em]"
+                    style={{ color: theme.primaryColor }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.hero_acad_eyebrow || "HỒ SƠ HỌC THUẬT & NGHIÊN CỨU SƯ PHẠM"}
                       editable={editable}
@@ -1089,7 +1252,10 @@ export function HeroBlock({
                       onSave={(val) => updateCustomText("hero_acad_eyebrow", val)}
                     />
                   </span>
-                  <h1 className="mt-2 font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#282828] leading-tight">
+                  <h1
+                    className="mt-2 font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
+                    style={{ color: theme.textColor }}
+                  >
                     <InlineEditableText
                       value={section.fullName}
                       editable={editable}
@@ -1097,7 +1263,7 @@ export function HeroBlock({
                       onSave={(val) => updateHero({ fullName: val })}
                     />
                   </h1>
-                  <p className="mt-2 text-lg font-medium text-[#9B302D] italic">
+                  <p className="mt-2 text-lg font-medium italic" style={{ color: theme.primaryColor }}>
                     <InlineEditableText
                       value={section.roleTitle}
                       editable={editable}
@@ -1107,7 +1273,7 @@ export function HeroBlock({
                   </p>
                 </div>
 
-                <p className="max-w-xl text-base leading-relaxed text-[#282828]/85">
+                <p className="max-w-xl text-base leading-relaxed opacity-85" style={{ color: theme.textColor }}>
                   <InlineEditableText
                     value={section.shortBio}
                     editable={editable}
@@ -1118,9 +1284,15 @@ export function HeroBlock({
                 </p>
 
                 {/* Research Framework Index */}
-                <div className="rounded-xl border p-4 bg-white/80 shadow-sm" style={{ borderColor: "rgba(155, 48, 45, 0.3)" }}>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#9B302D] mb-2 flex items-center gap-1.5">
-                    <BookOpen className="h-4 w-4" />
+                <div
+                  className="rounded-xl border p-4 bg-white/80 shadow-sm"
+                  style={{ borderColor: `${theme.primaryColor}30` }}
+                >
+                  <h4
+                    className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"
+                    style={{ color: theme.primaryColor }}
+                  >
+                    <BookOpen className="h-4 w-4" style={{ color: theme.primaryColor }} />
                     <InlineEditableText
                       value={section.customTexts?.hero_acad_framework_title || "KHUNG NGHIÊN CỨU & HỌC THUẬT SƯ PHẠM"}
                       editable={editable}
@@ -1128,9 +1300,9 @@ export function HeroBlock({
                       onSave={(val) => updateCustomText("hero_acad_framework_title", val)}
                     />
                   </h4>
-                  <div className="space-y-1.5 text-xs text-[#282828]">
+                  <div className="space-y-1.5 text-xs" style={{ color: theme.textColor }}>
                     <div className="flex items-center gap-2">
-                      <strong className="text-[#9B302D]">I.</strong>{" "}
+                      <strong style={{ color: theme.primaryColor }}>I.</strong>{" "}
                       <InlineEditableText
                         value={section.customTexts?.hero_acad_item_1 || "Lý lịch khoa học & Triết lý giáo dục"}
                         editable={editable}
@@ -1139,7 +1311,7 @@ export function HeroBlock({
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <strong className="text-[#9B302D]">II.</strong>{" "}
+                      <strong style={{ color: theme.primaryColor }}>II.</strong>{" "}
                       <InlineEditableText
                         value={section.customTexts?.hero_acad_item_2 || "Năng lực sư phạm & Dạy học tích cực"}
                         editable={editable}
@@ -1148,7 +1320,7 @@ export function HeroBlock({
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <strong className="text-[#9B302D]">III.</strong>{" "}
+                      <strong style={{ color: theme.primaryColor }}>III.</strong>{" "}
                       <InlineEditableText
                         value={section.customTexts?.hero_acad_item_3 || "Các công trình nghiên cứu & Đề tài thực nghiệm"}
                         editable={editable}
@@ -1157,7 +1329,7 @@ export function HeroBlock({
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <strong className="text-[#9B302D]">IV.</strong>{" "}
+                      <strong style={{ color: theme.primaryColor }}>IV.</strong>{" "}
                       <InlineEditableText
                         value={section.customTexts?.hero_acad_item_4 || "Xuất bản tạp chí & Báo cáo sư phạm"}
                         editable={editable}
@@ -1179,7 +1351,7 @@ export function HeroBlock({
                       className="relative overflow-hidden p-2.5 bg-white shadow-xl"
                       style={{
                         borderRadius: "160px 160px 24px 24px",
-                        border: "3px solid #9B302D",
+                        border: `3px solid ${theme.primaryColor}`,
                       }}
                     >
                       <img
@@ -1189,7 +1361,13 @@ export function HeroBlock({
                         style={{ borderRadius: "152px 152px 18px 18px" }}
                       />
                     </div>
-                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-[#9B302D] bg-[#9B302D] px-4 py-1 text-center text-[10px] font-bold text-white uppercase shadow-md whitespace-nowrap">
+                    <div
+                      className="absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full border px-4 py-1 text-center text-[10px] font-bold text-white uppercase shadow-md whitespace-nowrap"
+                      style={{
+                        backgroundColor: theme.primaryColor,
+                        borderColor: theme.primaryColor,
+                      }}
+                    >
                       <InlineEditableText
                         value={section.customTexts?.hero_acad_badge || "VNU-UEd RESEARCH FELLOW"}
                         editable={editable}
@@ -1204,8 +1382,11 @@ export function HeroBlock({
           </div>
         ) : isPedagogicalJournal ? (
           <div className="space-y-6">
-            <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: "rgba(155, 84, 100, 0.3)" }}>
-              <span className="text-xs font-bold tracking-widest uppercase text-[#9B5464]">
+            <div
+              className="flex items-center justify-between border-b pb-3"
+              style={{ borderColor: `${theme.primaryColor}30` }}
+            >
+              <span className="text-xs font-bold tracking-widest uppercase" style={{ color: theme.primaryColor }}>
                 <InlineEditableText
                   value={section.customTexts?.hero_ped_header1 || "NHẬT KÝ SƯ PHẠM & THỰC TẬP GIẢNG DẠY"}
                   editable={editable}
@@ -1213,7 +1394,13 @@ export function HeroBlock({
                   onSave={(val) => updateCustomText("hero_ped_header1", val)}
                 />
               </span>
-              <span className="rounded-full bg-[#9B5464]/10 px-3 py-1 text-[11px] font-bold text-[#9B5464]">
+              <span
+                className="rounded-full px-3 py-1 text-[11px] font-bold"
+                style={{
+                  backgroundColor: `${theme.primaryColor}15`,
+                  color: theme.primaryColor,
+                }}
+              >
                 <InlineEditableText
                   value={section.customTexts?.hero_ped_header2 || "GIÁO VIÊN TƯƠNG LAI • KHOA SƯ PHẠM UEd"}
                   editable={editable}
@@ -1226,7 +1413,10 @@ export function HeroBlock({
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
               <div className={`space-y-6 ${showHeroAvatar ? "lg:col-span-7" : "lg:col-span-12"} ${isInverted ? "lg:order-2" : ""}`}>
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#9B5464]">
+                  <span
+                    className="text-xs font-bold uppercase tracking-wider"
+                    style={{ color: theme.primaryColor }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.hero_ped_eyebrow || "NHẬT KÝ NGƯỜI GIÁO VIÊN TRẺ"}
                       editable={editable}
@@ -1234,7 +1424,10 @@ export function HeroBlock({
                       onSave={(val) => updateCustomText("hero_ped_eyebrow", val)}
                     />
                   </span>
-                  <h1 className="mt-2 font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#3A2329] leading-tight">
+                  <h1
+                    className="mt-2 font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
+                    style={{ color: theme.textColor }}
+                  >
                     <InlineEditableText
                       value={section.fullName}
                       editable={editable}
@@ -1242,7 +1435,7 @@ export function HeroBlock({
                       onSave={(val) => updateHero({ fullName: val })}
                     />
                   </h1>
-                  <p className="mt-2 text-base font-medium text-[#9B5464] italic">
+                  <p className="mt-2 text-base font-medium italic" style={{ color: theme.primaryColor }}>
                     <InlineEditableText
                       value={section.roleTitle}
                       editable={editable}
@@ -1252,7 +1445,7 @@ export function HeroBlock({
                   </p>
                 </div>
 
-                <p className="max-w-xl text-base leading-relaxed text-[#3A2329]/85">
+                <p className="max-w-xl text-base leading-relaxed opacity-85" style={{ color: theme.textColor }}>
                   <InlineEditableText
                     value={section.shortBio}
                     editable={editable}
@@ -1263,9 +1456,15 @@ export function HeroBlock({
                 </p>
 
                 {/* Pedagogical Journal Index */}
-                <div className="rounded-2xl border p-4 bg-white/80 shadow-sm" style={{ borderColor: "rgba(155, 84, 100, 0.25)" }}>
-                  <h4 className="text-xs font-bold text-[#9B5464] mb-2 uppercase tracking-wide flex items-center gap-1.5">
-                    <Bookmark className="h-4 w-4" />
+                <div
+                  className="rounded-2xl border p-4 bg-white/80 shadow-sm"
+                  style={{ borderColor: `${theme.primaryColor}30` }}
+                >
+                  <h4
+                    className="text-xs font-bold mb-2 uppercase tracking-wide flex items-center gap-1.5"
+                    style={{ color: theme.primaryColor }}
+                  >
+                    <Bookmark className="h-4 w-4" style={{ color: theme.primaryColor }} />
                     <InlineEditableText
                       value={section.customTexts?.hero_ped_plan_title || "TIẾN TRÌNH THỰC TẬP & KẾ HOẠCH BÀI DẠY"}
                       editable={editable}
@@ -1273,8 +1472,14 @@ export function HeroBlock({
                       onSave={(val) => updateCustomText("hero_ped_plan_title", val)}
                     />
                   </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#3A2329]">
-                    <div className="p-2 rounded-lg bg-[#F9F6F2] border border-[#9B5464]/15">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs" style={{ color: theme.textColor }}>
+                    <div
+                      className="p-2 rounded-lg border"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}0a`,
+                        borderColor: `${theme.primaryColor}18`,
+                      }}
+                    >
                       <InlineEditableText
                         value={section.customTexts?.hero_ped_item_1 || "🌸 Bài 1: Chân dung người giáo viên"}
                         editable={editable}
@@ -1282,7 +1487,13 @@ export function HeroBlock({
                         onSave={(val) => updateCustomText("hero_ped_item_1", val)}
                       />
                     </div>
-                    <div className="p-2 rounded-lg bg-[#F9F6F2] border border-[#9B5464]/15">
+                    <div
+                      className="p-2 rounded-lg border"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}0a`,
+                        borderColor: `${theme.primaryColor}18`,
+                      }}
+                    >
                       <InlineEditableText
                         value={section.customTexts?.hero_ped_item_2 || "🌸 Bài 2: Kế hoạch bài dạy (Giáo án)"}
                         editable={editable}
@@ -1290,7 +1501,13 @@ export function HeroBlock({
                         onSave={(val) => updateCustomText("hero_ped_item_2", val)}
                       />
                     </div>
-                    <div className="p-2 rounded-lg bg-[#F9F6F2] border border-[#9B5464]/15">
+                    <div
+                      className="p-2 rounded-lg border"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}0a`,
+                        borderColor: `${theme.primaryColor}18`,
+                      }}
+                    >
                       <InlineEditableText
                         value={section.customTexts?.hero_ped_item_3 || "🌸 Bài 3: Hoạt động trải nghiệm sáng tạo"}
                         editable={editable}
@@ -1298,7 +1515,13 @@ export function HeroBlock({
                         onSave={(val) => updateCustomText("hero_ped_item_3", val)}
                       />
                     </div>
-                    <div className="p-2 rounded-lg bg-[#F9F6F2] border border-[#9B5464]/15">
+                    <div
+                      className="p-2 rounded-lg border"
+                      style={{
+                        backgroundColor: `${theme.primaryColor}0a`,
+                        borderColor: `${theme.primaryColor}18`,
+                      }}
+                    >
                       <InlineEditableText
                         value={section.customTexts?.hero_ped_item_4 || "🌸 Bài 4: Phản tư & Nhận xét học sinh"}
                         editable={editable}
@@ -1315,8 +1538,14 @@ export function HeroBlock({
 
               {showHeroAvatar && (
                 <div className={`flex justify-center lg:col-span-5 ${isInverted ? "lg:order-1" : ""}`}>
-                  <div className="relative rounded-3xl border-2 border-[#9B5464]/40 bg-white p-3 shadow-lg">
-                    <div className="absolute -top-3 right-4 rounded-md bg-[#9B5464] px-2.5 py-0.5 text-[10px] font-bold text-white shadow-sm">
+                  <div
+                    className="relative rounded-3xl border-2 bg-white p-3 shadow-lg"
+                    style={{ borderColor: `${theme.primaryColor}50` }}
+                  >
+                    <div
+                      className="absolute -top-3 right-4 rounded-md px-2.5 py-0.5 text-[10px] font-bold text-white shadow-sm"
+                      style={{ backgroundColor: theme.primaryColor }}
+                    >
                       <InlineEditableText
                         value={section.customTexts?.hero_ped_badge || "SƯ PHẠM 2024"}
                         editable={editable}

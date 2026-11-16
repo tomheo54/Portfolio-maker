@@ -1113,16 +1113,22 @@ export function AboutBlock({
             <div
               className="lg:col-span-7 rounded-3xl border-2 p-6 sm:p-8 bg-white/95 shadow-md flex flex-col justify-between"
               style={{
-                borderColor: "rgba(123, 17, 19, 0.35)",
-                boxShadow: "0 10px 30px -10px rgba(123, 17, 19, 0.15)",
+                borderColor: `${theme.primaryColor}55`,
+                boxShadow: `0 10px 30px -10px ${theme.primaryColor}25`,
               }}
             >
               <div className="space-y-4">
                 <div
                   className="flex flex-wrap items-center justify-between gap-2 border-b pb-3"
-                  style={{ borderColor: "rgba(123, 17, 19, 0.18)" }}
+                  style={{ borderColor: `${theme.primaryColor}30` }}
                 >
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-[#7B1113] px-3.5 py-1 text-xs font-bold text-white shadow-xs">
+                  <span
+                    className="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 text-xs font-bold text-white shadow-xs"
+                    style={{
+                      backgroundColor: theme.primaryColor,
+                      borderColor: `${theme.primaryColor}80`,
+                    }}
+                  >
                     <Award className="h-3.5 w-3.5 text-amber-300" />
                     <InlineEditableText
                       value={section.customTexts?.med_badge || "HỒ SƠ HÀNH NGHỀ DƯỢC • CHUẨN GMP/GSP"}
@@ -1131,7 +1137,14 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("med_badge", val)}
                     />
                   </span>
-                  <span className="font-mono text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200">
+                  <span
+                    className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-md border"
+                    style={{
+                      color: theme.primaryColor,
+                      backgroundColor: `${theme.primaryColor}12`,
+                      borderColor: `${theme.primaryColor}30`,
+                    }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.med_license || "LICENSE: #VN-PHARM-8892"}
                       editable={editable}
@@ -1142,7 +1155,7 @@ export function AboutBlock({
                 </div>
 
                 <div>
-                  <h3 className="font-editorial text-2xl font-bold text-[#2B1810]">
+                  <h3 className="font-editorial text-2xl font-bold" style={{ color: theme.textColor }}>
                     <InlineEditableText
                       value={section.customTexts?.med_title || "Dược sĩ Chuyên khoa & Nghiên cứu Phát triển (R&D)"}
                       editable={editable}
@@ -1150,7 +1163,7 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("med_title", val)}
                     />
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[#2B1810]/85">
+                  <p className="mt-2 text-sm leading-relaxed opacity-85" style={{ color: theme.textColor }}>
                     <InlineEditableText
                       value={
                         section.biography ||
@@ -1165,8 +1178,14 @@ export function AboutBlock({
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
-                  <div className="p-3 rounded-xl border border-amber-200/80 bg-amber-50/50">
-                    <span className="font-bold text-[#7B1113] block mb-1">
+                  <div
+                    className="p-3 rounded-xl border"
+                    style={{
+                      borderColor: `${theme.primaryColor}30`,
+                      backgroundColor: `${theme.primaryColor}0a`,
+                    }}
+                  >
+                    <span className="font-bold block mb-1" style={{ color: theme.primaryColor }}>
                       <InlineEditableText
                         value={section.customTexts?.med_feat1_title || "🔬 Bào chế & Độc học"}
                         editable={editable}
@@ -1183,8 +1202,14 @@ export function AboutBlock({
                       />
                     </span>
                   </div>
-                  <div className="p-3 rounded-xl border border-amber-200/80 bg-amber-50/50">
-                    <span className="font-bold text-[#7B1113] block mb-1">
+                  <div
+                    className="p-3 rounded-xl border"
+                    style={{
+                      borderColor: `${theme.primaryColor}30`,
+                      backgroundColor: `${theme.primaryColor}0a`,
+                    }}
+                  >
+                    <span className="font-bold block mb-1" style={{ color: theme.primaryColor }}>
                       <InlineEditableText
                         value={section.customTexts?.med_feat2_title || "📋 Tiêu chuẩn GMP-WHO"}
                         editable={editable}
@@ -1201,8 +1226,14 @@ export function AboutBlock({
                       />
                     </span>
                   </div>
-                  <div className="p-3 rounded-xl border border-amber-200/80 bg-amber-50/50">
-                    <span className="font-bold text-[#7B1113] block mb-1">
+                  <div
+                    className="p-3 rounded-xl border"
+                    style={{
+                      borderColor: `${theme.primaryColor}30`,
+                      backgroundColor: `${theme.primaryColor}0a`,
+                    }}
+                  >
+                    <span className="font-bold block mb-1" style={{ color: theme.primaryColor }}>
                       <InlineEditableText
                         value={section.customTexts?.med_feat3_title || "💊 Dược lâm sàng"}
                         editable={editable}
@@ -1223,8 +1254,8 @@ export function AboutBlock({
               </div>
 
               <div
-                className="mt-5 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs text-[#7B1113] font-semibold"
-                style={{ borderColor: "rgba(123, 17, 19, 0.15)" }}
+                className="mt-5 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs font-semibold"
+                style={{ borderColor: `${theme.primaryColor}20`, color: theme.primaryColor }}
               >
                 <span>
                   <InlineEditableText
@@ -1249,7 +1280,7 @@ export function AboutBlock({
               {section.customTexts?.hide_med_edu !== "true" ? (
                 <div
                   className="relative group rounded-2xl border p-5 bg-white/90 shadow-xs"
-                  style={{ borderColor: "rgba(123, 17, 19, 0.25)" }}
+                  style={{ borderColor: `${theme.primaryColor}35` }}
                 >
                   {editable && (
                     <button
@@ -1262,8 +1293,11 @@ export function AboutBlock({
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   )}
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#7B1113] mb-3 flex items-center gap-1.5">
-                    <GraduationCap className="h-4 w-4 text-amber-600" />
+                  <h4
+                    className="text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-1.5"
+                    style={{ color: theme.primaryColor }}
+                  >
+                    <GraduationCap className="h-4 w-4" style={{ color: theme.primaryColor }} />
                     <InlineEditableText
                       value={section.customTexts?.med_edu_title || "HỌC VẤN & ĐÀO TẠO CHUYÊN MÔN"}
                       editable={editable}
@@ -1272,7 +1306,7 @@ export function AboutBlock({
                     />
                   </h4>
                   <div className="text-xs space-y-1.5 text-stone-800">
-                    <p className="font-bold text-sm text-[#2B1810]">
+                    <p className="font-bold text-sm" style={{ color: theme.textColor }}>
                       <InlineEditableText
                         value={eduSchool}
                         editable={editable}
@@ -1280,7 +1314,7 @@ export function AboutBlock({
                         onSave={(val) => updateEducationInfo("educationSchool", val)}
                       />
                     </p>
-                    <p className="font-medium text-[#7B1113]">
+                    <p className="font-medium" style={{ color: theme.secondaryColor }}>
                       <InlineEditableText
                         value={eduDegree}
                         editable={editable}
@@ -1302,7 +1336,11 @@ export function AboutBlock({
                 <button
                   type="button"
                   onClick={() => updateCustomText("hide_med_edu", "false")}
-                  className="w-full rounded-2xl border-2 border-dashed border-[#7B1113]/30 p-3 text-center text-xs font-bold text-[#7B1113] hover:bg-amber-50/50 transition flex items-center justify-center gap-1.5"
+                  className="w-full rounded-2xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+                  style={{
+                    borderColor: `${theme.primaryColor}40`,
+                    color: theme.primaryColor,
+                  }}
                 >
                   <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Học vấn &amp; Đào tạo
                 </button>
@@ -1311,7 +1349,7 @@ export function AboutBlock({
               {section.customTexts?.hide_med_contact !== "true" ? (
                 <div
                   className="relative group rounded-2xl border p-5 bg-white/90 shadow-xs"
-                  style={{ borderColor: "rgba(123, 17, 19, 0.25)" }}
+                  style={{ borderColor: `${theme.primaryColor}35` }}
                 >
                   {editable && (
                     <button
@@ -1324,8 +1362,11 @@ export function AboutBlock({
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   )}
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#7B1113] mb-3 flex items-center gap-1.5">
-                    <Mail className="h-4 w-4 text-amber-600" />
+                  <h4
+                    className="text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-1.5"
+                    style={{ color: theme.primaryColor }}
+                  >
+                    <Mail className="h-4 w-4" style={{ color: theme.primaryColor }} />
                     <InlineEditableText
                       value={section.customTexts?.med_contact_title || "THÔNG TIN LIÊN HỆ & HỢP TÁC"}
                       editable={editable}
@@ -1335,7 +1376,7 @@ export function AboutBlock({
                   </h4>
                   <div className="space-y-2 text-xs text-stone-700">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-[#7B1113]">Email:</span>
+                      <span className="font-semibold" style={{ color: theme.primaryColor }}>Email:</span>
                       <InlineEditableText
                         value={section.contactInfo.email || "nguyenvana@example.com"}
                         editable={editable}
@@ -1345,7 +1386,7 @@ export function AboutBlock({
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-[#7B1113]">Hotline:</span>
+                      <span className="font-semibold" style={{ color: theme.primaryColor }}>Hotline:</span>
                       <InlineEditableText
                         value={section.contactInfo.phone || "0912 345 678"}
                         editable={editable}
@@ -1355,7 +1396,7 @@ export function AboutBlock({
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-[#7B1113]">Địa bàn:</span>
+                      <span className="font-semibold" style={{ color: theme.primaryColor }}>Địa bàn:</span>
                       <InlineEditableText
                         value={section.contactInfo.location || "Việt Nam"}
                         editable={editable}
@@ -1370,7 +1411,11 @@ export function AboutBlock({
                 <button
                   type="button"
                   onClick={() => updateCustomText("hide_med_contact", "false")}
-                  className="w-full rounded-2xl border-2 border-dashed border-[#7B1113]/30 p-3 text-center text-xs font-bold text-[#7B1113] hover:bg-amber-50/50 transition flex items-center justify-center gap-1.5"
+                  className="w-full rounded-2xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+                  style={{
+                    borderColor: `${theme.primaryColor}40`,
+                    color: theme.primaryColor,
+                  }}
                 >
                   <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Thông tin liên hệ
                 </button>
@@ -1385,10 +1430,19 @@ export function AboutBlock({
       return (
         <div data-testid="about-layout-content" data-layout="clinical-dossier" className="space-y-6 font-mono">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            <div className="lg:col-span-7 rounded-2xl border-2 border-[#1A1264] p-6 bg-white shadow-md flex flex-col justify-between">
+            <div
+              className="lg:col-span-7 rounded-2xl border-2 p-6 bg-white shadow-md flex flex-col justify-between"
+              style={{
+                borderColor: theme.primaryColor,
+                boxShadow: `0 10px 25px -5px ${theme.primaryColor}20`,
+              }}
+            >
               <div className="space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-900/15 pb-3 text-xs">
-                  <span className="font-bold text-[#1A1264] flex items-center gap-2">
+                <div
+                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 text-xs"
+                  style={{ borderColor: `${theme.primaryColor}25` }}
+                >
+                  <span className="font-bold flex items-center gap-2" style={{ color: theme.primaryColor }}>
                     <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
                     <InlineEditableText
                       value={section.customTexts?.clin_badge || "[PHYSICIAN CLINICAL DOSSIER // MD. REGISTRATION]"}
@@ -1397,7 +1451,10 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("clin_badge", val)}
                     />
                   </span>
-                  <span className="rounded bg-[#1A1264] px-2 py-0.5 text-[10px] text-white font-bold">
+                  <span
+                    className="rounded px-2 py-0.5 text-[10px] text-white font-bold"
+                    style={{ backgroundColor: theme.primaryColor }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.clin_tag || "MD-HN-2024"}
                       editable={editable}
@@ -1407,7 +1464,7 @@ export function AboutBlock({
                   </span>
                 </div>
                 <div>
-                  <h3 className="font-sans text-2xl font-bold text-[#0C0838]">
+                  <h3 className="font-sans text-2xl font-bold" style={{ color: theme.textColor }}>
                     <InlineEditableText
                       value={section.customTexts?.clin_title || "Bác sĩ Nội trú / Điều trị Lâm sàng"}
                       editable={editable}
@@ -1415,7 +1472,10 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("clin_title", val)}
                     />
                   </h3>
-                  <p className="mt-1 text-xs text-indigo-900 font-semibold font-mono">
+                  <p
+                    className="mt-1 text-xs font-semibold font-mono"
+                    style={{ color: theme.primaryColor }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.clin_sub || "BỆNH VIỆN BẠCH MAI • BỘ MÔN NỘI - ĐH Y HÀ NỘI"}
                       editable={editable}
@@ -1423,7 +1483,7 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("clin_sub", val)}
                     />
                   </p>
-                  <p className="mt-3 font-sans text-sm leading-relaxed text-slate-700">
+                  <p className="mt-3 font-sans text-sm leading-relaxed" style={{ color: `${theme.textColor}df` }}>
                     <InlineEditableText
                       value={
                         section.biography ||
@@ -1437,8 +1497,14 @@ export function AboutBlock({
                   </p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 text-[11px] font-sans">
-                  <div className="p-2.5 rounded-lg border border-slate-200 bg-slate-50">
-                    <strong className="text-[#1A1264] block">
+                  <div
+                    className="p-2.5 rounded-lg border"
+                    style={{
+                      borderColor: `${theme.primaryColor}20`,
+                      backgroundColor: `${theme.primaryColor}08`,
+                    }}
+                  >
+                    <strong className="block" style={{ color: theme.primaryColor }}>
                       <InlineEditableText
                         value={section.customTexts?.clin_feat1_title || "🩺 Cấp cứu Hồi sức"}
                         editable={editable}
@@ -1455,8 +1521,14 @@ export function AboutBlock({
                       />
                     </span>
                   </div>
-                  <div className="p-2.5 rounded-lg border border-slate-200 bg-slate-50">
-                    <strong className="text-[#1A1264] block">
+                  <div
+                    className="p-2.5 rounded-lg border"
+                    style={{
+                      borderColor: `${theme.primaryColor}20`,
+                      backgroundColor: `${theme.primaryColor}08`,
+                    }}
+                  >
+                    <strong className="block" style={{ color: theme.primaryColor }}>
                       <InlineEditableText
                         value={section.customTexts?.clin_feat2_title || "📊 Y học chứng cứ"}
                         editable={editable}
@@ -1473,8 +1545,14 @@ export function AboutBlock({
                       />
                     </span>
                   </div>
-                  <div className="p-2.5 rounded-lg border border-slate-200 bg-slate-50">
-                    <strong className="text-[#1A1264] block">
+                  <div
+                    className="p-2.5 rounded-lg border"
+                    style={{
+                      borderColor: `${theme.primaryColor}20`,
+                      backgroundColor: `${theme.primaryColor}08`,
+                    }}
+                  >
+                    <strong className="block" style={{ color: theme.primaryColor }}>
                       <InlineEditableText
                         value={section.customTexts?.clin_feat3_title || "🧬 Cận lâm sàng"}
                         editable={editable}
@@ -1493,7 +1571,10 @@ export function AboutBlock({
                   </div>
                 </div>
               </div>
-              <div className="mt-5 pt-3 border-t border-slate-200 flex items-center justify-between text-[11px] text-indigo-900 font-bold">
+              <div
+                className="mt-5 pt-3 border-t flex items-center justify-between text-[11px] font-bold"
+                style={{ borderColor: `${theme.primaryColor}25`, color: theme.primaryColor }}
+              >
                 <span>
                   <InlineEditableText
                     value={section.customTexts?.clin_footer_left || "STATUS: PRACTICING PHYSICIAN"}
@@ -1515,7 +1596,10 @@ export function AboutBlock({
 
             <div className="lg:col-span-5 space-y-4">
               {section.customTexts?.hide_clin_edu !== "true" ? (
-                <div className="relative group rounded-xl border border-indigo-900/20 bg-white p-5 shadow-xs">
+                <div
+                  className="relative group rounded-xl border bg-white p-5 shadow-xs"
+                  style={{ borderColor: `${theme.primaryColor}30` }}
+                >
                   {editable && (
                     <button
                       type="button"
@@ -1527,7 +1611,10 @@ export function AboutBlock({
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   )}
-                  <div className="flex items-center justify-between border-b border-indigo-900/10 pb-2 mb-3 text-xs font-bold text-[#1A1264]">
+                  <div
+                    className="flex items-center justify-between border-b pb-2 mb-3 text-xs font-bold"
+                    style={{ borderColor: `${theme.primaryColor}18`, color: theme.primaryColor }}
+                  >
                     <span>
                       <InlineEditableText
                         value={section.customTexts?.clin_edu_title || "[HOSPITAL AFFILIATIONS & DEGREE]"}
@@ -1546,7 +1633,7 @@ export function AboutBlock({
                     </span>
                   </div>
                   <div className="space-y-1.5 text-xs text-slate-700 font-sans">
-                    <p className="font-bold text-[#0C0838]">
+                    <p className="font-bold" style={{ color: theme.textColor }}>
                       <InlineEditableText
                         value={eduSchool}
                         editable={editable}
@@ -1554,7 +1641,7 @@ export function AboutBlock({
                         onSave={(val) => updateEducationInfo("educationSchool", val)}
                       />
                     </p>
-                    <p className="font-medium text-indigo-900">
+                    <p className="font-medium" style={{ color: theme.primaryColor }}>
                       <InlineEditableText
                         value={eduDegree}
                         editable={editable}
@@ -1576,14 +1663,21 @@ export function AboutBlock({
                 <button
                   type="button"
                   onClick={() => updateCustomText("hide_clin_edu", "false")}
-                  className="w-full rounded-xl border-2 border-dashed border-indigo-900/30 p-3 text-center text-xs font-bold text-[#1A1264] hover:bg-indigo-50/50 transition flex items-center justify-center gap-1.5"
+                  className="w-full rounded-xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+                  style={{
+                    borderColor: `${theme.primaryColor}40`,
+                    color: theme.primaryColor,
+                  }}
                 >
                   <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Hospital Affiliations
                 </button>
               ) : null}
 
               {section.customTexts?.hide_clin_contact !== "true" ? (
-                <div className="relative group rounded-xl border border-indigo-900/20 bg-white p-5 shadow-xs">
+                <div
+                  className="relative group rounded-xl border bg-white p-5 shadow-xs"
+                  style={{ borderColor: `${theme.primaryColor}30` }}
+                >
                   {editable && (
                     <button
                       type="button"
@@ -1595,7 +1689,10 @@ export function AboutBlock({
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   )}
-                  <div className="flex items-center justify-between border-b border-indigo-900/10 pb-2 mb-3 text-xs font-bold text-[#1A1264]">
+                  <div
+                    className="flex items-center justify-between border-b pb-2 mb-3 text-xs font-bold"
+                    style={{ borderColor: `${theme.primaryColor}18`, color: theme.primaryColor }}
+                  >
                     <span>
                       <InlineEditableText
                         value={section.customTexts?.clin_contact_title || "[CLINICAL CONTACT & PAGER]"}
@@ -1615,17 +1712,17 @@ export function AboutBlock({
                   </div>
                   <div className="space-y-2 text-xs text-slate-700 font-sans">
                     <div className="flex items-center gap-2">
-                      <strong className="text-[#1A1264] shrink-0">Email BV:</strong>
+                      <strong className="shrink-0" style={{ color: theme.primaryColor }}>Email BV:</strong>
                       <InlineEditableText
                         value={section.contactInfo.email || "bs.thutrang@hospital.vn"}
                         editable={editable}
                         ariaLabel="Email bệnh viện"
                         onSave={(val) => updateContactInfo("email", val)}
-                        className="text-[#1A1264] underline"
+                        className="underline"
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <strong className="text-[#1A1264] shrink-0">Pager / Hotline:</strong>
+                      <strong className="shrink-0" style={{ color: theme.primaryColor }}>Pager / Hotline:</strong>
                       <InlineEditableText
                         value={section.contactInfo.phone || "0988 115 115"}
                         editable={editable}
@@ -1635,7 +1732,7 @@ export function AboutBlock({
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <strong className="text-[#1A1264] shrink-0">Khoa / Phòng:</strong>
+                      <strong className="shrink-0" style={{ color: theme.primaryColor }}>Khoa / Phòng:</strong>
                       <InlineEditableText
                         value={section.contactInfo.location || "Khoa Hồi sức Tích cực & Cấp cứu"}
                         editable={editable}
@@ -1649,7 +1746,11 @@ export function AboutBlock({
                 <button
                   type="button"
                   onClick={() => updateCustomText("hide_clin_contact", "false")}
-                  className="w-full rounded-xl border-2 border-dashed border-indigo-900/30 p-3 text-center text-xs font-bold text-[#1A1264] hover:bg-indigo-50/50 transition flex items-center justify-center gap-1.5"
+                  className="w-full rounded-xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+                  style={{
+                    borderColor: `${theme.primaryColor}40`,
+                    color: theme.primaryColor,
+                  }}
                 >
                   <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Clinical Contact & Pager
                 </button>
@@ -1671,19 +1772,29 @@ export function AboutBlock({
         <div data-testid="about-layout-content" data-layout="creator-profile" className="space-y-6">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {section.customTexts?.hide_creator_stat_1 !== "true" && (
-              <div className="relative group rounded-2xl border-2 border-black bg-amber-300 p-4 shadow-[4px_4px_0px_#000] rotate-[-1deg]">
+              <div
+                className="relative group rounded-2xl border-2 p-4 rotate-[-1deg] transition-transform hover:scale-[1.02]"
+                style={{
+                  backgroundColor: `${theme.primaryColor}18`,
+                  borderColor: theme.primaryColor,
+                  boxShadow: `4px 4px 0px ${theme.primaryColor}`,
+                }}
+              >
                 {editable && (
                   <button
                     type="button"
                     onClick={() => updateCustomText("hide_creator_stat_1", "true")}
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 p-1 rounded-md bg-black/10 hover:bg-black/20 text-black transition"
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 p-1 rounded-md bg-black/10 hover:bg-black/20 text-current transition"
                     title="Xóa ô này"
                     aria-label="Xóa ô này"
                   >
                     <X className="h-3 w-3" />
                   </button>
                 )}
-                <span className="text-[10px] font-black uppercase tracking-wider text-black block">
+                <span
+                  className="text-[10px] font-black uppercase tracking-wider block"
+                  style={{ color: theme.primaryColor }}
+                >
                   <InlineEditableText
                     value={section.customTexts?.creator_stat1_title || "TIKTOK REACH"}
                     editable={editable}
@@ -1691,7 +1802,7 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("creator_stat1_title", val)}
                   />
                 </span>
-                <span className="font-editorial text-2xl font-black text-black">
+                <span className="font-editorial text-2xl font-black" style={{ color: theme.textColor }}>
                   <InlineEditableText
                     value={section.customTexts?.creator_stat1_val || "250K+"}
                     editable={editable}
@@ -1699,7 +1810,7 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("creator_stat1_val", val)}
                   />
                 </span>
-                <span className="text-[11px] font-bold text-black/80 block">
+                <span className="text-[11px] font-bold block opacity-80" style={{ color: theme.textColor }}>
                   <InlineEditableText
                     value={section.customTexts?.creator_stat1_sub || "3.2M Lượt Thích"}
                     editable={editable}
@@ -1710,19 +1821,29 @@ export function AboutBlock({
               </div>
             )}
             {section.customTexts?.hide_creator_stat_2 !== "true" && (
-              <div className="relative group rounded-2xl border-2 border-black bg-rose-300 p-4 shadow-[4px_4px_0px_#000] rotate-[1deg]">
+              <div
+                className="relative group rounded-2xl border-2 p-4 rotate-[1deg] transition-transform hover:scale-[1.02]"
+                style={{
+                  backgroundColor: `${theme.secondaryColor}20`,
+                  borderColor: theme.secondaryColor,
+                  boxShadow: `4px 4px 0px ${theme.secondaryColor}`,
+                }}
+              >
                 {editable && (
                   <button
                     type="button"
                     onClick={() => updateCustomText("hide_creator_stat_2", "true")}
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 p-1 rounded-md bg-black/10 hover:bg-black/20 text-black transition"
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 p-1 rounded-md bg-black/10 hover:bg-black/20 text-current transition"
                     title="Xóa ô này"
                     aria-label="Xóa ô này"
                   >
                     <X className="h-3 w-3" />
                   </button>
                 )}
-                <span className="text-[10px] font-black uppercase tracking-wider text-black block">
+                <span
+                  className="text-[10px] font-black uppercase tracking-wider block"
+                  style={{ color: theme.secondaryColor }}
+                >
                   <InlineEditableText
                     value={section.customTexts?.creator_stat2_title || "INSTAGRAM / REELS"}
                     editable={editable}
@@ -1730,7 +1851,7 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("creator_stat2_title", val)}
                   />
                 </span>
-                <span className="font-editorial text-2xl font-black text-black">
+                <span className="font-editorial text-2xl font-black" style={{ color: theme.textColor }}>
                   <InlineEditableText
                     value={section.customTexts?.creator_stat2_val || "85K+"}
                     editable={editable}
@@ -1738,7 +1859,7 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("creator_stat2_val", val)}
                   />
                 </span>
-                <span className="text-[11px] font-bold text-black/80 block">
+                <span className="text-[11px] font-bold block opacity-80" style={{ color: theme.textColor }}>
                   <InlineEditableText
                     value={section.customTexts?.creator_stat2_sub || "15.2% Avg. Reach"}
                     editable={editable}
@@ -1749,19 +1870,29 @@ export function AboutBlock({
               </div>
             )}
             {section.customTexts?.hide_creator_stat_3 !== "true" && (
-              <div className="relative group rounded-2xl border-2 border-black bg-sky-300 p-4 shadow-[4px_4px_0px_#000] rotate-[-1deg]">
+              <div
+                className="relative group rounded-2xl border-2 p-4 rotate-[-1deg] transition-transform hover:scale-[1.02]"
+                style={{
+                  backgroundColor: `${theme.primaryColor}0e`,
+                  borderColor: `${theme.primaryColor}bb`,
+                  boxShadow: `4px 4px 0px ${theme.primaryColor}88`,
+                }}
+              >
                 {editable && (
                   <button
                     type="button"
                     onClick={() => updateCustomText("hide_creator_stat_3", "true")}
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 p-1 rounded-md bg-black/10 hover:bg-black/20 text-black transition"
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 p-1 rounded-md bg-black/10 hover:bg-black/20 text-current transition"
                     title="Xóa ô này"
                     aria-label="Xóa ô này"
                   >
                     <X className="h-3 w-3" />
                   </button>
                 )}
-                <span className="text-[10px] font-black uppercase tracking-wider text-black block">
+                <span
+                  className="text-[10px] font-black uppercase tracking-wider block"
+                  style={{ color: theme.primaryColor }}
+                >
                   <InlineEditableText
                     value={section.customTexts?.creator_stat3_title || "YOUTUBE SHORTS"}
                     editable={editable}
@@ -1769,7 +1900,7 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("creator_stat3_title", val)}
                   />
                 </span>
-                <span className="font-editorial text-2xl font-black text-black">
+                <span className="font-editorial text-2xl font-black" style={{ color: theme.textColor }}>
                   <InlineEditableText
                     value={section.customTexts?.creator_stat3_val || "120K+"}
                     editable={editable}
@@ -1777,7 +1908,7 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("creator_stat3_val", val)}
                   />
                 </span>
-                <span className="text-[11px] font-bold text-black/80 block">
+                <span className="text-[11px] font-bold block opacity-80" style={{ color: theme.textColor }}>
                   <InlineEditableText
                     value={section.customTexts?.creator_stat3_sub || "Views / Tháng"}
                     editable={editable}
@@ -1788,19 +1919,29 @@ export function AboutBlock({
               </div>
             )}
             {section.customTexts?.hide_creator_stat_4 !== "true" && (
-              <div className="relative group rounded-2xl border-2 border-black bg-emerald-300 p-4 shadow-[4px_4px_0px_#000] rotate-[1deg]">
+              <div
+                className="relative group rounded-2xl border-2 p-4 rotate-[1deg] transition-transform hover:scale-[1.02]"
+                style={{
+                  backgroundColor: `${theme.secondaryColor}12`,
+                  borderColor: `${theme.secondaryColor}bb`,
+                  boxShadow: `4px 4px 0px ${theme.secondaryColor}88`,
+                }}
+              >
                 {editable && (
                   <button
                     type="button"
                     onClick={() => updateCustomText("hide_creator_stat_4", "true")}
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 p-1 rounded-md bg-black/10 hover:bg-black/20 text-black transition"
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 p-1 rounded-md bg-black/10 hover:bg-black/20 text-current transition"
                     title="Xóa ô này"
                     aria-label="Xóa ô này"
                   >
                     <X className="h-3 w-3" />
                   </button>
                 )}
-                <span className="text-[10px] font-black uppercase tracking-wider text-black block">
+                <span
+                  className="text-[10px] font-black uppercase tracking-wider block"
+                  style={{ color: theme.secondaryColor }}
+                >
                   <InlineEditableText
                     value={section.customTexts?.creator_stat4_title || "ENGAGEMENT RATE"}
                     editable={editable}
@@ -1808,7 +1949,7 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("creator_stat4_title", val)}
                   />
                 </span>
-                <span className="font-editorial text-2xl font-black text-black">
+                <span className="font-editorial text-2xl font-black" style={{ color: theme.textColor }}>
                   <InlineEditableText
                     value={section.customTexts?.creator_stat4_val || "8.4%"}
                     editable={editable}
@@ -1816,7 +1957,7 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("creator_stat4_val", val)}
                   />
                 </span>
-                <span className="text-[11px] font-bold text-black/80 block">
+                <span className="text-[11px] font-bold block opacity-80" style={{ color: theme.textColor }}>
                   <InlineEditableText
                     value={section.customTexts?.creator_stat4_sub || "Top Creator GenZ"}
                     editable={editable}
@@ -1836,7 +1977,11 @@ export function AboutBlock({
                     updateCustomText("hide_creator_stat_3", "false");
                     updateCustomText("hide_creator_stat_4", "false");
                   }}
-                  className="w-full rounded-2xl border-2 border-dashed border-black/40 p-3 text-center text-xs font-black text-black hover:bg-amber-100/50 transition flex items-center justify-center gap-1.5"
+                  className="w-full rounded-2xl border-2 border-dashed p-3 text-center text-xs font-black transition flex items-center justify-center gap-1.5"
+                  style={{
+                    borderColor: `${theme.primaryColor}50`,
+                    color: theme.primaryColor,
+                  }}
                 >
                   <RotateCcw className="h-3.5 w-3.5" /> Khôi phục các ô thống kê đã xóa
                 </button>
@@ -1845,9 +1990,21 @@ export function AboutBlock({
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            <div className="lg:col-span-7 rounded-3xl border-4 border-black bg-white p-6 sm:p-8 shadow-[6px_6px_0px_#000]">
-              <div className="flex items-center justify-between border-b-2 border-black pb-3 mb-4">
-                <span className="font-editorial text-sm font-black uppercase tracking-wider text-[#722F37]">
+            <div
+              className="lg:col-span-7 rounded-3xl border-3 bg-white p-6 sm:p-8"
+              style={{
+                borderColor: `${theme.textColor}cc`,
+                boxShadow: `6px 6px 0px ${theme.textColor}dd`,
+              }}
+            >
+              <div
+                className="flex items-center justify-between border-b-2 pb-3 mb-4"
+                style={{ borderColor: `${theme.primaryColor}30` }}
+              >
+                <span
+                  className="font-editorial text-sm font-black uppercase tracking-wider"
+                  style={{ color: theme.primaryColor }}
+                >
                   <InlineEditableText
                     value={section.customTexts?.creator_deck_title || "CREATOR MEDIA DECK • ISSUE NO. 01"}
                     editable={editable}
@@ -1855,7 +2012,14 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("creator_deck_title", val)}
                   />
                 </span>
-                <span className="rounded-full border border-black bg-amber-300 px-3 py-0.5 text-xs font-black text-black">
+                <span
+                  className="rounded-full border px-3 py-0.5 text-xs font-black"
+                  style={{
+                    backgroundColor: `${theme.primaryColor}18`,
+                    borderColor: `${theme.primaryColor}60`,
+                    color: theme.primaryColor,
+                  }}
+                >
                   <InlineEditableText
                     value={section.customTexts?.creator_deck_status || "OPEN FOR BOOKING ⚡"}
                     editable={editable}
@@ -1864,7 +2028,7 @@ export function AboutBlock({
                   />
                 </span>
               </div>
-              <h3 className="font-editorial text-3xl font-black text-[#2D1418]">
+              <h3 className="font-editorial text-3xl font-black" style={{ color: theme.textColor }}>
                 <InlineEditableText
                   value={section.customTexts?.creator_heading || "Visual Storytelling & Viral Content Creation"}
                   editable={editable}
@@ -1872,7 +2036,7 @@ export function AboutBlock({
                   onSave={(val) => updateCustomText("creator_heading", val)}
                 />
               </h3>
-              <p className="mt-3 text-sm font-medium leading-relaxed text-[#2D1418]/85">
+              <p className="mt-3 text-sm font-medium leading-relaxed opacity-90" style={{ color: theme.textColor }}>
                 <InlineEditableText
                   value={
                     section.biography ||
@@ -1885,7 +2049,14 @@ export function AboutBlock({
                 />
               </p>
               <div className="mt-5 flex flex-wrap gap-2 text-xs font-black">
-                <span className="rounded-lg border-2 border-black bg-stone-100 px-3 py-1">
+                <span
+                  className="rounded-lg border-2 px-3 py-1"
+                  style={{
+                    borderColor: `${theme.primaryColor}50`,
+                    backgroundColor: `${theme.primaryColor}0a`,
+                    color: theme.textColor,
+                  }}
+                >
                   <InlineEditableText
                     value={section.customTexts?.creator_tag_1 || "🎬 Brand Integration"}
                     editable={editable}
@@ -1893,7 +2064,14 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("creator_tag_1", val)}
                   />
                 </span>
-                <span className="rounded-lg border-2 border-black bg-stone-100 px-3 py-1">
+                <span
+                  className="rounded-lg border-2 px-3 py-1"
+                  style={{
+                    borderColor: `${theme.primaryColor}50`,
+                    backgroundColor: `${theme.primaryColor}0a`,
+                    color: theme.textColor,
+                  }}
+                >
                   <InlineEditableText
                     value={section.customTexts?.creator_tag_2 || "📱 UGC & Review"}
                     editable={editable}
@@ -1901,7 +2079,14 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("creator_tag_2", val)}
                   />
                 </span>
-                <span className="rounded-lg border-2 border-black bg-stone-100 px-3 py-1">
+                <span
+                  className="rounded-lg border-2 px-3 py-1"
+                  style={{
+                    borderColor: `${theme.primaryColor}50`,
+                    backgroundColor: `${theme.primaryColor}0a`,
+                    color: theme.textColor,
+                  }}
+                >
                   <InlineEditableText
                     value={section.customTexts?.creator_tag_3 || "🎙️ Podcast Host"}
                     editable={editable}
@@ -1909,7 +2094,14 @@ export function AboutBlock({
                     onSave={(val) => updateCustomText("creator_tag_3", val)}
                   />
                 </span>
-                <span className="rounded-lg border-2 border-black bg-stone-100 px-3 py-1">
+                <span
+                  className="rounded-lg border-2 px-3 py-1"
+                  style={{
+                    borderColor: `${theme.primaryColor}50`,
+                    backgroundColor: `${theme.primaryColor}0a`,
+                    color: theme.textColor,
+                  }}
+                >
                   <InlineEditableText
                     value={section.customTexts?.creator_tag_4 || "📸 Concept Shoot"}
                     editable={editable}
@@ -1922,7 +2114,13 @@ export function AboutBlock({
 
             <div className="lg:col-span-5 space-y-4">
               {section.customTexts?.hide_creator_booking !== "true" ? (
-                <div className="relative group rounded-3xl border-4 border-black bg-white p-5 shadow-[4px_4px_0px_#000]">
+                <div
+                  className="relative group rounded-3xl border-3 bg-white p-5"
+                  style={{
+                    borderColor: `${theme.textColor}cc`,
+                    boxShadow: `4px 4px 0px ${theme.textColor}dd`,
+                  }}
+                >
                   {editable && (
                     <button
                       type="button"
@@ -1934,7 +2132,10 @@ export function AboutBlock({
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   )}
-                  <h4 className="font-editorial text-sm font-black uppercase tracking-wider text-[#722F37] mb-2">
+                  <h4
+                    className="font-editorial text-sm font-black uppercase tracking-wider mb-2"
+                    style={{ color: theme.primaryColor }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.creator_booking_title || "HỢP TÁC THƯƠNG HIỆU & BOOKING"}
                       editable={editable}
@@ -1942,9 +2143,9 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("creator_booking_title", val)}
                     />
                   </h4>
-                  <div className="space-y-2 text-xs font-semibold text-[#2D1418]">
+                  <div className="space-y-2 text-xs font-semibold" style={{ color: theme.textColor }}>
                     <div className="flex items-center gap-1.5">
-                      <span>Email:</span>
+                      <span style={{ color: theme.primaryColor }}>Email:</span>
                       <InlineEditableText
                         value={section.contactInfo.email || "creator@management.vn"}
                         editable={editable}
@@ -1954,7 +2155,7 @@ export function AboutBlock({
                       />
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span>Agency Booking:</span>
+                      <span style={{ color: theme.primaryColor }}>Agency Booking:</span>
                       <InlineEditableText
                         value={section.contactInfo.phone || "0977 888 999"}
                         editable={editable}
@@ -1963,7 +2164,7 @@ export function AboutBlock({
                       />
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span>Studio Base:</span>
+                      <span style={{ color: theme.primaryColor }}>Studio Base:</span>
                       <InlineEditableText
                         value={section.contactInfo.location || "TP. Hồ Chí Minh & Hà Nội"}
                         editable={editable}
@@ -1977,14 +2178,24 @@ export function AboutBlock({
                 <button
                   type="button"
                   onClick={() => updateCustomText("hide_creator_booking", "false")}
-                  className="w-full rounded-3xl border-2 border-dashed border-black/40 p-3 text-center text-xs font-black text-black hover:bg-stone-100 transition flex items-center justify-center gap-1.5"
+                  className="w-full rounded-3xl border-2 border-dashed p-3 text-center text-xs font-black transition flex items-center justify-center gap-1.5"
+                  style={{
+                    borderColor: `${theme.primaryColor}50`,
+                    color: theme.primaryColor,
+                  }}
                 >
                   <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Hợp tác thương hiệu & Booking
                 </button>
               ) : null}
 
               {section.customTexts?.hide_creator_specs !== "true" ? (
-                <div className="relative group rounded-3xl border-4 border-black bg-stone-50 p-5 shadow-[4px_4px_0px_#000]">
+                <div
+                  className="relative group rounded-3xl border-3 bg-stone-50 p-5"
+                  style={{
+                    borderColor: `${theme.textColor}cc`,
+                    boxShadow: `4px 4px 0px ${theme.textColor}dd`,
+                  }}
+                >
                   {editable && (
                     <button
                       type="button"
@@ -1996,7 +2207,10 @@ export function AboutBlock({
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   )}
-                  <h4 className="font-editorial text-sm font-black uppercase tracking-wider text-black mb-2">
+                  <h4
+                    className="font-editorial text-sm font-black uppercase tracking-wider mb-2"
+                    style={{ color: theme.primaryColor }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.creator_specs_title || "PRODUCTION GEAR // SPECS"}
                       editable={editable}
@@ -2004,7 +2218,7 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("creator_specs_title", val)}
                     />
                   </h4>
-                  <div className="text-xs text-stone-700 space-y-1">
+                  <div className="text-xs space-y-1" style={{ color: theme.textColor }}>
                     <p>
                       <InlineEditableText
                         value={section.customTexts?.creator_spec_1 || "• Camera: Sony Cinema FX30 & G-Master Lenses"}
@@ -2035,7 +2249,11 @@ export function AboutBlock({
                 <button
                   type="button"
                   onClick={() => updateCustomText("hide_creator_specs", "false")}
-                  className="w-full rounded-3xl border-2 border-dashed border-black/40 p-3 text-center text-xs font-black text-black hover:bg-stone-100 transition flex items-center justify-center gap-1.5"
+                  className="w-full rounded-3xl border-2 border-dashed p-3 text-center text-xs font-black transition flex items-center justify-center gap-1.5"
+                  style={{
+                    borderColor: `${theme.primaryColor}50`,
+                    color: theme.primaryColor,
+                  }}
                 >
                   <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Production Gear Specs
                 </button>
@@ -2052,14 +2270,20 @@ export function AboutBlock({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             <div
               className="lg:col-span-7 rounded-2xl border-2 p-6 sm:p-8 bg-white/95 shadow-sm flex flex-col justify-between"
-              style={{ borderColor: "rgba(155, 48, 45, 0.35)" }}
+              style={{
+                borderColor: `${theme.primaryColor}55`,
+                boxShadow: `0 10px 25px -5px ${theme.primaryColor}20`,
+              }}
             >
               <div className="space-y-4">
                 <div
                   className="flex flex-wrap items-center justify-between gap-2 border-b pb-3"
-                  style={{ borderColor: "rgba(155, 48, 45, 0.2)" }}
+                  style={{ borderColor: `${theme.primaryColor}30` }}
                 >
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#9B302D]">
+                  <span
+                    className="text-xs font-bold uppercase tracking-wider"
+                    style={{ color: theme.primaryColor }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.acad_badge || "HỒ SƠ HỌC THUẬT & LÝ LỊCH KHOA HỌC • ĐHQGHN"}
                       editable={editable}
@@ -2067,7 +2291,10 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("acad_badge", val)}
                     />
                   </span>
-                  <span className="rounded bg-[#9B302D] px-2.5 py-0.5 text-[10px] font-bold text-white">
+                  <span
+                    className="rounded px-2.5 py-0.5 text-[10px] font-bold text-white"
+                    style={{ backgroundColor: theme.primaryColor }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.acad_tag || "VNU-UEd-CV"}
                       editable={editable}
@@ -2077,7 +2304,7 @@ export function AboutBlock({
                   </span>
                 </div>
                 <div>
-                  <h3 className="font-editorial text-2xl font-bold text-[#282828]">
+                  <h3 className="font-editorial text-2xl font-bold" style={{ color: theme.textColor }}>
                     <InlineEditableText
                       value={section.customTexts?.acad_title || "Nghiên cứu sinh & Giảng viên Sư phạm Tương lai"}
                       editable={editable}
@@ -2085,7 +2312,7 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("acad_title", val)}
                     />
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[#282828]/85">
+                  <p className="mt-2 text-sm leading-relaxed opacity-85" style={{ color: theme.textColor }}>
                     <InlineEditableText
                       value={
                         section.biography ||
@@ -2098,8 +2325,15 @@ export function AboutBlock({
                     />
                   </p>
                 </div>
-                <div className="rounded-xl border border-[#9B302D]/20 bg-[#EDEAE2]/30 p-3.5 text-xs text-[#282828]">
-                  <strong className="text-[#9B302D] block mb-1">
+                <div
+                  className="rounded-xl border p-3.5 text-xs"
+                  style={{
+                    borderColor: `${theme.primaryColor}30`,
+                    backgroundColor: `${theme.primaryColor}0d`,
+                    color: theme.textColor,
+                  }}
+                >
+                  <strong className="block mb-1" style={{ color: theme.primaryColor }}>
                     <InlineEditableText
                       value={section.customTexts?.acad_philo_title || "📜 Triết lý nghiên cứu giáo dục:"}
                       editable={editable}
@@ -2121,7 +2355,10 @@ export function AboutBlock({
                   </p>
                 </div>
               </div>
-              <div className="mt-4 pt-3 border-t border-[#9B302D]/15 flex items-center justify-between text-xs text-[#9B302D] font-bold">
+              <div
+                className="mt-4 pt-3 border-t flex items-center justify-between text-xs font-bold"
+                style={{ borderColor: `${theme.primaryColor}25`, color: theme.primaryColor }}
+              >
                 <span>
                   <InlineEditableText
                     value={section.customTexts?.acad_footer_left || "TRƯỜNG ĐẠI HỌC GIÁO DỤC • ĐHQGHN"}
@@ -2145,7 +2382,7 @@ export function AboutBlock({
               {section.customTexts?.hide_acad_pubs !== "true" ? (
                 <div
                   className="relative group rounded-xl border p-5 bg-white/90 shadow-xs"
-                  style={{ borderColor: "rgba(155, 48, 45, 0.25)" }}
+                  style={{ borderColor: `${theme.primaryColor}35` }}
                 >
                   {editable && (
                     <button
@@ -2158,8 +2395,11 @@ export function AboutBlock({
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   )}
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#9B302D] mb-2 flex items-center gap-1.5">
-                    <BookOpen className="h-4 w-4" />
+                  <h4
+                    className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"
+                    style={{ color: theme.primaryColor }}
+                  >
+                    <BookOpen className="h-4 w-4" style={{ color: theme.primaryColor }} />
                     <InlineEditableText
                       value={section.customTexts?.acad_pub_title || "CÔNG BỐ KHOA HỌC & ĐỀ TÀI"}
                       editable={editable}
@@ -2167,7 +2407,7 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("acad_pub_title", val)}
                     />
                   </h4>
-                  <div className="space-y-2 text-xs text-[#282828]">
+                  <div className="space-y-2 text-xs" style={{ color: theme.textColor }}>
                     <p>
                       <InlineEditableText
                         value={section.customTexts?.acad_pub_1 || "• 01 Đề tài NCKH cấp ĐHQGHN: Đạt giải Nhất năm 2024"}
@@ -2198,7 +2438,11 @@ export function AboutBlock({
                 <button
                   type="button"
                   onClick={() => updateCustomText("hide_acad_pubs", "false")}
-                  className="w-full rounded-xl border-2 border-dashed border-[#9B302D]/30 p-3 text-center text-xs font-bold text-[#9B302D] hover:bg-rose-50/50 transition flex items-center justify-center gap-1.5"
+                  className="w-full rounded-xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+                  style={{
+                    borderColor: `${theme.primaryColor}40`,
+                    color: theme.primaryColor,
+                  }}
                 >
                   <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Công bố khoa học
                 </button>
@@ -2207,7 +2451,7 @@ export function AboutBlock({
               {section.customTexts?.hide_acad_contact !== "true" ? (
                 <div
                   className="relative group rounded-xl border p-5 bg-white/90 shadow-xs"
-                  style={{ borderColor: "rgba(155, 48, 45, 0.25)" }}
+                  style={{ borderColor: `${theme.primaryColor}35` }}
                 >
                   {editable && (
                     <button
@@ -2220,8 +2464,11 @@ export function AboutBlock({
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   )}
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#9B302D] mb-2 flex items-center gap-1.5">
-                    <Mail className="h-4 w-4" />
+                  <h4
+                    className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"
+                    style={{ color: theme.primaryColor }}
+                  >
+                    <Mail className="h-4 w-4" style={{ color: theme.primaryColor }} />
                     <InlineEditableText
                       value={section.customTexts?.acad_contact_title || "LIÊN HỆ KHOA HỌC & VĂN PHÒNG"}
                       editable={editable}
@@ -2229,19 +2476,19 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("acad_contact_title", val)}
                     />
                   </h4>
-                  <div className="space-y-2 text-xs text-[#282828]">
+                  <div className="space-y-2 text-xs" style={{ color: theme.textColor }}>
                     <div className="flex items-center gap-1.5">
-                      <span>Email:</span>
+                      <span style={{ color: theme.primaryColor }}>Email:</span>
                       <InlineEditableText
                         value={section.contactInfo.email || "gv.nghiencuu@vnu.edu.vn"}
                         editable={editable}
                         ariaLabel="Email học thuật"
                         onSave={(val) => updateContactInfo("email", val)}
-                        className="text-[#9B302D] font-medium underline"
+                        className="font-medium underline"
                       />
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span>Điện thoại:</span>
+                      <span style={{ color: theme.primaryColor }}>Điện thoại:</span>
                       <InlineEditableText
                         value={section.contactInfo.phone || "(024) 3754 7799"}
                         editable={editable}
@@ -2250,7 +2497,7 @@ export function AboutBlock({
                       />
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span>Văn phòng:</span>
+                      <span style={{ color: theme.primaryColor }}>Văn phòng:</span>
                       <InlineEditableText
                         value={section.contactInfo.location || "Phòng 302, Nhà G7, 144 Xuân Thủy, Cầu Giấy, HN"}
                         editable={editable}
@@ -2264,7 +2511,11 @@ export function AboutBlock({
                 <button
                   type="button"
                   onClick={() => updateCustomText("hide_acad_contact", "false")}
-                  className="w-full rounded-xl border-2 border-dashed border-[#9B302D]/30 p-3 text-center text-xs font-bold text-[#9B302D] hover:bg-rose-50/50 transition flex items-center justify-center gap-1.5"
+                  className="w-full rounded-xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+                  style={{
+                    borderColor: `${theme.primaryColor}40`,
+                    color: theme.primaryColor,
+                  }}
                 >
                   <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Liên hệ khoa học & Văn phòng
                 </button>
@@ -2279,10 +2530,25 @@ export function AboutBlock({
       return (
         <div data-testid="about-layout-content" data-layout="pedagogical-journal" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            <div className="lg:col-span-7 rounded-3xl border-2 border-[#9B5464]/30 p-6 sm:p-8 bg-white/95 shadow-sm flex flex-col justify-between">
+            <div
+              className="lg:col-span-7 rounded-3xl border-2 p-6 sm:p-8 bg-white/95 shadow-sm flex flex-col justify-between"
+              style={{
+                borderColor: `${theme.primaryColor}55`,
+                boxShadow: `0 10px 25px -5px ${theme.primaryColor}20`,
+              }}
+            >
               <div className="space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#9B5464]/20 pb-3">
-                  <span className="rounded-full bg-[#9B5464]/10 px-3.5 py-1 text-xs font-bold text-[#9B5464]">
+                <div
+                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3"
+                  style={{ borderColor: `${theme.primaryColor}30` }}
+                >
+                  <span
+                    className="rounded-full px-3.5 py-1 text-xs font-bold"
+                    style={{
+                      backgroundColor: `${theme.primaryColor}18`,
+                      color: theme.primaryColor,
+                    }}
+                  >
                     <InlineEditableText
                       value={section.customTexts?.ped_badge || "🌸 CHÂN DUNG NGƯỜI GIÁO VIÊN TRẺ • SƯ PHẠM UEd"}
                       editable={editable}
@@ -2300,7 +2566,7 @@ export function AboutBlock({
                   </span>
                 </div>
                 <div>
-                  <h3 className="font-editorial text-2xl font-bold text-[#3A2329]">
+                  <h3 className="font-editorial text-2xl font-bold" style={{ color: theme.textColor }}>
                     <InlineEditableText
                       value={section.customTexts?.ped_title || "Tâm Niệm Nghề Giáo & Triết Lý Giảng Dạy"}
                       editable={editable}
@@ -2308,7 +2574,7 @@ export function AboutBlock({
                       onSave={(val) => updateCustomText("ped_title", val)}
                     />
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[#3A2329]/85">
+                  <p className="mt-2 text-sm leading-relaxed opacity-85" style={{ color: theme.textColor }}>
                     <InlineEditableText
                       value={
                         section.biography ||
@@ -2322,8 +2588,14 @@ export function AboutBlock({
                   </p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 text-xs">
-                  <div className="p-3 rounded-2xl bg-[#F9F6F2] border border-[#9B5464]/15">
-                    <strong className="text-[#9B5464] block mb-1">
+                  <div
+                    className="p-3 rounded-2xl border"
+                    style={{
+                      backgroundColor: `${theme.primaryColor}0d`,
+                      borderColor: `${theme.primaryColor}25`,
+                    }}
+                  >
+                    <strong className="block mb-1" style={{ color: theme.primaryColor }}>
                       <InlineEditableText
                         value={section.customTexts?.ped_card1_title || "🎼 Giáo án tương tác"}
                         editable={editable}
@@ -2331,7 +2603,7 @@ export function AboutBlock({
                         onSave={(val) => updateCustomText("ped_card1_title", val)}
                       />
                     </strong>
-                    <span>
+                    <span style={{ color: theme.textColor }}>
                       <InlineEditableText
                         value={section.customTexts?.ped_card1_desc || "Dạy học liên môn & ứng dụng CNTT sinh động"}
                         editable={editable}
@@ -2340,8 +2612,14 @@ export function AboutBlock({
                       />
                     </span>
                   </div>
-                  <div className="p-3 rounded-2xl bg-[#F9F6F2] border border-[#9B5464]/15">
-                    <strong className="text-[#9B5464] block mb-1">
+                  <div
+                    className="p-3 rounded-2xl border"
+                    style={{
+                      backgroundColor: `${theme.primaryColor}0d`,
+                      borderColor: `${theme.primaryColor}25`,
+                    }}
+                  >
+                    <strong className="block mb-1" style={{ color: theme.primaryColor }}>
                       <InlineEditableText
                         value={section.customTexts?.ped_card2_title || "💡 Trải nghiệm sáng tạo"}
                         editable={editable}
@@ -2349,7 +2627,7 @@ export function AboutBlock({
                         onSave={(val) => updateCustomText("ped_card2_title", val)}
                       />
                     </strong>
-                    <span>
+                    <span style={{ color: theme.textColor }}>
                       <InlineEditableText
                         value={section.customTexts?.ped_card2_desc || "Tổ chức hoạt động ngoại khóa & CLB học đường"}
                         editable={editable}
@@ -2358,8 +2636,14 @@ export function AboutBlock({
                       />
                     </span>
                   </div>
-                  <div className="p-3 rounded-2xl bg-[#F9F6F2] border border-[#9B5464]/15">
-                    <strong className="text-[#9B5464] block mb-1">
+                  <div
+                    className="p-3 rounded-2xl border"
+                    style={{
+                      backgroundColor: `${theme.primaryColor}0d`,
+                      borderColor: `${theme.primaryColor}25`,
+                    }}
+                  >
+                    <strong className="block mb-1" style={{ color: theme.primaryColor }}>
                       <InlineEditableText
                         value={section.customTexts?.ped_card3_title || "❤️ Thấu cảm học trò"}
                         editable={editable}
@@ -2367,7 +2651,7 @@ export function AboutBlock({
                         onSave={(val) => updateCustomText("ped_card3_title", val)}
                       />
                     </strong>
-                    <span>
+                    <span style={{ color: theme.textColor }}>
                       <InlineEditableText
                         value={section.customTexts?.ped_card3_desc || "Xây dựng môi trường lớp học hạnh phúc"}
                         editable={editable}
@@ -2378,7 +2662,10 @@ export function AboutBlock({
                   </div>
                 </div>
               </div>
-              <div className="mt-5 pt-3 border-t border-[#9B5464]/15 flex items-center justify-between text-xs text-[#9B5464] font-semibold">
+              <div
+                className="mt-5 pt-3 border-t flex items-center justify-between text-xs font-semibold"
+                style={{ borderColor: `${theme.primaryColor}20`, color: theme.primaryColor }}
+              >
                 <span>
                   <InlineEditableText
                     value={section.customTexts?.ped_footer_left || "TRƯỜNG ĐH SƯ PHẠM NGHỆ THUẬT TW"}
@@ -2400,7 +2687,10 @@ export function AboutBlock({
 
             <div className="lg:col-span-5 space-y-4">
               {section.customTexts?.hide_ped_edu !== "true" ? (
-                <div className="relative group rounded-2xl border border-[#9B5464]/25 p-5 bg-white/90 shadow-xs">
+                <div
+                  className="relative group rounded-2xl border p-5 bg-white/90 shadow-xs"
+                  style={{ borderColor: `${theme.primaryColor}35` }}
+                >
                   {editable && (
                     <button
                       type="button"
@@ -2412,8 +2702,11 @@ export function AboutBlock({
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   )}
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#9B5464] mb-2 flex items-center gap-1.5">
-                    <GraduationCap className="h-4 w-4 text-[#9B5464]" />
+                  <h4
+                    className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"
+                    style={{ color: theme.primaryColor }}
+                  >
+                    <GraduationCap className="h-4 w-4" style={{ color: theme.primaryColor }} />
                     <InlineEditableText
                       value={section.customTexts?.ped_edu_title || "ĐƠN VỊ THỰC TẬP & HỌC VẤN"}
                       editable={editable}
@@ -2422,7 +2715,7 @@ export function AboutBlock({
                     />
                   </h4>
                   <div className="space-y-1.5 text-xs text-stone-800">
-                    <p className="font-bold text-sm text-[#3A2329]">
+                    <p className="font-bold text-sm" style={{ color: theme.textColor }}>
                       <InlineEditableText
                         value={eduSchool}
                         editable={editable}
@@ -2430,7 +2723,7 @@ export function AboutBlock({
                         onSave={(val) => updateEducationInfo("educationSchool", val)}
                       />
                     </p>
-                    <p className="font-medium text-[#9B5464]">
+                    <p className="font-medium" style={{ color: theme.secondaryColor }}>
                       <InlineEditableText
                         value={eduDegree}
                         editable={editable}
@@ -2452,14 +2745,21 @@ export function AboutBlock({
                 <button
                   type="button"
                   onClick={() => updateCustomText("hide_ped_edu", "false")}
-                  className="w-full rounded-2xl border-2 border-dashed border-[#9B5464]/30 p-3 text-center text-xs font-bold text-[#9B5464] hover:bg-rose-50/50 transition flex items-center justify-center gap-1.5"
+                  className="w-full rounded-2xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+                  style={{
+                    borderColor: `${theme.primaryColor}40`,
+                    color: theme.primaryColor,
+                  }}
                 >
                   <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Đơn vị thực tập & Học vấn
                 </button>
               ) : null}
 
               {section.customTexts?.hide_ped_contact !== "true" ? (
-                <div className="relative group rounded-2xl border border-[#9B5464]/25 p-5 bg-white/90 shadow-xs">
+                <div
+                  className="relative group rounded-2xl border p-5 bg-white/90 shadow-xs"
+                  style={{ borderColor: `${theme.primaryColor}35` }}
+                >
                   {editable && (
                     <button
                       type="button"
@@ -2471,8 +2771,11 @@ export function AboutBlock({
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   )}
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#9B5464] mb-2 flex items-center gap-1.5">
-                    <Mail className="h-4 w-4 text-[#9B5464]" />
+                  <h4
+                    className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"
+                    style={{ color: theme.primaryColor }}
+                  >
+                    <Mail className="h-4 w-4" style={{ color: theme.primaryColor }} />
                     <InlineEditableText
                       value={section.customTexts?.ped_contact_title || "LIÊN HỆ GIÁO VIÊN"}
                       editable={editable}
@@ -2482,17 +2785,17 @@ export function AboutBlock({
                   </h4>
                   <div className="space-y-2 text-xs text-stone-700">
                     <div className="flex items-center gap-1.5">
-                      <span>Email:</span>
+                      <span style={{ color: theme.primaryColor }}>Email:</span>
                       <InlineEditableText
                         value={section.contactInfo.email || "gv.amnhac@supham.edu.vn"}
                         editable={editable}
                         ariaLabel="Email giáo viên"
                         onSave={(val) => updateContactInfo("email", val)}
-                        className="text-[#9B5464] font-medium underline"
+                        className="font-medium underline"
                       />
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span>Hotline:</span>
+                      <span style={{ color: theme.primaryColor }}>Hotline:</span>
                       <InlineEditableText
                         value={section.contactInfo.phone || "0966 223 344"}
                         editable={editable}
@@ -2501,7 +2804,7 @@ export function AboutBlock({
                       />
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span>Địa chỉ:</span>
+                      <span style={{ color: theme.primaryColor }}>Địa chỉ:</span>
                       <InlineEditableText
                         value={section.contactInfo.location || "Trường THPT Thực nghiệm Sư phạm, Hà Nội"}
                         editable={editable}
@@ -2515,7 +2818,11 @@ export function AboutBlock({
                 <button
                   type="button"
                   onClick={() => updateCustomText("hide_ped_contact", "false")}
-                  className="w-full rounded-2xl border-2 border-dashed border-[#9B5464]/30 p-3 text-center text-xs font-bold text-[#9B5464] hover:bg-rose-50/50 transition flex items-center justify-center gap-1.5"
+                  className="w-full rounded-2xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+                  style={{
+                    borderColor: `${theme.primaryColor}40`,
+                    color: theme.primaryColor,
+                  }}
                 >
                   <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Liên hệ giáo viên
                 </button>
