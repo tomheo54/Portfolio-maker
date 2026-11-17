@@ -119,9 +119,12 @@
       },
       "layoutInverted": true,
       "mediaPosition": "left",
+      "cardTitles": {
+        "learningGoals": "Mục tiêu học tập & phát triển (INF2501_4)"
+      },
       "cardFrame": "glass",
       "educationSchool": "Trường Đại học Sư phạm Nghệ thuật Trung ương",
-      "educationPeriod": "Học phần INF2501 • MSV: 2552210285",
+      "educationPeriod": "Học phần INF2501_4 • MSV: 2552210285",
       "learningGoals": ""
     },
     {
@@ -593,7 +596,7 @@
       "thankYouMessage": "THANK YOU FOR WATCHING!",
       "showContactForm": true,
       "courseInfo": {
-        "courseCode": "INF2501",
+        "courseCode": "INF2501_4",
         "courseName": "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo",
         "institution": "Trường ĐH Sư phạm Nghệ thuật TW",
         "studentId": "2552210285",
