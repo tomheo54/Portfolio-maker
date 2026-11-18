@@ -196,26 +196,19 @@ function buildKeyTakeaways(
     }
   }
 
-  if (takeaways.length < 3 && solution) {
-    const solutionSentences = splitCleanSentences(solution);
-    for (const s of solutionSentences) {
-      if (takeaways.length >= 4) break;
-      if (!takeaways.some((t) => t.includes(s.slice(0, 24)))) {
-        takeaways.push(s);
-      }
-    }
-  }
-
-  if (takeaways.length < 3) {
+  if (takeaways.length < 2) {
     takeaways.push(
-      `Hoàn thiện case study "${title}" theo quy trình Đề bài – Giải pháp – Kết quả`
+      `Hoàn thành sản phẩm thực hành "${title}" theo đúng tiêu chuẩn chất lượng`
     );
   }
   if (takeaways.length < 3) {
     takeaways.push(
-      `Ứng dụng kỹ năng ${category}${
-        tags.length > 0 ? ` (${tags.slice(0, 3).join(', ')})` : ''
-      }`
+      `Vận dụng thành thạo phương pháp và công cụ trong nhóm kỹ năng ${category}`
+    );
+  }
+  if (tags.length > 0 && takeaways.length < 4) {
+    takeaways.push(
+      `Làm chủ kỹ năng thực tiễn với ${tags.slice(0, 3).join(', ')}`
     );
   }
 

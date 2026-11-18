@@ -1162,7 +1162,7 @@ export function AboutBlock({
               <p className="pt-1 text-[11px] font-semibold text-stone-500">
                 <InlineAboutText
                   value={
-                    section.educationPeriod ?? "Khoá K18 • Học phần INF2501"
+                    section.educationPeriod ?? "Niên khoá & Học phần chuyên môn"
                   }
                   editable={editable}
                   ariaLabel="Thông tin khóa học trong ô học vấn"
@@ -1217,7 +1217,7 @@ export function AboutBlock({
                   <InlineAboutText
                     value={cardTitle(
                       "learningGoals",
-                      "Mục tiêu học tập & phát triển (INF2501)",
+                      "Mục tiêu học tập & phát triển",
                     )}
                     editable={editable}
                     ariaLabel="Tiêu đề mục tiêu học tập"

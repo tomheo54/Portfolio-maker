@@ -4304,9 +4304,9 @@ export function renderStandaloneHtml(
         grid.appendChild(mediaSlot);
 
         var infoCol = makeEl('div');
-        if (proj.assignmentBrief) {
+        if (proj.assignmentBrief && proj.assignmentBrief.trim() !== proj.summary?.trim()) {
           var brief = makeEl('div', 'brief-box');
-          brief.appendChild(makeEl('strong', '', '🎯 Đề bài / Mục tiêu bài tập (INF2501) - Yêu cầu đề bài (Assignment Brief): '));
+          brief.appendChild(makeEl('strong', '', '🎯 Đề bài & Mục tiêu bài tập: '));
           var briefP = makeEl('p', '', proj.assignmentBrief);
           briefP.style.margin = '6px 0 0';
           brief.appendChild(briefP);
@@ -4806,7 +4806,7 @@ export function renderStandaloneProjectPageHtml(
         ${project.metrics.length ? `<section class="detail-panel"><h2>Kết quả nổi bật</h2><div class="detail-metrics">${project.metrics.map((metric) => `<div class="detail-metric"><span>${escapeHtml(metric.label)}</span><strong>${escapeHtml(metric.value)}</strong></div>`).join("")}</div></section>` : ""}
       </div>
       <div>
-        ${project.assignmentBrief ? `<section class="detail-panel"><h2>Đề bài / Mục tiêu bài tập - Yêu cầu đề bài (Assignment Brief)</h2><p>${escapeHtml(project.assignmentBrief)}</p></section>` : ""}
+        ${project.assignmentBrief && project.assignmentBrief.trim() !== project.summary?.trim() ? `<section class="detail-panel"><h2>Đề bài &amp; Mục tiêu bài tập</h2><p>${escapeHtml(project.assignmentBrief)}</p></section>` : ""}
         <section class="detail-panel"><h2>Quá trình thực hiện &amp; Giải pháp</h2><p>${escapeHtml(project.summary)}</p></section>
         ${project.processSteps?.length ? `<section class="detail-panel"><h2>Các bước thực hiện</h2><ol>${project.processSteps.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol></section>` : ""}
         ${project.obstaclesAndSolutions ? `<section class="detail-panel"><h2>Khó khăn &amp; Giải pháp</h2><p>${escapeHtml(project.obstaclesAndSolutions)}</p></section>` : ""}

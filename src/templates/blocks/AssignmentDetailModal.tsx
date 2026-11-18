@@ -88,200 +88,7 @@ export function AssignmentDetailModal({
     if (!isPage && project) {
       const originalOverflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
-      const isVideo = isVideoMode(project);
-  const effectiveVideoUrl = getEffectiveVideoUrl(project);
-  const hasVideo = isVideo && Boolean(effectiveVideoUrl);
-  const hasImages = (mediaList?.length ?? 0) > 0 && Boolean(activeMedia);
-  const hasVisualMedia = hasVideo || hasImages;
-
-  const renderBulletIcon = (shape?: string) => {
-    if (!shape || shape === "none") return null;
-    if (shape === "hyphen") {
-      return (
-        <span className="font-bold select-none" style={{ color: theme.primaryColor }}>
-          —
-        </span>
-      );
-    }
-    if (shape === "square") {
-      return (
-        <span
-          className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-none select-none"
-          style={{ backgroundColor: theme.primaryColor }}
-        />
-      );
-    }
-    if (shape === "star") {
-      return (
-        <span className="text-xs select-none" style={{ color: theme.primaryColor }}>
-          ★
-        </span>
-      );
-    }
-    if (shape === "check") {
-      return (
-        <span className="text-xs font-bold select-none" style={{ color: theme.primaryColor }}>
-          ✔
-        </span>
-      );
-    }
-    if (shape === "diamond") {
-      return (
-        <span className="text-xs select-none" style={{ color: theme.primaryColor }}>
-          ◆
-        </span>
-      );
-    }
-    return (
-      <span
-        className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full select-none"
-        style={{ backgroundColor: theme.primaryColor }}
-      />
-    );
-  };
-
-  const renderPromptComparison = () => {
-    if (!project.promptComparison || !(project.showPromptComparison ?? true)) return null;
-    return (
-      <div
-        className="rounded-2xl border p-4 text-xs"
-        style={{
-          borderColor: tokens.borderSubtle,
-          backgroundColor: theme.backgroundColor,
-        }}
-      >
-        <div className="flex items-center gap-2 font-bold uppercase tracking-wider mb-2">
-          <Split className="h-4 w-4" style={{ color: theme.primaryColor }} />
-          <span style={{ color: theme.primaryColor }}>
-            So sánh Prompt ban đầu vs Prompt cải tiến
-          </span>
-        </div>
-        <div className="space-y-2">
-          <div className="rounded-lg p-2.5 bg-red-500/10 border border-red-500/20">
-            <span className="font-semibold text-red-600 dark:text-red-400">
-              1. Prompt ban đầu (Initial Prompt):
-            </span>
-            <p className="mt-0.5 opacity-85 font-mono text-[11px]">
-              {project.promptComparison.initialPrompt}
-            </p>
-          </div>
-          <div className="rounded-lg p-2.5 bg-emerald-500/10 border border-emerald-500/20">
-            <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-              2. Prompt cải tiến (Improved Prompt):
-            </span>
-            <p className="mt-0.5 opacity-85 font-mono text-[11px]">
-              {project.promptComparison.improvedPrompt}
-            </p>
-          </div>
-          {project.promptComparison.aiOutput && (
-            <div className="rounded-lg p-2.5 bg-blue-500/10 border border-blue-500/20">
-              <span className="font-semibold text-blue-600 dark:text-blue-400">
-                3. Kết quả AI đạt được:
-              </span>
-              <p className="mt-0.5 opacity-85 text-[11px]">
-                {project.promptComparison.aiOutput}
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const renderMetrics = () => {
-    if (project.metrics.length === 0) return null;
-    return (
-      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-        {project.metrics.map((metric, idx) => (
-          <div
-            key={idx}
-            className="rounded-xl border p-3"
-            style={{
-              backgroundColor: theme.backgroundColor,
-              borderColor: tokens.borderSubtle,
-            }}
-          >
-            <p className="text-[11px] uppercase tracking-wider opacity-65">
-              {metric.label}
-            </p>
-            <p
-              className="mt-0.5 text-base font-bold"
-              style={{ color: theme.primaryColor }}
-            >
-              {metric.value}
-            </p>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
-  const renderLinks = () => {
-    if (project.links.length === 0) return null;
-    return (
-      <div className="flex flex-wrap gap-2 pt-1">
-        {project.links.map((link, idx) => (
-          <a
-            key={idx}
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition hover:opacity-80"
-            style={{
-              borderColor: theme.primaryColor,
-              color: theme.primaryColor,
-              backgroundColor: `${theme.primaryColor}10`,
-            }}
-          >
-            <ExternalLink className="h-3.5 w-3.5" />
-            <span>{link.label}</span>
-          </a>
-        ))}
-      </div>
-    );
-  };
-
-  const renderRawExcerpt = () => {
-    if (!project.fullRawExcerpt || !project.showRawExcerpt) return null;
-    return (
-      <details
-        className="rounded-2xl border p-4 transition"
-        style={{
-          backgroundColor: theme.backgroundColor,
-          borderColor: tokens.borderSubtle,
-        }}
-      >
-        <summary className="cursor-pointer text-xs font-bold uppercase tracking-wider opacity-70">
-          <span className="inline-flex items-center gap-1.5">
-            <FileCheck className="h-3.5 w-3.5" /> Nội dung trích xuất chi tiết từ bài làm
-          </span>
-        </summary>
-        <pre className="mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap font-sans text-xs leading-relaxed opacity-85">
-          {project.fullRawExcerpt}
-        </pre>
-      </details>
-    );
-  };
-
-  const renderTags = () => {
-    if (project.tags.length === 0) return null;
-    return (
-      <div className="flex flex-wrap items-center gap-1.5 pt-1">
-        <Tag className="h-3.5 w-3.5 opacity-55" />
-        {project.tags.map((tag, idx) => (
-          <span
-            key={idx}
-            className="rounded-full border px-2.5 py-0.5 text-xs font-medium opacity-80"
-            style={{ borderColor: tokens.borderSubtle }}
-          >
-            #{tag}
-          </span>
-        ))}
-      </div>
-    );
-  };
-
-  return () => {
+      return () => {
         document.body.style.overflow = originalOverflow;
       };
     }
@@ -403,6 +210,59 @@ export function AssignmentDetailModal({
   const hasImages = (mediaList?.length ?? 0) > 0 && Boolean(activeMedia);
   const hasVisualMedia = hasVideo || hasImages;
 
+  // Deduplication & distinct check for Brief vs Summary
+  const rawBrief = (project.assignmentBrief ?? "").trim();
+  const rawSummary = (project.summary ?? "").trim();
+
+  const normalizeForComparison = (str: string) =>
+    str
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[\s,.;:!?_()\-–—"'/\\\[\]{}]+/g, "");
+
+  const normBrief = normalizeForComparison(rawBrief);
+  const normSummary = normalizeForComparison(rawSummary);
+
+  const hasBrief = Boolean(rawBrief);
+  const hasSummary = Boolean(rawSummary);
+
+  const isDuplicateBriefAndSummary =
+    hasBrief &&
+    hasSummary &&
+    (rawBrief === rawSummary ||
+      normBrief === normSummary ||
+      (normBrief.length >= 25 && normSummary.startsWith(normBrief.slice(0, 35))) ||
+      (normSummary.length >= 25 && normBrief.startsWith(normSummary.slice(0, 35))));
+
+  const hasDistinctBrief = hasBrief && hasSummary && !isDuplicateBriefAndSummary;
+  const primaryNarrative = rawSummary || rawBrief;
+
+  // Filter takeaways so they don't repeat the title, summary, or brief
+  const filteredTakeaways = (project.keyTakeaways || []).filter((item) => {
+    const t = item.trim();
+    if (!t) return false;
+    const normItem = normalizeForComparison(t);
+    if (normItem === normalizeForComparison(project.title)) return false;
+    if (normItem === normSummary || normItem === normBrief) return false;
+    return true;
+  });
+
+  const areAllTakeawaysFragmentsOfSummary =
+    filteredTakeaways.length > 0 &&
+    filteredTakeaways.every((item) => {
+      const norm = normalizeForComparison(item);
+      return norm.length >= 18 && (normSummary.includes(norm) || normBrief.includes(norm));
+    });
+
+  const displayTakeaways = areAllTakeawaysFragmentsOfSummary
+    ? [
+        `Hoàn thành sản phẩm thực hành "${project.title}" đáp ứng đầy đủ yêu cầu bài tập.`,
+        `Thực hành thành thạo quy trình thao tác và ứng dụng giải quyết tình huống thực tế.`,
+        `Đảm bảo độ chuẩn xác học thuật, tính thẩm mỹ và hiệu quả sử dụng sản phẩm.`,
+      ]
+    : filteredTakeaways;
+
   const renderBulletIcon = (shape?: string) => {
     if (!shape || shape === "none") return null;
     if (shape === "hyphen") {
@@ -446,6 +306,196 @@ export function AssignmentDetailModal({
         className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full select-none"
         style={{ backgroundColor: theme.primaryColor }}
       />
+    );
+  };
+
+  const renderNarrativeCards = (isFullWidthGrid: boolean) => {
+    if (hasDistinctBrief) {
+      return (
+        <div className={isFullWidthGrid ? "grid grid-cols-1 gap-4 lg:grid-cols-2" : "space-y-4"}>
+          {/* Card 1: Mục tiêu & Yêu cầu bài tập */}
+          <div
+            className="rounded-2xl sm:rounded-3xl border p-5 shadow-sm transition hover:shadow-md"
+            style={{
+              backgroundColor: `${theme.primaryColor}0C`,
+              borderColor: `${theme.primaryColor}2E`,
+            }}
+          >
+            <div
+              className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+              style={{ color: theme.primaryColor }}
+            >
+              <Target className="h-4 w-4 shrink-0" />
+              <span>Mục tiêu &amp; Yêu cầu bài tập</span>
+            </div>
+            <p className="mt-2.5 text-sm leading-relaxed opacity-95">
+              <InlineEditableText
+                value={project.assignmentBrief || ""}
+                multiline
+                editable={editable}
+                ariaLabel="Yêu cầu đề bài"
+                onSave={(val) => onUpdateProject?.({ assignmentBrief: val })}
+              />
+            </p>
+          </div>
+
+          {/* Card 2: Quá trình thực hiện & Giải pháp */}
+          <div
+            className="rounded-2xl sm:rounded-3xl border p-5 shadow-sm transition hover:shadow-md"
+            style={{
+              backgroundColor: theme.surfaceColor,
+              borderColor: tokens.borderSubtle,
+            }}
+          >
+            <h3
+              className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+              style={{
+                color: tokens.isDarkSurface
+                  ? theme.primaryColor
+                  : theme.secondaryColor,
+              }}
+            >
+              <Lightbulb className="h-4 w-4 shrink-0" />
+              <span>Quá trình thực hiện &amp; Giải pháp</span>
+            </h3>
+            <p className="mt-2.5 text-sm leading-relaxed opacity-90">
+              <InlineEditableText
+                value={project.summary}
+                multiline
+                editable={editable}
+                ariaLabel="Quá trình thực hiện"
+                onSave={(val) => onUpdateProject?.({ summary: val })}
+              />
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    if (!primaryNarrative) return null;
+
+    return (
+      <div
+        className="rounded-2xl sm:rounded-3xl border p-5 sm:p-6 shadow-sm transition hover:shadow-md"
+        style={{
+          backgroundColor: theme.surfaceColor,
+          borderColor: tokens.borderSubtle,
+          borderTopWidth: "3px",
+          borderTopColor: theme.primaryColor,
+        }}
+      >
+        <div
+          className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+          style={{ color: theme.primaryColor }}
+        >
+          <Compass className="h-4 w-4 shrink-0" />
+          <span>Nội dung &amp; Quá trình thực hiện</span>
+        </div>
+        <p className="mt-3 text-sm leading-relaxed opacity-95">
+          <InlineEditableText
+            value={primaryNarrative}
+            multiline
+            editable={editable}
+            ariaLabel="Nội dung & Quá trình thực hiện"
+            onSave={(val) => {
+              onUpdateProject?.({
+                summary: val,
+                ...(project.assignmentBrief ? { assignmentBrief: val } : {}),
+              });
+            }}
+          />
+        </p>
+      </div>
+    );
+  };
+
+  const renderTakeawaysCard = () => {
+    if (displayTakeaways.length === 0) return null;
+    return (
+      <div
+        className="rounded-2xl sm:rounded-3xl border p-5 shadow-sm transition hover:shadow-md"
+        style={{
+          backgroundColor: theme.surfaceColor,
+          borderColor: tokens.borderSubtle,
+        }}
+      >
+        <div
+          className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+          style={{ color: tokens.positiveAccent }}
+        >
+          <CheckCircle2 className="h-4 w-4 shrink-0" />
+          <span>Kỹ năng cốt lõi &amp; Kết quả kỳ vọng</span>
+        </div>
+        <div className="mt-3 space-y-2.5">
+          {displayTakeaways.map((item, idx) => (
+            <div
+              key={idx}
+              className="flex items-start gap-3 rounded-xl border p-3 transition hover:shadow-xs"
+              style={{
+                borderColor: tokens.borderSubtle,
+                backgroundColor: `${theme.primaryColor}06`,
+              }}
+            >
+              {(project.takeawayBulletShape ?? "none") !== "none" ? (
+                <div className="mt-0.5 shrink-0">
+                  {renderBulletIcon(project.takeawayBulletShape)}
+                </div>
+              ) : (
+                <div
+                  className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold"
+                  style={{
+                    backgroundColor: `${tokens.positiveAccent}20`,
+                    color: tokens.positiveAccent,
+                  }}
+                >
+                  {idx + 1}
+                </div>
+              )}
+              <span className="flex-1 text-sm leading-relaxed opacity-90 font-normal">
+                <InlineEditableText
+                  value={item}
+                  editable={editable}
+                  ariaLabel={`Kỹ năng cốt lõi ${idx + 1}`}
+                  onSave={(val) => {
+                    const next = [...(project.keyTakeaways.length > 0 ? project.keyTakeaways : displayTakeaways)];
+                    next[idx] = val;
+                    onUpdateProject?.({ keyTakeaways: next });
+                  }}
+                />
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderObstaclesCard = () => {
+    if (!project.obstaclesAndSolutions) return null;
+    return (
+      <div
+        className="rounded-2xl sm:rounded-3xl border p-5 shadow-sm"
+        style={{
+          borderColor: "rgba(245, 158, 11, 0.30)",
+          backgroundColor: tokens.isDarkSurface
+            ? "rgba(245, 158, 11, 0.08)"
+            : "rgba(254, 243, 199, 0.35)",
+        }}
+      >
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+          <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+          <span>Khó khăn &amp; Giải pháp</span>
+        </div>
+        <p className="mt-2 text-sm leading-relaxed opacity-90">
+          <InlineEditableText
+            value={project.obstaclesAndSolutions}
+            multiline
+            editable={editable}
+            ariaLabel="Khó khăn & Giải pháp"
+            onSave={(val) => onUpdateProject?.({ obstaclesAndSolutions: val })}
+          />
+        </p>
+      </div>
     );
   };
 
@@ -500,24 +550,42 @@ export function AssignmentDetailModal({
   const renderMetrics = () => {
     if (project.metrics.length === 0) return null;
     return (
-      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {project.metrics.map((metric, idx) => (
           <div
             key={idx}
-            className="rounded-xl border p-3"
+            className="rounded-2xl border p-3.5 shadow-xs transition hover:shadow-sm"
             style={{
-              backgroundColor: theme.backgroundColor,
+              backgroundColor: theme.surfaceColor,
               borderColor: tokens.borderSubtle,
             }}
           >
-            <p className="text-[11px] uppercase tracking-wider opacity-65">
-              {metric.label}
+            <p className="text-[10px] font-bold uppercase tracking-wider opacity-65">
+              <InlineEditableText
+                value={metric.label}
+                editable={editable}
+                ariaLabel={`Nhãn chỉ số ${idx + 1}`}
+                onSave={(val) => {
+                  const next = [...project.metrics];
+                  next[idx] = { ...next[idx], label: val };
+                  onUpdateProject?.({ metrics: next });
+                }}
+              />
             </p>
             <p
-              className="mt-0.5 text-base font-bold"
+              className="mt-1 text-lg sm:text-xl font-black tracking-tight"
               style={{ color: theme.primaryColor }}
             >
-              {metric.value}
+              <InlineEditableText
+                value={metric.value}
+                editable={editable}
+                ariaLabel={`Giá trị chỉ số ${idx + 1}`}
+                onSave={(val) => {
+                  const next = [...project.metrics];
+                  next[idx] = { ...next[idx], value: val };
+                  onUpdateProject?.({ metrics: next });
+                }}
+              />
             </p>
           </div>
         ))}
@@ -899,7 +967,7 @@ export function AssignmentDetailModal({
                   className="text-xs font-bold uppercase tracking-wider mb-2"
                   style={{ color: theme.primaryColor }}
                 >
-                  SẢN PHẨM CUỐI CÙNG & MINH CHỨNG BÀI LÀM
+                  Sản phẩm &amp; Minh chứng bài làm
                 </h3>
               )}
 
@@ -1095,301 +1163,27 @@ export function AssignmentDetailModal({
                   : "space-y-4 lg:col-span-6"
           } order-1 lg:order-2`}>
             {!hasVisualMedia ? (
-              /* Balanced full-width layout without image: Brief & Process side-by-side on desktop */
+              /* Balanced full-width layout without image */
               <div className="space-y-4">
-                {(project.assignmentBrief || project.summary) && project.summary ? (
-                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                    <div
-                      className="rounded-2xl border p-5"
-                      style={{
-                        backgroundColor: `${theme.primaryColor}10`,
-                        borderColor: `${theme.primaryColor}30`,
-                      }}
-                    >
-                      <div
-                        className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
-                        style={{ color: theme.primaryColor }}
-                      >
-                        <Target className="h-4 w-4 shrink-0" /> Đề bài / Mục tiêu bài tập (INF2501) - Yêu cầu đề bài (Assignment Brief)
-                      </div>
-                      <p className="mt-2 text-sm leading-relaxed">
-                        <InlineEditableText
-                          value={project.assignmentBrief || project.summary}
-                          multiline
-                          editable={editable}
-                          ariaLabel="Yêu cầu đề bài"
-                          onSave={(val) => onUpdateProject?.({ assignmentBrief: val })}
-                        />
-                      </p>
-                    </div>
-
-                    <div
-                      className="rounded-2xl border p-5"
-                      style={{ borderColor: tokens.borderSubtle }}
-                    >
-                      <h3
-                        className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
-                        style={{
-                          color: tokens.isDarkSurface
-                            ? theme.primaryColor
-                            : theme.secondaryColor,
-                        }}
-                      >
-                        <Lightbulb className="h-4 w-4 shrink-0" /> Quá trình thực hiện
-                      </h3>
-                      <p className="mt-2 text-sm leading-relaxed opacity-90">
-                        <InlineEditableText
-                          value={project.summary}
-                          multiline
-                          editable={editable}
-                          ariaLabel="Quá trình thực hiện"
-                          onSave={(val) => onUpdateProject?.({ summary: val })}
-                        />
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  (project.assignmentBrief || project.summary) && (
-                    <div
-                      className="rounded-2xl border p-5"
-                      style={{
-                        backgroundColor: `${theme.primaryColor}10`,
-                        borderColor: `${theme.primaryColor}30`,
-                      }}
-                    >
-                      <div
-                        className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
-                        style={{ color: theme.primaryColor }}
-                      >
-                        <Target className="h-4 w-4 shrink-0" /> Đề bài / Mục tiêu bài tập (INF2501) - Yêu cầu đề bài (Assignment Brief)
-                      </div>
-                      <p className="mt-2 text-sm leading-relaxed">
-                        <InlineEditableText
-                          value={project.assignmentBrief || project.summary}
-                          multiline
-                          editable={editable}
-                          ariaLabel="Yêu cầu đề bài"
-                          onSave={(val) => onUpdateProject?.({ assignmentBrief: val })}
-                        />
-                      </p>
-                    </div>
-                  )
-                )}
-
-                {/* Obstacles & Solutions if available */}
-                {project.obstaclesAndSolutions && (
-                  <div
-                    className="rounded-2xl border p-5"
-                    style={{
-                      borderColor: tokens.borderSubtle,
-                      backgroundColor: theme.backgroundColor,
-                    }}
-                  >
-                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider opacity-80">
-                      <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" /> Khó khăn & Giải pháp
-                    </div>
-                    <p className="mt-2 text-sm leading-relaxed opacity-90">
-                      <InlineEditableText
-                        value={project.obstaclesAndSolutions}
-                        multiline
-                        editable={editable}
-                        ariaLabel="Khó khăn & Giải pháp"
-                        onSave={(val) => onUpdateProject?.({ obstaclesAndSolutions: val })}
-                      />
-                    </p>
-                  </div>
-                )}
-
-                {/* (c) Key Takeaways */}
-                {project.keyTakeaways.some((item) => item.trim()) && (
-                  <div
-                    className="rounded-2xl border p-5"
-                    style={{ borderColor: tokens.borderSubtle }}
-                  >
-                    <div
-                      className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
-                      style={{ color: tokens.positiveAccent }}
-                    >
-                      <CheckCircle2 className="h-4 w-4 shrink-0" /> Kỹ năng cốt lõi & Kết quả kỳ vọng
-                    </div>
-                    <ul className="mt-2.5 space-y-2">
-                      {project.keyTakeaways
-                        .filter((item) => item.trim())
-                        .map((item, idx) => (
-                          <li
-                            key={idx}
-                            className={
-                              (project.takeawayBulletShape ?? "none") === "none"
-                                ? "text-sm leading-relaxed"
-                                : "flex items-start gap-2.5 text-sm leading-relaxed"
-                            }
-                          >
-                            {renderBulletIcon(project.takeawayBulletShape)}
-                            <span>
-                              <InlineEditableText
-                                value={item}
-                                editable={editable}
-                                ariaLabel={`Bài học rút ra ${idx + 1}`}
-                                onSave={(val) => {
-                                  const next = [...project.keyTakeaways];
-                                  next[idx] = val;
-                                  onUpdateProject?.({ keyTakeaways: next });
-                                }}
-                              />
-                            </span>
-                          </li>
-                        ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Prompt comparison when no visual media */}
+                {renderNarrativeCards(true)}
+                {renderObstaclesCard()}
+                {renderTakeawaysCard()}
                 {renderPromptComparison()}
-
-                {/* Metrics when no visual media */}
                 {renderMetrics()}
-
-                {/* Links */}
                 {renderLinks()}
-
-                {/* Raw excerpt */}
                 {renderRawExcerpt()}
-
-                {/* Tags */}
                 {renderTags()}
               </div>
             ) : (
               /* Standard right column layout when media is present */
-              <>
-                {/* (a) Mục tiêu bài tập */}
-                {(project.assignmentBrief || project.summary) && (
-                  <div
-                    className="rounded-2xl border p-4"
-                    style={{
-                      backgroundColor: `${theme.primaryColor}10`,
-                      borderColor: `${theme.primaryColor}30`,
-                    }}
-                  >
-                    <div
-                      className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
-                      style={{ color: theme.primaryColor }}
-                    >
-                      <Target className="h-4 w-4" /> Đề bài / Mục tiêu bài tập (INF2501) - Yêu cầu đề bài (Assignment Brief)
-                    </div>
-                    <p className="mt-1.5 text-sm leading-relaxed">
-                      <InlineEditableText
-                        value={project.assignmentBrief || project.summary}
-                        multiline
-                        editable={editable}
-                        ariaLabel="Yêu cầu đề bài"
-                        onSave={(val) => onUpdateProject?.({ assignmentBrief: val })}
-                      />
-                    </p>
-                  </div>
-                )}
-
-                {/* (b) Quá trình thực hiện & Giải pháp */}
-                <div
-                  className="rounded-2xl border p-4"
-                  style={{ borderColor: tokens.borderSubtle }}
-                >
-                  <h3
-                    className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
-                    style={{
-                      color: tokens.isDarkSurface
-                        ? theme.primaryColor
-                        : theme.secondaryColor,
-                    }}
-                  >
-                    <Lightbulb className="h-4 w-4" /> Quá trình thực hiện
-                  </h3>
-                  <p className="mt-1.5 text-sm leading-relaxed opacity-90">
-                    <InlineEditableText
-                      value={project.summary}
-                      multiline
-                      editable={editable}
-                      ariaLabel="Quá trình thực hiện"
-                      onSave={(val) => onUpdateProject?.({ summary: val })}
-                    />
-                  </p>
-                </div>
-
-                {/* Obstacles & Solutions if available */}
-                {project.obstaclesAndSolutions && (
-                  <div
-                    className="rounded-2xl border p-4"
-                    style={{
-                      borderColor: tokens.borderSubtle,
-                      backgroundColor: theme.backgroundColor,
-                    }}
-                  >
-                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider opacity-80">
-                      <AlertTriangle className="h-4 w-4 text-amber-600" /> Khó khăn & Giải pháp
-                    </div>
-                    <p className="mt-1.5 text-xs leading-relaxed opacity-90">
-                      <InlineEditableText
-                        value={project.obstaclesAndSolutions}
-                        multiline
-                        editable={editable}
-                        ariaLabel="Khó khăn & Giải pháp"
-                        onSave={(val) => onUpdateProject?.({ obstaclesAndSolutions: val })}
-                      />
-                    </p>
-                  </div>
-                )}
-
-                {/* (c) Key Takeaways */}
-                {project.keyTakeaways.some((item) => item.trim()) && (
-                  <div
-                    className="rounded-2xl border p-4"
-                    style={{ borderColor: tokens.borderSubtle }}
-                  >
-                    <div
-                      className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
-                      style={{ color: tokens.positiveAccent }}
-                    >
-                      <CheckCircle2 className="h-4 w-4" /> Kỹ năng cốt lõi & Kết quả kỳ vọng
-                    </div>
-                    <ul className="mt-2 space-y-1.5">
-                      {project.keyTakeaways
-                        .filter((item) => item.trim())
-                        .map((item, idx) => (
-                          <li
-                            key={idx}
-                            className={
-                              (project.takeawayBulletShape ?? "none") === "none"
-                                ? "text-sm leading-relaxed"
-                                : "flex items-start gap-2 text-sm"
-                            }
-                          >
-                            {renderBulletIcon(project.takeawayBulletShape)}
-                            <span>
-                              <InlineEditableText
-                                value={item}
-                                editable={editable}
-                                ariaLabel={`Bài học rút ra ${idx + 1}`}
-                                onSave={(val) => {
-                                  const next = [...project.keyTakeaways];
-                                  next[idx] = val;
-                                  onUpdateProject?.({ keyTakeaways: next });
-                                }}
-                              />
-                            </span>
-                          </li>
-                        ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Links */}
+              <div className="space-y-4">
+                {renderNarrativeCards(false)}
+                {renderObstaclesCard()}
+                {renderTakeawaysCard()}
                 {renderLinks()}
-
-                {/* Full raw excerpt */}
                 {renderRawExcerpt()}
-
-                {/* Tags */}
                 {renderTags()}
-              </>
+              </div>
             )}
           </div>
         </div>
@@ -1460,200 +1254,7 @@ export function AssignmentDetailModal({
   ) : null;
 
   if (isPage) {
-    const isVideo = isVideoMode(project);
-  const effectiveVideoUrl = getEffectiveVideoUrl(project);
-  const hasVideo = isVideo && Boolean(effectiveVideoUrl);
-  const hasImages = (mediaList?.length ?? 0) > 0 && Boolean(activeMedia);
-  const hasVisualMedia = hasVideo || hasImages;
-
-  const renderBulletIcon = (shape?: string) => {
-    if (!shape || shape === "none") return null;
-    if (shape === "hyphen") {
-      return (
-        <span className="font-bold select-none" style={{ color: theme.primaryColor }}>
-          —
-        </span>
-      );
-    }
-    if (shape === "square") {
-      return (
-        <span
-          className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-none select-none"
-          style={{ backgroundColor: theme.primaryColor }}
-        />
-      );
-    }
-    if (shape === "star") {
-      return (
-        <span className="text-xs select-none" style={{ color: theme.primaryColor }}>
-          ★
-        </span>
-      );
-    }
-    if (shape === "check") {
-      return (
-        <span className="text-xs font-bold select-none" style={{ color: theme.primaryColor }}>
-          ✔
-        </span>
-      );
-    }
-    if (shape === "diamond") {
-      return (
-        <span className="text-xs select-none" style={{ color: theme.primaryColor }}>
-          ◆
-        </span>
-      );
-    }
     return (
-      <span
-        className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full select-none"
-        style={{ backgroundColor: theme.primaryColor }}
-      />
-    );
-  };
-
-  const renderPromptComparison = () => {
-    if (!project.promptComparison || !(project.showPromptComparison ?? true)) return null;
-    return (
-      <div
-        className="rounded-2xl border p-4 text-xs"
-        style={{
-          borderColor: tokens.borderSubtle,
-          backgroundColor: theme.backgroundColor,
-        }}
-      >
-        <div className="flex items-center gap-2 font-bold uppercase tracking-wider mb-2">
-          <Split className="h-4 w-4" style={{ color: theme.primaryColor }} />
-          <span style={{ color: theme.primaryColor }}>
-            So sánh Prompt ban đầu vs Prompt cải tiến
-          </span>
-        </div>
-        <div className="space-y-2">
-          <div className="rounded-lg p-2.5 bg-red-500/10 border border-red-500/20">
-            <span className="font-semibold text-red-600 dark:text-red-400">
-              1. Prompt ban đầu (Initial Prompt):
-            </span>
-            <p className="mt-0.5 opacity-85 font-mono text-[11px]">
-              {project.promptComparison.initialPrompt}
-            </p>
-          </div>
-          <div className="rounded-lg p-2.5 bg-emerald-500/10 border border-emerald-500/20">
-            <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-              2. Prompt cải tiến (Improved Prompt):
-            </span>
-            <p className="mt-0.5 opacity-85 font-mono text-[11px]">
-              {project.promptComparison.improvedPrompt}
-            </p>
-          </div>
-          {project.promptComparison.aiOutput && (
-            <div className="rounded-lg p-2.5 bg-blue-500/10 border border-blue-500/20">
-              <span className="font-semibold text-blue-600 dark:text-blue-400">
-                3. Kết quả AI đạt được:
-              </span>
-              <p className="mt-0.5 opacity-85 text-[11px]">
-                {project.promptComparison.aiOutput}
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const renderMetrics = () => {
-    if (project.metrics.length === 0) return null;
-    return (
-      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-        {project.metrics.map((metric, idx) => (
-          <div
-            key={idx}
-            className="rounded-xl border p-3"
-            style={{
-              backgroundColor: theme.backgroundColor,
-              borderColor: tokens.borderSubtle,
-            }}
-          >
-            <p className="text-[11px] uppercase tracking-wider opacity-65">
-              {metric.label}
-            </p>
-            <p
-              className="mt-0.5 text-base font-bold"
-              style={{ color: theme.primaryColor }}
-            >
-              {metric.value}
-            </p>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
-  const renderLinks = () => {
-    if (project.links.length === 0) return null;
-    return (
-      <div className="flex flex-wrap gap-2 pt-1">
-        {project.links.map((link, idx) => (
-          <a
-            key={idx}
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition hover:opacity-80"
-            style={{
-              borderColor: theme.primaryColor,
-              color: theme.primaryColor,
-              backgroundColor: `${theme.primaryColor}10`,
-            }}
-          >
-            <ExternalLink className="h-3.5 w-3.5" />
-            <span>{link.label}</span>
-          </a>
-        ))}
-      </div>
-    );
-  };
-
-  const renderRawExcerpt = () => {
-    if (!project.fullRawExcerpt || !project.showRawExcerpt) return null;
-    return (
-      <details
-        className="rounded-2xl border p-4 transition"
-        style={{
-          backgroundColor: theme.backgroundColor,
-          borderColor: tokens.borderSubtle,
-        }}
-      >
-        <summary className="cursor-pointer text-xs font-bold uppercase tracking-wider opacity-70">
-          <span className="inline-flex items-center gap-1.5">
-            <FileCheck className="h-3.5 w-3.5" /> Nội dung trích xuất chi tiết từ bài làm
-          </span>
-        </summary>
-        <pre className="mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap font-sans text-xs leading-relaxed opacity-85">
-          {project.fullRawExcerpt}
-        </pre>
-      </details>
-    );
-  };
-
-  const renderTags = () => {
-    if (project.tags.length === 0) return null;
-    return (
-      <div className="flex flex-wrap items-center gap-1.5 pt-1">
-        <Tag className="h-3.5 w-3.5 opacity-55" />
-        {project.tags.map((tag, idx) => (
-          <span
-            key={idx}
-            className="rounded-full border px-2.5 py-0.5 text-xs font-medium opacity-80"
-            style={{ borderColor: tokens.borderSubtle }}
-          >
-            #{tag}
-          </span>
-        ))}
-      </div>
-    );
-  };
-
-  return (
       <div
         className="relative w-full"
         data-detail-presentation="page"
