@@ -4124,19 +4124,6 @@ export function renderStandaloneHtml(
           headerRow.appendChild(docxLink);
         }
 
-        (proj.links || []).forEach(function(l) {
-          if (l && l.url) {
-            var lHref = /^https?:\/\//i.test(l.url) || l.url.startsWith('/') ? l.url : '';
-            if (lHref) {
-              var lPill = makeEl('a', 'pill', '🔗 ' + (l.label || 'Mở file'));
-              lPill.href = lHref;
-              lPill.target = '_blank';
-              lPill.rel = 'noopener noreferrer';
-              lPill.style.textDecoration = 'none';
-              headerRow.appendChild(lPill);
-            }
-          }
-        });
 
         var linkStandalone = makeEl('a', 'pill', 'Mở trang chi tiết ↗');
         linkStandalone.href = 'projects/project-' + (projIdx + 1) + '.html';
