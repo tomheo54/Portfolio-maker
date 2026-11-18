@@ -291,7 +291,7 @@ export function PublicPortfolioClient({
 
   return (
     <div
-      className="public-portfolio-print-root relative overflow-x-clip print:pb-0"
+      className="public-portfolio-print-root relative overflow-x-hidden max-w-full print:pb-0"
       style={tokens.cssVariables as React.CSSProperties}
     >
       <style>{PRINT_SLIDE_STYLES}</style>

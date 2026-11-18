@@ -36,6 +36,7 @@ import {
 } from "@dnd-kit/core";
 import {
   SortableContext,
+  arrayMove,
   rectSortingStrategy,
   useSortable,
 } from "@dnd-kit/sortable";
@@ -170,6 +171,32 @@ const DEFAULT_ABOUT_CARD_POSITIONS: Record<string, AboutCardPosition> = {
   contact: { column: 0, row: 0, width: 7, height: 7 },
   education: { column: 7, row: 0, width: 5, height: 3 },
   learningGoals: { column: 7, row: 3, width: 5, height: 4 },
+
+  // creator-profile cards
+  creator_stats: { column: 0, row: 0, width: 12, height: 3 },
+  creator_deck: { column: 0, row: 3, width: 7, height: 8 },
+  creator_booking: { column: 7, row: 3, width: 5, height: 4 },
+  creator_specs: { column: 7, row: 7, width: 5, height: 4 },
+
+  // medical-license cards
+  medical_license: { column: 0, row: 0, width: 7, height: 8 },
+  medical_credentials: { column: 7, row: 0, width: 5, height: 4 },
+  medical_cme: { column: 7, row: 4, width: 5, height: 4 },
+
+  // clinical-dossier cards
+  clinical_dossier: { column: 0, row: 0, width: 7, height: 8 },
+  clinical_unit: { column: 7, row: 0, width: 5, height: 4 },
+  clinical_emergency: { column: 7, row: 4, width: 5, height: 4 },
+
+  // academic-cv cards
+  academic_cv: { column: 0, row: 0, width: 7, height: 8 },
+  academic_faculty: { column: 7, row: 0, width: 5, height: 4 },
+  academic_grants: { column: 7, row: 4, width: 5, height: 4 },
+
+  // pedagogical-journal cards
+  pedagogical_journal: { column: 0, row: 0, width: 7, height: 8 },
+  pedagogical_school: { column: 7, row: 0, width: 5, height: 4 },
+  pedagogical_reflection: { column: 7, row: 4, width: 5, height: 4 },
 };
 
 function AboutCardResizeControls({
@@ -628,19 +655,29 @@ export function AboutBlock({
   const isBottom = mediaPos === "bottom";
 
   // Card order resolution
-  const visibleCardIds = new Set(["contact", "education", "learningGoals"]);
+  const defaultVariants = getArchetypeDefaultVariants(archetypeId);
+  const activeLayout = section.variant || defaultVariants.about;
+  const isFreeLayout = Boolean(section.cardPositions);
+
+  const layoutCardIdsMap: Record<string, string[]> = {
+    "creator-profile": ["creator_stats", "creator_deck", "creator_booking", "creator_specs"],
+    "medical-license": ["medical_license", "medical_credentials", "medical_cme"],
+    "clinical-dossier": ["clinical_dossier", "clinical_unit", "clinical_emergency"],
+    "academic-cv": ["academic_cv", "academic_faculty", "academic_grants"],
+    "pedagogical-journal": ["pedagogical_journal", "pedagogical_school", "pedagogical_reflection"],
+  };
+
+  const currentLayoutCards = layoutCardIdsMap[activeLayout] ?? ["contact", "education", "learningGoals"];
+  const visibleCardIds = new Set(currentLayoutCards);
   const configuredCardOrder = (
     section.cardOrder && section.cardOrder.length > 0
       ? section.cardOrder
-      : ["contact", "education", "learningGoals"]
+      : currentLayoutCards
   ).filter((cardId) => visibleCardIds.has(cardId));
   const cardOrder =
     configuredCardOrder.length > 0
       ? configuredCardOrder
-      : ["contact", "education", "learningGoals"];
-  const defaultVariants = getArchetypeDefaultVariants(archetypeId);
-  const activeLayout = section.variant || defaultVariants.about;
-  const isFreeLayout = Boolean(section.cardPositions);
+      : currentLayoutCards;
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -656,7 +693,12 @@ export function AboutBlock({
     const oldIndex = cardOrder.indexOf(String(active.id));
     const newIndex = cardOrder.indexOf(String(over.id));
     if (oldIndex !== -1 && newIndex !== -1) {
-      reorderAboutCards(oldIndex, newIndex);
+      if (layoutCardIdsMap[activeLayout]) {
+        const nextOrder = arrayMove(cardOrder, oldIndex, newIndex);
+        updateAbout({ cardOrder: nextOrder });
+      } else {
+        reorderAboutCards(oldIndex, newIndex);
+      }
     }
   };
 
@@ -719,6 +761,138 @@ export function AboutBlock({
     }
     nextPosition.row = Math.min(100 - nextPosition.height, nextPosition.row);
     updateAbout({ cardPositions: { ...positions, [cardId]: nextPosition } });
+  };
+
+  const renderCardWrapper = (
+    cardId: string,
+    content: React.ReactNode,
+    className: string = "",
+  ) => {
+    if (!content) return null;
+    if (editable && isFreeLayout) {
+      return (
+        <FreePositionAboutCardItem
+          key={cardId}
+          id={cardId}
+          position={getCardPosition(cardId)}
+          onResize={resizeAboutCard}
+          editable={editable}
+        >
+          {content}
+        </FreePositionAboutCardItem>
+      );
+    }
+    if (editable) {
+      return (
+        <SortableAboutCardItem
+          key={cardId}
+          id={cardId}
+          editable={editable}
+          onResize={resizeAboutCard}
+          className={className}
+        >
+          {content}
+        </SortableAboutCardItem>
+      );
+    }
+    return (
+      <div
+        key={cardId}
+        data-testid={`about-card-${cardId}`}
+        className={`relative ${className}`}
+      >
+        {content}
+      </div>
+    );
+  };
+
+  const renderCustomLayoutContainer = (
+    layoutName: string,
+    layoutTitleText: string,
+    cardIds: string[],
+    autoContent: React.ReactNode,
+    freeCards: React.ReactNode[],
+  ) => {
+    return (
+      <div
+        className="space-y-4 border-t pt-4"
+        style={{ borderColor: tokens.borderSubtle }}
+      >
+        <div className="flex items-center justify-between gap-3 pb-1">
+          <span className="text-xs font-bold uppercase tracking-wider opacity-75">
+            {layoutTitleText}
+          </span>
+          {editable && (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                data-testid="toggle-about-free-layout"
+                onClick={() =>
+                  updateAbout({
+                    cardPositions: isFreeLayout
+                      ? undefined
+                      : DEFAULT_ABOUT_CARD_POSITIONS,
+                  })
+                }
+                className="rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-[10px] font-semibold text-amber-900 hover:bg-amber-100 cursor-pointer"
+              >
+                {isFreeLayout ? "Bố cục tự động" : "Bật kéo thả tự do"}
+              </button>
+              <span className="rounded-full bg-amber-100/70 px-2 py-0.5 text-[11px] font-semibold text-amber-800 hidden sm:inline-block">
+                {isFreeLayout
+                  ? "Kéo thả và W/H để chỉnh vị trí, kích thước"
+                  : "Kéo thả để sắp xếp, W/H để chỉnh kích thước"}
+              </span>
+            </div>
+          )}
+        </div>
+        {editable && isFreeLayout ? (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleFreeDragEnd}
+          >
+            <div
+              ref={setFreeGridRef}
+              data-testid="about-layout-content"
+              data-layout={layoutName}
+              data-layout-positioning="free"
+              className="about-free-grid w-full min-w-0"
+              style={{
+                minHeight: `${
+                  Math.max(
+                    ...cardIds.map((cardId) => {
+                      const position = getCardPosition(cardId);
+                      return position.row + position.height;
+                    }),
+                  ) *
+                    64 -
+                  16
+                }px`,
+              }}
+            >
+              {freeCards}
+            </div>
+          </DndContext>
+        ) : editable ? (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={cardIds} strategy={rectSortingStrategy}>
+              <div data-testid="about-layout-content" data-layout={layoutName} className="space-y-6">
+                {autoContent}
+              </div>
+            </SortableContext>
+          </DndContext>
+        ) : (
+          <div data-testid="about-layout-content" data-layout={layoutName} className="space-y-6">
+            {autoContent}
+          </div>
+        )}
+      </div>
+    );
   };
 
   // Card Renderers
@@ -1119,673 +1293,735 @@ export function AboutBlock({
   };
 
   const renderCardLayout = (layout: Exclude<typeof activeLayout, "tabs">) => {
+    const layoutTitle = {
+      "story-card": "Tiểu sử dạng câu chuyện",
+      "bento-facts": "Bento thông tin",
+      "editorial-poster": "Editorial Poster",
+      "profile-dashboard": "Profile Dashboard",
+      spotlight: "Spotlight Profile",
+      cards: "Thông tin cá nhân dạng thẻ",
+      grid: "Tổng quan dạng lưới",
+      organic: "Bố cục tự do",
+      timeline: "Dòng thời gian hồ sơ",
+      "two-column-bio": "Tiểu sử 2 cột",
+      "medical-license": "Hồ sơ Năng lực Dược sĩ",
+      "clinical-dossier": "Hồ sơ Bệnh án Chuyên môn",
+      "creator-profile": "Creator & Media Deck",
+      "academic-cv": "Hồ sơ Học thuật",
+      "pedagogical-journal": "Nhật ký Sư phạm",
+    }[layout] || "Thông tin giới thiệu";
+
     if (layout === "medical-license") {
-      return (
-        <div data-testid="about-layout-content" data-layout="medical-license" className="space-y-6 min-w-0">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      const licenseCard = (
+        <div
+          className="h-full rounded-3xl border-2 p-4 sm:p-6 lg:p-8 bg-white/95 shadow-md flex flex-col justify-between min-w-0"
+          style={{
+            borderColor: `${theme.primaryColor}55`,
+            boxShadow: `0 10px 30px -10px ${theme.primaryColor}25`,
+          }}
+        >
+          <div className="space-y-4">
             <div
-              className="lg:col-span-7 rounded-3xl border-2 p-4 sm:p-6 lg:p-8 bg-white/95 shadow-md flex flex-col justify-between min-w-0"
-              style={{
-                borderColor: `${theme.primaryColor}55`,
-                boxShadow: `0 10px 30px -10px ${theme.primaryColor}25`,
-              }}
+              className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 min-w-0"
+              style={{ borderColor: `${theme.primaryColor}30` }}
             >
-              <div className="space-y-4">
-                <div
-                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 min-w-0"
-                  style={{ borderColor: `${theme.primaryColor}30` }}
-                >
-                  <span
-                    className="inline-flex items-center gap-1.5 rounded-2xl sm:rounded-full border px-3.5 py-1 text-xs font-bold text-white shadow-xs max-w-full break-words"
-                    style={{
-                      backgroundColor: theme.primaryColor,
-                      borderColor: `${theme.primaryColor}80`,
-                    }}
-                  >
-                    <Award className="h-3.5 w-3.5 text-amber-300 shrink-0" />
-                    <span className="min-w-0 break-words">
-                      <InlineEditableText
-                        value={section.customTexts?.med_badge || "HỒ SƠ HÀNH NGHỀ DƯỢC • CHUẨN GMP/GSP"}
-                        editable={editable}
-                        ariaLabel="Huy hiệu hành nghề dược"
-                        onSave={(val) => updateCustomText("med_badge", val)}
-                      />
-                    </span>
-                  </span>
-                  <span
-                    className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-md border shrink-0 min-w-0 break-words"
-                    style={{
-                      color: theme.primaryColor,
-                      backgroundColor: `${theme.primaryColor}12`,
-                      borderColor: `${theme.primaryColor}30`,
-                    }}
-                  >
-                    <InlineEditableText
-                      value={section.customTexts?.med_license || "LICENSE: #VN-PHARM-8892"}
-                      editable={editable}
-                      ariaLabel="Mã số chứng chỉ hành nghề"
-                      onSave={(val) => updateCustomText("med_license", val)}
-                    />
-                  </span>
-                </div>
-
-                <div>
-                  <h3 className="font-editorial text-2xl font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
-                    <InlineEditableText
-                      value={section.customTexts?.med_title || "Dược sĩ Chuyên khoa & Nghiên cứu Phát triển (R&D)"}
-                      editable={editable}
-                      ariaLabel="Tiêu đề chuyên khoa dược"
-                      onSave={(val) => updateCustomText("med_title", val)}
-                    />
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed opacity-85 min-w-0 break-words" style={{ color: theme.textColor }}>
-                    <InlineEditableText
-                      value={
-                        section.biography ||
-                        "Dược sĩ phụ trách kiểm soát chất lượng, nghiên cứu tối ưu hóa công thức bào chế theo tiêu chuẩn GMP-WHO và Dược điển Việt Nam V."
-                      }
-                      editable={editable}
-                      multiline
-                      ariaLabel="Tiểu sử dược sĩ"
-                      onSave={(val) => updateAbout({ biography: val })}
-                    />
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
-                  <div
-                    className="p-3 rounded-xl border min-w-0 break-words"
-                    style={{
-                      borderColor: `${theme.primaryColor}30`,
-                      backgroundColor: `${theme.primaryColor}0a`,
-                    }}
-                  >
-                    <span className="font-bold block mb-1" style={{ color: theme.primaryColor }}>
-                      <InlineEditableText
-                        value={section.customTexts?.med_feat1_title || "🔬 Bào chế & Độc học"}
-                        editable={editable}
-                        ariaLabel="Tiêu đề chuyên môn 1"
-                        onSave={(val) => updateCustomText("med_feat1_title", val)}
-                      />
-                    </span>
-                    <span className="text-stone-700 min-w-0 break-words">
-                      <InlineEditableText
-                        value={section.customTexts?.med_feat1_desc || "Công nghệ nano sinh học, viên nén giải phóng biến đổi"}
-                        editable={editable}
-                        ariaLabel="Mô tả chuyên môn 1"
-                        onSave={(val) => updateCustomText("med_feat1_desc", val)}
-                      />
-                    </span>
-                  </div>
-                  <div
-                    className="p-3 rounded-xl border min-w-0 break-words"
-                    style={{
-                      borderColor: `${theme.primaryColor}30`,
-                      backgroundColor: `${theme.primaryColor}0a`,
-                    }}
-                  >
-                    <span className="font-bold block mb-1" style={{ color: theme.primaryColor }}>
-                      <InlineEditableText
-                        value={section.customTexts?.med_feat2_title || "📋 Tiêu chuẩn GMP-WHO"}
-                        editable={editable}
-                        ariaLabel="Tiêu đề chuyên môn 2"
-                        onSave={(val) => updateCustomText("med_feat2_title", val)}
-                      />
-                    </span>
-                    <span className="text-stone-700 min-w-0 break-words">
-                      <InlineEditableText
-                        value={section.customTexts?.med_feat2_desc || "Thẩm định quy trình sản xuất, HACCP & GLP phòng LAB"}
-                        editable={editable}
-                        ariaLabel="Mô tả chuyên môn 2"
-                        onSave={(val) => updateCustomText("med_feat2_desc", val)}
-                      />
-                    </span>
-                  </div>
-                  <div
-                    className="p-3 rounded-xl border min-w-0 break-words"
-                    style={{
-                      borderColor: `${theme.primaryColor}30`,
-                      backgroundColor: `${theme.primaryColor}0a`,
-                    }}
-                  >
-                    <span className="font-bold block mb-1" style={{ color: theme.primaryColor }}>
-                      <InlineEditableText
-                        value={section.customTexts?.med_feat3_title || "💊 Dược lâm sàng"}
-                        editable={editable}
-                        ariaLabel="Tiêu đề chuyên môn 3"
-                        onSave={(val) => updateCustomText("med_feat3_title", val)}
-                      />
-                    </span>
-                    <span className="text-stone-700 min-w-0 break-words">
-                      <InlineEditableText
-                        value={section.customTexts?.med_feat3_desc || "Tương tác thuốc & Cảnh giác dược an toàn người bệnh"}
-                        editable={editable}
-                        ariaLabel="Mô tả chuyên môn 3"
-                        onSave={(val) => updateCustomText("med_feat3_desc", val)}
-                      />
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div
-                className="mt-5 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs font-semibold min-w-0"
-                style={{ borderColor: `${theme.primaryColor}20`, color: theme.primaryColor }}
+              <span
+                className="inline-flex items-center gap-1.5 rounded-2xl sm:rounded-full border px-3.5 py-1 text-xs font-bold text-white shadow-xs max-w-full break-words"
+                style={{
+                  backgroundColor: theme.primaryColor,
+                  borderColor: `${theme.primaryColor}80`,
+                }}
               >
-                <span className="min-w-0 break-words max-w-full">
+                <Award className="h-3.5 w-3.5 text-amber-300 shrink-0" />
+                <span className="min-w-0 break-words">
                   <InlineEditableText
-                    value={section.customTexts?.med_footer_left || "⚖️ CAM KẾT Y ĐỨC & AN TOÀN SỬ DỤNG THUỐC"}
+                    value={section.customTexts?.med_badge || "HỒ SƠ HÀNH NGHỀ DƯỢC • CHUẨN GMP/GSP"}
                     editable={editable}
-                    ariaLabel="Cam kết y đức"
-                    onSave={(val) => updateCustomText("med_footer_left", val)}
+                    ariaLabel="Huy hiệu hành nghề dược"
+                    onSave={(val) => updateCustomText("med_badge", val)}
                   />
                 </span>
-                <span className="min-w-0 break-words shrink-0">
+              </span>
+              <span
+                className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-md border shrink-0 min-w-0 break-words"
+                style={{
+                  color: theme.primaryColor,
+                  backgroundColor: `${theme.primaryColor}12`,
+                  borderColor: `${theme.primaryColor}30`,
+                }}
+              >
+                <InlineEditableText
+                  value={section.customTexts?.med_license || "LICENSE: #VN-PHARM-8892"}
+                  editable={editable}
+                  ariaLabel="Mã số chứng chỉ hành nghề"
+                  onSave={(val) => updateCustomText("med_license", val)}
+                />
+              </span>
+            </div>
+
+            <div>
+              <h3 className="font-editorial text-2xl font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
+                <InlineEditableText
+                  value={section.customTexts?.med_title || "Dược sĩ Chuyên khoa & Nghiên cứu Phát triển (R&D)"}
+                  editable={editable}
+                  ariaLabel="Tiêu đề chuyên khoa dược"
+                  onSave={(val) => updateCustomText("med_title", val)}
+                />
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed opacity-85 min-w-0 break-words" style={{ color: theme.textColor }}>
+                <InlineEditableText
+                  value={
+                    section.biography ||
+                    "Dược sĩ phụ trách kiểm soát chất lượng, nghiên cứu tối ưu hóa công thức bào chế theo tiêu chuẩn GMP-WHO và Dược điển Việt Nam V."
+                  }
+                  editable={editable}
+                  multiline
+                  ariaLabel="Tiểu sử dược sĩ"
+                  onSave={(val) => updateAbout({ biography: val })}
+                />
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
+              <div
+                className="p-3 rounded-xl border min-w-0 break-words"
+                style={{
+                  borderColor: `${theme.primaryColor}30`,
+                  backgroundColor: `${theme.primaryColor}0a`,
+                }}
+              >
+                <span className="font-bold block mb-1" style={{ color: theme.primaryColor }}>
                   <InlineEditableText
-                    value={section.customTexts?.med_footer_right || "BỘ Y TẾ VIỆT NAM VERIFIED"}
+                    value={section.customTexts?.med_feat1_title || "🔬 Bào chế & Độc học"}
                     editable={editable}
-                    ariaLabel="Xác nhận Bộ Y Tế"
-                    onSave={(val) => updateCustomText("med_footer_right", val)}
+                    ariaLabel="Tiêu đề chuyên môn 1"
+                    onSave={(val) => updateCustomText("med_feat1_title", val)}
+                  />
+                </span>
+                <span className="text-stone-700 min-w-0 break-words">
+                  <InlineEditableText
+                    value={section.customTexts?.med_feat1_desc || "Công nghệ nano sinh học, viên nén giải phóng biến đổi"}
+                    editable={editable}
+                    ariaLabel="Mô tả chuyên môn 1"
+                    onSave={(val) => updateCustomText("med_feat1_desc", val)}
+                  />
+                </span>
+              </div>
+              <div
+                className="p-3 rounded-xl border min-w-0 break-words"
+                style={{
+                  borderColor: `${theme.primaryColor}30`,
+                  backgroundColor: `${theme.primaryColor}0a`,
+                }}
+              >
+                <span className="font-bold block mb-1" style={{ color: theme.primaryColor }}>
+                  <InlineEditableText
+                    value={section.customTexts?.med_feat2_title || "📋 Tiêu chuẩn GMP-WHO"}
+                    editable={editable}
+                    ariaLabel="Tiêu đề chuyên môn 2"
+                    onSave={(val) => updateCustomText("med_feat2_title", val)}
+                  />
+                </span>
+                <span className="text-stone-700 min-w-0 break-words">
+                  <InlineEditableText
+                    value={section.customTexts?.med_feat2_desc || "Thẩm định quy trình sản xuất, HACCP & GLP phòng LAB"}
+                    editable={editable}
+                    ariaLabel="Mô tả chuyên môn 2"
+                    onSave={(val) => updateCustomText("med_feat2_desc", val)}
+                  />
+                </span>
+              </div>
+              <div
+                className="p-3 rounded-xl border min-w-0 break-words"
+                style={{
+                  borderColor: `${theme.primaryColor}30`,
+                  backgroundColor: `${theme.primaryColor}0a`,
+                }}
+              >
+                <span className="font-bold block mb-1" style={{ color: theme.primaryColor }}>
+                  <InlineEditableText
+                    value={section.customTexts?.med_feat3_title || "💊 Dược lâm sàng"}
+                    editable={editable}
+                    ariaLabel="Tiêu đề chuyên môn 3"
+                    onSave={(val) => updateCustomText("med_feat3_title", val)}
+                  />
+                </span>
+                <span className="text-stone-700 min-w-0 break-words">
+                  <InlineEditableText
+                    value={section.customTexts?.med_feat3_desc || "Tương tác thuốc & Cảnh giác dược an toàn người bệnh"}
+                    editable={editable}
+                    ariaLabel="Mô tả chuyên môn 3"
+                    onSave={(val) => updateCustomText("med_feat3_desc", val)}
                   />
                 </span>
               </div>
             </div>
+          </div>
 
-            <div className="lg:col-span-5 space-y-4 min-w-0">
-              {section.customTexts?.hide_med_edu !== "true" ? (
-                <div
-                  className="relative group rounded-2xl border p-5 bg-white/90 shadow-xs"
-                  style={{ borderColor: `${theme.primaryColor}35` }}
-                >
-                  {editable && (
-                    <button
-                      type="button"
-                      onClick={() => updateCustomText("hide_med_edu", "true")}
-                      className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
-                      title="Xóa ô Học vấn này"
-                      aria-label="Xóa ô Học vấn này"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  )}
-                  <h4
-                    className="text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-1.5"
-                    style={{ color: theme.primaryColor }}
-                  >
-                    <GraduationCap className="h-4 w-4" style={{ color: theme.primaryColor }} />
-                    <InlineEditableText
-                      value={section.customTexts?.med_edu_title || "HỌC VẤN & ĐÀO TẠO CHUYÊN MÔN"}
-                      editable={editable}
-                      ariaLabel="Tiêu đề học vấn"
-                      onSave={(val) => updateCustomText("med_edu_title", val)}
-                    />
-                  </h4>
-                  <div className="text-xs space-y-1.5 text-stone-800">
-                    <p className="font-bold text-sm" style={{ color: theme.textColor }}>
-                      <InlineEditableText
-                        value={eduSchool}
-                        editable={editable}
-                        ariaLabel="Tên trường học"
-                        onSave={(val) => updateEducationInfo("educationSchool", val)}
-                      />
-                    </p>
-                    <p className="font-medium" style={{ color: theme.secondaryColor }}>
-                      <InlineEditableText
-                        value={eduDegree}
-                        editable={editable}
-                        ariaLabel="Ngành đào tạo"
-                        onSave={(val) => updateEducationInfo("educationDegree", val)}
-                      />
-                    </p>
-                    <p className="text-stone-500">
-                      <InlineEditableText
-                        value={section.educationPeriod || "Khoá K18 • Hệ Chính quy Dược khoa"}
-                        editable={editable}
-                        ariaLabel="Niên khóa đào tạo"
-                        onSave={(val) => updateEducationInfo("educationPeriod", val)}
-                      />
-                    </p>
-                  </div>
-                </div>
-              ) : editable ? (
-                <button
-                  type="button"
-                  onClick={() => updateCustomText("hide_med_edu", "false")}
-                  className="w-full rounded-2xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
-                  style={{
-                    borderColor: `${theme.primaryColor}40`,
-                    color: theme.primaryColor,
-                  }}
-                >
-                  <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Học vấn &amp; Đào tạo
-                </button>
-              ) : null}
+          <div
+            className="mt-5 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs font-semibold min-w-0"
+            style={{ borderColor: `${theme.primaryColor}20`, color: theme.primaryColor }}
+          >
+            <span className="min-w-0 break-words max-w-full">
+              <InlineEditableText
+                value={section.customTexts?.med_footer_left || "⚖️ CAM KẾT Y ĐỨC & AN TOÀN SỬ DỤNG THUỐC"}
+                editable={editable}
+                ariaLabel="Cam kết y đức"
+                onSave={(val) => updateCustomText("med_footer_left", val)}
+              />
+            </span>
+            <span className="min-w-0 break-words shrink-0">
+              <InlineEditableText
+                value={section.customTexts?.med_footer_right || "BỘ Y TẾ VIỆT NAM VERIFIED"}
+                editable={editable}
+                ariaLabel="Xác nhận Bộ Y Tế"
+                onSave={(val) => updateCustomText("med_footer_right", val)}
+              />
+            </span>
+          </div>
+        </div>
+      );
 
-              {section.customTexts?.hide_med_contact !== "true" ? (
-                <div
-                  className="relative group rounded-2xl border p-5 bg-white/90 shadow-xs"
-                  style={{ borderColor: `${theme.primaryColor}35` }}
-                >
-                  {editable && (
-                    <button
-                      type="button"
-                      onClick={() => updateCustomText("hide_med_contact", "true")}
-                      className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
-                      title="Xóa ô Liên hệ này"
-                      aria-label="Xóa ô Liên hệ này"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  )}
-                  <h4
-                    className="text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-1.5"
-                    style={{ color: theme.primaryColor }}
-                  >
-                    <Mail className="h-4 w-4" style={{ color: theme.primaryColor }} />
-                    <InlineEditableText
-                      value={section.customTexts?.med_contact_title || "THÔNG TIN LIÊN HỆ & HỢP TÁC"}
-                      editable={editable}
-                      ariaLabel="Tiêu đề liên hệ"
-                      onSave={(val) => updateCustomText("med_contact_title", val)}
-                    />
-                  </h4>
-                  <div className="space-y-2 text-xs text-stone-700">
-                    <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
-                      <span className="font-semibold shrink-0" style={{ color: theme.primaryColor }}>Email:</span>
-                      <span className="min-w-0 break-all">
-                        <InlineEditableText
-                          value={section.contactInfo.email || "nguyenvana@example.com"}
-                          editable={editable}
-                          ariaLabel="Email liên hệ"
-                          onSave={(val) => updateContactInfo("email", val)}
-                          className="text-stone-800 font-medium"
-                        />
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
-                      <span className="font-semibold shrink-0" style={{ color: theme.primaryColor }}>Hotline:</span>
-                      <span className="min-w-0 break-all font-mono">
-                        <InlineEditableText
-                          value={section.contactInfo.phone || "0912 345 678"}
-                          editable={editable}
-                          ariaLabel="Số điện thoại"
-                          onSave={(val) => updateContactInfo("phone", val)}
-                          className="text-stone-800 font-medium"
-                        />
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
-                      <span className="font-semibold shrink-0" style={{ color: theme.primaryColor }}>Địa bàn:</span>
-                      <span className="min-w-0 break-words">
-                        <InlineEditableText
-                          value={section.contactInfo.location || "Việt Nam"}
-                          editable={editable}
-                          ariaLabel="Địa bàn"
-                          onSave={(val) => updateContactInfo("location", val)}
-                          className="text-stone-800 font-medium"
-                        />
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ) : editable ? (
-                <button
-                  type="button"
-                  onClick={() => updateCustomText("hide_med_contact", "false")}
-                  className="w-full rounded-2xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
-                  style={{
-                    borderColor: `${theme.primaryColor}40`,
-                    color: theme.primaryColor,
-                  }}
-                >
-                  <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Thông tin liên hệ
-                </button>
-              ) : null}
+      const eduCard = section.customTexts?.hide_med_edu !== "true" ? (
+        <div
+          className="relative group rounded-2xl border p-5 bg-white/90 shadow-xs h-full flex flex-col justify-between"
+          style={{ borderColor: `${theme.primaryColor}35` }}
+        >
+          {editable && (
+            <button
+              type="button"
+              onClick={() => updateCustomText("hide_med_edu", "true")}
+              className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
+              title="Xóa ô Học vấn này"
+              aria-label="Xóa ô Học vấn này"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+          <div>
+            <h4
+              className="text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-1.5"
+              style={{ color: theme.primaryColor }}
+            >
+              <GraduationCap className="h-4 w-4" style={{ color: theme.primaryColor }} />
+              <InlineEditableText
+                value={section.customTexts?.med_edu_title || "HỌC VẤN & ĐÀO TẠO CHUYÊN MÔN"}
+                editable={editable}
+                ariaLabel="Tiêu đề học vấn"
+                onSave={(val) => updateCustomText("med_edu_title", val)}
+              />
+            </h4>
+            <div className="text-xs space-y-1.5 text-stone-800">
+              <p className="font-bold text-sm" style={{ color: theme.textColor }}>
+                <InlineEditableText
+                  value={eduSchool}
+                  editable={editable}
+                  ariaLabel="Tên trường học"
+                  onSave={(val) => updateEducationInfo("educationSchool", val)}
+                />
+              </p>
+              <p className="font-medium" style={{ color: theme.secondaryColor }}>
+                <InlineEditableText
+                  value={eduDegree}
+                  editable={editable}
+                  ariaLabel="Ngành đào tạo"
+                  onSave={(val) => updateEducationInfo("educationDegree", val)}
+                />
+              </p>
+              <p className="text-stone-500">
+                <InlineEditableText
+                  value={section.educationPeriod || "Khoá K18 • Hệ Chính quy Dược khoa"}
+                  editable={editable}
+                  ariaLabel="Niên khóa đào tạo"
+                  onSave={(val) => updateEducationInfo("educationPeriod", val)}
+                />
+              </p>
             </div>
           </div>
         </div>
+      ) : editable ? (
+        <button
+          type="button"
+          onClick={() => updateCustomText("hide_med_edu", "false")}
+          className="w-full rounded-2xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+          style={{
+            borderColor: `${theme.primaryColor}40`,
+            color: theme.primaryColor,
+          }}
+        >
+          <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Học vấn &amp; Đào tạo
+        </button>
+      ) : null;
+
+      const contactCard = section.customTexts?.hide_med_contact !== "true" ? (
+        <div
+          className="relative group rounded-2xl border p-5 bg-white/90 shadow-xs h-full flex flex-col justify-between"
+          style={{ borderColor: `${theme.primaryColor}35` }}
+        >
+          {editable && (
+            <button
+              type="button"
+              onClick={() => updateCustomText("hide_med_contact", "true")}
+              className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
+              title="Xóa ô Liên hệ này"
+              aria-label="Xóa ô Liên hệ này"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+          <div>
+            <h4
+              className="text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-1.5"
+              style={{ color: theme.primaryColor }}
+            >
+              <Mail className="h-4 w-4" style={{ color: theme.primaryColor }} />
+              <InlineEditableText
+                value={section.customTexts?.med_contact_title || "THÔNG TIN LIÊN HỆ & HỢP TÁC"}
+                editable={editable}
+                ariaLabel="Tiêu đề liên hệ"
+                onSave={(val) => updateCustomText("med_contact_title", val)}
+              />
+            </h4>
+            <div className="space-y-2 text-xs text-stone-700">
+              <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
+                <span className="font-semibold shrink-0" style={{ color: theme.primaryColor }}>Email:</span>
+                <span className="min-w-0 break-all">
+                  <InlineEditableText
+                    value={section.contactInfo.email || "nguyenvana@example.com"}
+                    editable={editable}
+                    ariaLabel="Email liên hệ"
+                    onSave={(val) => updateContactInfo("email", val)}
+                    className="text-stone-800 font-medium"
+                  />
+                </span>
+              </div>
+              <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
+                <span className="font-semibold shrink-0" style={{ color: theme.primaryColor }}>Hotline:</span>
+                <span className="min-w-0 break-all font-mono">
+                  <InlineEditableText
+                    value={section.contactInfo.phone || "0912 345 678"}
+                    editable={editable}
+                    ariaLabel="Số điện thoại"
+                    onSave={(val) => updateContactInfo("phone", val)}
+                    className="text-stone-800 font-medium"
+                  />
+                </span>
+              </div>
+              <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
+                <span className="font-semibold shrink-0" style={{ color: theme.primaryColor }}>Địa bàn:</span>
+                <span className="min-w-0 break-words">
+                  <InlineEditableText
+                    value={section.contactInfo.location || "Việt Nam"}
+                    editable={editable}
+                    ariaLabel="Địa bàn"
+                    onSave={(val) => updateContactInfo("location", val)}
+                    className="text-stone-800 font-medium"
+                  />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : editable ? (
+        <button
+          type="button"
+          onClick={() => updateCustomText("hide_med_contact", "false")}
+          className="w-full rounded-2xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+          style={{
+            borderColor: `${theme.primaryColor}40`,
+            color: theme.primaryColor,
+          }}
+        >
+          <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Thông tin liên hệ
+        </button>
+      ) : null;
+
+      const autoContent = (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch min-w-0">
+          {renderCardWrapper("medical_license", licenseCard, "lg:col-span-7 min-w-0")}
+          <div className="lg:col-span-5 space-y-4 min-w-0">
+            {renderCardWrapper("medical_credentials", eduCard, "min-w-0")}
+            {renderCardWrapper("medical_cme", contactCard, "min-w-0")}
+          </div>
+        </div>
+      );
+
+      const freeCards = [
+        renderCardWrapper("medical_license", licenseCard),
+        renderCardWrapper("medical_credentials", eduCard),
+        renderCardWrapper("medical_cme", contactCard),
+      ].filter(Boolean);
+
+      return renderCustomLayoutContainer(
+        "medical-license",
+        layoutTitle,
+        ["medical_license", "medical_credentials", "medical_cme"],
+        autoContent,
+        freeCards,
       );
     }
 
     if (layout === "clinical-dossier") {
-      return (
-        <div data-testid="about-layout-content" data-layout="clinical-dossier" className="space-y-6 font-mono min-w-0">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      const dossierCard = (
+        <div
+          className="h-full rounded-2xl border-2 p-4 sm:p-6 lg:p-8 bg-white shadow-md flex flex-col justify-between min-w-0"
+          style={{
+            borderColor: theme.primaryColor,
+            boxShadow: `0 10px 25px -5px ${theme.primaryColor}20`,
+          }}
+        >
+          <div className="space-y-4">
             <div
-              className="lg:col-span-7 rounded-2xl border-2 p-4 sm:p-6 lg:p-8 bg-white shadow-md flex flex-col justify-between min-w-0"
-              style={{
-                borderColor: theme.primaryColor,
-                boxShadow: `0 10px 25px -5px ${theme.primaryColor}20`,
-              }}
+              className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 text-xs min-w-0"
+              style={{ borderColor: `${theme.primaryColor}25` }}
             >
-              <div className="space-y-4">
-                <div
-                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 text-xs min-w-0"
-                  style={{ borderColor: `${theme.primaryColor}25` }}
-                >
-                  <span className="font-bold flex items-center gap-2 min-w-0 max-w-full break-words" style={{ color: theme.primaryColor }}>
-                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                    <span className="min-w-0 break-words text-[11px] sm:text-xs">
-                      <InlineEditableText
-                        value={section.customTexts?.clin_badge || "[PHYSICIAN CLINICAL DOSSIER // MD. REGISTRATION]"}
-                        editable={editable}
-                        ariaLabel="Mã số hồ sơ lâm sàng"
-                        onSave={(val) => updateCustomText("clin_badge", val)}
-                      />
-                    </span>
-                  </span>
-                  <span
-                    className="rounded px-2 py-0.5 text-[10px] text-white font-bold shrink-0"
-                    style={{ backgroundColor: theme.primaryColor }}
-                  >
-                    <InlineEditableText
-                      value={section.customTexts?.clin_tag || "MD-HN-2024"}
-                      editable={editable}
-                      ariaLabel="Mã bác sĩ"
-                      onSave={(val) => updateCustomText("clin_tag", val)}
-                    />
-                  </span>
-                </div>
-                <div>
-                  <h3 className="font-sans text-2xl font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
-                    <InlineEditableText
-                      value={section.customTexts?.clin_title || "Bác sĩ Nội trú / Điều trị Lâm sàng"}
-                      editable={editable}
-                      ariaLabel="Chức danh điều trị lâm sàng"
-                      onSave={(val) => updateCustomText("clin_title", val)}
-                    />
-                  </h3>
-                  <p
-                    className="mt-1 text-xs font-semibold font-mono min-w-0 break-words"
-                    style={{ color: theme.primaryColor }}
-                  >
-                    <InlineEditableText
-                      value={section.customTexts?.clin_sub || "BỆNH VIỆN BẠCH MAI • BỘ MÔN NỘI - ĐH Y HÀ NỘI"}
-                      editable={editable}
-                      ariaLabel="Đơn vị công tác lâm sàng"
-                      onSave={(val) => updateCustomText("clin_sub", val)}
-                    />
-                  </p>
-                  <p className="mt-3 font-sans text-sm leading-relaxed min-w-0 break-words" style={{ color: `${theme.textColor}df` }}>
-                    <InlineEditableText
-                      value={
-                        section.biography ||
-                        "Bác sĩ lâm sàng trực tiếp điều trị tại khoa Cấp cứu & Can thiệp hồi sức tim mạch, ứng dụng y học chứng cứ trong chẩn đoán và theo dõi phác đồ."
-                      }
-                      editable={editable}
-                      multiline
-                      ariaLabel="Tiểu sử bác sĩ"
-                      onSave={(val) => updateAbout({ biography: val })}
-                    />
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 text-[11px] font-sans">
-                  <div
-                    className="p-2.5 rounded-lg border min-w-0 break-words"
-                    style={{
-                      borderColor: `${theme.primaryColor}20`,
-                      backgroundColor: `${theme.primaryColor}08`,
-                    }}
-                  >
-                    <strong className="block" style={{ color: theme.primaryColor }}>
-                      <InlineEditableText
-                        value={section.customTexts?.clin_feat1_title || "🩺 Cấp cứu Hồi sức"}
-                        editable={editable}
-                        ariaLabel="Tiêu đề chuyên môn lâm sàng 1"
-                        onSave={(val) => updateCustomText("clin_feat1_title", val)}
-                      />
-                    </strong>
-                    <span className="text-slate-600 min-w-0 break-words">
-                      <InlineEditableText
-                        value={section.customTexts?.clin_feat1_desc || "ACLS nâng cao, can thiệp sốc tuần hoàn"}
-                        editable={editable}
-                        ariaLabel="Mô tả chuyên môn lâm sàng 1"
-                        onSave={(val) => updateCustomText("clin_feat1_desc", val)}
-                      />
-                    </span>
-                  </div>
-                  <div
-                    className="p-2.5 rounded-lg border min-w-0 break-words"
-                    style={{
-                      borderColor: `${theme.primaryColor}20`,
-                      backgroundColor: `${theme.primaryColor}08`,
-                    }}
-                  >
-                    <strong className="block" style={{ color: theme.primaryColor }}>
-                      <InlineEditableText
-                        value={section.customTexts?.clin_feat2_title || "📊 Y học chứng cứ"}
-                        editable={editable}
-                        ariaLabel="Tiêu đề chuyên môn lâm sàng 2"
-                        onSave={(val) => updateCustomText("clin_feat2_title", val)}
-                      />
-                    </strong>
-                    <span className="text-slate-600 min-w-0 break-words">
-                      <InlineEditableText
-                        value={section.customTexts?.clin_feat2_desc || "Phác đồ Bộ Y tế & Guideline AHA/ESC"}
-                        editable={editable}
-                        ariaLabel="Mô tả chuyên môn lâm sàng 2"
-                        onSave={(val) => updateCustomText("clin_feat2_desc", val)}
-                      />
-                    </span>
-                  </div>
-                  <div
-                    className="p-2.5 rounded-lg border min-w-0 break-words"
-                    style={{
-                      borderColor: `${theme.primaryColor}20`,
-                      backgroundColor: `${theme.primaryColor}08`,
-                    }}
-                  >
-                    <strong className="block" style={{ color: theme.primaryColor }}>
-                      <InlineEditableText
-                        value={section.customTexts?.clin_feat3_title || "🧬 Cận lâm sàng"}
-                        editable={editable}
-                        ariaLabel="Tiêu đề chuyên môn lâm sàng 3"
-                        onSave={(val) => updateCustomText("clin_feat3_title", val)}
-                      />
-                    </strong>
-                    <span className="text-slate-600 min-w-0 break-words">
-                      <InlineEditableText
-                        value={section.customTexts?.clin_feat3_desc || "Chẩn đoán hình ảnh CT/MRI & Xét nghiệm"}
-                        editable={editable}
-                        ariaLabel="Mô tả chuyên môn lâm sàng 3"
-                        onSave={(val) => updateCustomText("clin_feat3_desc", val)}
-                      />
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div
-                className="mt-5 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-[11px] font-bold min-w-0"
-                style={{ borderColor: `${theme.primaryColor}25`, color: theme.primaryColor }}
-              >
-                <span className="min-w-0 break-words max-w-full">
+              <span className="font-bold flex items-center gap-2 min-w-0 max-w-full break-words" style={{ color: theme.primaryColor }}>
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                <span className="min-w-0 break-words text-[11px] sm:text-xs">
                   <InlineEditableText
-                    value={section.customTexts?.clin_footer_left || "STATUS: PRACTICING PHYSICIAN"}
+                    value={section.customTexts?.clin_badge || "[PHYSICIAN CLINICAL DOSSIER // MD. REGISTRATION]"}
                     editable={editable}
-                    ariaLabel="Trạng thái hành nghề"
-                    onSave={(val) => updateCustomText("clin_footer_left", val)}
+                    ariaLabel="Mã số hồ sơ lâm sàng"
+                    onSave={(val) => updateCustomText("clin_badge", val)}
                   />
                 </span>
-                <span className="min-w-0 break-words shrink-0">
+              </span>
+              <span
+                className="rounded px-2 py-0.5 text-[10px] text-white font-bold shrink-0"
+                style={{ backgroundColor: theme.primaryColor }}
+              >
+                <InlineEditableText
+                  value={section.customTexts?.clin_tag || "MD-HN-2024"}
+                  editable={editable}
+                  ariaLabel="Mã bác sĩ"
+                  onSave={(val) => updateCustomText("clin_tag", val)}
+                />
+              </span>
+            </div>
+            <div>
+              <h3 className="font-sans text-2xl font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
+                <InlineEditableText
+                  value={section.customTexts?.clin_title || "Bác sĩ Nội trú / Điều trị Lâm sàng"}
+                  editable={editable}
+                  ariaLabel="Chức danh điều trị lâm sàng"
+                  onSave={(val) => updateCustomText("clin_title", val)}
+                />
+              </h3>
+              <p
+                className="mt-1 text-xs font-semibold font-mono min-w-0 break-words"
+                style={{ color: theme.primaryColor }}
+              >
+                <InlineEditableText
+                  value={section.customTexts?.clin_sub || "BỆNH VIỆN BẠCH MAI • BỘ MÔN NỘI - ĐH Y HÀ NỘI"}
+                  editable={editable}
+                  ariaLabel="Đơn vị công tác lâm sàng"
+                  onSave={(val) => updateCustomText("clin_sub", val)}
+                />
+              </p>
+              <p className="mt-3 font-sans text-sm leading-relaxed min-w-0 break-words" style={{ color: `${theme.textColor}df` }}>
+                <InlineEditableText
+                  value={
+                    section.biography ||
+                    "Bác sĩ lâm sàng trực tiếp điều trị tại khoa Cấp cứu & Can thiệp hồi sức tim mạch, ứng dụng y học chứng cứ trong chẩn đoán và theo dõi phác đồ."
+                  }
+                  editable={editable}
+                  multiline
+                  ariaLabel="Tiểu sử bác sĩ"
+                  onSave={(val) => updateAbout({ biography: val })}
+                />
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 text-[11px] font-sans">
+              <div
+                className="p-2.5 rounded-lg border min-w-0 break-words"
+                style={{
+                  borderColor: `${theme.primaryColor}20`,
+                  backgroundColor: `${theme.primaryColor}08`,
+                }}
+              >
+                <strong className="block" style={{ color: theme.primaryColor }}>
                   <InlineEditableText
-                    value={section.customTexts?.clin_footer_right || "HIPPOCRATIC OATH VERIFIED"}
+                    value={section.customTexts?.clin_feat1_title || "🩺 Cấp cứu Hồi sức"}
                     editable={editable}
-                    ariaLabel="Lời thề Hippocrates"
-                    onSave={(val) => updateCustomText("clin_footer_right", val)}
+                    ariaLabel="Tiêu đề chuyên môn lâm sàng 1"
+                    onSave={(val) => updateCustomText("clin_feat1_title", val)}
+                  />
+                </strong>
+                <span className="text-slate-600 min-w-0 break-words">
+                  <InlineEditableText
+                    value={section.customTexts?.clin_feat1_desc || "ACLS nâng cao, can thiệp sốc tuần hoàn"}
+                    editable={editable}
+                    ariaLabel="Mô tả chuyên môn lâm sàng 1"
+                    onSave={(val) => updateCustomText("clin_feat1_desc", val)}
+                  />
+                </span>
+              </div>
+              <div
+                className="p-2.5 rounded-lg border min-w-0 break-words"
+                style={{
+                  borderColor: `${theme.primaryColor}20`,
+                  backgroundColor: `${theme.primaryColor}08`,
+                }}
+              >
+                <strong className="block" style={{ color: theme.primaryColor }}>
+                  <InlineEditableText
+                    value={section.customTexts?.clin_feat2_title || "📊 Y học chứng cứ"}
+                    editable={editable}
+                    ariaLabel="Tiêu đề chuyên môn lâm sàng 2"
+                    onSave={(val) => updateCustomText("clin_feat2_title", val)}
+                  />
+                </strong>
+                <span className="text-slate-600 min-w-0 break-words">
+                  <InlineEditableText
+                    value={section.customTexts?.clin_feat2_desc || "Phác đồ Bộ Y tế & Guideline AHA/ESC"}
+                    editable={editable}
+                    ariaLabel="Mô tả chuyên môn lâm sàng 2"
+                    onSave={(val) => updateCustomText("clin_feat2_desc", val)}
+                  />
+                </span>
+              </div>
+              <div
+                className="p-2.5 rounded-lg border min-w-0 break-words"
+                style={{
+                  borderColor: `${theme.primaryColor}20`,
+                  backgroundColor: `${theme.primaryColor}08`,
+                }}
+              >
+                <strong className="block" style={{ color: theme.primaryColor }}>
+                  <InlineEditableText
+                    value={section.customTexts?.clin_feat3_title || "🧬 Cận lâm sàng"}
+                    editable={editable}
+                    ariaLabel="Tiêu đề chuyên môn lâm sàng 3"
+                    onSave={(val) => updateCustomText("clin_feat3_title", val)}
+                  />
+                </strong>
+                <span className="text-slate-600 min-w-0 break-words">
+                  <InlineEditableText
+                    value={section.customTexts?.clin_feat3_desc || "Chẩn đoán hình ảnh CT/MRI & Xét nghiệm"}
+                    editable={editable}
+                    ariaLabel="Mô tả chuyên môn lâm sàng 3"
+                    onSave={(val) => updateCustomText("clin_feat3_desc", val)}
                   />
                 </span>
               </div>
             </div>
+          </div>
+          <div
+            className="mt-5 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-[11px] font-bold min-w-0"
+            style={{ borderColor: `${theme.primaryColor}25`, color: theme.primaryColor }}
+          >
+            <span className="min-w-0 break-words max-w-full">
+              <InlineEditableText
+                value={section.customTexts?.clin_footer_left || "STATUS: PRACTICING PHYSICIAN"}
+                editable={editable}
+                ariaLabel="Trạng thái hành nghề"
+                onSave={(val) => updateCustomText("clin_footer_left", val)}
+              />
+            </span>
+            <span className="min-w-0 break-words shrink-0">
+              <InlineEditableText
+                value={section.customTexts?.clin_footer_right || "HIPPOCRATIC OATH VERIFIED"}
+                editable={editable}
+                ariaLabel="Lời thề Hippocrates"
+                onSave={(val) => updateCustomText("clin_footer_right", val)}
+              />
+            </span>
+          </div>
+        </div>
+      );
 
-            <div className="lg:col-span-5 space-y-4 min-w-0">
-              {section.customTexts?.hide_clin_edu !== "true" ? (
-                <div
-                  className="relative group rounded-xl border bg-white p-5 shadow-xs"
-                  style={{ borderColor: `${theme.primaryColor}30` }}
-                >
-                  {editable && (
-                    <button
-                      type="button"
-                      onClick={() => updateCustomText("hide_clin_edu", "true")}
-                      className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
-                      title="Xóa ô Học vấn này"
-                      aria-label="Xóa ô Học vấn này"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  )}
-                  <div
-                    className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 mb-3 text-xs font-bold min-w-0"
-                    style={{ borderColor: `${theme.primaryColor}18`, color: theme.primaryColor }}
-                  >
-                    <span className="min-w-0 break-words">
-                      <InlineEditableText
-                        value={section.customTexts?.clin_edu_title || "[HOSPITAL AFFILIATIONS & DEGREE]"}
-                        editable={editable}
-                        ariaLabel="Tiêu đề học vấn lâm sàng"
-                        onSave={(val) => updateCustomText("clin_edu_title", val)}
-                      />
-                    </span>
-                    <span className="text-[10px] text-slate-400 shrink-0">
-                      <InlineEditableText
-                        value={section.customTexts?.clin_edu_tag || "ICD-10"}
-                        editable={editable}
-                        ariaLabel="Thẻ học vấn"
-                        onSave={(val) => updateCustomText("clin_edu_tag", val)}
-                      />
-                    </span>
-                  </div>
-                  <div className="space-y-1.5 text-xs text-slate-700 font-sans min-w-0 break-words">
-                    <p className="font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
-                      <InlineEditableText
-                        value={eduSchool}
-                        editable={editable}
-                        ariaLabel="Tên bệnh viện / trường"
-                        onSave={(val) => updateEducationInfo("educationSchool", val)}
-                      />
-                    </p>
-                    <p className="font-medium min-w-0 break-words" style={{ color: theme.primaryColor }}>
-                      <InlineEditableText
-                        value={eduDegree}
-                        editable={editable}
-                        ariaLabel="Chuyên khoa / bằng cấp"
-                        onSave={(val) => updateEducationInfo("educationDegree", val)}
-                      />
-                    </p>
-                    <p className="text-slate-500 font-mono text-[11px] min-w-0 break-words">
-                      <InlineEditableText
-                        value={section.educationPeriod || "Bác sĩ Nội trú Khóa K47"}
-                        editable={editable}
-                        ariaLabel="Khóa đào tạo nội trú"
-                        onSave={(val) => updateAbout({ educationPeriod: val })}
-                      />
-                    </p>
-                  </div>
-                </div>
-              ) : editable ? (
-                <button
-                  type="button"
-                  onClick={() => updateCustomText("hide_clin_edu", "false")}
-                  className="w-full rounded-xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
-                  style={{
-                    borderColor: `${theme.primaryColor}40`,
-                    color: theme.primaryColor,
-                  }}
-                >
-                  <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Hospital Affiliations
-                </button>
-              ) : null}
-
-              {section.customTexts?.hide_clin_contact !== "true" ? (
-                <div
-                  className="relative group rounded-xl border bg-white p-5 shadow-xs min-w-0"
-                  style={{ borderColor: `${theme.primaryColor}30` }}
-                >
-                  {editable && (
-                    <button
-                      type="button"
-                      onClick={() => updateCustomText("hide_clin_contact", "true")}
-                      className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
-                      title="Xóa ô Liên hệ này"
-                      aria-label="Xóa ô Liên hệ này"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  )}
-                  <div
-                    className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 mb-3 text-xs font-bold min-w-0"
-                    style={{ borderColor: `${theme.primaryColor}18`, color: theme.primaryColor }}
-                  >
-                    <span className="min-w-0 break-words">
-                      <InlineEditableText
-                        value={section.customTexts?.clin_contact_title || "[CLINICAL CONTACT & PAGER]"}
-                        editable={editable}
-                        ariaLabel="Tiêu đề liên hệ lâm sàng"
-                        onSave={(val) => updateCustomText("clin_contact_title", val)}
-                      />
-                    </span>
-                    <span className="text-[10px] text-emerald-600 font-bold shrink-0">
-                      <InlineEditableText
-                        value={section.customTexts?.clin_contact_tag || "ON CALL"}
-                        editable={editable}
-                        ariaLabel="Trạng thái trực"
-                        onSave={(val) => updateCustomText("clin_contact_tag", val)}
-                      />
-                    </span>
-                  </div>
-                  <div className="space-y-2 text-xs text-slate-700 font-sans">
-                    <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
-                      <strong className="shrink-0" style={{ color: theme.primaryColor }}>Email BV:</strong>
-                      <span className="min-w-0 break-all">
-                        <InlineEditableText
-                          value={section.contactInfo.email || "bs.thutrang@hospital.vn"}
-                          editable={editable}
-                          ariaLabel="Email bệnh viện"
-                          onSave={(val) => updateContactInfo("email", val)}
-                          className="underline"
-                        />
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
-                      <strong className="shrink-0" style={{ color: theme.primaryColor }}>Pager / Hotline:</strong>
-                      <span className="min-w-0 break-all font-mono">
-                        <InlineEditableText
-                          value={section.contactInfo.phone || "0988 115 115"}
-                          editable={editable}
-                          ariaLabel="Số Pager / Hotline"
-                          onSave={(val) => updateContactInfo("phone", val)}
-                        />
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
-                      <strong className="shrink-0" style={{ color: theme.primaryColor }}>Khoa / Phòng:</strong>
-                      <span className="min-w-0 break-words">
-                        <InlineEditableText
-                          value={section.contactInfo.location || "Khoa Hồi sức Tích cực & Cấp cứu"}
-                          editable={editable}
-                          ariaLabel="Khoa phòng công tác"
-                          onSave={(val) => updateContactInfo("location", val)}
-                        />
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ) : editable ? (
-                <button
-                  type="button"
-                  onClick={() => updateCustomText("hide_clin_contact", "false")}
-                  className="w-full rounded-xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
-                  style={{
-                    borderColor: `${theme.primaryColor}40`,
-                    color: theme.primaryColor,
-                  }}
-                >
-                  <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Clinical Contact & Pager
-                </button>
-              ) : null}
+      const unitCard = section.customTexts?.hide_clin_edu !== "true" ? (
+        <div
+          className="relative group rounded-xl border bg-white p-5 shadow-xs h-full flex flex-col justify-between"
+          style={{ borderColor: `${theme.primaryColor}30` }}
+        >
+          {editable && (
+            <button
+              type="button"
+              onClick={() => updateCustomText("hide_clin_edu", "true")}
+              className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
+              title="Xóa ô Học vấn này"
+              aria-label="Xóa ô Học vấn này"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+          <div>
+            <div
+              className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 mb-3 text-xs font-bold min-w-0"
+              style={{ borderColor: `${theme.primaryColor}18`, color: theme.primaryColor }}
+            >
+              <span className="min-w-0 break-words">
+                <InlineEditableText
+                  value={section.customTexts?.clin_edu_title || "[HOSPITAL AFFILIATIONS & DEGREE]"}
+                  editable={editable}
+                  ariaLabel="Tiêu đề học vấn lâm sàng"
+                  onSave={(val) => updateCustomText("clin_edu_title", val)}
+                />
+              </span>
+              <span className="text-[10px] text-slate-400 shrink-0">
+                <InlineEditableText
+                  value={section.customTexts?.clin_edu_tag || "ICD-10"}
+                  editable={editable}
+                  ariaLabel="Thẻ học vấn"
+                  onSave={(val) => updateCustomText("clin_edu_tag", val)}
+                />
+              </span>
+            </div>
+            <div className="space-y-1.5 text-xs text-slate-700 font-sans min-w-0 break-words">
+              <p className="font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
+                <InlineEditableText
+                  value={eduSchool}
+                  editable={editable}
+                  ariaLabel="Tên bệnh viện / trường"
+                  onSave={(val) => updateEducationInfo("educationSchool", val)}
+                />
+              </p>
+              <p className="font-medium min-w-0 break-words" style={{ color: theme.primaryColor }}>
+                <InlineEditableText
+                  value={eduDegree}
+                  editable={editable}
+                  ariaLabel="Chuyên khoa / bằng cấp"
+                  onSave={(val) => updateEducationInfo("educationDegree", val)}
+                />
+              </p>
+              <p className="text-slate-500 font-mono text-[11px] min-w-0 break-words">
+                <InlineEditableText
+                  value={section.educationPeriod || "Bác sĩ Nội trú Khóa K47"}
+                  editable={editable}
+                  ariaLabel="Khóa đào tạo nội trú"
+                  onSave={(val) => updateAbout({ educationPeriod: val })}
+                />
+              </p>
             </div>
           </div>
         </div>
+      ) : editable ? (
+        <button
+          type="button"
+          onClick={() => updateCustomText("hide_clin_edu", "false")}
+          className="w-full rounded-xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+          style={{
+            borderColor: `${theme.primaryColor}40`,
+            color: theme.primaryColor,
+          }}
+        >
+          <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Hospital Affiliations
+        </button>
+      ) : null;
+
+      const emergencyCard = section.customTexts?.hide_clin_contact !== "true" ? (
+        <div
+          className="relative group rounded-xl border bg-white p-5 shadow-xs min-w-0 h-full flex flex-col justify-between"
+          style={{ borderColor: `${theme.primaryColor}30` }}
+        >
+          {editable && (
+            <button
+              type="button"
+              onClick={() => updateCustomText("hide_clin_contact", "true")}
+              className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
+              title="Xóa ô Liên hệ này"
+              aria-label="Xóa ô Liên hệ này"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+          <div>
+            <div
+              className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 mb-3 text-xs font-bold min-w-0"
+              style={{ borderColor: `${theme.primaryColor}18`, color: theme.primaryColor }}
+            >
+              <span className="min-w-0 break-words">
+                <InlineEditableText
+                  value={section.customTexts?.clin_contact_title || "[CLINICAL CONTACT & PAGER]"}
+                  editable={editable}
+                  ariaLabel="Tiêu đề liên hệ lâm sàng"
+                  onSave={(val) => updateCustomText("clin_contact_title", val)}
+                />
+              </span>
+              <span className="text-[10px] text-emerald-600 font-bold shrink-0">
+                <InlineEditableText
+                  value={section.customTexts?.clin_contact_tag || "ON CALL"}
+                  editable={editable}
+                  ariaLabel="Trạng thái trực"
+                  onSave={(val) => updateCustomText("clin_contact_tag", val)}
+                />
+              </span>
+            </div>
+            <div className="space-y-2 text-xs text-slate-700 font-sans">
+              <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
+                <strong className="shrink-0" style={{ color: theme.primaryColor }}>Email BV:</strong>
+                <span className="min-w-0 break-all">
+                  <InlineEditableText
+                    value={section.contactInfo.email || "bs.thutrang@hospital.vn"}
+                    editable={editable}
+                    ariaLabel="Email bệnh viện"
+                    onSave={(val) => updateContactInfo("email", val)}
+                    className="underline"
+                  />
+                </span>
+              </div>
+              <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
+                <strong className="shrink-0" style={{ color: theme.primaryColor }}>Pager / Hotline:</strong>
+                <span className="min-w-0 break-all font-mono">
+                  <InlineEditableText
+                    value={section.contactInfo.phone || "0988 115 115"}
+                    editable={editable}
+                    ariaLabel="Số Pager / Hotline"
+                    onSave={(val) => updateContactInfo("phone", val)}
+                  />
+                </span>
+              </div>
+              <div className="flex flex-wrap items-baseline gap-2 min-w-0 break-words">
+                <strong className="shrink-0" style={{ color: theme.primaryColor }}>Khoa / Phòng:</strong>
+                <span className="min-w-0 break-words">
+                  <InlineEditableText
+                    value={section.contactInfo.location || "Khoa Hồi sức Tích cực & Cấp cứu"}
+                    editable={editable}
+                    ariaLabel="Khoa phòng công tác"
+                    onSave={(val) => updateContactInfo("location", val)}
+                  />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : editable ? (
+        <button
+          type="button"
+          onClick={() => updateCustomText("hide_clin_contact", "false")}
+          className="w-full rounded-xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+          style={{
+            borderColor: `${theme.primaryColor}40`,
+            color: theme.primaryColor,
+          }}
+        >
+          <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Clinical Contact & Pager
+        </button>
+      ) : null;
+
+      const autoContent = (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch min-w-0 font-mono">
+          {renderCardWrapper("clinical_dossier", dossierCard, "lg:col-span-7 min-w-0")}
+          <div className="lg:col-span-5 space-y-4 min-w-0">
+            {renderCardWrapper("clinical_unit", unitCard, "min-w-0")}
+            {renderCardWrapper("clinical_emergency", emergencyCard, "min-w-0")}
+          </div>
+        </div>
+      );
+
+      const freeCards = [
+        renderCardWrapper("clinical_dossier", dossierCard),
+        renderCardWrapper("clinical_unit", unitCard),
+        renderCardWrapper("clinical_emergency", emergencyCard),
+      ].filter(Boolean);
+
+      return renderCustomLayoutContainer(
+        "clinical-dossier",
+        layoutTitle,
+        ["clinical_dossier", "clinical_unit", "clinical_emergency"],
+        autoContent,
+        freeCards,
       );
     }
 
@@ -1796,8 +2032,8 @@ export function AboutBlock({
         section.customTexts?.hide_creator_stat_3 === "true" ||
         section.customTexts?.hide_creator_stat_4 === "true";
 
-      return (
-        <div data-testid="about-layout-content" data-layout="creator-profile" className="space-y-6">
+      const statsCard = (
+        <div className="w-full">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {section.customTexts?.hide_creator_stat_1 !== "true" && (
               <div
@@ -2016,880 +2252,938 @@ export function AboutBlock({
               </div>
             )}
           </div>
+        </div>
+      );
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch min-w-0">
+      const deckCard = (
+        <div
+          className="h-full rounded-3xl border-3 bg-white p-4 sm:p-6 lg:p-8 min-w-0 flex flex-col justify-between"
+          style={{
+            borderColor: `${theme.textColor}cc`,
+            boxShadow: `6px 6px 0px ${theme.textColor}dd`,
+          }}
+        >
+          <div>
             <div
-              className="lg:col-span-7 rounded-3xl border-3 bg-white p-4 sm:p-6 lg:p-8 min-w-0"
+              className="flex flex-wrap items-center justify-between gap-2 border-b-2 pb-3 mb-4 min-w-0"
+              style={{ borderColor: `${theme.primaryColor}30` }}
+            >
+              <span
+                className="font-editorial text-sm font-black uppercase tracking-wider min-w-0 break-words"
+                style={{ color: theme.primaryColor }}
+              >
+                <InlineEditableText
+                  value={section.customTexts?.creator_deck_title || "CREATOR MEDIA DECK • ISSUE NO. 01"}
+                  editable={editable}
+                  ariaLabel="Tiêu đề media deck"
+                  onSave={(val) => updateCustomText("creator_deck_title", val)}
+                />
+              </span>
+              <span
+                className="rounded-full border px-3 py-0.5 text-xs font-black shrink-0"
+                style={{
+                  backgroundColor: `${theme.primaryColor}18`,
+                  borderColor: `${theme.primaryColor}60`,
+                  color: theme.primaryColor,
+                }}
+              >
+                <InlineEditableText
+                  value={section.customTexts?.creator_deck_status || "OPEN FOR BOOKING ⚡"}
+                  editable={editable}
+                  ariaLabel="Trạng thái booking"
+                  onSave={(val) => updateCustomText("creator_deck_status", val)}
+                />
+              </span>
+            </div>
+            <h3 className="font-editorial text-3xl font-black" style={{ color: theme.textColor }}>
+              <InlineEditableText
+                value={section.customTexts?.creator_heading || "Visual Storytelling & Viral Content Creation"}
+                editable={editable}
+                ariaLabel="Tiêu đề chính creator"
+                onSave={(val) => updateCustomText("creator_heading", val)}
+              />
+            </h3>
+            <p className="mt-3 text-sm font-medium leading-relaxed opacity-90" style={{ color: theme.textColor }}>
+              <InlineEditableText
+                value={
+                  section.biography ||
+                  "Sáng tạo nội dung đa nền tảng kết hợp hình ảnh đậm tính thẩm mỹ, storytelling chân thực và thông điệp lan tỏa tích cực đến cộng đồng người trẻ."
+                }
+                editable={editable}
+                multiline
+                ariaLabel="Tiểu sử creator"
+                onSave={(val) => updateAbout({ biography: val })}
+              />
+            </p>
+          </div>
+          <div className="mt-5 flex flex-wrap gap-2 text-xs font-black">
+            <span
+              className="rounded-lg border-2 px-3 py-1"
               style={{
-                borderColor: `${theme.textColor}cc`,
-                boxShadow: `6px 6px 0px ${theme.textColor}dd`,
+                borderColor: `${theme.primaryColor}50`,
+                backgroundColor: `${theme.primaryColor}0a`,
+                color: theme.textColor,
               }}
             >
-              <div
-                className="flex flex-wrap items-center justify-between gap-2 border-b-2 pb-3 mb-4 min-w-0"
-                style={{ borderColor: `${theme.primaryColor}30` }}
-              >
-                <span
-                  className="font-editorial text-sm font-black uppercase tracking-wider min-w-0 break-words"
-                  style={{ color: theme.primaryColor }}
-                >
-                  <InlineEditableText
-                    value={section.customTexts?.creator_deck_title || "CREATOR MEDIA DECK • ISSUE NO. 01"}
-                    editable={editable}
-                    ariaLabel="Tiêu đề media deck"
-                    onSave={(val) => updateCustomText("creator_deck_title", val)}
-                  />
-                </span>
-                <span
-                  className="rounded-full border px-3 py-0.5 text-xs font-black shrink-0"
-                  style={{
-                    backgroundColor: `${theme.primaryColor}18`,
-                    borderColor: `${theme.primaryColor}60`,
-                    color: theme.primaryColor,
-                  }}
-                >
-                  <InlineEditableText
-                    value={section.customTexts?.creator_deck_status || "OPEN FOR BOOKING ⚡"}
-                    editable={editable}
-                    ariaLabel="Trạng thái booking"
-                    onSave={(val) => updateCustomText("creator_deck_status", val)}
-                  />
-                </span>
-              </div>
-              <h3 className="font-editorial text-3xl font-black" style={{ color: theme.textColor }}>
-                <InlineEditableText
-                  value={section.customTexts?.creator_heading || "Visual Storytelling & Viral Content Creation"}
-                  editable={editable}
-                  ariaLabel="Tiêu đề chính creator"
-                  onSave={(val) => updateCustomText("creator_heading", val)}
-                />
-              </h3>
-              <p className="mt-3 text-sm font-medium leading-relaxed opacity-90" style={{ color: theme.textColor }}>
-                <InlineEditableText
-                  value={
-                    section.biography ||
-                    "Sáng tạo nội dung đa nền tảng kết hợp hình ảnh đậm tính thẩm mỹ, storytelling chân thực và thông điệp lan tỏa tích cực đến cộng đồng người trẻ."
-                  }
-                  editable={editable}
-                  multiline
-                  ariaLabel="Tiểu sử creator"
-                  onSave={(val) => updateAbout({ biography: val })}
-                />
-              </p>
-              <div className="mt-5 flex flex-wrap gap-2 text-xs font-black">
-                <span
-                  className="rounded-lg border-2 px-3 py-1"
-                  style={{
-                    borderColor: `${theme.primaryColor}50`,
-                    backgroundColor: `${theme.primaryColor}0a`,
-                    color: theme.textColor,
-                  }}
-                >
-                  <InlineEditableText
-                    value={section.customTexts?.creator_tag_1 || "🎬 Brand Integration"}
-                    editable={editable}
-                    ariaLabel="Tag creator 1"
-                    onSave={(val) => updateCustomText("creator_tag_1", val)}
-                  />
-                </span>
-                <span
-                  className="rounded-lg border-2 px-3 py-1"
-                  style={{
-                    borderColor: `${theme.primaryColor}50`,
-                    backgroundColor: `${theme.primaryColor}0a`,
-                    color: theme.textColor,
-                  }}
-                >
-                  <InlineEditableText
-                    value={section.customTexts?.creator_tag_2 || "📱 UGC & Review"}
-                    editable={editable}
-                    ariaLabel="Tag creator 2"
-                    onSave={(val) => updateCustomText("creator_tag_2", val)}
-                  />
-                </span>
-                <span
-                  className="rounded-lg border-2 px-3 py-1"
-                  style={{
-                    borderColor: `${theme.primaryColor}50`,
-                    backgroundColor: `${theme.primaryColor}0a`,
-                    color: theme.textColor,
-                  }}
-                >
-                  <InlineEditableText
-                    value={section.customTexts?.creator_tag_3 || "🎙️ Podcast Host"}
-                    editable={editable}
-                    ariaLabel="Tag creator 3"
-                    onSave={(val) => updateCustomText("creator_tag_3", val)}
-                  />
-                </span>
-                <span
-                  className="rounded-lg border-2 px-3 py-1"
-                  style={{
-                    borderColor: `${theme.primaryColor}50`,
-                    backgroundColor: `${theme.primaryColor}0a`,
-                    color: theme.textColor,
-                  }}
-                >
-                  <InlineEditableText
-                    value={section.customTexts?.creator_tag_4 || "📸 Concept Shoot"}
-                    editable={editable}
-                    ariaLabel="Tag creator 4"
-                    onSave={(val) => updateCustomText("creator_tag_4", val)}
-                  />
-                </span>
-              </div>
-            </div>
+              <InlineEditableText
+                value={section.customTexts?.creator_tag_1 || "🎬 Brand Integration"}
+                editable={editable}
+                ariaLabel="Tag creator 1"
+                onSave={(val) => updateCustomText("creator_tag_1", val)}
+              />
+            </span>
+            <span
+              className="rounded-lg border-2 px-3 py-1"
+              style={{
+                borderColor: `${theme.primaryColor}50`,
+                backgroundColor: `${theme.primaryColor}0a`,
+                color: theme.textColor,
+              }}
+            >
+              <InlineEditableText
+                value={section.customTexts?.creator_tag_2 || "📱 UGC & Review"}
+                editable={editable}
+                ariaLabel="Tag creator 2"
+                onSave={(val) => updateCustomText("creator_tag_2", val)}
+              />
+            </span>
+            <span
+              className="rounded-lg border-2 px-3 py-1"
+              style={{
+                borderColor: `${theme.primaryColor}50`,
+                backgroundColor: `${theme.primaryColor}0a`,
+                color: theme.textColor,
+              }}
+            >
+              <InlineEditableText
+                value={section.customTexts?.creator_tag_3 || "🎙️ Podcast Host"}
+                editable={editable}
+                ariaLabel="Tag creator 3"
+                onSave={(val) => updateCustomText("creator_tag_3", val)}
+              />
+            </span>
+            <span
+              className="rounded-lg border-2 px-3 py-1"
+              style={{
+                borderColor: `${theme.primaryColor}50`,
+                backgroundColor: `${theme.primaryColor}0a`,
+                color: theme.textColor,
+              }}
+            >
+              <InlineEditableText
+                value={section.customTexts?.creator_tag_4 || "📸 Concept Shoot"}
+                editable={editable}
+                ariaLabel="Tag creator 4"
+                onSave={(val) => updateCustomText("creator_tag_4", val)}
+              />
+            </span>
+          </div>
+        </div>
+      );
 
-            <div className="lg:col-span-5 space-y-4">
-              {section.customTexts?.hide_creator_booking !== "true" ? (
-                <div
-                  className="relative group rounded-3xl border-3 bg-white p-5"
-                  style={{
-                    borderColor: `${theme.textColor}cc`,
-                    boxShadow: `4px 4px 0px ${theme.textColor}dd`,
-                  }}
-                >
-                  {editable && (
-                    <button
-                      type="button"
-                      onClick={() => updateCustomText("hide_creator_booking", "true")}
-                      className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
-                      title="Xóa ô Booking này"
-                      aria-label="Xóa ô Booking này"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  )}
-                  <h4
-                    className="font-editorial text-sm font-black uppercase tracking-wider mb-2"
-                    style={{ color: theme.primaryColor }}
-                  >
-                    <InlineEditableText
-                      value={section.customTexts?.creator_booking_title || "HỢP TÁC THƯƠNG HIỆU & BOOKING"}
-                      editable={editable}
-                      ariaLabel="Tiêu đề booking"
-                      onSave={(val) => updateCustomText("creator_booking_title", val)}
-                    />
-                  </h4>
-                  <div className="space-y-2 text-xs font-semibold" style={{ color: theme.textColor }}>
-                    <div className="flex items-center gap-1.5">
-                      <span style={{ color: theme.primaryColor }}>Email:</span>
-                      <InlineEditableText
-                        value={section.contactInfo.email || "creator@management.vn"}
-                        editable={editable}
-                        ariaLabel="Email creator"
-                        onSave={(val) => updateContactInfo("email", val)}
-                        className="underline"
-                      />
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span style={{ color: theme.primaryColor }}>Agency Booking:</span>
-                      <InlineEditableText
-                        value={section.contactInfo.phone || "0977 888 999"}
-                        editable={editable}
-                        ariaLabel="Số Agency Booking"
-                        onSave={(val) => updateContactInfo("phone", val)}
-                      />
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span style={{ color: theme.primaryColor }}>Studio Base:</span>
-                      <InlineEditableText
-                        value={section.contactInfo.location || "TP. Hồ Chí Minh & Hà Nội"}
-                        editable={editable}
-                        ariaLabel="Địa điểm Studio"
-                        onSave={(val) => updateContactInfo("location", val)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : editable ? (
-                <button
-                  type="button"
-                  onClick={() => updateCustomText("hide_creator_booking", "false")}
-                  className="w-full rounded-3xl border-2 border-dashed p-3 text-center text-xs font-black transition flex items-center justify-center gap-1.5"
-                  style={{
-                    borderColor: `${theme.primaryColor}50`,
-                    color: theme.primaryColor,
-                  }}
-                >
-                  <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Hợp tác thương hiệu & Booking
-                </button>
-              ) : null}
-
-              {section.customTexts?.hide_creator_specs !== "true" ? (
-                <div
-                  className="relative group rounded-3xl border-3 bg-stone-50 p-5"
-                  style={{
-                    borderColor: `${theme.textColor}cc`,
-                    boxShadow: `4px 4px 0px ${theme.textColor}dd`,
-                  }}
-                >
-                  {editable && (
-                    <button
-                      type="button"
-                      onClick={() => updateCustomText("hide_creator_specs", "true")}
-                      className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
-                      title="Xóa ô Specs này"
-                      aria-label="Xóa ô Specs này"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  )}
-                  <h4
-                    className="font-editorial text-sm font-black uppercase tracking-wider mb-2"
-                    style={{ color: theme.primaryColor }}
-                  >
-                    <InlineEditableText
-                      value={section.customTexts?.creator_specs_title || "PRODUCTION GEAR // SPECS"}
-                      editable={editable}
-                      ariaLabel="Tiêu đề thiết bị specs"
-                      onSave={(val) => updateCustomText("creator_specs_title", val)}
-                    />
-                  </h4>
-                  <div className="text-xs space-y-1" style={{ color: theme.textColor }}>
-                    <p>
-                      <InlineEditableText
-                        value={section.customTexts?.creator_spec_1 || "• Camera: Sony Cinema FX30 & G-Master Lenses"}
-                        editable={editable}
-                        ariaLabel="Thiết bị máy quay"
-                        onSave={(val) => updateCustomText("creator_spec_1", val)}
-                      />
-                    </p>
-                    <p>
-                      <InlineEditableText
-                        value={section.customTexts?.creator_spec_2 || "• Audio: DJI Wireless Mic 2 Studio Setup"}
-                        editable={editable}
-                        ariaLabel="Thiết bị âm thanh"
-                        onSave={(val) => updateCustomText("creator_spec_2", val)}
-                      />
-                    </p>
-                    <p>
-                      <InlineEditableText
-                        value={section.customTexts?.creator_spec_3 || "• Color Grading: DaVinci Resolve Studio 18"}
-                        editable={editable}
-                        ariaLabel="Phần mềm hậu kỳ"
-                        onSave={(val) => updateCustomText("creator_spec_3", val)}
-                      />
-                    </p>
-                  </div>
-                </div>
-              ) : editable ? (
-                <button
-                  type="button"
-                  onClick={() => updateCustomText("hide_creator_specs", "false")}
-                  className="w-full rounded-3xl border-2 border-dashed p-3 text-center text-xs font-black transition flex items-center justify-center gap-1.5"
-                  style={{
-                    borderColor: `${theme.primaryColor}50`,
-                    color: theme.primaryColor,
-                  }}
-                >
-                  <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Production Gear Specs
-                </button>
-              ) : null}
+      const bookingCard = section.customTexts?.hide_creator_booking !== "true" ? (
+        <div
+          className="relative group rounded-3xl border-3 bg-white p-5 h-full flex flex-col justify-between"
+          style={{
+            borderColor: `${theme.textColor}cc`,
+            boxShadow: `4px 4px 0px ${theme.textColor}dd`,
+          }}
+        >
+          {editable && (
+            <button
+              type="button"
+              onClick={() => updateCustomText("hide_creator_booking", "true")}
+              className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
+              title="Xóa ô Booking này"
+              aria-label="Xóa ô Booking này"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+          <div>
+            <h4
+              className="font-editorial text-sm font-black uppercase tracking-wider mb-2"
+              style={{ color: theme.primaryColor }}
+            >
+              <InlineEditableText
+                value={section.customTexts?.creator_booking_title || "HỢP TÁC THƯƠNG HIỆU & BOOKING"}
+                editable={editable}
+                ariaLabel="Tiêu đề booking"
+                onSave={(val) => updateCustomText("creator_booking_title", val)}
+              />
+            </h4>
+            <div className="space-y-2 text-xs font-semibold" style={{ color: theme.textColor }}>
+              <div className="flex items-center gap-1.5">
+                <span style={{ color: theme.primaryColor }}>Email:</span>
+                <InlineEditableText
+                  value={section.contactInfo.email || "creator@management.vn"}
+                  editable={editable}
+                  ariaLabel="Email creator"
+                  onSave={(val) => updateContactInfo("email", val)}
+                  className="underline"
+                />
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span style={{ color: theme.primaryColor }}>Agency Booking:</span>
+                <InlineEditableText
+                  value={section.contactInfo.phone || "0977 888 999"}
+                  editable={editable}
+                  ariaLabel="Số Agency Booking"
+                  onSave={(val) => updateContactInfo("phone", val)}
+                />
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span style={{ color: theme.primaryColor }}>Studio Base:</span>
+                <InlineEditableText
+                  value={section.contactInfo.location || "TP. Hồ Chí Minh & Hà Nội"}
+                  editable={editable}
+                  ariaLabel="Địa điểm Studio"
+                  onSave={(val) => updateContactInfo("location", val)}
+                />
+              </div>
             </div>
           </div>
         </div>
+      ) : editable ? (
+        <button
+          type="button"
+          onClick={() => updateCustomText("hide_creator_booking", "false")}
+          className="w-full rounded-3xl border-2 border-dashed p-3 text-center text-xs font-black transition flex items-center justify-center gap-1.5"
+          style={{
+            borderColor: `${theme.primaryColor}50`,
+            color: theme.primaryColor,
+          }}
+        >
+          <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Hợp tác thương hiệu & Booking
+        </button>
+      ) : null;
+
+      const specsCard = section.customTexts?.hide_creator_specs !== "true" ? (
+        <div
+          className="relative group rounded-3xl border-3 bg-stone-50 p-5 h-full flex flex-col justify-between"
+          style={{
+            borderColor: `${theme.textColor}cc`,
+            boxShadow: `4px 4px 0px ${theme.textColor}dd`,
+          }}
+        >
+          {editable && (
+            <button
+              type="button"
+              onClick={() => updateCustomText("hide_creator_specs", "true")}
+              className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
+              title="Xóa ô Specs này"
+              aria-label="Xóa ô Specs này"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+          <div>
+            <h4
+              className="font-editorial text-sm font-black uppercase tracking-wider mb-2"
+              style={{ color: theme.primaryColor }}
+            >
+              <InlineEditableText
+                value={section.customTexts?.creator_specs_title || "PRODUCTION GEAR // SPECS"}
+                editable={editable}
+                ariaLabel="Tiêu đề thiết bị specs"
+                onSave={(val) => updateCustomText("creator_specs_title", val)}
+              />
+            </h4>
+            <div className="text-xs space-y-1" style={{ color: theme.textColor }}>
+              <p>
+                <InlineEditableText
+                  value={section.customTexts?.creator_spec_1 || "• Camera: Sony Cinema FX30 & G-Master Lenses"}
+                  editable={editable}
+                  ariaLabel="Thiết bị máy quay"
+                  onSave={(val) => updateCustomText("creator_spec_1", val)}
+                />
+              </p>
+              <p>
+                <InlineEditableText
+                  value={section.customTexts?.creator_spec_2 || "• Audio: DJI Wireless Mic 2 Studio Setup"}
+                  editable={editable}
+                  ariaLabel="Thiết bị âm thanh"
+                  onSave={(val) => updateCustomText("creator_spec_2", val)}
+                />
+              </p>
+              <p>
+                <InlineEditableText
+                  value={section.customTexts?.creator_spec_3 || "• Color Grading: DaVinci Resolve Studio 18"}
+                  editable={editable}
+                  ariaLabel="Phần mềm hậu kỳ"
+                  onSave={(val) => updateCustomText("creator_spec_3", val)}
+                />
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : editable ? (
+        <button
+          type="button"
+          onClick={() => updateCustomText("hide_creator_specs", "false")}
+          className="w-full rounded-3xl border-2 border-dashed p-3 text-center text-xs font-black transition flex items-center justify-center gap-1.5"
+          style={{
+            borderColor: `${theme.primaryColor}50`,
+            color: theme.primaryColor,
+          }}
+        >
+          <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Production Gear Specs
+        </button>
+      ) : null;
+
+      const autoContent = (
+        <div className="space-y-6">
+          {renderCardWrapper("creator_stats", statsCard, "w-full")}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch min-w-0">
+            {renderCardWrapper("creator_deck", deckCard, "lg:col-span-7 min-w-0")}
+            <div className="lg:col-span-5 space-y-4">
+              {renderCardWrapper("creator_booking", bookingCard, "w-full")}
+              {renderCardWrapper("creator_specs", specsCard, "w-full")}
+            </div>
+          </div>
+        </div>
+      );
+
+      const freeCards = [
+        renderCardWrapper("creator_stats", statsCard),
+        renderCardWrapper("creator_deck", deckCard),
+        renderCardWrapper("creator_booking", bookingCard),
+        renderCardWrapper("creator_specs", specsCard),
+      ].filter(Boolean);
+
+      return renderCustomLayoutContainer(
+        "creator-profile",
+        layoutTitle,
+        ["creator_stats", "creator_deck", "creator_booking", "creator_specs"],
+        autoContent,
+        freeCards,
       );
     }
 
     if (layout === "academic-cv") {
-      return (
-        <div data-testid="about-layout-content" data-layout="academic-cv" className="space-y-6 min-w-0">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      const cvCard = (
+        <div
+          className="h-full rounded-2xl border-2 p-4 sm:p-6 lg:p-8 bg-white/95 shadow-sm flex flex-col justify-between min-w-0"
+          style={{
+            borderColor: `${theme.primaryColor}55`,
+            boxShadow: `0 10px 25px -5px ${theme.primaryColor}20`,
+          }}
+        >
+          <div className="space-y-4">
             <div
-              className="lg:col-span-7 rounded-2xl border-2 p-4 sm:p-6 lg:p-8 bg-white/95 shadow-sm flex flex-col justify-between min-w-0"
+              className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 min-w-0"
+              style={{ borderColor: `${theme.primaryColor}30` }}
+            >
+              <span
+                className="text-xs font-bold uppercase tracking-wider min-w-0 max-w-full break-words"
+                style={{ color: theme.primaryColor }}
+              >
+                <InlineEditableText
+                  value={section.customTexts?.acad_badge || "HỒ SƠ HỌC THUẬT & LÝ LỊCH KHOA HỌC"}
+                  editable={editable}
+                  ariaLabel="Huy hiệu hồ sơ học thuật"
+                  onSave={(val) => updateCustomText("acad_badge", val)}
+                />
+              </span>
+              <span
+                className="rounded px-2.5 py-0.5 text-[10px] font-bold text-white shrink-0"
+                style={{ backgroundColor: theme.primaryColor }}
+              >
+                <InlineEditableText
+                  value={section.customTexts?.acad_tag || "HỒ SƠ NCKH"}
+                  editable={editable}
+                  ariaLabel="Mã học thuật"
+                  onSave={(val) => updateCustomText("acad_tag", val)}
+                />
+              </span>
+            </div>
+            <div>
+              <h3 className="font-editorial text-2xl font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
+                <InlineEditableText
+                  value={section.customTexts?.acad_title || "Nghiên cứu sinh & Giảng viên Sư phạm Tương lai"}
+                  editable={editable}
+                  ariaLabel="Tiêu đề chức danh học thuật"
+                  onSave={(val) => updateCustomText("acad_title", val)}
+                />
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed opacity-85 min-w-0 break-words" style={{ color: theme.textColor }}>
+                <InlineEditableText
+                  value={
+                    section.biography ||
+                    "Nghiên cứu chuyên sâu về đổi mới phương pháp giảng dạy, ứng dụng chuyển đổi số và phát triển năng lực tự học cho học sinh trong chương trình GDPT 2018."
+                  }
+                  editable={editable}
+                  multiline
+                  ariaLabel="Tiểu sử học thuật"
+                  onSave={(val) => updateAbout({ biography: val })}
+                />
+              </p>
+            </div>
+            <div
+              className="rounded-xl border p-3.5 text-xs min-w-0 break-words"
               style={{
-                borderColor: `${theme.primaryColor}55`,
-                boxShadow: `0 10px 25px -5px ${theme.primaryColor}20`,
+                borderColor: `${theme.primaryColor}30`,
+                backgroundColor: `${theme.primaryColor}0d`,
+                color: theme.textColor,
               }}
             >
-              <div className="space-y-4">
-                <div
-                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 min-w-0"
-                  style={{ borderColor: `${theme.primaryColor}30` }}
-                >
-                  <span
-                    className="text-xs font-bold uppercase tracking-wider min-w-0 max-w-full break-words"
-                    style={{ color: theme.primaryColor }}
-                  >
-                    <InlineEditableText
-                      value={section.customTexts?.acad_badge || "HỒ SƠ HỌC THUẬT & LÝ LỊCH KHOA HỌC"}
-                      editable={editable}
-                      ariaLabel="Huy hiệu hồ sơ học thuật"
-                      onSave={(val) => updateCustomText("acad_badge", val)}
-                    />
-                  </span>
-                  <span
-                    className="rounded px-2.5 py-0.5 text-[10px] font-bold text-white shrink-0"
-                    style={{ backgroundColor: theme.primaryColor }}
-                  >
-                    <InlineEditableText
-                      value={section.customTexts?.acad_tag || "HỒ SƠ NCKH"}
-                      editable={editable}
-                      ariaLabel="Mã học thuật"
-                      onSave={(val) => updateCustomText("acad_tag", val)}
-                    />
-                  </span>
-                </div>
-                <div>
-                  <h3 className="font-editorial text-2xl font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
-                    <InlineEditableText
-                      value={section.customTexts?.acad_title || "Nghiên cứu sinh & Giảng viên Sư phạm Tương lai"}
-                      editable={editable}
-                      ariaLabel="Tiêu đề chức danh học thuật"
-                      onSave={(val) => updateCustomText("acad_title", val)}
-                    />
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed opacity-85 min-w-0 break-words" style={{ color: theme.textColor }}>
-                    <InlineEditableText
-                      value={
-                        section.biography ||
-                        "Nghiên cứu chuyên sâu về đổi mới phương pháp giảng dạy, ứng dụng chuyển đổi số và phát triển năng lực tự học cho học sinh trong chương trình GDPT 2018."
-                      }
-                      editable={editable}
-                      multiline
-                      ariaLabel="Tiểu sử học thuật"
-                      onSave={(val) => updateAbout({ biography: val })}
-                    />
-                  </p>
-                </div>
-                <div
-                  className="rounded-xl border p-3.5 text-xs min-w-0 break-words"
-                  style={{
-                    borderColor: `${theme.primaryColor}30`,
-                    backgroundColor: `${theme.primaryColor}0d`,
-                    color: theme.textColor,
-                  }}
-                >
-                  <strong className="block mb-1" style={{ color: theme.primaryColor }}>
-                    <InlineEditableText
-                      value={section.customTexts?.acad_philo_title || "📜 Triết lý nghiên cứu giáo dục:"}
-                      editable={editable}
-                      ariaLabel="Tiêu đề triết lý giáo dục"
-                      onSave={(val) => updateCustomText("acad_philo_title", val)}
-                    />
-                  </strong>
-                  <p className="italic leading-relaxed min-w-0 break-words">
-                    <InlineEditableText
-                      value={
-                        section.customTexts?.acad_philo_text ||
-                        "“Lấy người học làm trung tâm của mọi chuyển hóa, công nghệ làm đòn bẩy kích hoạt tư duy và sự thấu cảm làm nền tảng của y đức sư phạm.”"
-                      }
-                      editable={editable}
-                      multiline
-                      ariaLabel="Nội dung triết lý giáo dục"
-                      onSave={(val) => updateCustomText("acad_philo_text", val)}
-                    />
-                  </p>
-                </div>
-              </div>
-              <div
-                className="mt-4 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs font-bold min-w-0"
-                style={{ borderColor: `${theme.primaryColor}25`, color: theme.primaryColor }}
-              >
-                <span className="min-w-0 break-words max-w-full">
-                  <InlineEditableText
-                    value={section.customTexts?.acad_footer_left || (eduSchool ? eduSchool.toUpperCase() : "TRƯỜNG ĐẠI HỌC")}
-                    editable={editable}
-                    ariaLabel="Tên trường học thuật"
-                    onSave={(val) => updateCustomText("acad_footer_left", val)}
-                  />
-                </span>
-                <span className="min-w-0 break-words shrink-0">
-                  <InlineEditableText
-                    value={section.customTexts?.acad_footer_right || "ACADEMIC VERIFIED"}
-                    editable={editable}
-                    ariaLabel="Xác nhận học thuật"
-                    onSave={(val) => updateCustomText("acad_footer_right", val)}
-                  />
-                </span>
-              </div>
+              <strong className="block mb-1" style={{ color: theme.primaryColor }}>
+                <InlineEditableText
+                  value={section.customTexts?.acad_philo_title || "📜 Triết lý nghiên cứu giáo dục:"}
+                  editable={editable}
+                  ariaLabel="Tiêu đề triết lý giáo dục"
+                  onSave={(val) => updateCustomText("acad_philo_title", val)}
+                />
+              </strong>
+              <p className="italic leading-relaxed min-w-0 break-words">
+                <InlineEditableText
+                  value={
+                    section.customTexts?.acad_philo_text ||
+                    "“Lấy người học làm trung tâm của mọi chuyển hóa, công nghệ làm đòn bẩy kích hoạt tư duy và sự thấu cảm làm nền tảng của y đức sư phạm.”"
+                  }
+                  editable={editable}
+                  multiline
+                  ariaLabel="Nội dung triết lý giáo dục"
+                  onSave={(val) => updateCustomText("acad_philo_text", val)}
+                />
+              </p>
             </div>
+          </div>
+          <div
+            className="mt-4 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs font-bold min-w-0"
+            style={{ borderColor: `${theme.primaryColor}25`, color: theme.primaryColor }}
+          >
+            <span className="min-w-0 break-words max-w-full">
+              <InlineEditableText
+                value={section.customTexts?.acad_footer_left || (eduSchool ? eduSchool.toUpperCase() : "TRƯỜNG ĐẠI HỌC")}
+                editable={editable}
+                ariaLabel="Tên trường học thuật"
+                onSave={(val) => updateCustomText("acad_footer_left", val)}
+              />
+            </span>
+            <span className="min-w-0 break-words shrink-0">
+              <InlineEditableText
+                value={section.customTexts?.acad_footer_right || "ACADEMIC VERIFIED"}
+                editable={editable}
+                ariaLabel="Xác nhận học thuật"
+                onSave={(val) => updateCustomText("acad_footer_right", val)}
+              />
+            </span>
+          </div>
+        </div>
+      );
 
-            <div className="lg:col-span-5 space-y-4 min-w-0">
-              {section.customTexts?.hide_acad_pubs !== "true" ? (
-                <div
-                  className="relative group rounded-xl border p-5 bg-white/90 shadow-xs"
-                  style={{ borderColor: `${theme.primaryColor}35` }}
-                >
-                  {editable && (
-                    <button
-                      type="button"
-                      onClick={() => updateCustomText("hide_acad_pubs", "true")}
-                      className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
-                      title="Xóa ô Công bố khoa học này"
-                      aria-label="Xóa ô Công bố khoa học này"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  )}
-                  <h4
-                    className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"
-                    style={{ color: theme.primaryColor }}
-                  >
-                    <BookOpen className="h-4 w-4" style={{ color: theme.primaryColor }} />
-                    <InlineEditableText
-                      value={section.customTexts?.acad_pub_title || "CÔNG BỐ KHOA HỌC & ĐỀ TÀI"}
-                      editable={editable}
-                      ariaLabel="Tiêu đề công bố khoa học"
-                      onSave={(val) => updateCustomText("acad_pub_title", val)}
-                    />
-                  </h4>
-                  <div className="space-y-2 text-xs" style={{ color: theme.textColor }}>
-                    <p>
-                      <InlineEditableText
-                        value={section.customTexts?.acad_pub_1 || "• 01 Đề tài NCKH sinh viên: Đạt giải Xuất sắc"}
-                        editable={editable}
-                        ariaLabel="Đề tài NCKH 1"
-                        onSave={(val) => updateCustomText("acad_pub_1", val)}
-                      />
-                    </p>
-                    <p>
-                      <InlineEditableText
-                        value={section.customTexts?.acad_pub_2 || "• 03 Bài báo khoa học: Đăng kỷ yếu Hội thảo Quốc gia"}
-                        editable={editable}
-                        ariaLabel="Bài báo khoa học 2"
-                        onSave={(val) => updateCustomText("acad_pub_2", val)}
-                      />
-                    </p>
-                    <p>
-                      <InlineEditableText
-                        value={section.customTexts?.acad_pub_3 || "• Học bổng: Sinh viên Xuất sắc / Khuyến khích học tập"}
-                        editable={editable}
-                        ariaLabel="Học bổng tài năng 3"
-                        onSave={(val) => updateCustomText("acad_pub_3", val)}
-                      />
-                    </p>
-                  </div>
-                </div>
-              ) : editable ? (
-                <button
-                  type="button"
-                  onClick={() => updateCustomText("hide_acad_pubs", "false")}
-                  className="w-full rounded-xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
-                  style={{
-                    borderColor: `${theme.primaryColor}40`,
-                    color: theme.primaryColor,
-                  }}
-                >
-                  <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Công bố khoa học
-                </button>
-              ) : null}
-
-              {section.customTexts?.hide_acad_contact !== "true" ? (
-                <div
-                  className="relative group rounded-xl border p-5 bg-white/90 shadow-xs"
-                  style={{ borderColor: `${theme.primaryColor}35` }}
-                >
-                  {editable && (
-                    <button
-                      type="button"
-                      onClick={() => updateCustomText("hide_acad_contact", "true")}
-                      className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
-                      title="Xóa ô Liên hệ này"
-                      aria-label="Xóa ô Liên hệ này"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  )}
-                  <h4
-                    className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"
-                    style={{ color: theme.primaryColor }}
-                  >
-                    <Mail className="h-4 w-4" style={{ color: theme.primaryColor }} />
-                    <InlineEditableText
-                      value={section.customTexts?.acad_contact_title || "LIÊN HỆ KHOA HỌC & VĂN PHÒNG"}
-                      editable={editable}
-                      ariaLabel="Tiêu đề liên hệ học thuật"
-                      onSave={(val) => updateCustomText("acad_contact_title", val)}
-                    />
-                  </h4>
-                  <div className="space-y-2 text-xs" style={{ color: theme.textColor }}>
-                    <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
-                      <span className="shrink-0" style={{ color: theme.primaryColor }}>Email:</span>
-                      <span className="min-w-0 break-all">
-                        <InlineEditableText
-                          value={section.contactInfo.email || "gv.nghiencuu@vnu.edu.vn"}
-                          editable={editable}
-                          ariaLabel="Email học thuật"
-                          onSave={(val) => updateContactInfo("email", val)}
-                          className="font-medium underline"
-                        />
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
-                      <span className="shrink-0" style={{ color: theme.primaryColor }}>Điện thoại:</span>
-                      <span className="min-w-0 break-all font-mono">
-                        <InlineEditableText
-                          value={section.contactInfo.phone || "(024) 3754 7799"}
-                          editable={editable}
-                          ariaLabel="Điện thoại văn phòng"
-                          onSave={(val) => updateContactInfo("phone", val)}
-                        />
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
-                      <span className="shrink-0" style={{ color: theme.primaryColor }}>Văn phòng:</span>
-                      <span className="min-w-0 break-words">
-                        <InlineEditableText
-                          value={section.contactInfo.location || "Phòng 302, Nhà G7, 144 Xuân Thủy, Cầu Giấy, HN"}
-                          editable={editable}
-                          ariaLabel="Địa chỉ văn phòng"
-                          onSave={(val) => updateContactInfo("location", val)}
-                        />
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ) : editable ? (
-                <button
-                  type="button"
-                  onClick={() => updateCustomText("hide_acad_contact", "false")}
-                  className="w-full rounded-xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
-                  style={{
-                    borderColor: `${theme.primaryColor}40`,
-                    color: theme.primaryColor,
-                  }}
-                >
-                  <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Liên hệ khoa học & Văn phòng
-                </button>
-              ) : null}
+      const pubsCard = section.customTexts?.hide_acad_pubs !== "true" ? (
+        <div
+          className="relative group rounded-xl border p-5 bg-white/90 shadow-xs h-full flex flex-col justify-between"
+          style={{ borderColor: `${theme.primaryColor}35` }}
+        >
+          {editable && (
+            <button
+              type="button"
+              onClick={() => updateCustomText("hide_acad_pubs", "true")}
+              className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
+              title="Xóa ô Công bố khoa học này"
+              aria-label="Xóa ô Công bố khoa học này"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+          <div>
+            <h4
+              className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"
+              style={{ color: theme.primaryColor }}
+            >
+              <BookOpen className="h-4 w-4" style={{ color: theme.primaryColor }} />
+              <InlineEditableText
+                value={section.customTexts?.acad_pub_title || "CÔNG BỐ KHOA HỌC & ĐỀ TÀI"}
+                editable={editable}
+                ariaLabel="Tiêu đề công bố khoa học"
+                onSave={(val) => updateCustomText("acad_pub_title", val)}
+              />
+            </h4>
+            <div className="space-y-2 text-xs" style={{ color: theme.textColor }}>
+              <p>
+                <InlineEditableText
+                  value={section.customTexts?.acad_pub_1 || "• 01 Đề tài NCKH sinh viên: Đạt giải Xuất sắc"}
+                  editable={editable}
+                  ariaLabel="Đề tài NCKH 1"
+                  onSave={(val) => updateCustomText("acad_pub_1", val)}
+                />
+              </p>
+              <p>
+                <InlineEditableText
+                  value={section.customTexts?.acad_pub_2 || "• 03 Bài báo khoa học: Đăng kỷ yếu Hội thảo Quốc gia"}
+                  editable={editable}
+                  ariaLabel="Bài báo khoa học 2"
+                  onSave={(val) => updateCustomText("acad_pub_2", val)}
+                />
+              </p>
+              <p>
+                <InlineEditableText
+                  value={section.customTexts?.acad_pub_3 || "• Học bổng: Sinh viên Xuất sắc / Khuyến khích học tập"}
+                  editable={editable}
+                  ariaLabel="Học bổng tài năng 3"
+                  onSave={(val) => updateCustomText("acad_pub_3", val)}
+                />
+              </p>
             </div>
           </div>
         </div>
+      ) : editable ? (
+        <button
+          type="button"
+          onClick={() => updateCustomText("hide_acad_pubs", "false")}
+          className="w-full rounded-xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+          style={{
+            borderColor: `${theme.primaryColor}40`,
+            color: theme.primaryColor,
+          }}
+        >
+          <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Công bố khoa học
+        </button>
+      ) : null;
+
+      const contactCard = section.customTexts?.hide_acad_contact !== "true" ? (
+        <div
+          className="relative group rounded-xl border p-5 bg-white/90 shadow-xs h-full flex flex-col justify-between"
+          style={{ borderColor: `${theme.primaryColor}35` }}
+        >
+          {editable && (
+            <button
+              type="button"
+              onClick={() => updateCustomText("hide_acad_contact", "true")}
+              className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
+              title="Xóa ô Liên hệ này"
+              aria-label="Xóa ô Liên hệ này"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+          <div>
+            <h4
+              className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"
+              style={{ color: theme.primaryColor }}
+            >
+              <Mail className="h-4 w-4" style={{ color: theme.primaryColor }} />
+              <InlineEditableText
+                value={section.customTexts?.acad_contact_title || "LIÊN HỆ KHOA HỌC & VĂN PHÒNG"}
+                editable={editable}
+                ariaLabel="Tiêu đề liên hệ học thuật"
+                onSave={(val) => updateCustomText("acad_contact_title", val)}
+              />
+            </h4>
+            <div className="space-y-2 text-xs" style={{ color: theme.textColor }}>
+              <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
+                <span className="shrink-0" style={{ color: theme.primaryColor }}>Email:</span>
+                <span className="min-w-0 break-all">
+                  <InlineEditableText
+                    value={section.contactInfo.email || "gv.nghiencuu@vnu.edu.vn"}
+                    editable={editable}
+                    ariaLabel="Email học thuật"
+                    onSave={(val) => updateContactInfo("email", val)}
+                    className="font-medium underline"
+                  />
+                </span>
+              </div>
+              <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
+                <span className="shrink-0" style={{ color: theme.primaryColor }}>Điện thoại:</span>
+                <span className="min-w-0 break-all font-mono">
+                  <InlineEditableText
+                    value={section.contactInfo.phone || "(024) 3754 7799"}
+                    editable={editable}
+                    ariaLabel="Điện thoại văn phòng"
+                    onSave={(val) => updateContactInfo("phone", val)}
+                  />
+                </span>
+              </div>
+              <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
+                <span className="shrink-0" style={{ color: theme.primaryColor }}>Văn phòng:</span>
+                <span className="min-w-0 break-words">
+                  <InlineEditableText
+                    value={section.contactInfo.location || "Phòng 302, Nhà G7, 144 Xuân Thủy, Cầu Giấy, HN"}
+                    editable={editable}
+                    ariaLabel="Địa chỉ văn phòng"
+                    onSave={(val) => updateContactInfo("location", val)}
+                  />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : editable ? (
+        <button
+          type="button"
+          onClick={() => updateCustomText("hide_acad_contact", "false")}
+          className="w-full rounded-xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+          style={{
+            borderColor: `${theme.primaryColor}40`,
+            color: theme.primaryColor,
+          }}
+        >
+          <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Liên hệ khoa học & Văn phòng
+        </button>
+      ) : null;
+
+      const autoContent = (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch min-w-0">
+          {renderCardWrapper("academic_cv", cvCard, "lg:col-span-7 min-w-0")}
+          <div className="lg:col-span-5 space-y-4 min-w-0">
+            {renderCardWrapper("academic_faculty", pubsCard, "min-w-0")}
+            {renderCardWrapper("academic_grants", contactCard, "min-w-0")}
+          </div>
+        </div>
+      );
+
+      const freeCards = [
+        renderCardWrapper("academic_cv", cvCard),
+        renderCardWrapper("academic_faculty", pubsCard),
+        renderCardWrapper("academic_grants", contactCard),
+      ].filter(Boolean);
+
+      return renderCustomLayoutContainer(
+        "academic-cv",
+        layoutTitle,
+        ["academic_cv", "academic_faculty", "academic_grants"],
+        autoContent,
+        freeCards,
       );
     }
 
     if (layout === "pedagogical-journal") {
-      return (
-        <div data-testid="about-layout-content" data-layout="pedagogical-journal" className="space-y-6 min-w-0">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      const journalCard = (
+        <div
+          className="h-full rounded-3xl border-2 p-4 sm:p-6 lg:p-8 bg-white/95 shadow-sm flex flex-col justify-between min-w-0"
+          style={{
+            borderColor: `${theme.primaryColor}55`,
+            boxShadow: `0 10px 25px -5px ${theme.primaryColor}20`,
+          }}
+        >
+          <div className="space-y-4">
             <div
-              className="lg:col-span-7 rounded-3xl border-2 p-4 sm:p-6 lg:p-8 bg-white/95 shadow-sm flex flex-col justify-between min-w-0"
-              style={{
-                borderColor: `${theme.primaryColor}55`,
-                boxShadow: `0 10px 25px -5px ${theme.primaryColor}20`,
-              }}
+              className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 min-w-0"
+              style={{ borderColor: `${theme.primaryColor}30` }}
             >
-              <div className="space-y-4">
-                <div
-                  className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 min-w-0"
-                  style={{ borderColor: `${theme.primaryColor}30` }}
-                >
-                  <span
-                    className="rounded-2xl sm:rounded-full px-3.5 py-1 text-xs font-bold max-w-full break-words"
-                    style={{
-                      backgroundColor: `${theme.primaryColor}18`,
-                      color: theme.primaryColor,
-                    }}
-                  >
-                    <InlineEditableText
-                      value={section.customTexts?.ped_badge || "🌸 CHÂN DUNG NGƯỜI GIÁO VIÊN TRẺ • NGÀNH SƯ PHẠM"}
-                      editable={editable}
-                      ariaLabel="Huy hiệu chân dung giáo viên"
-                      onSave={(val) => updateCustomText("ped_badge", val)}
-                    />
-                  </span>
-                  <span className="text-xs text-stone-500 font-medium shrink-0">
-                    <InlineEditableText
-                      value={section.customTexts?.ped_tag || "KHÓA K18 • THỰC TẬP SƯ PHẠM"}
-                      editable={editable}
-                      ariaLabel="Mã khóa thực tập"
-                      onSave={(val) => updateCustomText("ped_tag", val)}
-                    />
-                  </span>
-                </div>
-                <div>
-                  <h3 className="font-editorial text-2xl font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
-                    <InlineEditableText
-                      value={section.customTexts?.ped_title || "Tâm Niệm Nghề Giáo & Triết Lý Giảng Dạy"}
-                      editable={editable}
-                      ariaLabel="Tiêu đề tâm niệm nghề giáo"
-                      onSave={(val) => updateCustomText("ped_title", val)}
-                    />
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed opacity-85 min-w-0 break-words" style={{ color: theme.textColor }}>
-                    <InlineEditableText
-                      value={
-                        section.biography ||
-                        "Mỗi học sinh là một nốt nhạc độc bản trong dàn hợp xướng cuộc đời. Người giáo viên không chỉ truyền đạt tri thức mà còn là người thắp lên ngọn lửa đam mê và sự tự tin cho các em."
-                      }
-                      editable={editable}
-                      multiline
-                      ariaLabel="Tiểu sử sư phạm"
-                      onSave={(val) => updateAbout({ biography: val })}
-                    />
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 text-xs">
-                  <div
-                    className="p-3 rounded-2xl border min-w-0 break-words"
-                    style={{
-                      backgroundColor: `${theme.primaryColor}0d`,
-                      borderColor: `${theme.primaryColor}25`,
-                    }}
-                  >
-                    <strong className="block mb-1" style={{ color: theme.primaryColor }}>
-                      <InlineEditableText
-                        value={section.customTexts?.ped_card1_title || "🎼 Giáo án tương tác"}
-                        editable={editable}
-                        ariaLabel="Tiêu đề giáo án tương tác"
-                        onSave={(val) => updateCustomText("ped_card1_title", val)}
-                      />
-                    </strong>
-                    <span className="min-w-0 break-words" style={{ color: theme.textColor }}>
-                      <InlineEditableText
-                        value={section.customTexts?.ped_card1_desc || "Dạy học liên môn & ứng dụng CNTT sinh động"}
-                        editable={editable}
-                        ariaLabel="Mô tả giáo án tương tác"
-                        onSave={(val) => updateCustomText("ped_card1_desc", val)}
-                      />
-                    </span>
-                  </div>
-                  <div
-                    className="p-3 rounded-2xl border min-w-0 break-words"
-                    style={{
-                      backgroundColor: `${theme.primaryColor}0d`,
-                      borderColor: `${theme.primaryColor}25`,
-                    }}
-                  >
-                    <strong className="block mb-1" style={{ color: theme.primaryColor }}>
-                      <InlineEditableText
-                        value={section.customTexts?.ped_card2_title || "💡 Trải nghiệm sáng tạo"}
-                        editable={editable}
-                        ariaLabel="Tiêu đề trải nghiệm sáng tạo"
-                        onSave={(val) => updateCustomText("ped_card2_title", val)}
-                      />
-                    </strong>
-                    <span className="min-w-0 break-words" style={{ color: theme.textColor }}>
-                      <InlineEditableText
-                        value={section.customTexts?.ped_card2_desc || "Tổ chức hoạt động ngoại khóa & CLB học đường"}
-                        editable={editable}
-                        ariaLabel="Mô tả trải nghiệm sáng tạo"
-                        onSave={(val) => updateCustomText("ped_card2_desc", val)}
-                      />
-                    </span>
-                  </div>
-                  <div
-                    className="p-3 rounded-2xl border min-w-0 break-words"
-                    style={{
-                      backgroundColor: `${theme.primaryColor}0d`,
-                      borderColor: `${theme.primaryColor}25`,
-                    }}
-                  >
-                    <strong className="block mb-1" style={{ color: theme.primaryColor }}>
-                      <InlineEditableText
-                        value={section.customTexts?.ped_card3_title || "❤️ Thấu cảm học trò"}
-                        editable={editable}
-                        ariaLabel="Tiêu đề thấu cảm học trò"
-                        onSave={(val) => updateCustomText("ped_card3_title", val)}
-                      />
-                    </strong>
-                    <span className="min-w-0 break-words" style={{ color: theme.textColor }}>
-                      <InlineEditableText
-                        value={section.customTexts?.ped_card3_desc || "Xây dựng môi trường lớp học hạnh phúc"}
-                        editable={editable}
-                        ariaLabel="Mô tả thấu cảm học trò"
-                        onSave={(val) => updateCustomText("ped_card3_desc", val)}
-                      />
-                    </span>
-                  </div>
-                </div>
+              <span
+                className="rounded-2xl sm:rounded-full px-3.5 py-1 text-xs font-bold max-w-full break-words"
+                style={{
+                  backgroundColor: `${theme.primaryColor}18`,
+                  color: theme.primaryColor,
+                }}
+              >
+                <InlineEditableText
+                  value={section.customTexts?.ped_badge || "🌸 CHÂN DUNG NGƯỜI GIÁO VIÊN TRẺ • NGÀNH SƯ PHẠM"}
+                  editable={editable}
+                  ariaLabel="Huy hiệu chân dung giáo viên"
+                  onSave={(val) => updateCustomText("ped_badge", val)}
+                />
+              </span>
+              <span className="text-xs text-stone-500 font-medium shrink-0">
+                <InlineEditableText
+                  value={section.customTexts?.ped_tag || "KHÓA K18 • THỰC TẬP SƯ PHẠM"}
+                  editable={editable}
+                  ariaLabel="Mã khóa thực tập"
+                  onSave={(val) => updateCustomText("ped_tag", val)}
+                />
+              </span>
+            </div>
+            <div>
+              <h3 className="font-editorial text-2xl font-bold min-w-0 break-words" style={{ color: theme.textColor }}>
+                <InlineEditableText
+                  value={section.customTexts?.ped_title || "Tâm Niệm Nghề Giáo & Triết Lý Giảng Dạy"}
+                  editable={editable}
+                  ariaLabel="Tiêu đề tâm niệm nghề giáo"
+                  onSave={(val) => updateCustomText("ped_title", val)}
+                />
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed opacity-85 min-w-0 break-words" style={{ color: theme.textColor }}>
+                <InlineEditableText
+                  value={
+                    section.biography ||
+                    "Mỗi học sinh là một nốt nhạc độc bản trong dàn hợp xướng cuộc đời. Người giáo viên không chỉ truyền đạt tri thức mà còn là người thắp lên ngọn lửa đam mê và sự tự tin cho các em."
+                  }
+                  editable={editable}
+                  multiline
+                  ariaLabel="Tiểu sử sư phạm"
+                  onSave={(val) => updateAbout({ biography: val })}
+                />
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 text-xs">
+              <div
+                className="p-3 rounded-2xl border min-w-0 break-words"
+                style={{
+                  backgroundColor: `${theme.primaryColor}0d`,
+                  borderColor: `${theme.primaryColor}25`,
+                }}
+              >
+                <strong className="block mb-1" style={{ color: theme.primaryColor }}>
+                  <InlineEditableText
+                    value={section.customTexts?.ped_card1_title || "🎼 Giáo án tương tác"}
+                    editable={editable}
+                    ariaLabel="Tiêu đề giáo án tương tác"
+                    onSave={(val) => updateCustomText("ped_card1_title", val)}
+                  />
+                </strong>
+                <span className="min-w-0 break-words" style={{ color: theme.textColor }}>
+                  <InlineEditableText
+                    value={section.customTexts?.ped_card1_desc || "Dạy học liên môn & ứng dụng CNTT sinh động"}
+                    editable={editable}
+                    ariaLabel="Mô tả giáo án tương tác"
+                    onSave={(val) => updateCustomText("ped_card1_desc", val)}
+                  />
+                </span>
               </div>
               <div
-                className="mt-5 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs font-semibold min-w-0"
-                style={{ borderColor: `${theme.primaryColor}20`, color: theme.primaryColor }}
+                className="p-3 rounded-2xl border min-w-0 break-words"
+                style={{
+                  backgroundColor: `${theme.primaryColor}0d`,
+                  borderColor: `${theme.primaryColor}25`,
+                }}
               >
-                <span className="min-w-0 break-words max-w-full">
+                <strong className="block mb-1" style={{ color: theme.primaryColor }}>
                   <InlineEditableText
-                    value={section.customTexts?.ped_footer_left || (eduSchool ? eduSchool.toUpperCase() : "TRƯỜNG ĐẠI HỌC")}
+                    value={section.customTexts?.ped_card2_title || "💡 Trải nghiệm sáng tạo"}
                     editable={editable}
-                    ariaLabel="Tên trường sư phạm"
-                    onSave={(val) => updateCustomText("ped_footer_left", val)}
+                    ariaLabel="Tiêu đề trải nghiệm sáng tạo"
+                    onSave={(val) => updateCustomText("ped_card2_title", val)}
+                  />
+                </strong>
+                <span className="min-w-0 break-words" style={{ color: theme.textColor }}>
+                  <InlineEditableText
+                    value={section.customTexts?.ped_card2_desc || "Tổ chức hoạt động ngoại khóa & CLB học đường"}
+                    editable={editable}
+                    ariaLabel="Mô tả trải nghiệm sáng tạo"
+                    onSave={(val) => updateCustomText("ped_card2_desc", val)}
                   />
                 </span>
-                <span className="min-w-0 break-words shrink-0">
+              </div>
+              <div
+                className="p-3 rounded-2xl border min-w-0 break-words"
+                style={{
+                  backgroundColor: `${theme.primaryColor}0d`,
+                  borderColor: `${theme.primaryColor}25`,
+                }}
+              >
+                <strong className="block mb-1" style={{ color: theme.primaryColor }}>
                   <InlineEditableText
-                    value={section.customTexts?.ped_footer_right || "TỐT NGHIỆP XUẤT SẮC 🌸"}
+                    value={section.customTexts?.ped_card3_title || "❤️ Thấu cảm học trò"}
                     editable={editable}
-                    ariaLabel="Xếp loại tốt nghiệp"
-                    onSave={(val) => updateCustomText("ped_footer_right", val)}
+                    ariaLabel="Tiêu đề thấu cảm học trò"
+                    onSave={(val) => updateCustomText("ped_card3_title", val)}
+                  />
+                </strong>
+                <span className="min-w-0 break-words" style={{ color: theme.textColor }}>
+                  <InlineEditableText
+                    value={section.customTexts?.ped_card3_desc || "Xây dựng môi trường lớp học hạnh phúc"}
+                    editable={editable}
+                    ariaLabel="Mô tả thấu cảm học trò"
+                    onSave={(val) => updateCustomText("ped_card3_desc", val)}
                   />
                 </span>
               </div>
             </div>
-
-            <div className="lg:col-span-5 space-y-4 min-w-0">
-              {section.customTexts?.hide_ped_edu !== "true" ? (
-                <div
-                  className="relative group rounded-2xl border p-5 bg-white/90 shadow-xs"
-                  style={{ borderColor: `${theme.primaryColor}35` }}
-                >
-                  {editable && (
-                    <button
-                      type="button"
-                      onClick={() => updateCustomText("hide_ped_edu", "true")}
-                      className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
-                      title="Xóa ô Học vấn này"
-                      aria-label="Xóa ô Học vấn này"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  )}
-                  <h4
-                    className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"
-                    style={{ color: theme.primaryColor }}
-                  >
-                    <GraduationCap className="h-4 w-4" style={{ color: theme.primaryColor }} />
-                    <InlineEditableText
-                      value={section.customTexts?.ped_edu_title || "ĐƠN VỊ THỰC TẬP & HỌC VẤN"}
-                      editable={editable}
-                      ariaLabel="Tiêu đề đơn vị thực tập & học vấn"
-                      onSave={(val) => updateCustomText("ped_edu_title", val)}
-                    />
-                  </h4>
-                  <div className="space-y-1.5 text-xs text-stone-800">
-                    <p className="font-bold text-sm" style={{ color: theme.textColor }}>
-                      <InlineEditableText
-                        value={eduSchool}
-                        editable={editable}
-                        ariaLabel="Tên trường thực tập"
-                        onSave={(val) => updateEducationInfo("educationSchool", val)}
-                      />
-                    </p>
-                    <p className="font-medium" style={{ color: theme.secondaryColor }}>
-                      <InlineEditableText
-                        value={eduDegree}
-                        editable={editable}
-                        ariaLabel="Ngành đào tạo sư phạm"
-                        onSave={(val) => updateEducationInfo("educationDegree", val)}
-                      />
-                    </p>
-                    <p className="text-stone-500">
-                      <InlineEditableText
-                        value={section.educationPeriod || "Khoá K18 • Thực tập Sư phạm"}
-                        editable={editable}
-                        ariaLabel="Niên khóa thực tập sư phạm"
-                        onSave={(val) => updateAbout({ educationPeriod: val })}
-                      />
-                    </p>
-                  </div>
-                </div>
-              ) : editable ? (
-                <button
-                  type="button"
-                  onClick={() => updateCustomText("hide_ped_edu", "false")}
-                  className="w-full rounded-2xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
-                  style={{
-                    borderColor: `${theme.primaryColor}40`,
-                    color: theme.primaryColor,
-                  }}
-                >
-                  <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Đơn vị thực tập & Học vấn
-                </button>
-              ) : null}
-
-              {section.customTexts?.hide_ped_contact !== "true" ? (
-                <div
-                  className="relative group rounded-2xl border p-5 bg-white/90 shadow-xs"
-                  style={{ borderColor: `${theme.primaryColor}35` }}
-                >
-                  {editable && (
-                    <button
-                      type="button"
-                      onClick={() => updateCustomText("hide_ped_contact", "true")}
-                      className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
-                      title="Xóa ô Liên hệ này"
-                      aria-label="Xóa ô Liên hệ này"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  )}
-                  <h4
-                    className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"
-                    style={{ color: theme.primaryColor }}
-                  >
-                    <Mail className="h-4 w-4" style={{ color: theme.primaryColor }} />
-                    <InlineEditableText
-                      value={section.customTexts?.ped_contact_title || "LIÊN HỆ GIÁO VIÊN"}
-                      editable={editable}
-                      ariaLabel="Tiêu đề liên hệ giáo viên"
-                      onSave={(val) => updateCustomText("ped_contact_title", val)}
-                    />
-                  </h4>
-                  <div className="space-y-2 text-xs text-stone-700">
-                    <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
-                      <span className="shrink-0" style={{ color: theme.primaryColor }}>Email:</span>
-                      <span className="min-w-0 break-all">
-                        <InlineEditableText
-                          value={section.contactInfo.email || "gv.amnhac@supham.edu.vn"}
-                          editable={editable}
-                          ariaLabel="Email giáo viên"
-                          onSave={(val) => updateContactInfo("email", val)}
-                          className="font-medium underline"
-                        />
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
-                      <span className="shrink-0" style={{ color: theme.primaryColor }}>Hotline:</span>
-                      <span className="min-w-0 break-all font-mono">
-                        <InlineEditableText
-                          value={section.contactInfo.phone || "0966 223 344"}
-                          editable={editable}
-                          ariaLabel="Số điện thoại giáo viên"
-                          onSave={(val) => updateContactInfo("phone", val)}
-                        />
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
-                      <span className="shrink-0" style={{ color: theme.primaryColor }}>Địa chỉ:</span>
-                      <span className="min-w-0 break-words">
-                        <InlineEditableText
-                          value={section.contactInfo.location || "Trường THPT Thực nghiệm Sư phạm, Hà Nội"}
-                          editable={editable}
-                          ariaLabel="Địa chỉ công tác"
-                          onSave={(val) => updateContactInfo("location", val)}
-                        />
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ) : editable ? (
-                <button
-                  type="button"
-                  onClick={() => updateCustomText("hide_ped_contact", "false")}
-                  className="w-full rounded-2xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
-                  style={{
-                    borderColor: `${theme.primaryColor}40`,
-                    color: theme.primaryColor,
-                  }}
-                >
-                  <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Liên hệ giáo viên
-                </button>
-              ) : null}
-            </div>
+          </div>
+          <div
+            className="mt-5 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs font-semibold min-w-0"
+            style={{ borderColor: `${theme.primaryColor}20`, color: theme.primaryColor }}
+          >
+            <span className="min-w-0 break-words max-w-full">
+              <InlineEditableText
+                value={section.customTexts?.ped_footer_left || (eduSchool ? eduSchool.toUpperCase() : "TRƯỜNG ĐẠI HỌC")}
+                editable={editable}
+                ariaLabel="Tên trường sư phạm"
+                onSave={(val) => updateCustomText("ped_footer_left", val)}
+              />
+            </span>
+            <span className="min-w-0 break-words shrink-0">
+              <InlineEditableText
+                value={section.customTexts?.ped_footer_right || "TỐT NGHIỆP XUẤT SẮC 🌸"}
+                editable={editable}
+                ariaLabel="Xếp loại tốt nghiệp"
+                onSave={(val) => updateCustomText("ped_footer_right", val)}
+              />
+            </span>
           </div>
         </div>
       );
-    }
 
-    const layoutTitle = {
-      "story-card": "Tiểu sử dạng câu chuyện",
-      "bento-facts": "Bento thông tin",
-      "editorial-poster": "Editorial Poster",
-      "profile-dashboard": "Profile Dashboard",
-      spotlight: "Spotlight Profile",
-      cards: "Thông tin cá nhân dạng thẻ",
-      grid: "Tổng quan dạng lưới",
-      organic: "Bố cục tự do",
-      timeline: "Dòng thời gian hồ sơ",
-      "two-column-bio": "Tiểu sử 2 cột",
-      "medical-license": "Hồ sơ Năng lực Dược sĩ",
-      "clinical-dossier": "Hồ sơ Bệnh án Chuyên môn",
-      "creator-profile": "Creator & Media Deck",
-      "academic-cv": "Hồ sơ Học thuật",
-      "pedagogical-journal": "Nhật ký Sư phạm",
-    }[layout];
+      const schoolCard = section.customTexts?.hide_ped_edu !== "true" ? (
+        <div
+          className="relative group rounded-2xl border p-5 bg-white/90 shadow-xs h-full flex flex-col justify-between"
+          style={{ borderColor: `${theme.primaryColor}35` }}
+        >
+          {editable && (
+            <button
+              type="button"
+              onClick={() => updateCustomText("hide_ped_edu", "true")}
+              className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
+              title="Xóa ô Học vấn này"
+              aria-label="Xóa ô Học vấn này"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+          <div>
+            <h4
+              className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"
+              style={{ color: theme.primaryColor }}
+            >
+              <GraduationCap className="h-4 w-4" style={{ color: theme.primaryColor }} />
+              <InlineEditableText
+                value={section.customTexts?.ped_edu_title || "ĐƠN VỊ THỰC TẬP & HỌC VẤN"}
+                editable={editable}
+                ariaLabel="Tiêu đề đơn vị thực tập & học vấn"
+                onSave={(val) => updateCustomText("ped_edu_title", val)}
+              />
+            </h4>
+            <div className="space-y-1.5 text-xs text-stone-800">
+              <p className="font-bold text-sm" style={{ color: theme.textColor }}>
+                <InlineEditableText
+                  value={eduSchool}
+                  editable={editable}
+                  ariaLabel="Tên trường thực tập"
+                  onSave={(val) => updateEducationInfo("educationSchool", val)}
+                />
+              </p>
+              <p className="font-medium" style={{ color: theme.secondaryColor }}>
+                <InlineEditableText
+                  value={eduDegree}
+                  editable={editable}
+                  ariaLabel="Ngành đào tạo sư phạm"
+                  onSave={(val) => updateEducationInfo("educationDegree", val)}
+                />
+              </p>
+              <p className="text-stone-500">
+                <InlineEditableText
+                  value={section.educationPeriod || "Khoá K18 • Thực tập Sư phạm"}
+                  editable={editable}
+                  ariaLabel="Niên khóa thực tập sư phạm"
+                  onSave={(val) => updateAbout({ educationPeriod: val })}
+                />
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : editable ? (
+        <button
+          type="button"
+          onClick={() => updateCustomText("hide_ped_edu", "false")}
+          className="w-full rounded-2xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+          style={{
+            borderColor: `${theme.primaryColor}40`,
+            color: theme.primaryColor,
+          }}
+        >
+          <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Đơn vị thực tập & Học vấn
+        </button>
+      ) : null;
+
+      const contactCard = section.customTexts?.hide_ped_contact !== "true" ? (
+        <div
+          className="relative group rounded-2xl border p-5 bg-white/90 shadow-xs h-full flex flex-col justify-between"
+          style={{ borderColor: `${theme.primaryColor}35` }}
+        >
+          {editable && (
+            <button
+              type="button"
+              onClick={() => updateCustomText("hide_ped_contact", "true")}
+              className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
+              title="Xóa ô Liên hệ này"
+              aria-label="Xóa ô Liên hệ này"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+          <div>
+            <h4
+              className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"
+              style={{ color: theme.primaryColor }}
+            >
+              <Mail className="h-4 w-4" style={{ color: theme.primaryColor }} />
+              <InlineEditableText
+                value={section.customTexts?.ped_contact_title || "LIÊN HỆ GIÁO VIÊN"}
+                editable={editable}
+                ariaLabel="Tiêu đề liên hệ giáo viên"
+                onSave={(val) => updateCustomText("ped_contact_title", val)}
+              />
+            </h4>
+            <div className="space-y-2 text-xs text-stone-700">
+              <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
+                <span className="shrink-0" style={{ color: theme.primaryColor }}>Email:</span>
+                <span className="min-w-0 break-all">
+                  <InlineEditableText
+                    value={section.contactInfo.email || "gv.amnhac@supham.edu.vn"}
+                    editable={editable}
+                    ariaLabel="Email giáo viên"
+                    onSave={(val) => updateContactInfo("email", val)}
+                    className="font-medium underline"
+                  />
+                </span>
+              </div>
+              <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
+                <span className="shrink-0" style={{ color: theme.primaryColor }}>Hotline:</span>
+                <span className="min-w-0 break-all font-mono">
+                  <InlineEditableText
+                    value={section.contactInfo.phone || "0966 223 344"}
+                    editable={editable}
+                    ariaLabel="Số điện thoại giáo viên"
+                    onSave={(val) => updateContactInfo("phone", val)}
+                  />
+                </span>
+              </div>
+              <div className="flex flex-wrap items-baseline gap-1.5 min-w-0 break-words">
+                <span className="shrink-0" style={{ color: theme.primaryColor }}>Địa chỉ:</span>
+                <span className="min-w-0 break-words">
+                  <InlineEditableText
+                    value={section.contactInfo.location || "Trường THPT Thực nghiệm Sư phạm, Hà Nội"}
+                    editable={editable}
+                    ariaLabel="Địa chỉ công tác"
+                    onSave={(val) => updateContactInfo("location", val)}
+                  />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : editable ? (
+        <button
+          type="button"
+          onClick={() => updateCustomText("hide_ped_contact", "false")}
+          className="w-full rounded-2xl border-2 border-dashed p-3 text-center text-xs font-bold transition flex items-center justify-center gap-1.5"
+          style={{
+            borderColor: `${theme.primaryColor}40`,
+            color: theme.primaryColor,
+          }}
+        >
+          <RotateCcw className="h-3.5 w-3.5" /> Khôi phục ô Liên hệ giáo viên
+        </button>
+      ) : null;
+
+      const autoContent = (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch min-w-0">
+          {renderCardWrapper("pedagogical_journal", journalCard, "lg:col-span-7 min-w-0")}
+          <div className="lg:col-span-5 space-y-4 min-w-0">
+            {renderCardWrapper("pedagogical_school", schoolCard, "min-w-0")}
+            {renderCardWrapper("pedagogical_reflection", contactCard, "min-w-0")}
+          </div>
+        </div>
+      );
+
+      const freeCards = [
+        renderCardWrapper("pedagogical_journal", journalCard),
+        renderCardWrapper("pedagogical_school", schoolCard),
+        renderCardWrapper("pedagogical_reflection", contactCard),
+      ].filter(Boolean);
+
+      return renderCustomLayoutContainer(
+        "pedagogical-journal",
+        layoutTitle,
+        ["pedagogical_journal", "pedagogical_school", "pedagogical_reflection"],
+        autoContent,
+        freeCards,
+      );
+    }
 
     const containerClassName = {
       "story-card": "grid grid-cols-1 gap-5 lg:grid-cols-[1.25fr_0.75fr]",
@@ -3251,7 +3545,7 @@ export function AboutBlock({
               >
                 {formatSectionEyebrow(archetypeId, "01", "Profile Story")}
               </span>
-              <h2 className="mt-1 font-editorial text-2xl sm:text-3xl lg:text-4xl font-bold break-words">
+              <h2 className="mt-1 font-editorial text-xl sm:text-3xl lg:text-4xl font-bold break-words [overflow-wrap:anywhere]">
                 <InlineAboutText
                   value={section.title}
                   editable={editable}
@@ -3261,7 +3555,7 @@ export function AboutBlock({
               </h2>
             </div>
 
-            <p className="text-sm sm:text-base leading-relaxed opacity-85 break-words">
+            <p className="text-sm sm:text-base leading-relaxed opacity-85 break-words [overflow-wrap:anywhere]">
               <InlineAboutText
                 value={section.biography}
                 editable={editable}

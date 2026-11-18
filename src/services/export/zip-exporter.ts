@@ -453,7 +453,7 @@ html {
   scroll-behavior: smooth;
   scrollbar-color: var(--primary) var(--bg);
   scrollbar-width: thin;
-  overflow-x: clip;
+  overflow-x: hidden;
   max-width: 100%;
 }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -469,7 +469,7 @@ body {
   background-color: var(--bg);
   color: var(--text);
   line-height: 1.6;
-  overflow-x: clip;
+  overflow-x: hidden;
   max-width: 100%;
   background-image: linear-gradient(90deg, ${hexToRgba(pal.primary, 0.05)} 1px, transparent 1px), linear-gradient(180deg, ${hexToRgba(pal.primary, 0.05)} 1px, transparent 1px);
   background-size: 40px 40px;

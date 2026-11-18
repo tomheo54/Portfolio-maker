@@ -110,7 +110,7 @@ function DocxFileLink({
       rel="noopener noreferrer"
       aria-label={label || "Mở file DOCX đính kèm"}
       onClick={(event) => event.stopPropagation()}
-      className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold transition hover:opacity-85 shadow-xs whitespace-nowrap"
+      className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold transition hover:opacity-85 shadow-xs whitespace-nowrap cursor-pointer hover:shadow-sm"
       style={{
         borderColor,
         color: textColor,
@@ -119,6 +119,7 @@ function DocxFileLink({
     >
       <FileText className="h-3 w-3 shrink-0" />
       <span>{label || "Mở file DOCX"}</span>
+      <ExternalLink className="h-2.5 w-2.5 shrink-0 opacity-70" />
     </a>
   );
 }
@@ -1529,6 +1530,9 @@ export function ProjectsShowcaseBlock({
             />
           </h3>
 
+          {/* Project Files Bar (DOCX & attachments) */}
+          {renderProjectFilesBar(project, theme, editable)}
+
           {/* Layer 1: Assignment Brief */}
           {project.assignmentBrief && (
             <div
@@ -2159,6 +2163,9 @@ export function ProjectsShowcaseBlock({
                           {project.title}
                         </h3>
 
+                        {/* Project Files Bar (DOCX & attachments) */}
+                        {renderProjectFilesBar(project, theme, editable)}
+
                         {hasMedia && (
                           <div
                             className="rounded-2xl border-2 overflow-hidden shadow-xs"
@@ -2222,24 +2229,28 @@ export function ProjectsShowcaseBlock({
                       </div>
 
                       <div
-                        className="flex items-center justify-between pt-3 border-t"
+                        className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t"
                         style={{ borderColor: `${theme.primaryColor}20` }}
                       >
-                        <span className="text-xs font-bold opacity-75" style={{ color: theme.textColor }}>
-                          TIKTOK &amp; REELS
-                        </span>
-                        <button
-                          type="button"
-                          onClick={(e) => { e.stopPropagation(); openModal(project, index, 0); }}
-                          className="rounded-full border px-4 py-1.5 text-xs font-black text-white transition inline-flex items-center gap-1.5"
-                          style={{
-                            backgroundColor: theme.primaryColor,
-                            borderColor: theme.primaryColor,
-                            boxShadow: `2px 2px 0px ${theme.textColor}aa`,
-                          }}
-                        >
-                          <Eye className="h-3.5 w-3.5" /> Khám phá Story
-                        </button>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-xs font-bold opacity-75" style={{ color: theme.textColor }}>
+                            {project.category || "HỒ SƠ BÀI TẬP"}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); openModal(project, index, 0); }}
+                            className="rounded-full border px-4 py-1.5 text-xs font-black text-white transition inline-flex items-center gap-1.5 cursor-pointer"
+                            style={{
+                              backgroundColor: theme.primaryColor,
+                              borderColor: theme.primaryColor,
+                              boxShadow: `2px 2px 0px ${theme.textColor}aa`,
+                            }}
+                          >
+                            <Eye className="h-3.5 w-3.5" /> Khám phá Story
+                          </button>
+                        </div>
                       </div>
                     </SortableProjectCardWrapper>
                   );
