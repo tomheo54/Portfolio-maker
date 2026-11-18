@@ -14,9 +14,9 @@ export const CANVA_SAMPLE_01_PORTFOLIO_DOC: PortfolioDocument = {
     visualStyle: 'editorial-illustration',
   },
   seo: {
-    title: 'Nguyễn Văn A | Digital Portfolio 2026',
+    title: 'Digital Portfolio 2026',
     description:
-      'Hồ sơ học tập và sản phẩm số của Nguyễn Văn A - Sư phạm Ngữ văn & Giáo dục Khai phóng, môn INF2501.',
+      'Hồ sơ học tập và sản phẩm số môn INF2501.',
     ogImage: '/presets/avatar-mau-02.svg',
   },
   theme: {
@@ -46,14 +46,14 @@ export const CANVA_SAMPLE_01_PORTFOLIO_DOC: PortfolioDocument = {
     },
   },
   profileOwner: {
-    fullName: 'Nguyễn Văn A',
+    fullName: 'Họ và Tên',
     roleTitle: 'Sư phạm Ngữ văn & Giáo dục Khai phóng',
     avatarUrl: '/presets/avatar-mau-02.svg',
     avatarSourceType: 'user-uploaded',
     frameStyle: 'arch-window',
     aspectRatio: '3/4',
     bioSnippet:
-      'Xin chào! Mình là Nguyễn Văn A. Đam mê văn học, nghệ thuật sư phạm và ứng dụng công nghệ AI tạo sinh trong giáo dục hiện đại.',
+      'Xin chào! Mình đam mê học hỏi, sáng tạo và luôn mong muốn vận dụng công nghệ số vào thực tiễn.',
     learningGoals:
       'Làm chủ công nghệ số, xây dựng hệ thống học liệu mở và vận dụng AI có trách nhiệm vào giảng dạy văn học.',
     portfolioObjective:
@@ -64,10 +64,10 @@ export const CANVA_SAMPLE_01_PORTFOLIO_DOC: PortfolioDocument = {
       type: 'hero',
       variant: 'editorial-asymmetric',
       headline: 'Digital Portfolio',
-      fullName: 'Nguyễn Văn A',
+      fullName: 'Họ và Tên',
       roleTitle: 'Sư phạm Ngữ văn & Giáo dục Khai phóng • Trường Đại học Mẫu',
       shortBio:
-        'Xin chào! Mình là Nguyễn Văn A. Mình yêu thích ngôn ngữ, giáo dục và mong muốn kết nối tri thức nhân loại thông qua công nghệ trí tuệ nhân tạo.',
+        'Xin chào! Mình đam mê học hỏi, sáng tạo và luôn mong muốn vận dụng công nghệ số vào thực tiễn.',
       avatar: {
         url: '/presets/avatar-mau-02.svg',
         sourceType: 'user-uploaded',
@@ -239,7 +239,7 @@ export const CANVA_SAMPLE_01_PORTFOLIO_DOC: PortfolioDocument = {
           chapterTitle: 'Chương 2: Đạo đức AI & Trách nhiệm Số trong Giáo dục',
           exerciseNumber: 'Bài tập 3 (mục 2.3)',
           academicIntegrityNote:
-            'Sản phẩm tự soạn thảo dựa trên khung UNESCO và hướng dẫn liêm chính học thuật ĐH Sư phạm.',
+            'Sản phẩm tự soạn thảo dựa trên khung UNESCO và chuẩn mực liêm chính học thuật.',
           productType: 'responsible-ai-rules',
           summary:
             'Xây dựng 5 nguyên tắc vàng khi ứng dụng AI trong học tập và nghiên cứu: Minh bạch, Tôn trọng bản quyền, Kiểm chứng đa nguồn.',
@@ -280,7 +280,7 @@ export const CANVA_SAMPLE_01_PORTFOLIO_DOC: PortfolioDocument = {
         institution: 'Trường Đại học Mẫu',
         studentClass: 'Lớp Mẫu - Sư phạm Ngữ văn',
         studentId: 'SV-MAU-001',
-        studentName: 'Nguyễn Văn A',
+        studentName: 'Họ và Tên',
       },
       aiToolsDeclaration: [
         {
@@ -317,9 +317,9 @@ export const CANVA_SAMPLE_02_PORTFOLIO_DOC: PortfolioDocument = {
     visualStyle: 'canva-pastel-graphic',
   },
   seo: {
-    title: 'Nguyễn Văn A | Creative Educator Portfolio 2026',
+    title: 'Digital Portfolio 2026',
     description:
-      'Portfolio sáng tạo của Nguyễn Văn A - Khoa học Giáo dục & Đổi mới Đào tạo số, môn INF2501.',
+      'Portfolio sáng tạo - môn INF2501.',
     ogImage: '/presets/avatar-mau-03.svg',
   },
   theme: {
@@ -349,7 +349,7 @@ export const CANVA_SAMPLE_02_PORTFOLIO_DOC: PortfolioDocument = {
     },
   },
   profileOwner: {
-    fullName: 'Nguyễn Văn A',
+    fullName: 'Họ và Tên',
     roleTitle: 'Khoa học Giáo dục & Đổi mới Công nghệ',
     avatarUrl: '/presets/avatar-mau-03.svg',
     avatarSourceType: 'user-uploaded',
@@ -367,7 +367,7 @@ export const CANVA_SAMPLE_02_PORTFOLIO_DOC: PortfolioDocument = {
       type: 'hero',
       variant: 'split-left',
       headline: 'Creative Portfolio',
-      fullName: 'Nguyễn Văn A',
+      fullName: 'Họ và Tên',
       roleTitle: 'Educator & Creative Designer • Khoa học Giáo dục',
       shortBio:
         'Xin chào, tôi là Quyên – ngành Khoa học giáo dục. Ghi lại hành trình đổi mới công nghệ đào tạo và xây dựng sản phẩm học tập số mang đậm dấu ấn cá nhân.',
@@ -498,7 +498,7 @@ export const CANVA_SAMPLE_02_PORTFOLIO_DOC: PortfolioDocument = {
         institution: 'Trường Đại học Mẫu',
         studentClass: 'Lớp Mẫu - Khoa học Giáo dục',
         studentId: 'SV-MAU-002',
-        studentName: 'Nguyễn Văn A',
+        studentName: 'Họ và Tên',
       },
     },
   ],
@@ -513,9 +513,9 @@ export const CANVA_SAMPLE_03_PORTFOLIO_DOC: PortfolioDocument = {
     visualStyle: 'minimal-photo',
   },
   seo: {
-    title: 'Nguyễn Văn A | Minimalist Portfolio 2026',
+    title: 'Digital Portfolio 2026',
     description:
-      'Portfolio tối giản thanh lịch của Nguyễn Văn A - Giáo dục Tiểu học, học phần INF2501.',
+      'Portfolio tối giản thanh lịch - môn INF2501.',
     ogImage: '/presets/avatar-mau-04.svg',
   },
   theme: {
@@ -545,7 +545,7 @@ export const CANVA_SAMPLE_03_PORTFOLIO_DOC: PortfolioDocument = {
     },
   },
   profileOwner: {
-    fullName: 'Nguyễn Văn A',
+    fullName: 'Họ và Tên',
     roleTitle: 'Giáo dục Tiểu học & Sư phạm Số',
     avatarUrl: '/presets/avatar-mau-04.svg',
     avatarSourceType: 'user-uploaded',
@@ -566,7 +566,7 @@ export const CANVA_SAMPLE_03_PORTFOLIO_DOC: PortfolioDocument = {
       fullName: 'NGUYỄN VĂN A',
       roleTitle: 'EDUCATOR • GIÁO DỤC TIỂU HỌC',
       shortBio:
-        'Chào mừng đến với không gian số của Nguyễn Văn A. Nơi lưu giữ những bước tiến vững chắc trong việc đưa công nghệ số vào giảng dạy bậc tiểu học.',
+        'Chào mừng bạn đến với không gian học tập và nghiên cứu số. Nơi lưu giữ các kết quả thực hành và minh chứng năng lực thực tế.',
       avatar: {
         url: '/presets/avatar-mau-04.svg',
         sourceType: 'user-uploaded',
@@ -667,7 +667,7 @@ export const CANVA_SAMPLE_03_PORTFOLIO_DOC: PortfolioDocument = {
         courseCode: 'INF2501',
         courseName: 'Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo',
         institution: 'Trường Đại học Mẫu',
-        studentName: 'Nguyễn Văn A',
+        studentName: 'Họ và Tên',
       },
     },
   ],
@@ -682,9 +682,9 @@ export const CANVA_SAMPLE_04_PORTFOLIO_DOC: PortfolioDocument = {
     visualStyle: 'canva-pastel-graphic',
   },
   seo: {
-    title: 'Nguyễn Văn A | Medical Student Portfolio 2026',
+    title: 'Digital Portfolio 2026',
     description:
-      'Hồ sơ năng lực số của Nguyễn Văn A - Y Đa khoa, Trường Đại học Mẫu, học phần INF2501.',
+      'Hồ sơ năng lực số - môn INF2501.',
     ogImage: '/presets/avatar-mau-05.svg',
   },
   theme: {
@@ -714,7 +714,7 @@ export const CANVA_SAMPLE_04_PORTFOLIO_DOC: PortfolioDocument = {
     },
   },
   profileOwner: {
-    fullName: 'Nguyễn Văn A',
+    fullName: 'Họ và Tên',
     roleTitle: 'Sinh viên ngành Mẫu • MSV: SV-MAU-003',
     avatarUrl: '/presets/avatar-mau-05.svg',
     avatarSourceType: 'user-uploaded',
@@ -842,7 +842,7 @@ export const CANVA_SAMPLE_04_PORTFOLIO_DOC: PortfolioDocument = {
         courseName: 'Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo',
         institution: 'Trường Đại học Mẫu',
         studentId: 'SV-MAU-003',
-        studentName: 'Nguyễn Văn A',
+        studentName: 'Họ và Tên',
       },
     },
   ],
@@ -857,9 +857,9 @@ export const CANVA_SAMPLE_05_PORTFOLIO_DOC: PortfolioDocument = {
     visualStyle: 'editorial-illustration',
   },
   seo: {
-    title: 'Nguyễn Văn A | Artistic Portfolio 2026',
+    title: 'Digital Portfolio 2026',
     description:
-      'Portfolio nghệ thuật đường cong hữu cơ của Nguyễn Văn A - lớp mẫu ngành Giáo dục, học phần INF2501.',
+      'Portfolio nghệ thuật đường cong hữu cơ - môn INF2501.',
     ogImage: '/presets/avatar-mau-03.svg',
   },
   theme: {
@@ -889,7 +889,7 @@ export const CANVA_SAMPLE_05_PORTFOLIO_DOC: PortfolioDocument = {
     },
   },
   profileOwner: {
-    fullName: 'Nguyễn Văn A',
+    fullName: 'Họ và Tên',
     roleTitle: 'Khoa học Giáo dục & Sáng tạo Nghệ thuật • Lớp Mẫu',
     avatarUrl: '/presets/avatar-mau-03.svg',
     avatarSourceType: 'user-uploaded',
@@ -910,7 +910,7 @@ export const CANVA_SAMPLE_05_PORTFOLIO_DOC: PortfolioDocument = {
       fullName: 'NGUYỄN VĂN A',
       roleTitle: 'EDUCATOR • TRƯỜNG ĐẠI HỌC MẪU',
       shortBio:
-        'Xin chào! Mình là Nguyễn Văn A. Giáo dục là nghệ thuật khơi dậy tiềm năng con người bằng sự chân thành, nhiệt huyết và công nghệ khai phóng.',
+        'Xin chào! Mình đam mê học hỏi, sáng tạo và luôn mong muốn vận dụng công nghệ số vào thực tiễn.',
       avatar: {
         url: '/presets/avatar-mau-03.svg',
         sourceType: 'user-uploaded',
@@ -1014,7 +1014,7 @@ export const CANVA_SAMPLE_05_PORTFOLIO_DOC: PortfolioDocument = {
         courseCode: 'INF2501',
         courseName: 'Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo',
         institution: 'Trường Đại học Mẫu',
-        studentName: 'Nguyễn Văn A',
+        studentName: 'Họ và Tên',
       },
     },
   ],
@@ -1029,9 +1029,9 @@ export const CANVA_SAMPLE_06_PORTFOLIO_DOC: PortfolioDocument = {
     visualStyle: 'editorial-illustration',
   },
   seo: {
-    title: 'Nguyễn Văn A | Academic Presentation Portfolio 2026',
+    title: 'Digital Portfolio 2026',
     description:
-      'Hồ sơ học thuật chuẩn mực của Nguyễn Văn A - Khoa học Giáo dục, học phần INF2501.',
+      'Hồ sơ học thuật chuẩn mực - môn INF2501.',
     ogImage: '/presets/avatar-mau-01.svg',
   },
   theme: {
@@ -1061,7 +1061,7 @@ export const CANVA_SAMPLE_06_PORTFOLIO_DOC: PortfolioDocument = {
     },
   },
   profileOwner: {
-    fullName: 'Nguyễn Văn A',
+    fullName: 'Họ và Tên',
     roleTitle: 'Khoa học Giáo dục • Trường Đại học Mẫu',
     avatarUrl: '/presets/avatar-mau-01.svg',
     avatarSourceType: 'user-uploaded',
@@ -1082,7 +1082,7 @@ export const CANVA_SAMPLE_06_PORTFOLIO_DOC: PortfolioDocument = {
       fullName: 'NGUYỄN VĂN A',
       roleTitle: 'TRƯỜNG ĐẠI HỌC MẪU • KHOA HỌC GIÁO DỤC',
       shortBio:
-        'Chào mừng đến với không gian học thuật số của Nguyễn Văn A. Lưu giữ các kết quả nghiên cứu và bài tập học phần Nhập môn Công nghệ số & Trí tuệ Nhân tạo.',
+        'Chào mừng bạn đến với không gian học tập và nghiên cứu số. Nơi lưu giữ các kết quả thực hành và minh chứng năng lực thực tế.',
       avatar: {
         url: '/presets/avatar-mau-01.svg',
         sourceType: 'user-uploaded',
@@ -1187,7 +1187,7 @@ export const CANVA_SAMPLE_06_PORTFOLIO_DOC: PortfolioDocument = {
         courseCode: 'INF2501',
         courseName: 'Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo',
         institution: 'Trường Đại học Mẫu',
-        studentName: 'Nguyễn Văn A',
+        studentName: 'Họ và Tên',
       },
     },
   ],

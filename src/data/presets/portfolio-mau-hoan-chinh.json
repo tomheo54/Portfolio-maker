@@ -7,8 +7,8 @@
     "visualStyle": "canva-pastel-graphic"
   },
   "seo": {
-    "title": "Nguyễn Văn A | Digital Portfolio 2026",
-    "description": "Portfolio cá nhân của Nguyễn Văn A - Sinh viên ngành Sư phạm Âm nhạc, lưu giữ các dự án học tập và ứng dụng AI thực chiến.",
+    "title": "Digital Portfolio 2026",
+    "description": "Portfolio cá nhân lưu giữ các dự án học tập, sản phẩm thực hành và ứng dụng AI thực tế.",
     "ogImage": "/presets/avatar-mau-01.svg"
   },
   "theme": {
@@ -27,9 +27,9 @@
       "type": "hero",
       "variant": "canva-cover",
       "headline": "Digital Portfolio",
-      "fullName": "Nguyễn Văn A",
-      "roleTitle": "Sinh viên Ngành Sư phạm Âm nhạc • ĐH Sư phạm Nghệ thuật Trung ương",
-      "shortBio": "Xin chào! Mình là Nguyễn Văn A. Mình yêu thích âm nhạc và luôn mong muốn học hỏi, sáng tạo, lan tỏa những giá trị tích cực thông qua nghệ thuật và công nghệ AI.",
+      "fullName": "Họ và Tên",
+      "roleTitle": "Hồ sơ Học tập & Sản phẩm số",
+      "shortBio": "Xin chào! Mình luôn mong muốn học hỏi, sáng tạo, lan tỏa những giá trị tích cực và vận dụng công nghệ số vào giải quyết vấn đề thực tế.",
       "avatar": {
         "url": "/presets/avatar-mau-01.svg",
         "sourceType": "user-uploaded",
@@ -69,7 +69,7 @@
         {
           "id": "dec-2",
           "type": "badge",
-          "label": "✦ Sư phạm Âm nhạc & AI",
+          "label": "✦ Năng lực số & AI",
           "position": {
             "bottom": "12%",
             "left": "4%",
@@ -83,7 +83,7 @@
       "type": "about",
       "variant": "story-card",
       "title": "About me • Giới thiệu bản thân",
-      "biography": "Xin chào! Mình là Nguyễn Văn A, hiện đang là sinh viên ngành Sư phạm Âm nhạc tại Trường ĐH Sư phạm Nghệ thuật Trung ương. Mục tiêu học tập của mình là trau dồi kiến thức chuyên môn, nâng cao kỹ năng biểu diễn và giảng dạy, đồng thời kết hợp tư duy số và AI tạo sinh để thiết kế học liệu sáng tạo, truyền cảm hứng cho học sinh.",
+      "biography": "Xin chào! Đây là không gian lưu trữ và giới thiệu các sản phẩm học tập, dự án thực hành và minh chứng năng lực số. Mục tiêu của mình là trau dồi kiến thức chuyên môn, phát triển tư duy sáng tạo và ứng dụng công nghệ hiệu quả vào thực tiễn.",
       "highlights": [
         {
           "label": "Dự án hoàn thành",
@@ -91,7 +91,7 @@
         },
         {
           "label": "Chuyên ngành",
-          "value": "Sư phạm Âm nhạc"
+          "value": "Học phần INF2501"
         },
         {
           "label": "Niên khóa",
@@ -99,7 +99,7 @@
         },
         {
           "label": "Định hướng",
-          "value": "Nghệ thuật & AI"
+          "value": "Năng lực số & AI"
         }
       ],
       "contactInfo": {
@@ -150,11 +150,11 @@
       "title": "Education • Học vấn",
       "items": [
         {
-          "school": "Trường Đại học Mẫu",
-          "degree": "Ngành Sư phạm Âm nhạc",
+          "school": "Trường Đại học",
+          "degree": "Chuyên ngành Đào tạo",
           "period": "2023 - 2027",
-          "gpaOrHonors": "Mã SV: SV-MAU-001 • Lớp Tín chỉ 03 (Nhập môn Công nghệ số & Ứng dụng AI)",
-          "details": "Tập trung nâng cao năng lực sư phạm, phương pháp giảng dạy âm nhạc hiện đại (Orff Schulwerk, Kodály, Gordon) và ứng dụng công nghệ AI trong soạn giảng."
+          "gpaOrHonors": "Hồ sơ Học tập & Năng lực số",
+          "details": "Tập trung nâng cao kiến thức chuyên môn, phương pháp nghiên cứu và ứng dụng công nghệ số vào học tập, sáng tạo và thực hành."
         }
       ]
     },
@@ -348,7 +348,7 @@
           "suggestedAiImagePrompt": "Minimalist editorial illustration of responsible AI ethics in music education, musical notes with academic verification checkmark, warm parchment cream background",
           "preferredImageStyle": "editorial-illustration",
           "links": [],
-          "tags": ["HARMONY Principles", "Sư phạm Âm nhạc", "APA 7th"]
+          "tags": ["Nguyên tắc thực hành", "Năng lực số", "Minh bạch học thuật"]
         }
       ]
     },

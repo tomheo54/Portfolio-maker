@@ -72,19 +72,19 @@ const SECTION_TITLES: Record<PortfolioSection['type'], string> = {
 
 const TEMPLATE_OPTIONS: Array<{ id: TemplateId; label: string }> = [
   { id: 'canva-editorial', label: 'Canva Editorial ★ (Chuẩn mẫu gốc)' },
-  { id: 'medical-ruby', label: 'Canva Medical Ruby (Ngô Mộc Anh - Dược học)' },
-  { id: 'clinical-navy', label: 'Canva Clinical Navy (Thu Trang - Y khoa)' },
-  { id: 'pedagogical-mauve', label: 'Canva Pedagogical Mauve (Nguyệt Ánh - Sư phạm)' },
-  { id: 'educational-terracotta', label: 'Canva Educational Terracotta (Võ Thị Hoài - Giáo dục)' },
-  { id: 'pedagogical-rose', label: 'Canva Pedagogical Rose (Thùy Linh - Tâm lý & GD)' },
-  { id: 'content-creator', label: 'Canva Content Creator (Hà Lê - Truyền thông)' },
-  { id: 'oceanic-teal', label: 'Canva Oceanic Teal (Đăng Dương - Ngôn ngữ)' },
+  { id: 'medical-ruby', label: 'Canva Medical Ruby' },
+  { id: 'clinical-navy', label: 'Canva Clinical Navy' },
+  { id: 'pedagogical-mauve', label: 'Canva Pedagogical Mauve' },
+  { id: 'educational-terracotta', label: 'Canva Educational Terracotta' },
+  { id: 'pedagogical-rose', label: 'Canva Pedagogical Rose' },
+  { id: 'content-creator', label: 'Canva Content Creator' },
+  { id: 'oceanic-teal', label: 'Canva Oceanic Teal' },
   { id: 'warm-editorial', label: 'Canva Warm Editorial (Mẫu 01)' },
   { id: 'creative-bold', label: 'Canva Bold Creative (Mẫu 02)' },
   { id: 'minimal-chic', label: 'Canva Minimal Chic (Mẫu 03)' },
   { id: 'vibrant-student', label: 'Canva Vibrant Student (Mẫu 04)' },
-  { id: 'artistic-organic', label: 'Canva Artistic Organic (Chí Huế)' },
-  { id: 'academic-presentation', label: 'Canva Academic Crimson (Võ Hoài)' },
+  { id: 'artistic-organic', label: 'Canva Artistic Organic' },
+  { id: 'academic-presentation', label: 'Canva Academic Crimson' },
   { id: 'bento-grid', label: 'Bento Grid Studio' },
   { id: 'framer-minimal', label: 'Framer Minimal Mono' },
   { id: 'creative-showcase', label: 'Creative Showcase' },
@@ -279,10 +279,10 @@ export default function StudioPage() {
     window.addEventListener('beforeunload', flushDraft);
     const initialDocument = usePortfolioStore.getState().document;
     const searchParams = new URLSearchParams(window.location.search);
-    const targetDraftId = searchParams.get('draft');
-    const isNewCreation = searchParams.get('new') === '1' || searchParams.has('new') || !targetDraftId;
+    const isExplicitNew = searchParams.get('new') === '1' || searchParams.has('new');
+    const targetDraftId = isExplicitNew ? null : (searchParams.get('draft') || getActivePortfolioDraftId());
 
-    if (isNewCreation) {
+    if (isExplicitNew) {
       usePortfolioStore.getState().resetToPreset();
     }
     const unsubscribe = usePortfolioStore.subscribe((state, previous) => {
@@ -295,24 +295,30 @@ export default function StudioPage() {
       persist();
     });
 
-    if (isNewCreation) {
+    if (isExplicitNew) {
       // Khi bấm tạo mới: Cấp ngay một ID dự án mới toanh, không đọc lại bất kỳ bản nháp cũ nào
       const brandNewDraftId = `draft-${crypto.randomUUID()}`;
       draftIdRef.current = brandNewDraftId;
       setDraftId(brandNewDraftId);
       setActivePortfolioDraftId(brandNewDraftId);
+      if (typeof window !== "undefined" && window.history?.replaceState) {
+        window.history.replaceState({}, '', `/studio?draft=${encodeURIComponent(brandNewDraftId)}`);
+      }
       hydrated = true;
       const current = usePortfolioStore.getState();
       void writePortfolioDraft(current.document, current.history, current.future, brandNewDraftId).catch(() => {});
     } else {
-      // Chỉ khi người dùng chủ động bấm vào một dự án cụ thể (?draft=...)
+      // Đọc bản nháp đang chỉnh sửa (?draft=... hoặc active draft lưu trong trình duyệt)
       void readPortfolioDraft(targetDraftId).then((draft) => {
         if (!active) return;
         const nextDraftId = draft?.id ?? targetDraftId ?? `draft-${crypto.randomUUID()}`;
         draftIdRef.current = nextDraftId;
         setDraftId(nextDraftId);
         setActivePortfolioDraftId(nextDraftId);
-        if (draft && usePortfolioStore.getState().document === initialDocument && !changedWhileHydrating) {
+        if (typeof window !== "undefined" && window.history?.replaceState) {
+          window.history.replaceState({}, '', `/studio?draft=${encodeURIComponent(nextDraftId)}`);
+        }
+        if (draft && !changedWhileHydrating) {
           restoringDraft = true;
           usePortfolioStore.getState().restoreDraftSnapshot({
             document: draft.document,

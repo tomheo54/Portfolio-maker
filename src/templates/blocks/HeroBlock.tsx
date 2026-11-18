@@ -1628,7 +1628,11 @@ export function HeroBlock({
           <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-12">
             {/* Cell 1: Main Intro */}
             <div
-              className={`surface-block flex flex-col justify-between p-7 sm:p-10 lg:col-span-7 ${cardDec.className}`}
+              className={`surface-block flex flex-col justify-between p-7 sm:p-10 ${
+                isInverted
+                  ? "lg:col-span-7 lg:order-2"
+                  : "lg:col-span-7 lg:order-1"
+              } ${cardDec.className}`}
               style={cardDec.style}
             >
               <div className="space-y-5">
@@ -1675,7 +1679,11 @@ export function HeroBlock({
 
             {/* Cell 2: Avatar Tile */}
             <div
-              className={`flex flex-col items-center justify-center p-6 sm:p-8 lg:col-span-5 ${cardDec.className}`}
+              className={`flex flex-col items-center justify-center p-6 sm:p-8 ${
+                isInverted
+                  ? "lg:col-span-5 lg:order-1"
+                  : "lg:col-span-5 lg:order-2"
+              } ${cardDec.className}`}
               style={{
                 ...cardDec.style,
                 backgroundColor: `${theme.primaryColor}0D`,
@@ -1697,7 +1705,7 @@ export function HeroBlock({
                   color: theme.secondaryColor,
                 }}
               >
-                {profile.badgeLabel} Portfolio
+                {portfolioDisplayLabel}
               </span>
             </div>
           </div>
@@ -1714,7 +1722,7 @@ export function HeroBlock({
                 EDITORIAL ARCHIVE • DIGITAL PORTFOLIO 2026
               </span>
               <span className="rounded-full bg-stone-100 px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-stone-700">
-                VOL. 01 • SƯ PHẠM
+                VOL. 01 • PORTFOLIO
               </span>
             </div>
 

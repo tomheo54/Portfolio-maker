@@ -538,7 +538,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'canva-bold-creative-rose',
-    name: 'Canva Bold Creative Rose (Hồng Quyên)',
+    name: 'Canva Bold Creative Rose',
     description:
       'Phong cách đồ họa sáng tạo nổi bật: nền hồng phấn #FDF1F5, hồng tro ấm #92736C, xanh prussian ink #304254.',
     templateId: 'creative-bold',
@@ -572,7 +572,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'canva-minimal-chic-marine',
-    name: 'Canva Minimal Chic Marine (Ngọc Mai)',
+    name: 'Canva Minimal Chic Marine',
     description:
       'Phong cách tối giản thanh lịch: tương phản xanh hải quân #326586 và kem bơ custard #FFFCE2, khối liên hệ rõ nét.',
     templateId: 'minimal-chic',
@@ -606,9 +606,9 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'canva-vibrant-student-indigo',
-    name: 'Canva Vibrant Student Indigo (Bảo Châm)',
+    name: 'Canva Vibrant Student Indigo',
     description:
-      'Phong cách sinh viên y khoa năng động: nền kem bơ #FFFCE2, xanh indigo cornflower #566E99, chữ than đậm #304254.',
+      'Phong cách sinh viên năng động: nền kem bơ #FFFCE2, xanh indigo cornflower #566E99, chữ than đậm #304254.',
     templateId: 'vibrant-student',
     recommendedVisualStyle: 'canva-pastel-graphic',
     theme: {
@@ -640,7 +640,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'canva-artistic-organic-burgundy',
-    name: 'Canva Artistic Organic Burgundy (Chí Huế)',
+    name: 'Canva Artistic Organic Burgundy',
     description:
       'Phong cách nghệ thuật đường cong hữu cơ: nền quả mơ đào #FFECD1, đỏ burgundy nhung #3E000C, espresso cherry #381313.',
     templateId: 'artistic-organic',
@@ -708,9 +708,9 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'canva-medical-ruby-mocanh',
-    name: 'Canva Medical Ruby (Ngô Mộc Anh)',
+    name: 'Canva Medical Ruby',
     description:
-      'Chuẩn hóa 1:1 theo portfolio Dược học Mộc Anh: header đỏ rượu ruby #7B1113, nền kem ngà #FFFDF9, chữ espresso mahogany #2B1810, cấu trúc Mục tiêu - Quy trình - Sản phẩm và banner Tổng kết nổi bật.',
+      'Phong cách Tạp chí Y Dược cao cấp: header đỏ rượu ruby #7B1113, nền kem ngà #FFFDF9, chữ espresso mahogany #2B1810, cấu trúc Mục tiêu - Quy trình - Sản phẩm và banner Tổng kết nổi bật.',
     templateId: 'medical-ruby',
     recommendedVisualStyle: 'editorial-illustration',
     theme: {
@@ -742,7 +742,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'canva-clinical-navy-thutrang',
-    name: 'Canva Clinical Navy (Hoàng Thu Trang)',
+    name: 'Canva Clinical Navy',
     description:
       'Phong cách Y khoa hiện đại chính xác: sắc xanh hải quân lâm sàng #1A1264, nhấn cobalt #383E8C, nền đá phiến mát #F8FAFC, chữ midnight #0C0838.',
     templateId: 'clinical-navy',
@@ -776,9 +776,9 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'canva-pedagogical-mauve-nguyetanh',
-    name: 'Canva Pedagogical Mauve (Lường Thị Nguyệt Ánh)',
+    name: 'Canva Pedagogical Mauve',
     description:
-      'Phong cách Sư phạm & Khoa học Giáo dục UEd: hồng mauve tro ấm #9B5464, đất nung mềm #D36F73, nền lanh tự nhiên #F9F6F2, chữ mận than #3A2329.',
+      'Phong cách Sư phạm & Khoa học Giáo dục: hồng mauve tro ấm #9B5464, đất nung mềm #D36F73, nền lanh tự nhiên #F9F6F2, chữ mận than #3A2329.',
     templateId: 'pedagogical-mauve',
     recommendedVisualStyle: 'editorial-illustration',
     theme: {
@@ -810,7 +810,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'canva-content-creator-bordeaux-hale',
-    name: 'Canva Content Creator Bordeaux (Hà Lê)',
+    name: 'Canva Content Creator Bordeaux',
     description:
       'Phong cách Sáng tạo nội dung số & Truyền thông: bordeaux nhung quý phái #722F37, kem champagne #EFDFBB, nền vani ấm #FDF9F2, chữ chocolate #2D1418.',
     templateId: 'content-creator',
@@ -844,9 +844,9 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'canva-oceanic-teal-duong',
-    name: 'Canva Oceanic Teal (Trần Đăng Dương)',
+    name: 'Canva Oceanic Teal',
     description:
-      'Phong cách Ngôn ngữ & Văn hóa ULIS: xanh mòng két đại dương #0A5871, xanh denim #326586, nền kem cổ điển #FFF9F0, chữ than đậm #052C39.',
+      'Phong cách Ngôn ngữ & Văn hóa: xanh mòng két đại dương #0A5871, xanh denim #326586, nền kem cổ điển #FFF9F0, chữ than đậm #052C39.',
     templateId: 'oceanic-teal',
     recommendedVisualStyle: 'editorial-illustration',
     theme: {
@@ -878,9 +878,9 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'canva-educational-terracotta-hoai',
-    name: 'Canva Educational Terracotta (Võ Thị Hoài)',
+    name: 'Canva Educational Terracotta',
     description:
-      'Phong cách Khoa học Giáo dục ĐHQGHN: tông đỏ đất nung #9B302D, kem xám ấm #EDEAE2, chữ espresso than #282828, cấu trúc nghiên cứu khai phóng và khung vòm arch-window.',
+      'Phong cách Khoa học Giáo dục: tông đỏ đất nung #9B302D, kem xám ấm #EDEAE2, chữ espresso than #282828, cấu trúc nghiên cứu khai phóng và khung vòm arch-window.',
     templateId: 'educational-terracotta',
     recommendedVisualStyle: 'editorial-illustration',
     theme: {
@@ -912,9 +912,9 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'canva-pedagogical-rose-linh',
-    name: 'Canva Pedagogical Rose (Nguyễn Thùy Linh)',
+    name: 'Canva Pedagogical Rose',
     description:
-      'Phong cách Tâm lý & Công nghệ Giáo dục ĐHQGHN: hồng bụi thanh lịch #B76E79, nhấn xanh denim #326586, nền kem phấn #FDF6F6, chữ than #282828.',
+      'Phong cách Tâm lý & Công nghệ Giáo dục: hồng bụi thanh lịch #B76E79, nhấn xanh denim #326586, nền kem phấn #FDF6F6, chữ than #282828.',
     templateId: 'pedagogical-rose',
     recommendedVisualStyle: 'editorial-illustration',
     theme: {

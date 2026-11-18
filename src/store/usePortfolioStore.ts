@@ -49,8 +49,8 @@ const INITIAL_DOC: PortfolioDocument = {
   templateId: 'canva-editorial',
   theme: { ...CANVA_REFERENCE_THEME },
   profileOwner: PARSED_PRESET_DOC.profileOwner ?? {
-    fullName: heroSecForInitial?.fullName ?? 'Nguyễn Văn A',
-    roleTitle: heroSecForInitial?.roleTitle ?? 'Sinh viên Sư phạm Âm nhạc',
+    fullName: heroSecForInitial?.fullName ?? 'Họ và Tên',
+    roleTitle: heroSecForInitial?.roleTitle ?? 'Hồ sơ Học tập & Năng lực số',
     avatarUrl: heroSecForInitial?.avatar.url ?? '',
     avatarSourceType: heroSecForInitial?.avatar.sourceType ?? 'user-uploaded',
     frameStyle: (heroSecForInitial?.avatar.frameStyle as ProfileOwner['frameStyle']) ?? 'arch-window',
@@ -582,8 +582,8 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
       const aboutSec = state.document.sections.find((s): s is AboutSection => s.type === 'about');
 
       const currentOwner: ProfileOwner = state.document.profileOwner ?? {
-        fullName: heroSec?.fullName ?? 'Nguyễn Văn A',
-        roleTitle: heroSec?.roleTitle ?? 'Sinh viên Sư phạm Âm nhạc',
+        fullName: heroSec?.fullName ?? 'Họ và Tên',
+        roleTitle: heroSec?.roleTitle ?? 'Hồ sơ Học tập & Năng lực số',
         avatarUrl: heroSec?.avatar.url ?? '',
         avatarSourceType: heroSec?.avatar.sourceType ?? 'user-uploaded',
         frameStyle: (heroSec?.avatar.frameStyle as ProfileOwner['frameStyle']) ?? 'arch-window',
@@ -812,7 +812,7 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
             .toLowerCase()
             .replace(/[^a-z0-9]/g, '')
         : '';
-      const nextSlug = trimmedName && trimmedName !== 'Nguyễn Văn A' && slugBase
+      const nextSlug = trimmedName && trimmedName !== 'Họ và Tên' && trimmedName !== 'Nguyễn Văn A' && slugBase
         ? `${slugBase}portfolio`
         : currentDoc.slug || INITIAL_DOC.slug;
 
@@ -821,6 +821,17 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
       const baseSections = currentDoc.sections && currentDoc.sections.length > 0
         ? currentDoc.sections
         : INITIAL_DOC.sections;
+
+      const sanitizeBioText = (text?: string, name?: string) => {
+        if (!text) return '';
+        let result = text
+          .replace(/Nguyễn Văn A/g, name && name !== 'Họ và Tên' ? name : '')
+          .replace(/Sinh viên Ngành Sư phạm Âm nhạc • ĐH Sư phạm Nghệ thuật Trung ương/g, 'Hồ sơ Học tập & Năng lực số')
+          .replace(/ngành Sư phạm Âm nhạc tại Trường ĐH Sư phạm Nghệ thuật Trung ương/g, 'chương trình đào tạo')
+          .replace(/Trường ĐH Sư phạm Nghệ thuật TW/g, 'Trường Đại học')
+          .replace(/Trường ĐH Sư phạm Nghệ thuật Trung ương/g, 'Trường Đại học');
+        return result;
+      };
 
       const nextSections = baseSections.map((refSec) => {
         if (refSec.type === 'hero') {
@@ -831,18 +842,22 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
             // Keep user's current headline (do NOT force 'Digital Portfolio')
             headline: refSec.headline,
             // Only update text if summary actually has a non-empty string that is not dummy
-            fullName: trimmedName && trimmedName !== 'Nguyễn Văn A'
+            fullName: trimmedName && trimmedName !== 'Họ và Tên' && trimmedName !== 'Nguyễn Văn A'
               ? trimmedName
-              : (refSec.fullName || trimmedName || ''),
+              : (refSec.fullName && refSec.fullName !== 'Nguyễn Văn A' ? refSec.fullName : trimmedName || 'Họ và Tên'),
             roleTitle: summary.roleTitle?.trim() && summary.roleTitle.trim() !== 'AI Content Creator & Digital Marketer'
               ? summary.roleTitle.trim()
-              : (refSec.roleTitle || summary.roleTitle?.trim() || ''),
+              : (refSec.roleTitle && !/ĐH Sư phạm Nghệ thuật/i.test(refSec.roleTitle) ? refSec.roleTitle : 'Hồ sơ Học tập & Năng lực số'),
             shortBio: summary.shortBio?.trim()
               ? summary.shortBio.trim()
-              : refSec.shortBio,
+              : sanitizeBioText(refSec.shortBio, trimmedName),
             quickTags: summary.quickTags && summary.quickTags.length > 0
               ? summary.quickTags
               : refSec.quickTags,
+            decorations: (refSec.decorations || []).map((dec) => ({
+              ...dec,
+              label: dec.label?.replace(/Sư phạm Âm nhạc & AI/g, 'Năng lực số & AI') ?? dec.label,
+            })),
             avatar: studentAvatarUrl?.trim()
               ? {
                   ...refSec.avatar,
@@ -858,7 +873,7 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
             // Keep all layout properties intact: variant, mediaPosition, layoutInverted, cardFrame, cardOrder, cardPositions, cardTitles, etc.!
             biography: summary.biography?.trim()
               ? summary.biography.trim()
-              : refSec.biography,
+              : sanitizeBioText(refSec.biography, trimmedName),
             highlights: summary.highlights && summary.highlights.length > 0
               ? summary.highlights
               : refSec.highlights,
@@ -891,9 +906,13 @@ export const usePortfolioStore = create<PortfolioStoreState>((set, get) => ({
 
       const projectsSecIdx = nextSections.findIndex((s) => s.type === 'projects');
 
-      const nextFullName = trimmedName && trimmedName !== 'Nguyễn Văn A'
+      const nextFullName = trimmedName && trimmedName !== 'Họ và Tên' && trimmedName !== 'Nguyễn Văn A'
         ? trimmedName
-        : (currentDoc.profileOwner?.fullName || heroSec?.fullName || trimmedName || '');
+        : (currentDoc.profileOwner?.fullName && currentDoc.profileOwner.fullName !== 'Nguyễn Văn A'
+            ? currentDoc.profileOwner.fullName
+            : heroSec?.fullName && heroSec.fullName !== 'Nguyễn Văn A'
+              ? heroSec.fullName
+              : trimmedName || 'Họ và Tên');
       const nextRoleTitle = summary.roleTitle?.trim() && summary.roleTitle.trim() !== 'AI Content Creator & Digital Marketer'
         ? summary.roleTitle.trim()
         : (currentDoc.profileOwner?.roleTitle || heroSec?.roleTitle || summary.roleTitle?.trim() || '');

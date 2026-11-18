@@ -187,7 +187,7 @@ export const ARCHETYPE_PROFILES: Record<TemplateId, ArchetypeProfile> = {
   },
   'medical-ruby': {
     id: 'medical-ruby',
-    badgeLabel: 'Medical Ruby (Mộc Anh)',
+    badgeLabel: 'Medical Ruby',
     frameVariant: 'arch-window',
     navVariant: 'canva-pills',
     showSlideNumbers: false,
@@ -199,7 +199,7 @@ export const ARCHETYPE_PROFILES: Record<TemplateId, ArchetypeProfile> = {
   },
   'clinical-navy': {
     id: 'clinical-navy',
-    badgeLabel: 'Clinical Navy (Thu Trang)',
+    badgeLabel: 'Clinical Navy',
     frameVariant: 'rounded-card',
     navVariant: 'badge-bar',
     showSlideNumbers: false,
@@ -211,7 +211,7 @@ export const ARCHETYPE_PROFILES: Record<TemplateId, ArchetypeProfile> = {
   },
   'pedagogical-mauve': {
     id: 'pedagogical-mauve',
-    badgeLabel: 'Pedagogical Mauve (Nguyệt Ánh)',
+    badgeLabel: 'Pedagogical Mauve',
     frameVariant: 'rounded-card',
     navVariant: 'canva-pills',
     showSlideNumbers: false,
@@ -223,7 +223,7 @@ export const ARCHETYPE_PROFILES: Record<TemplateId, ArchetypeProfile> = {
   },
   'content-creator': {
     id: 'content-creator',
-    badgeLabel: 'Content Creator (Hà Lê)',
+    badgeLabel: 'Content Creator',
     frameVariant: 'polaroid',
     navVariant: 'canva-pills',
     showSlideNumbers: false,
@@ -235,7 +235,7 @@ export const ARCHETYPE_PROFILES: Record<TemplateId, ArchetypeProfile> = {
   },
   'oceanic-teal': {
     id: 'oceanic-teal',
-    badgeLabel: 'Oceanic Teal (Đăng Dương)',
+    badgeLabel: 'Oceanic Teal',
     frameVariant: 'rounded-card',
     navVariant: 'badge-bar',
     showSlideNumbers: false,
@@ -247,7 +247,7 @@ export const ARCHETYPE_PROFILES: Record<TemplateId, ArchetypeProfile> = {
   },
   'educational-terracotta': {
     id: 'educational-terracotta',
-    badgeLabel: 'Educational Terracotta (Võ Thị Hoài)',
+    badgeLabel: 'Educational Terracotta',
     frameVariant: 'arch-window',
     navVariant: 'canva-pills',
     showSlideNumbers: false,
@@ -259,7 +259,7 @@ export const ARCHETYPE_PROFILES: Record<TemplateId, ArchetypeProfile> = {
   },
   'pedagogical-rose': {
     id: 'pedagogical-rose',
-    badgeLabel: 'Pedagogical Rose (Thùy Linh)',
+    badgeLabel: 'Pedagogical Rose',
     frameVariant: 'rounded-card',
     navVariant: 'canva-pills',
     showSlideNumbers: false,

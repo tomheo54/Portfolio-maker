@@ -2412,14 +2412,14 @@ function renderAboutHtml(
     about.highlights.find((h) =>
       /trường|đại học|học viện|education|school/i.test(h.label),
     )?.value ||
-    "Trường ĐH Sư phạm Nghệ thuật TW";
+    "Trường Đại học";
   const eduDegree =
     about.educationDegree ||
     educationSec?.items[0]?.degree ||
     about.highlights.find((h) =>
       /chuyên ngành|ngành|degree|major/i.test(h.label),
     )?.value ||
-    "Sư phạm Âm nhạc";
+    "Chuyên ngành Đào tạo";
   const aboutHighlightsHtml =
     about.highlights.length > 0
       ? `<div class="about-highlight-grid">
@@ -3473,7 +3473,7 @@ function renderContactHtml(
     courseInfo?.courseName ??
     "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo";
   const institution =
-    courseInfo?.institution ?? "Trường ĐH Sư phạm Nghệ thuật TW";
+    courseInfo?.institution ?? "Trường Đại học";
   const footerCourseText = [courseCode, courseName]
     .filter(Boolean)
     .map((s) => escapeHtml(s))

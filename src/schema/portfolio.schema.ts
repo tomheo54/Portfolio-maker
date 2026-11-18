@@ -625,7 +625,7 @@ export const ContactSectionSchema = z.object({
       courseName: z
         .string()
         .default("Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo"),
-      institution: z.string().default("Trường ĐH Sư phạm Nghệ thuật TW"),
+      institution: z.string().default("Trường Đại học"),
       studentClass: z.string().optional(),
       studentId: z.string().optional(),
       studentName: z.string().optional(),

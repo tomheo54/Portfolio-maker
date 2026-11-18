@@ -2884,11 +2884,11 @@ export function AboutBlock({
       organic: "Bố cục tự do",
       timeline: "Dòng thời gian hồ sơ",
       "two-column-bio": "Tiểu sử 2 cột",
-      "medical-license": "Dược sĩ Lâm sàng Mộc Anh",
-      "clinical-dossier": "Bệnh án Bác sĩ Thu Trang",
+      "medical-license": "Hồ sơ Năng lực Dược sĩ",
+      "clinical-dossier": "Hồ sơ Bệnh án Chuyên môn",
       "creator-profile": "Creator & Media Deck",
       "academic-cv": "Hồ sơ Học thuật",
-      "pedagogical-journal": "Nhật ký Giáo viên Sư phạm",
+      "pedagogical-journal": "Nhật ký Sư phạm",
     }[layout];
 
     const containerClassName = {

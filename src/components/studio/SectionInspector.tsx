@@ -125,7 +125,7 @@ export function SectionInspector({
             "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo",
           institution:
             section.courseInfo?.institution ??
-            "Trường ĐH Sư phạm Nghệ thuật TW",
+            "Trường Đại học",
           ...section.courseInfo,
         }
       : undefined;
@@ -690,10 +690,10 @@ export function SectionInspector({
                   {(
                     [
                       { id: "canva-cover", label: "Canva Cover" },
-                      { id: "medical-arch", label: "Dược Mộc Anh (Arch)" },
-                      { id: "clinical-dossier", label: "Bệnh án Thu Trang" },
-                      { id: "creator-cover", label: "Creator Hà Lê" },
-                      { id: "academic-monograph", label: "Monograph ĐHQG" },
+                      { id: "medical-arch", label: "Cổng vòm (Arch)" },
+                      { id: "clinical-dossier", label: "Hồ sơ chuyên môn (Dossier)" },
+                      { id: "creator-cover", label: "Bìa tạp chí (Creator Cover)" },
+                      { id: "academic-monograph", label: "Monograph Học thuật" },
                       { id: "pedagogical-journal", label: "Nhật ký Sư phạm" },
                       { id: "split-modern", label: "Split Modern" },
                       { id: "bento-intro", label: "Bento Intro" },
@@ -950,10 +950,10 @@ export function SectionInspector({
                   {(
                     [
                       { id: "story-card", label: "Story Card" },
-                      { id: "medical-license", label: "Dược sĩ Mộc Anh" },
-                      { id: "clinical-dossier", label: "Bác sĩ Thu Trang" },
-                      { id: "creator-profile", label: "Creator Hà Lê" },
-                      { id: "academic-cv", label: "Học thuật ĐHQG" },
+                      { id: "medical-license", label: "Giấy phép hành nghề (License)" },
+                      { id: "clinical-dossier", label: "Hồ sơ lâm sàng (Clinical)" },
+                      { id: "creator-profile", label: "Hồ sơ truyền thông (Profile)" },
+                      { id: "academic-cv", label: "Hồ sơ học thuật (CV)" },
                       { id: "pedagogical-journal", label: "Nhật ký Sư phạm" },
                       { id: "bento-facts", label: "Bento Facts" },
                       { id: "editorial-poster", label: "Editorial Poster" },
@@ -1945,11 +1945,11 @@ export function SectionInspector({
                   {(
                     [
                       { id: "grid", label: "Lưới (Grid)" },
-                      { id: "medical-spread", label: "Mộc Anh (Spread)" },
-                      { id: "clinical-dossier", label: "Thu Trang (Case Dossier)" },
-                      { id: "creator-filmstrip", label: "Hà Lê (Creator Filmstrip)" },
-                      { id: "academic-monograph", label: "Võ Hoài (Nghiên cứu ĐHQG)" },
-                      { id: "lesson-plan", label: "Nguyệt Ánh (Giáo án Sư phạm)" },
+                      { id: "medical-spread", label: "Tạp chí trải rộng (Spread)" },
+                      { id: "clinical-dossier", label: "Báo cáo ca bệnh (Case Dossier)" },
+                      { id: "creator-filmstrip", label: "Cuộn phim (Filmstrip)" },
+                      { id: "academic-monograph", label: "Chuyên khảo học thuật (Monograph)" },
+                      { id: "lesson-plan", label: "Kế hoạch bài dạy (Lesson Plan)" },
                       { id: "staggered-cards", label: "Cards so le" },
                       { id: "carousel", label: "Carousel trượt" },
                       { id: "list", label: "Danh sách (List)" },
@@ -4086,7 +4086,7 @@ export function SectionInspector({
                       aria-label="Tên trường / Cơ sở đào tạo"
                       value={
                         section.courseInfo?.institution ??
-                        "Trường ĐH Sư phạm Nghệ thuật TW"
+                        "Trường Đại học"
                       }
                       placeholder="Nhập tên trường..."
                       onChange={(e) =>
