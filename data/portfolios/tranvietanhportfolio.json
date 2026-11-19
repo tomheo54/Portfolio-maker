@@ -590,6 +590,12 @@
       "subtitle": "Công nghệ và AI có thể mở rộng khả năng sáng tạo, nhưng tư duy sư phạm của con người mới định hướng giá trị của sản phẩm giáo dục. Rất vui được kết nối và trao đổi cùng bạn!",
       "thankYouMessage": "THANK YOU FOR WATCHING!",
       "showContactForm": true,
+      "courseInfo": {
+        "courseCode": "INF2501",
+        "courseName": "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo",
+        "institution": "Trường Đại học",
+        "instructorName": "Vũ VIệt Hoàng"
+      },
       "conclusion": {
         "title": "Conclusion",
         "eyebrow": "05 // Reflect & Grow",
@@ -665,6 +671,7 @@
     "avatarSourceType": "user-uploaded",
     "frameStyle": "rounded-rect",
     "aspectRatio": "3/4",
-    "bioSnippet": "Xin chào! Mình luôn mong muốn học hỏi, sáng tạo, lan tỏa những giá trị tích cực và vận dụng công nghệ số vào giải quyết vấn đề thực tế."
+    "bioSnippet": "Xin chào! Mình luôn mong muốn học hỏi, sáng tạo, lan tỏa những giá trị tích cực và vận dụng công nghệ số vào giải quyết vấn đề thực tế.",
+    "instructorName": "Vũ VIệt Hoàng"
   }
 }
