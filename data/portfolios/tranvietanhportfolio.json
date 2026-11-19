@@ -119,7 +119,7 @@
       "mediaPosition": "left",
       "educationSchool": "Trường Đại học Sư phạm Nghệ thuật Trung ương",
       "educationDegree": "Sư phạm âm nhạc",
-      "educationPeriod": ""
+      "educationPeriod": "INF2501"
     },
     {
       "type": "skills",
@@ -593,7 +593,8 @@
       "courseInfo": {
         "courseCode": "INF2501",
         "courseName": "Nhập môn Công nghệ số và ứng dụng trí tuệ nhân tạo",
-        "institution": "Trường Đại học",
+        "institution": "Trường Đại học Sư phạm Nghệ thuật Trung ương",
+        "studentId": "2552210057",
         "instructorName": "Vũ VIệt Hoàng"
       },
       "conclusion": {
