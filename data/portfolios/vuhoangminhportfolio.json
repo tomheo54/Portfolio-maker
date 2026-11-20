@@ -171,7 +171,7 @@
           "category": "Quản trị Dữ liệu Số",
           "sourceDocxFileName": "Bai_01_File_Explorer.docx",
           "docxUrl": "https://docs.google.com/document/d/1dUfLW3aIm6fLLEsPUA967xraVhN8mEOv/edit?usp=drive_link&ouid=110145901196945857167&rtpof=true&sd=true",
-          "assignmentBrief": "Nắm vững các thao tác quản lý tệp tin trên File Explorer của hệ điều hành Windows, thực hành quy trình khởi tạo, đổi tên, sao chép, di chuyển, xóa tạm thời, xóa vĩnh viễn và khôi phục dữ liệu nhằm tối ưu hóa cấu trúc quản lý tài nguyên số.1",
+          "assignmentBrief": "Nắm vững các thao tác quản lý tệp tin trên File Explorer của hệ điều hành Windows, thực hành quy trình khởi tạo, đổi tên, sao chép, di chuyển, xóa tạm thời, xóa vĩnh viễn và khôi phục dữ liệu nhằm tối ưu hóa cấu trúc quản lý tài nguyên số",
           "summary": "Thực hiện tiến trình 12 bước gồm khởi động File Explorer bằng phím tắt Windows + E, truy cập ổ đĩa lưu trữ, khởi tạo thư mục gốc cá nhân ThucHanh_VuHoangMinh, tạo tệp GhiChu.txt, đổi tên thành GhiChuQuanTrong.txt, tạo thư mục con TaiLieu, thực hiện sao chép (Ctrl+C, Ctrl+V) tệp GhiChuQuanTrong.txt và di chuyển (Ctrl+X, Ctrl+V) tệp DiChuyen.txt vào thư mục con, xóa tạm thời tệp vào Thùng rác (Delete), xóa vĩnh viễn tệp (Shift+Delete) và khôi phục tệp đã xóa từ Thùng rác (Restore).",
           "keyTakeaways": [
             "Giúp sinh viên làm chủ 100% các thao tác quản lý dữ liệu trên Windows, thiết lập cấu trúc lưu trữ chuẩn xác và vận dụng thuần thục các tổ hợp phím tắt để nâng cao hiệu suất làm việc cũng như quản lý học liệu khoa học.1"
