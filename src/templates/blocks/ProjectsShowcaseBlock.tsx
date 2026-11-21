@@ -65,15 +65,15 @@ import { parseVideoEmbedUrl, isVideoUrl } from "@/utils/video";
 import { InlineEditableText } from "@/components/studio/InlineEditableText";
 
 export function getEffectiveProjectVideoUrl(project: ProjectItem): string | undefined {
+  if (project.mediaType === "image" || project.productType === "image") return undefined;
   if (project.videoUrl && project.videoUrl.trim()) return project.videoUrl.trim();
-  if (project.docxUrl && isVideoUrl(project.docxUrl)) return project.docxUrl.trim();
   return undefined;
 }
 
 export function isProjectVideoMode(project: ProjectItem): boolean {
+  if (project.mediaType === "image" || project.productType === "image") return false;
   if (project.mediaType === "video" || project.productType === "video") return true;
   if (project.videoUrl && project.videoUrl.trim()) return true;
-  if (project.docxUrl && isVideoUrl(project.docxUrl)) return true;
   return false;
 }
 
@@ -174,7 +174,7 @@ export interface BulletShapeIconProps {
   className?: string;
 }
 
-function BulletShapeIcon({ shape = "circle", color = "currentColor", className = "" }: BulletShapeIconProps) {
+export function BulletShapeIcon({ shape = "circle", color = "currentColor", className = "" }: BulletShapeIconProps) {
   if (shape === "none") {
     return null;
   }
@@ -280,8 +280,8 @@ function getProjectMediaPosition(
 function getProjectMediaOrder(position: ProjectMediaPosition) {
   const mediaFirst = position === "left" || position === "top";
   return {
-    media: mediaFirst ? "lg:order-1" : "lg:order-2",
-    details: mediaFirst ? "lg:order-2" : "lg:order-1",
+    media: mediaFirst ? "order-1 lg:order-1" : "order-2 lg:order-2",
+    details: mediaFirst ? "order-2 lg:order-2" : "order-1 lg:order-1",
     vertical: position === "top" || position === "bottom",
   };
 }
@@ -310,6 +310,8 @@ function SortableProjectCardWrapper({
     isDragging,
   } = useSortable({ id, disabled: !editable });
 
+  const setSelectedProjectId = usePortfolioStore((s) => s.setSelectedProjectId);
+
   const combinedStyle: React.CSSProperties = {
     ...style,
     transform: CSS.Transform.toString(transform),
@@ -325,6 +327,11 @@ function SortableProjectCardWrapper({
       data-project-card="true"
       data-testid={`canvas-project-card-${id}`}
       data-project-media-position={mediaPosition}
+      onClick={() => {
+        if (editable) {
+          setSelectedProjectId(id);
+        }
+      }}
       className={`relative group ${className} ${
         isDragging ? "ring-2 ring-amber-500 shadow-2xl rounded-2xl" : ""
       }`}
@@ -1842,27 +1849,31 @@ export function ProjectsShowcaseBlock({
                         boxShadow: `0 10px 30px -10px ${theme.primaryColor}25`,
                       }}
                     >
-                      <div className="grid grid-cols-1 items-center gap-6 lg:gap-8 lg:grid-cols-12">
+                      <div className={`grid grid-cols-1 gap-6 lg:gap-8 lg:grid-cols-12 ${mediaOrder.vertical ? "items-start" : "items-center"}`}>
                         {hasMedia && (
                           <div
-                            className={`lg:col-span-5 ${mediaOrder.media}`}
+                            className={`${mediaOrder.vertical ? "lg:col-span-12" : "lg:col-span-5"} ${mediaOrder.media}`}
                             data-project-content="media"
                           >
                             <div className="relative group">
-                              <div
-                                className="overflow-hidden p-1.5 bg-white shadow-md"
-                                style={{
-                                  borderRadius: "140px 140px 20px 20px",
-                                  border: `3px solid ${theme.primaryColor}`,
-                                }}
-                              >
-                                {renderAdaptiveMedia(project, index)}
-                              </div>
+                              {isVideo ? (
+                                renderAdaptiveMedia(project, index)
+                              ) : (
+                                <div
+                                  className="overflow-hidden p-1.5 bg-white shadow-md"
+                                  style={{
+                                    borderRadius: "140px 140px 20px 20px",
+                                    border: `3px solid ${theme.primaryColor}`,
+                                  }}
+                                >
+                                  {renderAdaptiveMedia(project, index)}
+                                </div>
+                              )}
                             </div>
                           </div>
                         )}
                         <div
-                          className={`space-y-5 ${!hasMedia ? "lg:col-span-12" : "lg:col-span-7"} ${mediaOrder.details}`}
+                          className={`space-y-5 ${!hasMedia ? "lg:col-span-12" : mediaOrder.vertical ? "lg:col-span-12" : "lg:col-span-7"} ${mediaOrder.details}`}
                           data-project-content="details"
                         >
                           <div

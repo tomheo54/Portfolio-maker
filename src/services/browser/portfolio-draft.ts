@@ -62,7 +62,11 @@ function parseDocument(value: unknown): PortfolioDocument | null {
   return parsed.success ? parsed.data : null;
 }
 
-function parseStoredDraft(value: unknown, fallbackId: string): PortfolioDraftRecord | null {
+function parseStoredDraft(
+  value: unknown,
+  fallbackId: string,
+  options?: { skipHistory?: boolean }
+): PortfolioDraftRecord | null {
   if (!value || typeof value !== "object") return null;
   const candidate = value as Partial<StoredDraft> & Partial<PortfolioDocument>;
 
@@ -70,12 +74,18 @@ function parseStoredDraft(value: unknown, fallbackId: string): PortfolioDraftRec
   const document = parseDocument(candidate.document ?? value);
   if (!document) return null;
 
-  const history = Array.isArray(candidate.history)
-    ? candidate.history.map(parseDocument).filter((item): item is PortfolioDocument => Boolean(item))
-    : [];
-  const future = Array.isArray(candidate.future)
-    ? candidate.future.map(parseDocument).filter((item): item is PortfolioDocument => Boolean(item))
-    : [];
+  // When skipHistory is true (e.g. for listing drafts), DO NOT parse all history snapshots with Zod.
+  // Each history snapshot can be 30MB+ and parsing 40 of them causes Out-of-Memory crashes.
+  const history = options?.skipHistory
+    ? []
+    : Array.isArray(candidate.history)
+      ? candidate.history.slice(-5).map(parseDocument).filter((item): item is PortfolioDocument => Boolean(item))
+      : [];
+  const future = options?.skipHistory
+    ? []
+    : Array.isArray(candidate.future)
+      ? candidate.future.slice(0, 5).map(parseDocument).filter((item): item is PortfolioDocument => Boolean(item))
+      : [];
 
   return {
     id: typeof candidate.id === "string" ? candidate.id : fallbackId,
@@ -89,8 +99,8 @@ function parseStoredDraft(value: unknown, fallbackId: string): PortfolioDraftRec
       ? { completedAt: candidate.completedAt }
       : {}),
     document,
-    history: history.slice(-40),
-    future: future.slice(0, 40),
+    history,
+    future,
     updatedAt:
       typeof candidate.updatedAt === "string"
         ? candidate.updatedAt
@@ -119,24 +129,55 @@ export function setActivePortfolioDraftId(id: string): void {
 export async function listPortfolioDrafts(): Promise<PortfolioDraftRecord[]> {
   const db = await openDraftDatabase();
   try {
-    const tx = db.transaction([STORE_NAME, LEGACY_STORE_NAME], "readonly");
-    const [storedValues, legacyValue] = await Promise.all([
-      requestResult(tx.objectStore(STORE_NAME).getAll()),
-      requestResult(tx.objectStore(LEGACY_STORE_NAME).get(LEGACY_DRAFT_KEY)),
-    ]);
-    const records = (storedValues as unknown[])
-      .map((value, index) => parseStoredDraft(value, `draft-${index + 1}`))
-      .filter((record): record is PortfolioDraftRecord => Boolean(record));
+    // Open as readwrite so we can prune any bloated legacy history arrays in-place to prevent OOM
+    const tx = db.transaction([STORE_NAME, LEGACY_STORE_NAME], "readwrite");
+    const store = tx.objectStore(STORE_NAME);
+    const records: PortfolioDraftRecord[] = [];
 
-    if (records.length === 0 && legacyValue) {
-      const legacy = parseStoredDraft(
-        legacyValue,
-        getActivePortfolioDraftId() ?? LEGACY_DRAFT_KEY,
-      );
-      if (legacy && !records.some((record) => record.id === legacy.id)) records.push(legacy);
+    // Use cursor instead of getAll() to avoid loading all huge objects simultaneously into heap
+    await new Promise<void>((resolve, reject) => {
+      const cursorRequest = store.openCursor();
+      let index = 0;
+      cursorRequest.onsuccess = () => {
+        const cursor = cursorRequest.result;
+        if (cursor) {
+          try {
+            const raw = cursor.value;
+            // Prune bloated history if present in the stored record (e.g. 40 snapshots of 33MB = 1.3GB)
+            if (raw && typeof raw === "object" && Array.isArray((raw as any).history) && (raw as any).history.length > 5) {
+              (raw as any).history = (raw as any).history.slice(-5);
+              (raw as any).future = Array.isArray((raw as any).future) ? (raw as any).future.slice(0, 5) : [];
+              cursor.update(raw);
+            }
+            const record = parseStoredDraft(raw, `draft-${++index}`, { skipHistory: true });
+            if (record) records.push(record);
+          } catch (e) {
+            console.warn("Failed to parse draft from cursor", e);
+          }
+          cursor.continue();
+        } else {
+          resolve();
+        }
+      };
+      cursorRequest.onerror = () => reject(cursorRequest.error);
+    });
+
+    if (records.length === 0) {
+      const legacyValue = await requestResult(tx.objectStore(LEGACY_STORE_NAME).get(LEGACY_DRAFT_KEY));
+      if (legacyValue) {
+        const legacy = parseStoredDraft(
+          legacyValue,
+          getActivePortfolioDraftId() ?? LEGACY_DRAFT_KEY,
+          { skipHistory: true }
+        );
+        if (legacy && !records.some((record) => record.id === legacy.id)) records.push(legacy);
+      }
     }
 
     return records.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  } catch (err) {
+    console.error("Error in listPortfolioDrafts:", err);
+    return [];
   } finally {
     db.close();
   }
@@ -152,14 +193,12 @@ export async function readPortfolioDraft(id?: string | null): Promise<PortfolioD
       const parsed = parseStoredDraft(stored, targetId);
       if (parsed) return parsed;
     } else {
-      const store = db.transaction(STORE_NAME, "readonly").objectStore(STORE_NAME);
-      const allStored = (await requestResult(store.getAll())) as unknown[];
-      const records = allStored
-        .map((value, index) => parseStoredDraft(value, `draft-${index + 1}`))
-        .filter((record): record is PortfolioDraftRecord => Boolean(record))
-        .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+      const records = await listPortfolioDrafts();
       if (records.length > 0) {
-        return records[0];
+        const store = db.transaction(STORE_NAME, "readonly").objectStore(STORE_NAME);
+        const stored = await requestResult(store.get(records[0].id));
+        const parsed = parseStoredDraft(stored, records[0].id);
+        if (parsed) return parsed;
       }
     }
 
@@ -210,8 +249,8 @@ export async function writePortfolioDraft(
             }
           : {}),
         document,
-        history: history.slice(-40),
-        future: future.slice(0, 40),
+        history: history.slice(-5),
+        future: future.slice(0, 5),
         updatedAt: new Date().toISOString(),
       };
       store.put(record);

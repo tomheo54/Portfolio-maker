@@ -565,6 +565,7 @@ export const ConclusionCardSchema = z.object({
   bodyFontSize: z.enum(["xs", "sm", "base", "lg"]).optional(),
   titleAlign: z.enum(["left", "center", "right"]).optional(),
   bodyAlign: z.enum(["left", "center", "right"]).optional(),
+  bulletShape: z.enum(["none", "circle", "square", "hyphen", "star", "check", "diamond"]).optional(),
 });
 
 export const ConclusionPanelItemSchema = z.object({

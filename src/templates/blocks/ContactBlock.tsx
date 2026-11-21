@@ -21,6 +21,7 @@ import {
   CanvaThankYouVinylBurst,
 } from "./CanvaOrnaments";
 import { DEFAULT_CONCLUSION_CONFIG } from "./conclusion-defaults";
+import { BulletShapeIcon } from "./ProjectsShowcaseBlock";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
 import { InlineEditableText } from "@/components/studio/InlineEditableText";
 
@@ -200,11 +201,13 @@ function ConclusionBlock({ section, theme, projects = [], archetypeId }: {
           </p>
         )}
         {item.bullets.length > 0 && (
-          <ul
+          <div
             className={`mt-3 space-y-2 leading-relaxed ${
               item.bodyAlign === "center"
-                ? "list-none pl-0"
-                : "list-disc pl-5"
+                ? "text-center"
+                : item.bodyAlign === "right"
+                  ? "text-right"
+                  : "text-left"
             }`}
             style={{
               fontSize: item.bodyFontSize
@@ -213,10 +216,36 @@ function ConclusionBlock({ section, theme, projects = [], archetypeId }: {
               textAlign: item.bodyAlign,
             }}
           >
-            {item.bullets.map((line, bulletIndex) => (
-              <li key={`${item.id}-bullet-${bulletIndex}`}>{line}</li>
-            ))}
-          </ul>
+            {item.bullets.map((line, bulletIndex) => {
+              const shape = item.bulletShape ?? "none";
+              if (shape === "none") {
+                return (
+                  <p key={`${item.id}-bullet-${bulletIndex}`} className="leading-relaxed">
+                    {line}
+                  </p>
+                );
+              }
+              return (
+                <div
+                  key={`${item.id}-bullet-${bulletIndex}`}
+                  className={`flex items-start gap-2 ${
+                    item.bodyAlign === "center"
+                      ? "justify-center"
+                      : item.bodyAlign === "right"
+                        ? "justify-end"
+                        : "justify-start"
+                  }`}
+                >
+                  <BulletShapeIcon
+                    shape={shape}
+                    color={isFeatured ? theme.backgroundColor : accentColor}
+                    className="shrink-0 mt-1"
+                  />
+                  <span>{line}</span>
+                </div>
+              );
+            })}
+          </div>
         )}
       </article>
     );

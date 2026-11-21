@@ -30,15 +30,15 @@ import { parseVideoEmbedUrl, isVideoUrl } from "@/utils/video";
 import { InlineEditableText } from "@/components/studio/InlineEditableText";
 
 function getEffectiveVideoUrl(project: ProjectItem): string | undefined {
+  if (project.mediaType === "image" || project.productType === "image") return undefined;
   if (project.videoUrl && project.videoUrl.trim()) return project.videoUrl.trim();
-  if (project.docxUrl && isVideoUrl(project.docxUrl)) return project.docxUrl.trim();
   return undefined;
 }
 
 function isVideoMode(project: ProjectItem): boolean {
+  if (project.mediaType === "image" || project.productType === "image") return false;
   if (project.mediaType === "video" || project.productType === "video") return true;
   if (project.videoUrl && project.videoUrl.trim()) return true;
-  if (project.docxUrl && isVideoUrl(project.docxUrl)) return true;
   return false;
 }
 

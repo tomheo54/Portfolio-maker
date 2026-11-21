@@ -3395,7 +3395,19 @@ function renderConclusionHtml(
         ${numberHtml}
         <h3 style="${titleStyle}">${escapeHtml(card.title)}</h3>
         ${card.body ? `<p class="conclusion-card__body" style="${bodyStyle}">${escapeHtml(card.body)}</p>` : ""}
-        ${card.bullets.length ? `<ul style="${bodyStyle};padding-left:${card.bodyAlign === "center" ? 0 : 20}px;list-style:${card.bodyAlign === "center" ? "none" : "disc"};">${card.bullets.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>` : ""}
+        ${card.bullets.length ? (() => {
+          var shape = card.bulletShape || "none";
+          if (shape === "none") {
+            return `<div class="conclusion-card__bullets" style="${bodyStyle};margin-top:12px;">${card.bullets.map((line) => `<p style="margin-bottom:8px;line-height:1.6;">${escapeHtml(line)}</p>`).join("")}</div>`;
+          }
+          var bulletChar = shape === 'hyphen' ? '— '
+            : shape === 'square' ? '■ '
+            : shape === 'star' ? '★ '
+            : shape === 'check' ? '✔ '
+            : shape === 'diamond' ? '◆ '
+            : '• ';
+          return `<ul style="${bodyStyle};padding-left:0;list-style:none;margin-top:12px;">${card.bullets.map((line) => `<li style="display:flex;align-items:flex-start;gap:6px;margin-bottom:6px;"><span style="color:${accentColor};font-weight:bold;">${bulletChar}</span><span>${escapeHtml(line)}</span></li>`).join("")}</ul>`;
+        })() : ""}
       </article>`;
     })
     .join("");

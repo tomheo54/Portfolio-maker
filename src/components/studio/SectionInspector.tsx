@@ -2270,6 +2270,9 @@ export function SectionInspector({
                               updateProject(currentProject.id, {
                                 mediaType: "image",
                                 productType: "image",
+                                ...(currentProject.videoUrl === currentProject.docxUrl
+                                  ? { videoUrl: undefined }
+                                  : {}),
                               })
                             }
                             className="h-3.5 w-3.5 text-amber-600 focus:ring-amber-500"
@@ -2294,7 +2297,11 @@ export function SectionInspector({
                         </label>
                       </div>
 
-                      {(currentProject.mediaType === "video" || currentProject.productType === "video" || Boolean(currentProject.videoUrl)) && (
+                      {currentProject.mediaType !== "image" &&
+                        currentProject.productType !== "image" &&
+                        (currentProject.mediaType === "video" ||
+                          currentProject.productType === "video" ||
+                          Boolean(currentProject.videoUrl)) && (
                         <div className="mt-2.5">
                           <label
                             htmlFor={`project-video-url-${currentProject.id}`}
@@ -2338,11 +2345,10 @@ export function SectionInspector({
                         placeholder="https://.../Bai-tap.docx"
                         onChange={(e) => {
                           const val = e.target.value.trim();
-                          const isVid = isVideoUrl(val);
                           updateProject(currentProject.id, {
                             docxUrl: val || undefined,
-                            ...(isVid && !currentProject.videoUrl
-                              ? { videoUrl: val, mediaType: "video", productType: "video" }
+                            ...(currentProject.videoUrl === currentProject.docxUrl
+                              ? { videoUrl: undefined }
                               : {}),
                           });
                         }}
@@ -3626,56 +3632,76 @@ export function SectionInspector({
                                 </select>
                               </div>
                             </div>
-                            <div className="space-y-1">
-                              {card.bullets.map((bullet, bulletIndex) => (
-                                <div
-                                  key={`${card.id}-bullet-${bulletIndex}`}
-                                  className="flex gap-1"
-                                >
-                                  <input
-                                    aria-label={`Ý thẻ Conclusion ${cardIndex + 1}.${bulletIndex + 1}`}
-                                    value={bullet}
+                            <div className="space-y-1.5 rounded-lg border border-stone-200 bg-stone-50 p-1.5">
+                              <div className="flex items-center justify-between gap-2">
+                                <label className="block text-[9px] font-bold text-stone-700">
+                                  Ý chính / Nội dung chi tiết
+                                </label>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-[9px] text-stone-500">Kiểu:</span>
+                                  <select
+                                    aria-label={`Kiểu điểm nhấn thẻ Conclusion ${cardIndex + 1}`}
+                                    value={card.bulletShape ?? "none"}
                                     onChange={(event) =>
                                       updateCard({
-                                        bullets: card.bullets.map(
-                                          (line, index) =>
-                                            index === bulletIndex
-                                              ? event.target.value
-                                              : line,
-                                        ),
+                                        bulletShape: event.target.value as ConclusionCard["bulletShape"],
                                       })
                                     }
-                                    className="min-w-0 flex-1 rounded border border-stone-200 bg-white px-2 py-1 text-[10px]"
-                                  />
-                                  <button
-                                    type="button"
-                                    aria-label={`Xóa ý thẻ Conclusion ${cardIndex + 1}.${bulletIndex + 1}`}
-                                    onClick={() =>
-                                      updateCard({
-                                        bullets: card.bullets.filter(
-                                          (_, index) =>
-                                            index !== bulletIndex,
-                                        ),
-                                      })
-                                    }
-                                    className="rounded px-1 text-rose-600 hover:bg-rose-50"
+                                    className="rounded border border-stone-200 bg-white px-1.5 py-0.5 text-[9px] text-stone-700 outline-none focus:border-violet-500"
                                   >
-                                    <Trash2 className="h-3 w-3" />
-                                  </button>
+                                    <option value="none">None (Liền dòng)</option>
+                                    <option value="circle">● Tròn</option>
+                                    <option value="square">■ Vuông</option>
+                                    <option value="hyphen">- Dấu gạch</option>
+                                    <option value="star">★ Ngôi sao</option>
+                                    <option value="check">✔ Dấu tích</option>
+                                    <option value="diamond">◆ Kim cương</option>
+                                  </select>
                                 </div>
-                              ))}
-                              <button
-                                type="button"
-                                aria-label={`Thêm ý thẻ Conclusion ${cardIndex + 1}`}
-                                onClick={() =>
-                                  updateCard({
-                                    bullets: [...card.bullets, ""],
-                                  })
+                              </div>
+                              <p className="text-[8px] leading-snug text-stone-500">
+                                {(card.bulletShape ?? "none") === "none"
+                                  ? "Hiển thị văn bản liền mạch (không có dấu đầu dòng). Nhập dấu (-) ở đầu dòng để tự đổi sang dấu tròn."
+                                  : "Nhập vào 1 ô, mỗi ý bắt đầu bằng dấu gạch ngang (-) ở đầu dòng."}
+                              </p>
+                              <textarea
+                                rows={3}
+                                aria-label={`Nội dung ý chính thẻ Conclusion ${cardIndex + 1}`}
+                                value={
+                                  card.bullets.length > 0
+                                    ? (card.bulletShape ?? "none") === "none"
+                                      ? card.bullets.join("\n")
+                                      : card.bullets
+                                          .map((line) => (line.startsWith("- ") ? line : `- ${line}`))
+                                          .join("\n")
+                                    : ""
                                 }
-                                className="text-[9px] font-semibold text-violet-800 hover:underline"
-                              >
-                                + Thêm ý
-                              </button>
+                                placeholder={
+                                  (card.bulletShape ?? "none") === "none"
+                                    ? "Nhập đoạn văn bản / nội dung liền mạch (nếu nhập dấu '-' đầu dòng sẽ tự đổi sang dấu tròn)..."
+                                    : "- Ý thứ nhất...\n- Ý thứ hai...\n- Ý thứ ba..."
+                                }
+                                onChange={(e) => {
+                                  const raw = e.target.value;
+                                  const currentShape = card.bulletShape ?? "none";
+                                  const hasHyphen = raw.split("\n").some((l) => l.trim().startsWith("-"));
+                                  let newShape = currentShape;
+                                  if (hasHyphen && currentShape === "none") {
+                                    newShape = "circle";
+                                  }
+                                  const isNone = newShape === "none";
+                                  const lines = raw
+                                    .split("\n")
+                                    .map((l) => (isNone ? l.replace(/^-\s*/, "").trim() : l.trim()))
+                                    .filter(Boolean)
+                                    .map((l) => (!isNone && l.startsWith("-") ? l.replace(/^-\s*/, "") : l));
+                                  updateCard({
+                                    ...(newShape !== card.bulletShape ? { bulletShape: newShape } : {}),
+                                    bullets: lines,
+                                  });
+                                }}
+                                className="w-full rounded border border-stone-200 bg-white px-2 py-1 font-mono text-[10px] leading-relaxed"
+                              />
                             </div>
                           </div>
                         );

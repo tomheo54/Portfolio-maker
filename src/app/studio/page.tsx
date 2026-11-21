@@ -280,6 +280,7 @@ export default function StudioPage() {
     const initialDocument = usePortfolioStore.getState().document;
     const searchParams = new URLSearchParams(window.location.search);
     const isExplicitNew = searchParams.get('new') === '1' || searchParams.has('new');
+    const targetSlug = searchParams.get('slug') || searchParams.get('portfolio');
     const targetDraftId = isExplicitNew ? null : (searchParams.get('draft') || getActivePortfolioDraftId());
 
     if (isExplicitNew) {
@@ -307,6 +308,36 @@ export default function StudioPage() {
       hydrated = true;
       const current = usePortfolioStore.getState();
       void writePortfolioDraft(current.document, current.history, current.future, brandNewDraftId).catch(() => {});
+    } else if (targetSlug) {
+      // Nạp trực tiếp từ file trên server (ví dụ: ?slug=luuthienthaoportfolio)
+      void fetch(`/api/portfolios?slug=${encodeURIComponent(targetSlug)}`)
+        .then(async (res) => {
+          if (!res.ok) throw new Error("Portfolio không tìm thấy trên server.");
+          const doc = await res.json();
+          if (!active) return;
+          const nextDraftId = `draft-${targetSlug}`;
+          draftIdRef.current = nextDraftId;
+          setDraftId(nextDraftId);
+          setActivePortfolioDraftId(nextDraftId);
+          if (typeof window !== "undefined" && window.history?.replaceState) {
+            window.history.replaceState({}, '', `/studio?draft=${encodeURIComponent(nextDraftId)}`);
+          }
+          restoringDraft = true;
+          usePortfolioStore.getState().restoreDraftSnapshot({
+            document: doc,
+            history: [],
+            future: [],
+          });
+          restoringDraft = false;
+          hydrated = true;
+          await writePortfolioDraft(doc, [], [], nextDraftId, {
+            name: doc.profileOwner?.fullName || doc.seo?.title || doc.slug,
+          });
+        })
+        .catch(() => {
+          if (!active) return;
+          hydrated = true;
+        });
     } else {
       // Đọc bản nháp đang chỉnh sửa (?draft=... hoặc active draft lưu trong trình duyệt)
       void readPortfolioDraft(targetDraftId).then((draft) => {
